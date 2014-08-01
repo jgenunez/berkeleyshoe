@@ -27,7 +27,7 @@ namespace AutomaticSyncConsole
 
                 FixOverpublished();
 
-                string fileName = DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString().PadLeft(2) + DateTime.Now.Day.ToString().PadLeft(2) + ".xlsx";
+                string fileName = DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString().PadLeft(2,'0') + DateTime.Now.Day.ToString().PadLeft(2,'0') + ".xlsx";
 
                 string path = @"P:\Unpublished Reports\" + fileName;
 

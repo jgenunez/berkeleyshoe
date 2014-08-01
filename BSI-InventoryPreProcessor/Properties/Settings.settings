@@ -1,0 +1,29 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="BSI_InventoryPreProcessor.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="berkeleyConnectionString" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=192.168.1.22;Initial Catalog=berkeley;Persist Security Info=True;User ID=developer;Password=zaoreo112233&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=192.168.1.22;Initial Catalog=berkeley;Persist Security Info=True;User ID=developer;Password=zaoreo112233</Value>
+    </Setting>
+    <Setting Name="ApiServerUrl" Type="System.String" Scope="User">
+      <Value Profile="(Default)">https://api.ebay.com/wsapi</Value>
+    </Setting>
+    <Setting Name="eBayDevID" Type="System.String" Scope="User">
+      <Value Profile="(Default)">2ec7ed97-e88e-4868-aeb8-9be51f107a46</Value>
+    </Setting>
+    <Setting Name="eBayAppID" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Mecalzoc-a8e6-4947-ac5b-49be352cd2f4</Value>
+    </Setting>
+    <Setting Name="eBayCertID" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Mecalzoc-a8e6-4947-ac5b-49be352cd2f4</Value>
+    </Setting>
+    <Setting Name="eBayPageSize" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">150</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
