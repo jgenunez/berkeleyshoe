@@ -35,11 +35,11 @@
   <ItemGroup>
     <Reference Include="eBay.Service, Version=3.747.0.0, Culture=neutral, PublicKeyToken=1d9d786a5932eaf0, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Misc\eBay .NET SDK v849 Release\eBay.Service.dll</HintPath>
+      <HintPath>..\LIB\eBay .NET SDK v849 Release\eBay.Service.dll</HintPath>
     </Reference>
     <Reference Include="eBay.Service.SDK.Attribute, Version=3.747.0.0, Culture=neutral, PublicKeyToken=1d9d786a5932eaf0, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Misc\eBay .NET SDK v849 Release\eBay.Service.SDK.Attribute.dll</HintPath>
+      <HintPath>..\LIB\eBay .NET SDK v849 Release\eBay.Service.SDK.Attribute.dll</HintPath>
     </Reference>
     <Reference Include="MarketplaceWebService, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
