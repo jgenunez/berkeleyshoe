@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+<html>
+	<head>
+        <meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+		<title> Order Invoice </title>
+        <style>
+            body { font-family:Tahoma, Geneva, sans-serif; font-size:10px; } 
+            p{ margin:0px; margin-bottom:5px; } 
+            .customerName { font-family:Arial, Helvetica, sans-serif; font-size:large; font-weight:bold; } 
+            .titulos { font-family:Arial, Helvetica, sans-serif; font-size:large; font-weight:bold; border-style:solid; border-width:1px; }
+            .fineprint {font-family:Arial, Helvetica, sans-serif; font-size:x-small; font-weight: normal; text-align:center; }
+            .repeated-order { border-width: 2px; border-color: black; border-style:solid; padding: 2px; margin-right:2px; font-family:Arial, Helvetica, sans-serif; font-size:15px; float:right; }
+            .day-of-week { padding: 1px; background-color: black; color: white; }
+        </style>
+	</head>
+	<body>
+	    <div style='width: 800px'>
+            <p class='repeated-order'>
+                <span class='day-of-week'> order.originalDate.DayOfWeek.ToString().Substring(0, 3).ToUpper() </span> &nbsp;  order.originalDate.ToShortDateString() &nbsp;
+            </p>
+                <table width='800' border='0' cellspacing='0' cellpadding='0'> 
+                    <tr> 
+                        <td align='left' valign='top' width='33%'> 
+                            <p class='customerName'>  order.UserName  </p>
+                            <p><strong>
+                             order.BuyerID <br/>
+                             order.CompanyName  <br/>
+                             order.Street1   |   order.Street2  <br/> 
+                             order.CityName  ,   order.StateOrProvince     order.PostalCode  <br/> 
+                             order.CountryName  <br/> 
+                             order.Phone  
+                             </strong></p>
+
+                        </td> 
+                        <td align='center' valign='top' width='34%'> 
+                            <p class='titulos'>  marketPlaces[gCurrentMarketplace].Website  </p> 
+                            <p>  _marketplace   | eBay</p> 
+                            <p><strong>THANK YOU FOR YOUR ORDER</strong></p>  
+                            lrepeatedInfo  
+                        </td> 
+                        <td align='right' valign='top' width='33%'>
+                            <p>  order.CreatedTime.ToShortDateString()   -   standardOrders  </p> 
+                            <p><h2>  order.SalesRecordNumber  </h2></p> 
+                            <p><font face='Free 3 of 9 Extended' size='2'>*  order.SalesRecordNumber  *</font></p> 
+                            <p><h2>  shippingInfo  </h2></p>
+                        </td> 
+                    </tr>
+                </table>
+        </div>
+	</body>
+</html>
