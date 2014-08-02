@@ -93,17 +93,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AmazonServices\AmazonServices.csproj">
-      <Project>{2C8DCB08-7B5D-49F0-9C20-3F4D4DF8D919}</Project>
-      <Name>AmazonServices</Name>
-    </ProjectReference>
     <ProjectReference Include="..\BerkeleyEntities\BerkeleyEntities.csproj">
       <Project>{EB9E166F-2060-4E0C-B9B3-72D93F9182A5}</Project>
       <Name>BerkeleyEntities</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\EbayServices\EbayServices.csproj">
-      <Project>{5B60D53A-C4CE-4A0A-9337-66A143A5EE95}</Project>
-      <Name>EbayServices</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

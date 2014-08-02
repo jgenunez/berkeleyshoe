@@ -115,15 +115,14 @@ namespace BSI_InventoryPreProcessor
 
         int gCurrentMarketplace = 0;
 
-        List<ItemExcel> _entries;
-        List<ItemExcel> _errors;
-        List<ItemExcel> _completed;
+        List<EbayEntry> _entries;
+        List<EbayEntry> _errors;
+        List<EbayEntry> _completed;
 
         // Products on the marketplaces. Each element is a marketplace
         //List<ItemType>[] itemsOnline = new List<ItemType>[12];
 
-        berkeleyDataSet.bsi_marketplacesDataTable ldsMarkets = new berkeleyDataSet.bsi_marketplacesDataTable();
-        berkeleyDataSet.bsi_marketplacesRow currentMarketPlace = null;
+        private EbayMarketplace _marketplace;
 
         public Form1()
         {
@@ -155,9 +154,9 @@ namespace BSI_InventoryPreProcessor
 
             btnStart.Enabled = false;
 
-            _entries = new List<ItemExcel>();
-            _errors = new List<ItemExcel>();
-            _completed = new List<ItemExcel>();
+            _entries = new List<EbayEntry>();
+            _errors = new List<EbayEntry>();
+            _completed = new List<EbayEntry>();
 
             currentMarketPlace = ldsMarkets[cmbMarkets.SelectedIndex];
 
@@ -181,10 +180,10 @@ namespace BSI_InventoryPreProcessor
                 txtStatus.AppendText("--------------- ERRORS -----------------\n\n");
             }
 
-            foreach (ItemExcel excelItem in _errors)
+            foreach (EbayEntry excelItem in _errors)
             {
                
-                if(excelItem.Variation == ItemExcel.ITEM_TYPE_PARENT)
+                if(excelItem.Variation == EbayEntry.ITEM_TYPE_PARENT)
                 {
                     txtStatus.AppendText(excelItem.SKU + "  Error:" + excelItem.Result + "\n");
                     txtStatus.AppendText("\t" + excelItem.ItemLookupCode + " Row: " + excelItem.Row);
@@ -279,7 +278,7 @@ namespace BSI_InventoryPreProcessor
 
             currentMarketPlace = ldsMarkets[cmbMarkets.SelectedIndex];
 
-            List<ItemExcel> items = new List<ItemExcel>();
+            List<EbayEntry> items = new List<EbayEntry>();
 
             bool stop = false;
             int currentRow = 2;
@@ -299,7 +298,7 @@ namespace BSI_InventoryPreProcessor
                     }
                     catch (Exception)
                     {
-                        _errors.Add( new ItemExcel() {  ItemLookupCode = Convert.ToString(row.GetValue(1, EXCEL_INTCOLUMN_LOOKUPCODE)), Result = "Unable to read row" } );
+                        _errors.Add( new EbayEntry() {  ItemLookupCode = Convert.ToString(row.GetValue(1, EXCEL_INTCOLUMN_LOOKUPCODE)), Result = "Unable to read row" } );
                     }
                 }
                 else
@@ -323,7 +322,7 @@ namespace BSI_InventoryPreProcessor
             {
                 if (variation.Count() > 1)
                 {
-                    ItemExcel parent = variation.First();
+                    EbayEntry parent = variation.First();
                     parent.Items.AddRange(variation.ToList());
 
                     _entries.Add(parent);
@@ -339,9 +338,9 @@ namespace BSI_InventoryPreProcessor
 
         }
 
-        private ItemExcel CreateEntry(System.Array row, string currentRow)
+        private EbayEntry CreateEntry(System.Array row, string currentRow)
         {
-            ItemExcel excelItem = new ItemExcel();
+            EbayEntry excelItem = new EbayEntry();
             excelItem.Row = currentRow;
             excelItem.SKU = row.GetValue(1, EXCEL_INTCOLUMN_SKU).ToString();
             excelItem.Alias = Convert.ToString(row.GetValue(1, EXCEL_INTCOLUMN_UPC)).Trim();
@@ -406,7 +405,7 @@ namespace BSI_InventoryPreProcessor
 
             bool lflag = true;
 
-            foreach (ItemExcel lxi in _entries)
+            foreach (EbayEntry lxi in _entries)
             {
                 try
                 {
@@ -423,12 +422,12 @@ namespace BSI_InventoryPreProcessor
 
                     if (lxi.Pictures.Count > 0)
                     {
-                        lxi.Ok2Publish = true;
+                        lxi.IsValid = true;
                         lxi.Pictures.Sort();
                     }
                     else
                     {
-                        lxi.Ok2Publish = false;
+                        lxi.IsValid = false;
                         lflag = false;
                         lxi.Result = "no pictures found !";
                         _errors.Add(lxi);
@@ -440,7 +439,7 @@ namespace BSI_InventoryPreProcessor
                 catch (Exception e)
                 {
                     lxi.Result = e.Message;
-                    lxi.Ok2Publish = false;
+                    lxi.IsValid = false;
                     _errors.Add(lxi);
                 }
             } // foreach
@@ -458,7 +457,7 @@ namespace BSI_InventoryPreProcessor
         // ------------------------------------------ Service methods
 
         // Sort method for 2 items: by brand
-        private int sortItems(ItemExcel p1, ItemExcel p2)
+        private int sortItems(EbayEntry p1, EbayEntry p2)
         {
             int lres = 0;
 
@@ -466,7 +465,7 @@ namespace BSI_InventoryPreProcessor
             return lres;
         } // sortItems
 
-        int sortBySize(ItemExcel p1, ItemExcel p2)
+        int sortBySize(EbayEntry p1, EbayEntry p2)
         {
             float lsize1, lsize2;
             int lres = 0;
@@ -626,10 +625,10 @@ namespace BSI_InventoryPreProcessor
 
                     //txtStatus.Text = "Publishing products for " + currentMarketPlace.name + "\r\n" + txtStatus.Text;
                     txtStatus.Update();
-                    foreach (ItemExcel xlProduct in _entries)
+                    foreach (EbayEntry xlProduct in _entries)
                     {
                         //if ((xlProduct.MarketPlaces & currentMarketPlace.maskId) == 0) continue; // Skip items that do not belong to this marketplace
-                        if (!xlProduct.Ok2Publish && !this.chkPublishWOPics.Checked ) continue;
+                        if (!xlProduct.IsValid && !this.chkPublishWOPics.Checked ) continue;
 
                         if (xlProduct.Items.Count > 1)
                             xlProduct.Title = removeSize(xlProduct.Title);
@@ -745,7 +744,7 @@ namespace BSI_InventoryPreProcessor
                                             if (lprice == 0)
                                             {
                                                 // The item was created without price, use the price of the first sibling
-                                                foreach (ItemExcel lixl in xlProduct.Items)
+                                                foreach (EbayEntry lixl in xlProduct.Items)
                                                 {
                                                     //if (lixl.getPriceForMarketplace(lx) > 0) 2013-01-02
                                                     if (lixl.Price > 0)
@@ -768,7 +767,7 @@ namespace BSI_InventoryPreProcessor
                                                              xlProduct.listUser).ToString();
 
                                             // Now, let's create the quantities
-                                            foreach (ItemExcel liex in xlProduct.Items)
+                                            foreach (EbayEntry liex in xlProduct.Items)
                                             {
                                                 // We need the item ID of the product
                                                 // if (liex.getQuantityForMarketplace(lx) > 0) 2013-01-02
@@ -901,28 +900,39 @@ namespace BSI_InventoryPreProcessor
 
         } // publishProducts
 
-        private void PublishEntries()
+        private void PublishEbayEntries()
         {
-            currentMarketPlace = (berkeleyDataSet.bsi_marketplacesRow)ldsMarkets.Rows[cmbMarkets.SelectedIndex]; // lmarketPlace;
-            GetApiContext();
-
-            _descriptionHeader = currentMarketPlace.template_header;
-            _descriptionFooter = currentMarketPlace.template_footer;
-
-
             berkeleyEntities dataContext = new berkeleyEntities();
 
-            foreach (ItemExcel excelItem in _entries.Where(p => p.Ok2Publish))
+            foreach (EbayEntry entry in _entries.Where(p => p.IsValid))
             {
-                if (excelItem.Items.Count > 1)
+
+
+
+                if(entry.Items.Count > 0)
                 {
-                    excelItem.Title = removeSize(excelItem.Title);
+                    entry.Title = removeSize(entry.Title);
+
+                    EbayListing listing = dataContext.EbayListings
+                        .SingleOrDefault(p => p.Sku.Equals(entry.SKU) && p.Marketplace.ID == _marketplace.ID && p.Status.Equals("Active"));
+
+                    if (listing == null)
+                    {
+                        listing = new EbayListing();
+                        listing.Marketplace = _marketplace;
+                        listing.Condition = entry.Condition;
+                        listing.Duration
+                    }
+                }
+                else
+                {
+
                 }
 
                 
-                ItemType listingDto = BuildItem(excelItem);
+                ItemType listingDto = BuildItem(entry);
 
-                if (excelItem.Items.Count == 0) // ONLY set price and QTY for individual products, not for Parents with children
+                if (entry.Items.Count == 0) // ONLY set price and QTY for individual products, not for Parents with children
                 {
                     // Set a price and Q temporal
                     listingDto.Quantity = 1;
@@ -936,7 +946,7 @@ namespace BSI_InventoryPreProcessor
 
                 if ((currentMarketPlace.maskId > 8 && currentMarketPlace.maskId < 512)) // Publish only those who '8 < mask id < 512' (Not Amazons, nor websites)
                 {
-                    if (excelItem.SellingFormat == "A" || excelItem.Items.Count == 0)
+                    if (entry.SellingFormat == "A" || entry.Items.Count == 0)
                     {
                         VerifyAddItemCall api_AUCTION_Call = new VerifyAddItemCall(apiContext);
                         api_AUCTION_Call.VerifyAddItem(listingDto);
@@ -1116,7 +1126,7 @@ namespace BSI_InventoryPreProcessor
             return lreturn;
         } // deleteItemOnEbay
 
-        bool isTheProductOnWebsite(ItemExcel lix)
+        bool isTheProductOnWebsite(EbayEntry lix)
         {
             bool lreturn = true;
 
@@ -1139,11 +1149,11 @@ namespace BSI_InventoryPreProcessor
                     {
                         // We need to create at least one item
                         String lpostid = lr["id"].ToString().Trim();
-                        ItemExcel laux = new ItemExcel();
+                        EbayEntry laux = new EbayEntry();
                         laux.copyNewItem(lix);
                         do
                         {
-                            ItemExcel ltempxl = new ItemExcel(laux);
+                            EbayEntry ltempxl = new EbayEntry(laux);
                             ltempxl.ItemLookupCode = lr["itemlookupcode"].ToString().Trim();
                             ltempxl.Title = lr["Title"].ToString().Trim();
                             ltempxl.Size = lr["Size"].ToString().Trim();
@@ -1167,7 +1177,7 @@ namespace BSI_InventoryPreProcessor
                         // Now combine both items... but first check if this item is single...
                         if ((lix.Items == null || lix.Items.Count < 1)) // If so, then we need to make it father w/1 child
                         {
-                            ItemExcel ltempxl = new ItemExcel();
+                            EbayEntry ltempxl = new EbayEntry();
                             if (lix.Items.Count > 0)
                                 ltempxl.copyNewItem(lix.Items[0]); // Copy from the first item
                             else
@@ -1178,9 +1188,9 @@ namespace BSI_InventoryPreProcessor
                             lix.Items.Add(ltempxl);
                         }
 
-                        foreach (ItemExcel lax in laux.Items)
+                        foreach (EbayEntry lax in laux.Items)
                         {
-                            ItemExcel lu = lix.Items.Find(delegate(ItemExcel pi)
+                            EbayEntry lu = lix.Items.Find(delegate(EbayEntry pi)
                             {
                                 return pi.ItemLookupCode == lax.ItemLookupCode;
                             });
@@ -1209,7 +1219,7 @@ namespace BSI_InventoryPreProcessor
             return lreturn;
         } // isTheProductOnWebsite
 
-        bool isTheProductOnAmazon(ItemExcel lix)
+        bool isTheProductOnAmazon(EbayEntry lix)
         {
             bool lreturn = true;
             int lmarketplace = cmbMarkets.SelectedIndex;
@@ -1233,11 +1243,11 @@ namespace BSI_InventoryPreProcessor
                     {
                         // We need to create at least one item
                         String lpostid = lr["id"].ToString().Trim();
-                        ItemExcel laux = new ItemExcel();
+                        EbayEntry laux = new EbayEntry();
                         laux.copyNewItem(lix);
                         do
                         {
-                            ItemExcel ltempxl = new ItemExcel(laux);
+                            EbayEntry ltempxl = new EbayEntry(laux);
                             ltempxl.ItemLookupCode = lr["itemlookupcode"].ToString().Trim();
                             ltempxl.Title = lr["Title"].ToString().Trim();
                             ltempxl.Size = lr["Size"].ToString().Trim();
@@ -1261,7 +1271,7 @@ namespace BSI_InventoryPreProcessor
                         // Now combine both items... but first check if this item is single...
                         if ((lix.Items == null || lix.Items.Count < 1)) // If so, then we need to make it father w/1 child
                         {
-                            ItemExcel ltempxl = new ItemExcel();
+                            EbayEntry ltempxl = new EbayEntry();
                             if (lix.Items.Count > 0)
                                 ltempxl.copyNewItem(lix.Items[0]); // Copy from the first item
                             else
@@ -1272,9 +1282,9 @@ namespace BSI_InventoryPreProcessor
                             lix.Items.Add(ltempxl);
                         }
 
-                        foreach (ItemExcel lax in laux.Items)
+                        foreach (EbayEntry lax in laux.Items)
                         {
-                            ItemExcel lu = lix.Items.Find(delegate(ItemExcel pi)
+                            EbayEntry lu = lix.Items.Find(delegate(EbayEntry pi)
                                                {
                                                    return pi.ItemLookupCode == lax.ItemLookupCode;
                                                });
@@ -1304,7 +1314,7 @@ namespace BSI_InventoryPreProcessor
             return lreturn;
         } // isTheProductOnAmazon
 
-        bool isTheProductOnEbay(ItemExcel lix)
+        bool isTheProductOnEbay(EbayEntry lix)
         {
             bool lreturn = false;
             SqlConnection lconn = null;
@@ -1349,7 +1359,7 @@ namespace BSI_InventoryPreProcessor
             // If we found the item on eBay then we need to make our item a father if it is a single product
             if ((lix.Items == null || lix.Items.Count < 1) && !lix.SellingFormat.Contains('A'))
             {
-                ItemExcel ltempxl = new ItemExcel();
+                EbayEntry ltempxl = new EbayEntry();
                 if (lix.Items.Count > 0)
                     ltempxl.copyNewItem(lix.Items[0]); // Copy from the first item
                 else
@@ -1407,7 +1417,7 @@ namespace BSI_InventoryPreProcessor
                         {
                             // Let's see if we already have this item
                             lfoundFlag = false;
-                            foreach (ItemExcel lax in lix.Items)
+                            foreach (EbayEntry lax in lix.Items)
                             {
                                 if (lax.ItemLookupCode == litem.SKU.Trim())
                                 {
@@ -1421,7 +1431,7 @@ namespace BSI_InventoryPreProcessor
 
                             if (!lfoundFlag) // Create and add the size
                             {
-                                ItemExcel ltempxl = new ItemExcel();
+                                EbayEntry ltempxl = new EbayEntry();
                                 if (lix.Items.Count > 0)
                                     ltempxl.copyNewItem(lix.Items[0]); // Copy from the first item
                                 else
@@ -1454,7 +1464,7 @@ namespace BSI_InventoryPreProcessor
                             foreach (VariationType lnewKidOneBay in litem.Variations.Variation)
                             {
                                 lfoundFlag = false;
-                                foreach (ItemExcel lax in lix.Items)
+                                foreach (EbayEntry lax in lix.Items)
                                 {
                                     if (lax.ItemLookupCode == lnewKidOneBay.SKU.Trim())
                                     {
@@ -1470,7 +1480,7 @@ namespace BSI_InventoryPreProcessor
 
                                 if (!lfoundFlag) // Create the size
                                 {
-                                    ItemExcel ltempxl = new ItemExcel();
+                                    EbayEntry ltempxl = new EbayEntry();
                                     if ( lix.Items != null && lix.Items.Count > 0 )
                                         ltempxl.copyNewItem(lix.Items[0]); // lix.Items[0].clone(); 
                                     else
