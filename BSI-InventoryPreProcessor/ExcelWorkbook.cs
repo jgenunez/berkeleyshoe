@@ -9,10 +9,11 @@ using System.Reflection;
 using System.Globalization;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Drawing.Spreadsheet;
+using BerkeleyEntities;
 
 namespace BSI_InventoryPreProcessor
 {
-    public class ExcelSheet
+    public class ExcelWorkbook
     {
         const string COLUMN_SKU = "SKU";
 
@@ -22,43 +23,57 @@ namespace BSI_InventoryPreProcessor
         private Dictionary<string, string> _colHeadersToRefs = new Dictionary<string, string>();
         private Dictionary<string, string> _colRefsToHeaders = new Dictionary<string, string>();
         private Dictionary<string, PropertyInfo> _colRefsToProp = new Dictionary<string, PropertyInfo>();
-        private Dictionary<string, uint> _colRefsToStyle = new Dictionary<string, uint>();
 
 
-        public ExcelSheet(string path)
+        public ExcelWorkbook(string path)
         {
             this.Path = path;
+            this.Entries = new Dictionary<string, List<Entry>>();
         }
 
         public string Path { get; set; }
 
-        public List<EbayEntry> ReadEbayEntries()
+        public void FetchEntries()
         {
-            List<EbayEntry> entries = new List<EbayEntry>();
-
             using (SpreadsheetDocument document = SpreadsheetDocument.Open(this.Path, true))
+            using(berkeleyEntities dataContext = new berkeleyEntities())
             {
-                Initialize(document);
+                _stringTablePart = document.WorkbookPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault();
 
-                var rows = _workSheetPart.Worksheet
-                    .Descendants<Cell>()
-                    .Where(c => string.Compare(ParseColRefs(c.CellReference.Value), _colHeadersToRefs[COLUMN_SKU], true) == 0 && !string.IsNullOrWhiteSpace(GetCellValue(c)))
-                    .Select(p => p.Parent).Cast<Row>().Where(p => p.RowIndex != 1);
-
-                foreach (Row row in rows)
+                foreach (Sheet sheet in document.WorkbookPart.Workbook.Sheets)
                 {
-                    entries.Add(CreateEntry(row));
+                    _workSheetPart = document.WorkbookPart.GetPartById(sheet.Id) as WorksheetPart;
+                    
+                    string marketplaceCode = sheet.Name.Value.ToUpper().Trim();
+
+                    if (dataContext.EbayMarketplaces.Any(p => p.Code.Equals(marketplaceCode)) || dataContext.AmznMarketplaces.Any(p => p.Code.Equals(marketplaceCode)))
+                    {
+                        RegisterColumns();
+
+                        var rows = _workSheetPart.Worksheet.Descendants<Cell>().Where(c => 
+                            string.Compare(ParseColRefs(c.CellReference.Value), _colHeadersToRefs[COLUMN_SKU], true) == 0 && 
+                            !string.IsNullOrWhiteSpace(GetCellValue(c))
+                            ).Select(p => p.Parent).Cast<Row>().Where(p => p.RowIndex != 1).ToList();
+
+                        List<Entry> entries = new List<Entry>();
+
+                        foreach (Row row in rows)
+                        {
+                            entries.Add(CreateEntry(row));
+                        }
+                        Entries.Add(marketplaceCode, entries);
+                    }
                 }
 
                 document.Close();
             }
-
-            return entries;
         }
 
-        private EbayEntry CreateEntry(Row row)
+        public Dictionary<string, List<Entry>> Entries { get; set; }
+
+        private Entry CreateEntry(Row row)
         {
-            EbayEntry entry = new EbayEntry();
+            Entry entry = new Entry();
             entry.RowIndex = row.RowIndex.Value;
 
             foreach (Cell cell in row.OfType<Cell>())
@@ -87,39 +102,13 @@ namespace BSI_InventoryPreProcessor
             return entry;
         }
 
-        private void Initialize(SpreadsheetDocument doc)
+        private void RegisterColumns()
         {
-            WorkbookPart wbPart = doc.WorkbookPart;
-            Sheet sheet = doc.WorkbookPart.Workbook.Sheets.GetFirstChild<Sheet>();
+            Row headerRow = _workSheetPart.Worksheet.Descendants<Row>().Single(p => p.RowIndex == 1);
 
-            _workSheetPart = wbPart.GetPartById(sheet.Id) as WorksheetPart;
-            _stringTablePart = wbPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault();
-
-            this.RegisterColumns(_workSheetPart.Worksheet.Descendants<Row>().Single(p => p.RowIndex == 1));
-
-            Row sampleRow = _workSheetPart.Worksheet.Descendants<Row>().Single(p => p.RowIndex == 2);
-
-            foreach (Cell cell in sampleRow.Elements<Cell>())
-            {
-                string colRef = this.ParseColRefs(cell.CellReference.Value);
-                _colRefsToStyle.Add(colRef, cell.StyleIndex != null ? cell.StyleIndex.Value : 0);
-            }
-
-        }
-
-        private void RegisterColumns(Row headerRow)
-        {
             _colRefsToHeaders.Clear();
             _colHeadersToRefs.Clear();
             _colRefsToProp.Clear();
-            _colRefsToStyle.Clear();
-
-            //var targetCols = new List<string>()
-            //{
-            //    COLUMN_MARKETPLACE, COLUMN_PRICE, COLUMN_TYPE, COLUMN_QTY, COLUMN_TITLE,
-            //    COLUMN_QTYAVAIL, COLUMN_STATUS, COLUMN_CONDITION, COLUMN_LISTINGID,
-            //    COLUMN_BRAND, COLUMN_COST, COLUMN_SKU, COLUMN_ONHAND
-            //};
 
             foreach (Cell cell in headerRow.OfType<Cell>())
             {

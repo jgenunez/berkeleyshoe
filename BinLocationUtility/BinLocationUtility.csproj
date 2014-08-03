@@ -60,7 +60,7 @@
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -127,7 +127,6 @@
       <DependentUpon>ScanForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="App.Config" />
-    <None Include="LocationApp_TemporaryKey.pfx" />
     <None Include="Properties\DataSources\Product.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

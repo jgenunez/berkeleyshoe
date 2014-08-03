@@ -79,15 +79,11 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="berkeleyDataSet.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>berkeleyDataSet.xsd</DependentUpon>
-    </Compile>
     <Compile Include="EbayPublisher.cs" />
-    <Compile Include="ExcelSheet.cs" />
+    <Compile Include="ExcelWorkbook.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -100,7 +96,7 @@
     <Compile Include="frmEbayPageSize.Designer.cs">
       <DependentUpon>frmEbayPageSize.cs</DependentUpon>
     </Compile>
-    <Compile Include="EbayEntry.cs" />
+    <Compile Include="Entry.cs" />
     <Compile Include="ItemMarketplace.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -121,17 +117,6 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="app.config" />
-    <None Include="berkeleyDataSet.xsc">
-      <DependentUpon>berkeleyDataSet.xsd</DependentUpon>
-    </None>
-    <None Include="berkeleyDataSet.xsd">
-      <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>berkeleyDataSet.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="berkeleyDataSet.xss">
-      <DependentUpon>berkeleyDataSet.xsd</DependentUpon>
-    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

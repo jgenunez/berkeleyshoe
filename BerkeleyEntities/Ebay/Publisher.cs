@@ -11,8 +11,9 @@ using eBay.Service.Core.Sdk;
 using EbayServices.Mappers;
 using EbayServices.Services;
 using System.Xml;
+using System.Data;
 
-namespace EbayServices
+namespace BerkeleyEntities.Ebay
 {
     public class Publisher
     {
@@ -26,8 +27,41 @@ namespace EbayServices
         {
             _marketplace = marketplace;
             _dataContext = dataContext;
+
             _listingSyncService = new ListingSyncService(marketplace.ID);
             _listingMapper = new ListingMapper(_dataContext, _marketplace);
+        }
+
+        public void SaveChanges()
+        {
+            var modified = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Modified).Select(p => p.Entity).OfType<EbayListing>();
+            var created = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added).Select(p => p.Entity).OfType<EbayListing>();
+
+            foreach (var listing in created)
+            {
+                try
+                {
+                    PublishListing(listing);
+                }
+                catch (Exception e)
+                {
+                    _dataContext.Detach(listing);
+                }
+            }
+
+            foreach (var listing in modified)
+            {
+                try
+                {
+                    ReviseListing(listing);
+                }
+                catch (Exception e)
+                {
+                    _dataContext.Detach(listing);
+                }
+            }
+
+            _dataContext.SaveChanges();
         }
 
         public void EndListing(string code)
@@ -69,7 +103,6 @@ namespace EbayServices
                 listing.StartTime = response.StartTime;
                 listing.EndTime = response.EndTime;
                 listing.Status = "Active";
-                _dataContext.SaveChanges();
             }
             else
             {
@@ -83,7 +116,6 @@ namespace EbayServices
                 listing.StartTime = response.StartTime;
                 listing.EndTime = response.EndTime;
                 listing.Status = "Active";
-                _dataContext.SaveChanges();
             }
         }
 
@@ -94,11 +126,9 @@ namespace EbayServices
                 ReviseFixedPriceItemRequestType request = new ReviseFixedPriceItemRequestType();
                 request.Item = _listingMapper.Map(listing);
 
-                
                 ReviseFixedPriceItemCall call = new ReviseFixedPriceItemCall(_marketplace.GetApiContext());
                 ReviseFixedPriceItemResponseType response = call.ExecuteRequest(request) as ReviseFixedPriceItemResponseType;
                 listing.LastSyncTime = DateTime.UtcNow;
-                _dataContext.SaveChanges();
                 
             }
             else
@@ -110,7 +140,6 @@ namespace EbayServices
                 ReviseItemCall call = new ReviseItemCall(_marketplace.GetApiContext());
                 ReviseItemResponseType response = call.ExecuteRequest(request) as ReviseItemResponseType;
                 listing.LastSyncTime = DateTime.UtcNow;
-                _dataContext.SaveChanges();
                 
             }
         }

@@ -18,7 +18,6 @@ using System.Data;
 using System.Data.Sql;
 using System.Data.SqlClient;
 
-using Excel = Microsoft.Office.Interop.Excel;
 
 using System.Net;
 using System.Net.Security;
@@ -26,178 +25,63 @@ using System.Security.Cryptography.X509Certificates;
 using EbayServices;
 using AmazonServices;
 using BerkeleyEntities;
-using BSI_InventoryPreProcessor.berkeleyDataSetTableAdapters;
+
 
 
 namespace BSI_InventoryPreProcessor
 {
     public partial class Form1 : Form
     {
-        public bool DEBUG_MODE = false;
-        public const int POSTING_STATUS_ACTIVE   = 0;
-        public const int POSTING_STATUS_READY2PUBLISH = 10;
-        public const int POSTING_STATUS_BLOCKED  = 100;
 
-        public const int QUANTITY_RECORD_TYPE_POSTING = 0;
-        public const int QUANTITY_RECORD_TYPE_VARIATION = 10;
-
-        public const int VARIATIONS_NONE = 0;
-        public const int VARIATIONS_SIZE = 1;
-        public const int VARIATIONS_WIDTH = 2;
-        public const int VARIATIONS_COLOR = 4;
-
-        public static string EXCEL_COLUMN_INITIAL = "A";
-        public static string EXCEL_COLUMN_FINAL = "AQ";
-
-        public static int EXCEL_INTCOLUMN_PO = 1;
-        public static int EXCEL_INTCOLUMN_LISTUSER = 2;
-
-        public static int EXCEL_INTCOLUMN_BRAND = 3;
-        public static int EXCEL_INTCOLUMN_SKU = 4;
-        public static int EXCEL_INTCOLUMN_LOOKUPCODE = 5;
-        public static int EXCEL_INTCOLUMN_SIZE = 6;
-        public static int EXCEL_INTCOLUMN_WIDTH = 7;
-        public static int EXCEL_INTCOLUMN_CONDITION = 8;
-        public static int EXCEL_INTCOLUMN_CATEGORY = 9;
-        public static int EXCEL_INTCOLUMN_STYLE = 10;
-        public static int EXCEL_INTCOLUMN_TITLE = 11;
-        public static int EXCEL_INTCOLUMN_COUNT = 12;
-        public static int EXCEL_INTCOLUMN_FULLD = 13;
-        public static int EXCEL_INTCOLUMN_KEYWORDS = 14;
-        public static int EXCEL_INTCOLUMN_MATERIAL = 15;
-        public static int EXCEL_INTCOLUMN_COLOR = 16;
-        public static int EXCEL_INTCOLUMN_SHADE = 17;
-        public static int EXCEL_INTCOLUMN_HEEL = 18;
-        public static int EXCEL_INTCOLUMN_RMSDESCRIPTION = 19;
-        public static int EXCEL_INTCOLUMN_GENDER = 20;
-        public static int EXCEL_INTCOLUMN_RECEIVED = 21;
-        public static int EXCEL_INTCOLUMN_COST = 22;
-        public static int EXCEL_INTCOLUMN_UPC = 23;
-
-        // 2013-Jan-02: New posting sheet format with a single qty/price
-        public static int EXCEL_INTCOLUMN_QUANTITY = 24;
-        public static int EXCEL_INTCOLUMN_PRICE = 25;
-
-        public static int EXCEL_INTCOLUMN_SELLINGFORMAT = 26; // 37;
-        public static int EXCEL_INTCOLUMN_STARTDATE = 27; // 38;
-
-        // Previous format with store info per store 2013-01-02
-        public static int EXCEL_INTCOLUMN_MSRP = 19; 
-        public static int EXCEL_INTCOLUMN_QTY_AMAZON = 25;
-        public static int EXCEL_INTCOLUMN_QTY_HARVARD = 26;
-        public static int EXCEL_INTCOLUMN_QTY_MECALZO = 27;
-        public static int EXCEL_INTCOLUMN_QTY_1MS = 28;
-        public static int EXCEL_INTCOLUMN_QTY_PAS = 29;
-        public static int EXCEL_INTCOLUMN_QTY_SA = 30;
-
-        public static int EXCEL_INTCOLUMN_PRICE_AMAZON = 31;
-        public static int EXCEL_INTCOLUMN_PRICE_HARVARD = 32;
-        public static int EXCEL_INTCOLUMN_PRICE_MECALZO = 33;
-        public static int EXCEL_INTCOLUMN_PRICE_1MS = 34;
-        public static int EXCEL_INTCOLUMN_PRICE_PAS = 35;
-        public static int EXCEL_INTCOLUMN_PRICE_SA = 36;
-
-        //private static ApiContext apiContext = null;
-        private string _descriptionHeader, _descriptionFooter, lorginalpathfile, lpicturespath;
-
-        public static int EBAY_STARTINGINDEX = 2;
-        public static int WEB_STARTINGINDEX = 6;
-
-        private uint[] MarketPlaces = { ItemMarketplace.MARKETPLACE_AMAZON, 
-                                        ItemMarketplace.MARKETPLACE_AMAZON_HARVARD, 
-                                        ItemMarketplace.MARKETPLACE_EBAY_MECALZO,
-                                        ItemMarketplace.MARKETPLACE_EBAY_1MS,
-                                        ItemMarketplace.MARKETPLACE_EBAY_PAS,
-                                        ItemMarketplace.MARKETPLACE_EBAY_SA,
-                                        ItemMarketplace.MARKETPLACE_WEB_SF };
-
-        //Boolean lstop;
-
-        int gCurrentMarketplace = 0;
-
-        List<EbayEntry> _entries;
-        List<EbayEntry> _errors;
-        List<EbayEntry> _completed;
-
-        // Products on the marketplaces. Each element is a marketplace
-        //List<ItemType>[] itemsOnline = new List<ItemType>[12];
+        List<Entry> _entries;
+        List<Entry> _errors;
+        List<Entry> _completed;
 
         private EbayMarketplace _marketplace;
 
         public Form1()
         {
             InitializeComponent();            
-        }  // public Form1()
+        } 
 
         private void btnStart_Click(object sender, EventArgs e)
         {
             if (String.IsNullOrEmpty(txtOriginalFile.Text.Trim()))
             {
-                MessageBox.Show("Please select the original Excel file with the inventory to add");
+                MessageBox.Show("No selection made ! ");
                 txtOriginalFile.Focus();
                 return;
             }
 
-            if (String.IsNullOrEmpty(txtPicturesPath.Text.Trim()))
-            {
-                MessageBox.Show("Please specify the path where the pictures are stored");
-                txtPicturesPath.Focus();
-                return;
-            }
-
-            if (MessageBox.Show("ABOUT TO PUBLISH PRODUCTS FOR \r\n\r\n" + cmbMarkets.Text + "\r\n\r\nREADY TO PROCEED?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == System.Windows.Forms.DialogResult.No)
-                return;
-
-            // Everything is okay to go
-            lorginalpathfile = txtOriginalFile.Text.Trim();
-            lpicturespath = txtPicturesPath.Text.Trim();
-
             btnStart.Enabled = false;
 
-            _entries = new List<EbayEntry>();
-            _errors = new List<EbayEntry>();
-            _completed = new List<EbayEntry>();
+            string path = txtOriginalFile.Text.Trim();
 
-            currentMarketPlace = ldsMarkets[cmbMarkets.SelectedIndex];
+            ExcelWorkbook workbook = new ExcelWorkbook(path);
 
-            ReadExcelEntries(lorginalpathfile);
+            workbook.FetchEntries();
 
-            CheckAvailablePictures();
-
-            //if (cmbMarkets.SelectedIndex >= EBAY_STARTINGINDEX && cmbMarkets.SelectedIndex < WEB_STARTINGINDEX)
-            //{
-            //    UpdateMarketplaces();
-            //}
-
-            PublishProducts();
-
-            MessageBox.Show("Preprocessor finished with " + _errors.Count.ToString()  + " Errors");
-
-            txtStatus.AppendText("\n\n");
-
-            if (_errors.Count > 0)
+            using (berkeleyEntities dataContext = new berkeleyEntities())
             {
-                txtStatus.AppendText("--------------- ERRORS -----------------\n\n");
-            }
-
-            foreach (EbayEntry excelItem in _errors)
-            {
-               
-                if(excelItem.Variation == EbayEntry.ITEM_TYPE_PARENT)
+                foreach (string marketplaceCode in workbook.Entries.Keys)
                 {
-                    txtStatus.AppendText(excelItem.SKU + "  Error:" + excelItem.Result + "\n");
-                    txtStatus.AppendText("\t" + excelItem.ItemLookupCode + " Row: " + excelItem.Row);
-                }
-                else
-                {
+                    if (dataContext.EbayMarketplaces.Any(p => p.Code.Equals(marketplaceCode)))
+                    {
+                        EbayPublisher publisher = new EbayPublisher(dataContext.EbayMarketplaces.Single(p => p.Code.Equals(marketplaceCode)).ID);
 
-                    txtStatus.AppendText(excelItem.ItemLookupCode + " Error:"+excelItem.Result + " Row:" + excelItem.Row);
-                }
+                        publisher.Publish(workbook.Entries[marketplaceCode]);
 
-                txtStatus.AppendText("\n");
+                    }
+                    else if(dataContext.AmznMarketplaces.Any(p => p.Code.Equals(marketplaceCode)))
+                    {
+
+                    }
+
+                }
             }
 
             
+
         } 
 
 
@@ -278,7 +162,7 @@ namespace BSI_InventoryPreProcessor
 
             currentMarketPlace = ldsMarkets[cmbMarkets.SelectedIndex];
 
-            List<EbayEntry> items = new List<EbayEntry>();
+            List<Entry> items = new List<Entry>();
 
             bool stop = false;
             int currentRow = 2;
@@ -298,7 +182,7 @@ namespace BSI_InventoryPreProcessor
                     }
                     catch (Exception)
                     {
-                        _errors.Add( new EbayEntry() {  ItemLookupCode = Convert.ToString(row.GetValue(1, EXCEL_INTCOLUMN_LOOKUPCODE)), Result = "Unable to read row" } );
+                        _errors.Add( new Entry() {  Sku = Convert.ToString(row.GetValue(1, EXCEL_INTCOLUMN_LOOKUPCODE)), Result = "Unable to read row" } );
                     }
                 }
                 else
@@ -315,14 +199,14 @@ namespace BSI_InventoryPreProcessor
             releaseObject(theWorkbook);
             releaseObject(excelApp);
 
-            var variations = items.Where(p => p.SellingFormat.Equals("GTC") || p.SellingFormat.Equals("BIN")).GroupBy(p => p.SKU);
-            var auctions = items.Where(p => p.SellingFormat.Contains("A"));
+            var variations = items.Where(p => p.Format.Equals("GTC") || p.Format.Equals("BIN")).GroupBy(p => p.ClassName);
+            var auctions = items.Where(p => p.Format.Contains("A"));
 
             foreach (var variation in variations)
             {
                 if (variation.Count() > 1)
                 {
-                    EbayEntry parent = variation.First();
+                    Entry parent = variation.First();
                     parent.Items.AddRange(variation.ToList());
 
                     _entries.Add(parent);
@@ -338,11 +222,11 @@ namespace BSI_InventoryPreProcessor
 
         }
 
-        private EbayEntry CreateEntry(System.Array row, string currentRow)
+        private Entry CreateEntry(System.Array row, string currentRow)
         {
-            EbayEntry excelItem = new EbayEntry();
+            Entry excelItem = new Entry();
             excelItem.Row = currentRow;
-            excelItem.SKU = row.GetValue(1, EXCEL_INTCOLUMN_SKU).ToString();
+            excelItem.ClassName = row.GetValue(1, EXCEL_INTCOLUMN_SKU).ToString();
             excelItem.Alias = Convert.ToString(row.GetValue(1, EXCEL_INTCOLUMN_UPC)).Trim();
             excelItem.Brand = Convert.ToString(row.GetValue(1, EXCEL_INTCOLUMN_BRAND)).Trim();
             excelItem.Condition = Convert.ToString(row.GetValue(1, EXCEL_INTCOLUMN_CONDITION)).ToUpper().Trim();
@@ -363,8 +247,8 @@ namespace BSI_InventoryPreProcessor
             excelItem.Size = Convert.ToString(row.GetValue(1, EXCEL_INTCOLUMN_SIZE));
             excelItem.Width = Convert.ToString(row.GetValue(1, EXCEL_INTCOLUMN_WIDTH));
             excelItem.Style = properNameString(Convert.ToString(row.GetValue(1, EXCEL_INTCOLUMN_STYLE))).Trim();
-            excelItem.SellingFormat = Convert.ToString(row.GetValue(1, EXCEL_INTCOLUMN_SELLINGFORMAT)).ToUpper().Trim();
-            excelItem.ItemLookupCode = Convert.ToString(row.GetValue(1, EXCEL_INTCOLUMN_LOOKUPCODE));
+            excelItem.Format = Convert.ToString(row.GetValue(1, EXCEL_INTCOLUMN_SELLINGFORMAT)).ToUpper().Trim();
+            excelItem.Sku = Convert.ToString(row.GetValue(1, EXCEL_INTCOLUMN_LOOKUPCODE));
             excelItem.Title = Convert.ToString(row.GetValue(1, EXCEL_INTCOLUMN_TITLE));
             excelItem.purchaseOrder = Convert.ToString(row.GetValue(1, EXCEL_INTCOLUMN_PO));
             excelItem.listUser = Convert.ToString(row.GetValue(1, EXCEL_INTCOLUMN_LISTUSER));
@@ -384,7 +268,7 @@ namespace BSI_InventoryPreProcessor
                 excelItem.StartDate = excelItem.StartDate.ToUniversalTime(); // Add 7 hours to convert from PDT to GMT
             };
 
-            switch (excelItem.SellingFormat)
+            switch (excelItem.Format)
             {
                 case "A": excelItem.EndDate = excelItem.StartDate.AddDays(7); break;
                 case "A1": excelItem.EndDate = excelItem.StartDate.AddDays(1); break;
@@ -405,7 +289,7 @@ namespace BSI_InventoryPreProcessor
 
             bool lflag = true;
 
-            foreach (EbayEntry lxi in _entries)
+            foreach (Entry lxi in _entries)
             {
                 try
                 {
@@ -413,7 +297,7 @@ namespace BSI_InventoryPreProcessor
                     String lpath = this.txtPicturesPath.Text + '\\' + lxi.Brand;
 
                     ldi = new DirectoryInfo(lpath);
-                    ldirEntries = ldi.GetFiles(lxi.SKU + "*.jpg");
+                    ldirEntries = ldi.GetFiles(lxi.ClassName + "*.jpg");
                     foreach (FileInfo lfi in ldirEntries)
                     {
                         byte[] lfilecontents = File.ReadAllBytes(lfi.FullName);
@@ -433,7 +317,7 @@ namespace BSI_InventoryPreProcessor
                         _errors.Add(lxi);
                     }
 
-                    txtStatus.Text = "Style " + lxi.ItemLookupCode + " has " + lxi.Pictures.Count + " pictures\r\n" + txtStatus.Text;
+                    txtStatus.Text = "Style " + lxi.Sku + " has " + lxi.Pictures.Count + " pictures\r\n" + txtStatus.Text;
                     txtStatus.Update();
                 }
                 catch (Exception e)
@@ -457,7 +341,7 @@ namespace BSI_InventoryPreProcessor
         // ------------------------------------------ Service methods
 
         // Sort method for 2 items: by brand
-        private int sortItems(EbayEntry p1, EbayEntry p2)
+        private int sortItems(Entry p1, Entry p2)
         {
             int lres = 0;
 
@@ -465,7 +349,7 @@ namespace BSI_InventoryPreProcessor
             return lres;
         } // sortItems
 
-        int sortBySize(EbayEntry p1, EbayEntry p2)
+        int sortBySize(Entry p1, Entry p2)
         {
             float lsize1, lsize2;
             int lres = 0;
@@ -625,7 +509,7 @@ namespace BSI_InventoryPreProcessor
 
                     //txtStatus.Text = "Publishing products for " + currentMarketPlace.name + "\r\n" + txtStatus.Text;
                     txtStatus.Update();
-                    foreach (EbayEntry xlProduct in _entries)
+                    foreach (Entry xlProduct in _entries)
                     {
                         //if ((xlProduct.MarketPlaces & currentMarketPlace.maskId) == 0) continue; // Skip items that do not belong to this marketplace
                         if (!xlProduct.IsValid && !this.chkPublishWOPics.Checked ) continue;
@@ -636,7 +520,7 @@ namespace BSI_InventoryPreProcessor
                         
 
                         txtStatus.Text = "Publishing " + xlProduct.Title + " [" + 
-                                         xlProduct.ItemLookupCode + " | " + xlProduct.SellingFormat + 
+                                         xlProduct.Sku + " | " + xlProduct.Format + 
                                          "]\r\n" + txtStatus.Text;
                         txtStatus.Update();
 
@@ -664,7 +548,7 @@ namespace BSI_InventoryPreProcessor
 
                             if (!DEBUG_MODE && (currentMarketPlace.maskId > 8 && currentMarketPlace.maskId < 512)  ) // Publish only those who '8 < mask id < 512' (Not Amazons, nor websites)
                             {
-                                if (xlProduct.SellingFormat == "A" || xlProduct.Items.Count == 0)
+                                if (xlProduct.Format == "A" || xlProduct.Items.Count == 0)
                                 {
                                     VerifyAddItemCall api_AUCTION_Call = new VerifyAddItemCall(apiContext);
                                     fees = api_AUCTION_Call.VerifyAddItem(lproduct);
@@ -691,7 +575,7 @@ namespace BSI_InventoryPreProcessor
 
                             // Let's see if the posting already exists, if not save this posting. Later we'll save the pictures
                             String lpostingID = null;
-                            SqlCommand lcmd = new SqlCommand("SELECT * FROM bsi_posting WHERE sku='" + xlProduct.SKU + "'", lconn);
+                            SqlCommand lcmd = new SqlCommand("SELECT * FROM bsi_posting WHERE sku='" + xlProduct.ClassName + "'", lconn);
                             SqlDataReader ldr = lcmd.ExecuteReader();
                             if (ldr.Read())
                             {
@@ -720,7 +604,7 @@ namespace BSI_InventoryPreProcessor
                             }
 
                             if ( lpostingID == null )
-                               lpostingID = lda.InsertQuery(POSTING_STATUS_ACTIVE, xlProduct.SKU, DateTime.Now,
+                               lpostingID = lda.InsertQuery(POSTING_STATUS_ACTIVE, xlProduct.ClassName, DateTime.Now,
                                        "", xlProduct.Gender, xlProduct.Brand,
                                        xlProduct.Size, xlProduct.Width, xlProduct.Condition, xlProduct.Category, xlProduct.Style, xlProduct.FullDescription,
                                        xlProduct.Keywords, xlProduct.Material, xlProduct.Color, xlProduct.Shade, xlProduct.HeelHeight, 
@@ -744,7 +628,7 @@ namespace BSI_InventoryPreProcessor
                                             if (lprice == 0)
                                             {
                                                 // The item was created without price, use the price of the first sibling
-                                                foreach (EbayEntry lixl in xlProduct.Items)
+                                                foreach (Entry lixl in xlProduct.Items)
                                                 {
                                                     //if (lixl.getPriceForMarketplace(lx) > 0) 2013-01-02
                                                     if (lixl.Price > 0)
@@ -757,24 +641,24 @@ namespace BSI_InventoryPreProcessor
                                             }
 
                                             String lpostID = lposts_da.InsertQuery(Int32.Parse(lpostingID), li,
-                                                             "", POSTING_STATUS_READY2PUBLISH, xlProduct.SKU,
+                                                             "", POSTING_STATUS_READY2PUBLISH, xlProduct.ClassName,
                                                              xlProduct.Title,
                                                              lprice.ToString(),
                                                              xlProduct.StartDate, xlProduct.EndDate,
-                                                             xlProduct.SellingFormat, 
+                                                             xlProduct.Format, 
                                                              "", "", "", "", "", "", "",
                                                              xlProduct.purchaseOrder,
                                                              xlProduct.listUser).ToString();
 
                                             // Now, let's create the quantities
-                                            foreach (EbayEntry liex in xlProduct.Items)
+                                            foreach (Entry liex in xlProduct.Items)
                                             {
                                                 // We need the item ID of the product
                                                 // if (liex.getQuantityForMarketplace(lx) > 0) 2013-01-02
                                                 if (liex.Quantity > 0)
                                                 {
                                                     litemID = -1;
-                                                    lcmd = new SqlCommand("SELECT ID,ItemLookupCode FROM item WHERE ItemLookupCode='" + liex.ItemLookupCode + "'", lconn);
+                                                    lcmd = new SqlCommand("SELECT ID,ItemLookupCode FROM item WHERE ItemLookupCode='" + liex.Sku + "'", lconn);
                                                     ldr = lcmd.ExecuteReader();
                                                     if (ldr.Read())
                                                     {
@@ -785,7 +669,7 @@ namespace BSI_InventoryPreProcessor
 
                                                     // Create the quantity
                                                     lqtys_da.Insert(int.Parse(lpostID), litemID,
-                                                                    liex.ItemLookupCode, liex.Title,
+                                                                    liex.Sku, liex.Title,
                                                                     liex.Size, liex.Width, liex.Color,
                                                                     /*liex.getQuantityForMarketplace(lx),
                                                                     liex.getPriceForMarketplace(lx), 2013-01-02*/
@@ -811,18 +695,18 @@ namespace BSI_InventoryPreProcessor
                                         // Create the post in the marketplace
                                         String lpostID = lposts_da.InsertQuery(Int32.Parse(lpostingID), li,
                                                                                "", POSTING_STATUS_READY2PUBLISH, 
-                                                                               xlProduct.SKU, xlProduct.Title,
+                                                                               xlProduct.ClassName, xlProduct.Title,
                                                                                /*xlProduct.getPriceForMarketplace(lx).ToString(), 2013-01-02*/
                                                                                xlProduct.Price.ToString(),
                                                                                xlProduct.StartDate, xlProduct.EndDate,
-                                                                               xlProduct.SellingFormat,
+                                                                               xlProduct.Format,
                                                                                "", "", "", "", "", "", "",
                                                                                xlProduct.purchaseOrder,
                                                                                xlProduct.listUser).ToString();
 
                                         // We need the item ID of the product
                                         litemID = -1;
-                                        lcmd = new SqlCommand("SELECT ID,ItemLookupCode FROM item WHERE ItemLookupCode='" + xlProduct.ItemLookupCode + "'", lconn);
+                                        lcmd = new SqlCommand("SELECT ID,ItemLookupCode FROM item WHERE ItemLookupCode='" + xlProduct.Sku + "'", lconn);
                                         ldr = lcmd.ExecuteReader();
                                         if (ldr.Read())
                                         {
@@ -833,7 +717,7 @@ namespace BSI_InventoryPreProcessor
 
                                         // Create the quantity
                                         lqtys_da.Insert(int.Parse(lpostID), litemID, 
-                                                        xlProduct.ItemLookupCode, xlProduct.Title,
+                                                        xlProduct.Sku, xlProduct.Title,
                                                         xlProduct.Size, xlProduct.Width, xlProduct.Color,
                                                         /*xlProduct.getQuantityForMarketplace(lx),
                                                         xlProduct.getPriceForMarketplace(lx),*/
@@ -904,7 +788,7 @@ namespace BSI_InventoryPreProcessor
         {
             berkeleyEntities dataContext = new berkeleyEntities();
 
-            foreach (EbayEntry entry in _entries.Where(p => p.IsValid))
+            foreach (Entry entry in _entries.Where(p => p.IsValid))
             {
 
 
@@ -914,7 +798,7 @@ namespace BSI_InventoryPreProcessor
                     entry.Title = removeSize(entry.Title);
 
                     EbayListing listing = dataContext.EbayListings
-                        .SingleOrDefault(p => p.Sku.Equals(entry.SKU) && p.Marketplace.ID == _marketplace.ID && p.Status.Equals("Active"));
+                        .SingleOrDefault(p => p.Sku.Equals(entry.ClassName) && p.Marketplace.ID == _marketplace.ID && p.Status.Equals("Active"));
 
                     if (listing == null)
                     {
@@ -946,7 +830,7 @@ namespace BSI_InventoryPreProcessor
 
                 if ((currentMarketPlace.maskId > 8 && currentMarketPlace.maskId < 512)) // Publish only those who '8 < mask id < 512' (Not Amazons, nor websites)
                 {
-                    if (entry.SellingFormat == "A" || entry.Items.Count == 0)
+                    if (entry.Format == "A" || entry.Items.Count == 0)
                     {
                         VerifyAddItemCall api_AUCTION_Call = new VerifyAddItemCall(apiContext);
                         api_AUCTION_Call.VerifyAddItem(listingDto);
@@ -1126,7 +1010,7 @@ namespace BSI_InventoryPreProcessor
             return lreturn;
         } // deleteItemOnEbay
 
-        bool isTheProductOnWebsite(EbayEntry lix)
+        bool isTheProductOnWebsite(Entry lix)
         {
             bool lreturn = true;
 
@@ -1139,7 +1023,7 @@ namespace BSI_InventoryPreProcessor
                                    "theQ.postid,theQ.itemlookupcode,theQ.Title,theQ.size,theQ.width,theQ.quantity " +
                                    "FROM bsi_posts as thePost, " +
                                    "bsi_quantities as theQ " +
-                                   "where theQ.postid=thePost.id and thePost.sku='" + lix.SKU +
+                                   "where theQ.postid=thePost.id and thePost.sku='" + lix.ClassName +
                                    "' AND thePost.marketplace=512 AND (thePost.status=0 OR thePost.status=10)";
                     SqlCommand lc = new SqlCommand(lcmdS, lconn);
                     lc.Connection = lconn;
@@ -1149,12 +1033,12 @@ namespace BSI_InventoryPreProcessor
                     {
                         // We need to create at least one item
                         String lpostid = lr["id"].ToString().Trim();
-                        EbayEntry laux = new EbayEntry();
+                        Entry laux = new Entry();
                         laux.copyNewItem(lix);
                         do
                         {
-                            EbayEntry ltempxl = new EbayEntry(laux);
-                            ltempxl.ItemLookupCode = lr["itemlookupcode"].ToString().Trim();
+                            Entry ltempxl = new Entry(laux);
+                            ltempxl.Sku = lr["itemlookupcode"].ToString().Trim();
                             ltempxl.Title = lr["Title"].ToString().Trim();
                             ltempxl.Size = lr["Size"].ToString().Trim();
                             ltempxl.Width = lr["Width"].ToString().Trim();
@@ -1177,7 +1061,7 @@ namespace BSI_InventoryPreProcessor
                         // Now combine both items... but first check if this item is single...
                         if ((lix.Items == null || lix.Items.Count < 1)) // If so, then we need to make it father w/1 child
                         {
-                            EbayEntry ltempxl = new EbayEntry();
+                            Entry ltempxl = new Entry();
                             if (lix.Items.Count > 0)
                                 ltempxl.copyNewItem(lix.Items[0]); // Copy from the first item
                             else
@@ -1188,11 +1072,11 @@ namespace BSI_InventoryPreProcessor
                             lix.Items.Add(ltempxl);
                         }
 
-                        foreach (EbayEntry lax in laux.Items)
+                        foreach (Entry lax in laux.Items)
                         {
-                            EbayEntry lu = lix.Items.Find(delegate(EbayEntry pi)
+                            Entry lu = lix.Items.Find(delegate(Entry pi)
                             {
-                                return pi.ItemLookupCode == lax.ItemLookupCode;
+                                return pi.Sku == lax.Sku;
                             });
                             if (lu != null)
                             {   /* 2013-01-02
@@ -1219,7 +1103,7 @@ namespace BSI_InventoryPreProcessor
             return lreturn;
         } // isTheProductOnWebsite
 
-        bool isTheProductOnAmazon(EbayEntry lix)
+        bool isTheProductOnAmazon(Entry lix)
         {
             bool lreturn = true;
             int lmarketplace = cmbMarkets.SelectedIndex;
@@ -1233,7 +1117,7 @@ namespace BSI_InventoryPreProcessor
                                    "theQ.postid,theQ.itemlookupcode,theQ.Title,theQ.size,theQ.width,theQ.quantity " + 
                                    "FROM bsi_posts as thePost, " +
                                    "bsi_quantities as theQ " +
-                                   "where theQ.postid=thePost.id and thePost.sku='" + lix.SKU +
+                                   "where theQ.postid=thePost.id and thePost.sku='" + lix.ClassName +
                                    "' AND thePost.marketplace=1 AND (thePost.status=0 OR thePost.status=10)";
                     SqlCommand lc = new SqlCommand(lcmdS, lconn);
                     lc.Connection = lconn;
@@ -1243,12 +1127,12 @@ namespace BSI_InventoryPreProcessor
                     {
                         // We need to create at least one item
                         String lpostid = lr["id"].ToString().Trim();
-                        EbayEntry laux = new EbayEntry();
+                        Entry laux = new Entry();
                         laux.copyNewItem(lix);
                         do
                         {
-                            EbayEntry ltempxl = new EbayEntry(laux);
-                            ltempxl.ItemLookupCode = lr["itemlookupcode"].ToString().Trim();
+                            Entry ltempxl = new Entry(laux);
+                            ltempxl.Sku = lr["itemlookupcode"].ToString().Trim();
                             ltempxl.Title = lr["Title"].ToString().Trim();
                             ltempxl.Size = lr["Size"].ToString().Trim();
                             ltempxl.Width = lr["Width"].ToString().Trim();
@@ -1271,7 +1155,7 @@ namespace BSI_InventoryPreProcessor
                         // Now combine both items... but first check if this item is single...
                         if ((lix.Items == null || lix.Items.Count < 1)) // If so, then we need to make it father w/1 child
                         {
-                            EbayEntry ltempxl = new EbayEntry();
+                            Entry ltempxl = new Entry();
                             if (lix.Items.Count > 0)
                                 ltempxl.copyNewItem(lix.Items[0]); // Copy from the first item
                             else
@@ -1282,11 +1166,11 @@ namespace BSI_InventoryPreProcessor
                             lix.Items.Add(ltempxl);
                         }
 
-                        foreach (EbayEntry lax in laux.Items)
+                        foreach (Entry lax in laux.Items)
                         {
-                            EbayEntry lu = lix.Items.Find(delegate(EbayEntry pi)
+                            Entry lu = lix.Items.Find(delegate(Entry pi)
                                                {
-                                                   return pi.ItemLookupCode == lax.ItemLookupCode;
+                                                   return pi.Sku == lax.Sku;
                                                });
                             if (lu != null)
                             {   /* 2013-01-02
@@ -1314,7 +1198,7 @@ namespace BSI_InventoryPreProcessor
             return lreturn;
         } // isTheProductOnAmazon
 
-        bool isTheProductOnEbay(EbayEntry lix)
+        bool isTheProductOnEbay(Entry lix)
         {
             bool lreturn = false;
             SqlConnection lconn = null;
@@ -1328,19 +1212,19 @@ namespace BSI_InventoryPreProcessor
                                 Find(
                                       delegate(ItemType pi)
                                       {
-                                          bool lf = pi.SKU == lix.SKU;
+                                          bool lf = pi.SKU == lix.ClassName;
                                           if (!lf)
                                           {
                                               // Maybe we are a parent (SKU w/o size) and this one is a child (SKU w/size)
                                               try
                                               {
                                                   String[] lsplittedsku = pi.SKU.Split(new char[] { '-' });
-                                                  lf = (lix.SKU == lsplittedsku[0]);
+                                                  lf = (lix.ClassName == lsplittedsku[0]);
                                               }
                                               catch (Exception pe)
                                               {
                                                   String lsku = (pi.SKU != null) ? pi.SKU : pi.ItemID;
-                                                  MessageBox.Show("Error searching: " + lix.SKU + " caused by: " + lsku + " - " + pe.ToString());
+                                                  MessageBox.Show("Error searching: " + lix.ClassName + " caused by: " + lsku + " - " + pe.ToString());
                                               }
                                           }
                                           return lf;
@@ -1357,9 +1241,9 @@ namespace BSI_InventoryPreProcessor
             lreturn = true;
 
             // If we found the item on eBay then we need to make our item a father if it is a single product
-            if ((lix.Items == null || lix.Items.Count < 1) && !lix.SellingFormat.Contains('A'))
+            if ((lix.Items == null || lix.Items.Count < 1) && !lix.Format.Contains('A'))
             {
-                EbayEntry ltempxl = new EbayEntry();
+                Entry ltempxl = new Entry();
                 if (lix.Items.Count > 0)
                     ltempxl.copyNewItem(lix.Items[0]); // Copy from the first item
                 else
@@ -1370,16 +1254,16 @@ namespace BSI_InventoryPreProcessor
                 lix.Items.Add(ltempxl);
             }
 
-            switch (lix.SellingFormat)
+            switch (lix.Format)
             {
                 case "A":
                 case "A3":
                 case "A5":
                     // Simply add qty to current item on our DB, nothing else.
 
-                    if (lix.ItemLookupCode == litem.SKU && litem.ListingType == ListingTypeCodeType.Chinese)
+                    if (lix.Sku == litem.SKU && litem.ListingType == ListingTypeCodeType.Chinese)
                     {
-                        txtStatus.Text = "\r\n\r\nWARNING! PLEASE NOTE: eBAY ITEM [" + lix.ItemLookupCode + "] IS ALREADY IN AUCTION. REVIEW AND TRY TO PUBLISH IT AGAIN.\r\n\r\n" + txtStatus.Text;
+                        txtStatus.Text = "\r\n\r\nWARNING! PLEASE NOTE: eBAY ITEM [" + lix.Sku + "] IS ALREADY IN AUCTION. REVIEW AND TRY TO PUBLISH IT AGAIN.\r\n\r\n" + txtStatus.Text;
                     }
 
                     break;
@@ -1417,9 +1301,9 @@ namespace BSI_InventoryPreProcessor
                         {
                             // Let's see if we already have this item
                             lfoundFlag = false;
-                            foreach (EbayEntry lax in lix.Items)
+                            foreach (Entry lax in lix.Items)
                             {
-                                if (lax.ItemLookupCode == litem.SKU.Trim())
+                                if (lax.Sku == litem.SKU.Trim())
                                 {
                                     lfoundFlag = true;
                                     /*int lqx = lax.getQuantityForMarketplace(lmarketplace); 2013-01-02
@@ -1431,14 +1315,14 @@ namespace BSI_InventoryPreProcessor
 
                             if (!lfoundFlag) // Create and add the size
                             {
-                                EbayEntry ltempxl = new EbayEntry();
+                                Entry ltempxl = new Entry();
                                 if (lix.Items.Count > 0)
                                     ltempxl.copyNewItem(lix.Items[0]); // Copy from the first item
                                 else
                                     ltempxl.copyNewItem(lix);
 
                                 // Set the size and width
-                                ltempxl.ItemLookupCode = litem.SKU;
+                                ltempxl.Sku = litem.SKU;
                                 String[] lprodinfo = litem.SKU.Split(new char[] { '-' });
                                 if (lprodinfo.Length > 2)
                                 {
@@ -1464,9 +1348,9 @@ namespace BSI_InventoryPreProcessor
                             foreach (VariationType lnewKidOneBay in litem.Variations.Variation)
                             {
                                 lfoundFlag = false;
-                                foreach (EbayEntry lax in lix.Items)
+                                foreach (Entry lax in lix.Items)
                                 {
-                                    if (lax.ItemLookupCode == lnewKidOneBay.SKU.Trim())
+                                    if (lax.Sku == lnewKidOneBay.SKU.Trim())
                                     {
                                         lfoundFlag = true;
                                         /* 2013-01-02
@@ -1480,7 +1364,7 @@ namespace BSI_InventoryPreProcessor
 
                                 if (!lfoundFlag) // Create the size
                                 {
-                                    EbayEntry ltempxl = new EbayEntry();
+                                    Entry ltempxl = new Entry();
                                     if ( lix.Items != null && lix.Items.Count > 0 )
                                         ltempxl.copyNewItem(lix.Items[0]); // lix.Items[0].clone(); 
                                     else
@@ -1490,7 +1374,7 @@ namespace BSI_InventoryPreProcessor
                                     String[] lprodinfo = lnewKidOneBay.SKU.Split(new char[] { '-' });
                                     if (lprodinfo.Length > 2)
                                     {
-                                        ltempxl.ItemLookupCode = lnewKidOneBay.SKU;
+                                        ltempxl.Sku = lnewKidOneBay.SKU;
                                         ltempxl.Title = (lnewKidOneBay.VariationTitle != null) ? lnewKidOneBay.VariationTitle.Trim() : "";
                                         ltempxl.Size = lprodinfo[1];
                                         ltempxl.Width = lprodinfo[2];
@@ -1533,5 +1417,5 @@ namespace BSI_InventoryPreProcessor
             lf.ShowDialog();
         } // eBayPageSizeToolStripMenuItem_Click
 
-    } // partial class Form1
-} // namespace BSI_InventoryPreProcessor
+    }
+}

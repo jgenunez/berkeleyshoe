@@ -9,7 +9,7 @@ using System.Data;
 using NLog;
 using EbayServices.Services;
 
-namespace EbayServices
+namespace BerkeleyEntities.Ebay.Services
 {
     public class OverpublishedService
     {

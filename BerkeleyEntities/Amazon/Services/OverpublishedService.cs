@@ -5,9 +5,10 @@ using System.Text;
 using BerkeleyEntities;
 using System.Timers;
 using System.Threading;
+using BerkeleyEntities.Amazon;
 using NLog;
 
-namespace AmazonServices
+namespace BerkeleyEntities.Amazon.Services
 {
     public class OverpublishedService
     {

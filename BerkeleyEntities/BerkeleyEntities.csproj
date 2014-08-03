@@ -33,11 +33,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="eBay.Service, Version=3.747.0.0, Culture=neutral, PublicKeyToken=1d9d786a5932eaf0, processorArchitecture=MSIL">
+    <Reference Include="eBay.Service, Version=3.849.0.0, Culture=neutral, PublicKeyToken=1d9d786a5932eaf0, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\LIB\eBay .NET SDK v849 Release\eBay.Service.dll</HintPath>
     </Reference>
-    <Reference Include="eBay.Service.SDK.Attribute, Version=3.747.0.0, Culture=neutral, PublicKeyToken=1d9d786a5932eaf0, processorArchitecture=MSIL">
+    <Reference Include="eBay.Service.SDK.Attribute, Version=3.849.0.0, Culture=neutral, PublicKeyToken=1d9d786a5932eaf0, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\LIB\eBay .NET SDK v849 Release\eBay.Service.SDK.Attribute.dll</HintPath>
     </Reference>
@@ -52,6 +52,9 @@
     <Reference Include="MarketplaceWebServiceProducts, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\LIB\MarketplaceWebServiceProducts\bin\Release\MarketplaceWebServiceProducts.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\LIB\NLog-2.1.0\net40\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

@@ -10,7 +10,7 @@ using System.Xml.Serialization;
 using AmazonServices.Mappers;
 using System.Data;
 
-namespace AmazonServices
+namespace BerkeleyEntities.Amazon
 {
     public class Publisher
     {
