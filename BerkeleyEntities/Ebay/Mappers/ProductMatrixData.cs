@@ -32,7 +32,7 @@ namespace EbayServices.Mappers
 
         public List<NameValueListType> GetVariationSpecificSets()
         {
-            var sets = this._products.SelectMany(p => p.GetVariationSpecifics()).GroupBy(p => p.Name);
+            var sets = _products.SelectMany(p => p.GetVariationSpecifics()).GroupBy(p => p.Name);
 
             List<NameValueListType> variationSpecSets = new List<NameValueListType>();
 
@@ -44,6 +44,11 @@ namespace EbayServices.Mappers
             }
 
             return variationSpecSets;
+        }
+
+        public string GetAttributeValue(string code)
+        {
+            return _products.First(p => p.GetAttributeValue(code) != null).GetAttributeValue(code);
         }
 
         protected NameValueListType BuildItemSpecific(string name, string[] values)

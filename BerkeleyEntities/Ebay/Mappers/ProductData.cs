@@ -25,6 +25,8 @@ namespace EbayServices
 
         public abstract List<NameValueListType> GetVariationSpecifics();
 
+        public abstract List<Attribute> GetMappedAttributes();
+
         protected NameValueListType BuildItemSpecific(string name, string[] values)
         {
             NameValueListType itemSpecific = new NameValueListType();
