@@ -3,26 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace BerkeleyEntities
 {
-    public class PictureSet
-    {
-        public PictureSet()
-        {
-            this.Pictures = new List<PictureInfo>();
-        }
-
-        public string Name { get; set; }
-
-        public List<PictureInfo> Pictures { get; set; }
-    }
 
     public class PictureInfo
     {
         public string Name { get; set; }
-
-        public string VariationAttributeValue { get; set; }
 
         public string Path { get; set; }
 
@@ -34,7 +22,7 @@ namespace BerkeleyEntities
         private string _root = @"P:\products\";
         private Dictionary<string, IEnumerable<string>> _cachedFileNames = new Dictionary<string, IEnumerable<string>>();
 
-        public PictureSet GetPictureSet(string brand, string name)
+        public List<PictureInfo> GetPictures(string brand, List<string> skus)
         {
             string brandRoot = _root + brand + @"\";
 
@@ -43,22 +31,29 @@ namespace BerkeleyEntities
                 throw new NotImplementedException("could not find directory:" + brandRoot);
             }
 
-            PictureSet picSet = new PictureSet();
-            picSet.Name = name;
+            List<PictureInfo> pics = new List<PictureInfo>();
 
-            var targetPaths = GetFileNamesByBrandDir(brandRoot).Where(p => p.Contains(name + "-") || p.Contains(name + "."));
-
-            foreach (string path in targetPaths)
+            foreach (var group in skus.GroupBy(p => p.Split(new Char[1])[0]))
             {
-                PictureInfo picInfo = new PictureInfo();
-                picInfo.Path = path;
-                picInfo.LastModified = File.GetLastWriteTimeUtc(path);
-                picInfo.Name = Path.GetFileName(path).Split(new Char[1] { '.' })[0];
+                var targetPaths = GetFileNamesByBrandDir(brandRoot).Where(p => p.Contains(group.Key + "-") || p.Contains(group.Key + ".") || p.Contains(group.Key + "_"));
+                foreach(string path in targetPaths)
+                {
+                    string picName = Path.GetFileName(path).Split(new Char[1] { '.' })[0];
+                    string pattern = picName.Replace("_","-.*-?");
 
-                picSet.Pictures.Add(picInfo);
+                    if(group.Any(p => Regex.IsMatch(p, pattern)))
+                    {
+                        PictureInfo picInfo = new PictureInfo();
+                        picInfo.Path = path;
+                        picInfo.LastModified = File.GetLastWriteTimeUtc(path);
+                        picInfo.Name = picName;
+
+                        pics.Add(picInfo);
+                    }
+                }
             }
 
-            return picSet;
+            return pics;
         }
 
 

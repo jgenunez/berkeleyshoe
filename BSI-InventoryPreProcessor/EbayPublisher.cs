@@ -16,6 +16,8 @@ namespace BSI_InventoryPreProcessor
         private EbayMarketplace _marketplace;
         private berkeleyEntities _dataContext;
 
+        private PictureSetRepository _picSetRepository = new PictureSetRepository();
+
 
         public void Publish(int marketplaceID, IEnumerable<Entry> entries)
         {
@@ -96,6 +98,8 @@ namespace BSI_InventoryPreProcessor
                     listingItem.Listing = listing;
                     listingItem.Quantity = entry.Quantity;
                     listingItem.Price = entry.Price;
+
+                    AssignPictures(listing);
                 }
                 else if (pending.Count() > 1)
                 {
@@ -117,6 +121,8 @@ namespace BSI_InventoryPreProcessor
                         listingItem.Quantity = entry.Quantity;
                         listingItem.Price = entry.Price;
                     }
+
+                    AssignPictures(listing);
                 }
             }
         }
@@ -144,14 +150,49 @@ namespace BSI_InventoryPreProcessor
                     listingItem.Listing = listing;
                     listingItem.Quantity = entry.Quantity;
                     listingItem.Price = entry.Price;
+
+
+                    AssignPictures(listing);
+
                 }
                 else
                 {
                     entry.IsValid = false;
-                    entry.Result = "cannot modified auctions";
+                    entry.Result = "cannot modify auctions";
                 }
             }
 
+        }
+
+        private void AssignPictures(EbayListing listing)
+        {
+            string brand = listing.ListingItems.First().Item.SubDescription1;
+            var skus = listing.ListingItems.Select(p => p.Item.ItemLookupCode);
+
+            var pics = _picSetRepository.GetPictures(brand, skus.ToList());
+
+            foreach (PictureInfo picInfo in pics)
+            {
+                var urls = _dataContext.EbayPictureServiceUrls.Where(p => p.LocalName.Equals(picInfo.Name)).ToList();
+
+                EbayPictureServiceUrl url = urls.SingleOrDefault(p => !p.IsExpired() && picInfo.LastModified > p.TimeUploaded);
+
+                if (url == null)
+                {
+                    url = new EbayPictureServiceUrl();
+                    url.LocalName = picInfo.Name;
+                    url.Path = picInfo.Path;
+
+                    new EbayPictureUrlRelation() { PictureServiceUrl = url, Listing = listing, CreatedTime = DateTime.UtcNow };
+                }
+                else
+                {
+                    if (!listing.Relations.Any(p => p.PictureServiceUrl.ID == url.ID))
+                    {
+                        new EbayPictureUrlRelation() { PictureServiceUrl = url, Listing = listing, CreatedTime = DateTime.UtcNow };
+                    }
+                }
+            }
         }
 
         private string GetDuration(string format)

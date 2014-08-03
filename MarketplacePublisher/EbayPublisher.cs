@@ -115,13 +115,15 @@ namespace MarketplacePublisher
             listingItem.Quantity = entry.Qty;
             listingItem.Price = entry.Price;
 
-            PictureSet pictureSet = _pictureSetRepository.GetPictureSet(listingItem.Item.SubDescription1, listingItem.Item.ClassName);
+            PictureSet pictureSet = _pictureSetRepository.GetPictures(listingItem.Item.SubDescription1, listingItem.Item.ClassName);
 
             var picGroups = pictureSet.Pictures.GroupBy(p => p.VariationAttributeValue);
+
 
             if(picGroups.Any(p => !p.Key.Equals("N/A")))
             {
                 var picGroup = picGroups.Single(p => listingItem.Item.Attributes.Values.Any(s => s.Value.Equals(p.Key)));
+
                 AssignPictures(listing, picGroup.ToList());
             }
             else
@@ -214,7 +216,7 @@ namespace MarketplacePublisher
             }
 
             PictureSet pictureSet = _pictureSetRepository
-                .GetPictureSet(_dataContext.ItemClasses.Single(p => p.ItemLookupCode.Equals(entryGroup.Key)).SubDescription1, entryGroup.Key);
+                .GetPictures(_dataContext.ItemClasses.Single(p => p.ItemLookupCode.Equals(entryGroup.Key)).SubDescription1, entryGroup.Key);
 
             var attributes = listing.ListingItems.SelectMany(p => p.Item.Attributes).Select(p => p.Value.Code);
 

@@ -44,6 +44,7 @@ namespace EbayServices.Mappers
         private ItemType CreateListingDto(EbayListing listing)
         {
             ItemType listingDto = new ItemType();
+
             listingDto.SKU = listing.Sku;
             listingDto.ListingTypeSpecified = true;
             listingDto.ListingType = (ListingTypeCodeType)Enum.Parse(typeof(ListingTypeCodeType), listing.Format);
@@ -129,6 +130,7 @@ namespace EbayServices.Mappers
             if (!(bool)listing.IsVariation)
             {
                 ProductData productData = _productDataFactory.GetProductData(listing.Sku);
+
                 listingDto.PrimaryCategory = new CategoryType() { CategoryID = productData.CategoryID };
 
                 var itemSpecifics = productData.GetItemSpecifics().Concat(productData.GetVariationSpecifics()).ToArray();
@@ -136,6 +138,7 @@ namespace EbayServices.Mappers
                 listingDto.ItemSpecifics = new NameValueListTypeCollection(itemSpecifics);
 
                 var urls = listing.Relations.Select(p => p.PictureServiceUrl).Select(p => p.Url);
+
                 listingDto.PictureDetails = new PictureDetailsType() { PictureURL = new StringCollection(urls.ToArray()) };
 
                 EbayListingItem listingItem = listing.ListingItems.First();
@@ -168,13 +171,14 @@ namespace EbayServices.Mappers
                 listingDto.Variations.VariationSpecificsSet = new NameValueListTypeCollection(sets.ToArray());
 
                 var allUrls = listing.Relations.Select(p => p.PictureServiceUrl);
+
                 listingDto.PictureDetails = new PictureDetailsType();
-                listingDto.PictureDetails.PictureURL = new StringCollection(allUrls.Where(p => p.VariationAttributeValue.Equals("N/A")).Select(p => p.Url).ToArray());
+                listingDto.PictureDetails.PictureURL = new StringCollection(allUrls.Where(p => !p.LocalName.Contains("_")).Select(p => p.Url).ToArray());
                 listingDto.Variations.Pictures = new PicturesTypeCollection();
 
                 foreach (var set in sets)
                 {
-                    var urls = allUrls.Where(p => set.Value.Contains(p.VariationAttributeValue));
+                    var urls = allUrls.Where(p => p.LocalName.Contains("_"));
 
                     if (urls.Count() > 0)
                     {
@@ -182,6 +186,7 @@ namespace EbayServices.Mappers
                         pictures.VariationSpecificName = set.Name;
                         pictures.VariationSpecificPictureSet = new VariationSpecificPictureSetTypeCollection();
                         var urlGroups = urls.GroupBy(p => p.VariationAttributeValue);
+
                         foreach (var urlGroup in urlGroups)
                         {
                             VariationSpecificPictureSetType picSet = new VariationSpecificPictureSetType();
