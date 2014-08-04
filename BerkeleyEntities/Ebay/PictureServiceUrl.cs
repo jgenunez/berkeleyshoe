@@ -18,5 +18,10 @@ namespace BerkeleyEntities
                 return true;
             }
         }
+
+        public string GetVariationCode()
+        {
+            return this.LocalName.Split(new char[1] { '-' })[0].Split(new char[1] { '_' })[1];
+        }
     }
 }

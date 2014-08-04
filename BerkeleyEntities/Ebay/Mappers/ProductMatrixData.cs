@@ -16,6 +16,8 @@ namespace EbayServices.Mappers
         {
             _products = products;
             _itemClass = itemClass;
+
+            
         }
 
         public string CategoryID
@@ -46,9 +48,39 @@ namespace EbayServices.Mappers
             return variationSpecSets;
         }
 
-        public string GetAttributeValue(string code)
+        public PicturesTypeCollection GetVariationPictures(IEnumerable<EbayPictureServiceUrl> urls)
         {
-            return _products.First(p => p.GetAttributeValue(code) != null).GetAttributeValue(code);
+            PicturesTypeCollection variationPics = new PicturesTypeCollection();
+
+            var attributeGroups = _products.SelectMany(p => p.GetAttributes())
+                .GroupBy(p => p.Value.Code).Select(p => p.First()).GroupBy(p => p.Key);
+
+            foreach (var group in attributeGroups)
+            {
+                PicturesType picByAttribute = new PicturesType();
+                picByAttribute.VariationSpecificName = group.Key;
+                picByAttribute.VariationSpecificPictureSet = new VariationSpecificPictureSetTypeCollection();
+
+                foreach (var attribute in group)
+                {
+                    var temp = urls.Where(p => p.GetVariationCode().Equals(attribute.Value.Code));
+
+                    if (temp.Count() > 0)
+                    {
+                        VariationSpecificPictureSetType picSet = new VariationSpecificPictureSetType();
+                        picSet.VariationSpecificValue = attribute.Value.Value;
+                        picSet.PictureURL = new StringCollection(temp.Select(p => p.Url).ToArray());
+                        picByAttribute.VariationSpecificPictureSet.Add(picSet);
+                    }
+                }
+
+                if (picByAttribute.VariationSpecificPictureSet.Count > 0)
+                {
+                    variationPics.Add(picByAttribute);
+                }
+            }
+
+            return variationPics;
         }
 
         protected NameValueListType BuildItemSpecific(string name, string[] values)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BerkeleyEntities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,6 +8,7 @@ namespace BSI_InventoryPreProcessor
 {
     public class Entry
     {
+        public EbayListing TargetListing { get; set;}
         public bool IsValid { get; set; }
         public uint RowIndex { get; set; }
         public string Brand { get; set; }

@@ -174,30 +174,15 @@ namespace EbayServices.Mappers
 
                 listingDto.PictureDetails = new PictureDetailsType();
                 listingDto.PictureDetails.PictureURL = new StringCollection(allUrls.Where(p => !p.LocalName.Contains("_")).Select(p => p.Url).ToArray());
-                listingDto.Variations.Pictures = new PicturesTypeCollection();
 
-                foreach (var set in sets)
+                if (allUrls.Any(p => p.LocalName.Contains("_")))
                 {
-                    var urls = allUrls.Where(p => p.LocalName.Contains("_"));
-
-                    if (urls.Count() > 0)
-                    {
-                        PicturesType pictures = new PicturesType();
-                        pictures.VariationSpecificName = set.Name;
-                        pictures.VariationSpecificPictureSet = new VariationSpecificPictureSetTypeCollection();
-                        var urlGroups = urls.GroupBy(p => p.VariationAttributeValue);
-
-                        foreach (var urlGroup in urlGroups)
-                        {
-                            VariationSpecificPictureSetType picSet = new VariationSpecificPictureSetType();
-                            picSet.PictureURL = new StringCollection(urlGroup.Select(p => p.Url).ToArray());
-                            picSet.VariationSpecificValue = urlGroup.Key;
-                        }
-
-                        listingDto.Variations.Pictures.Add(pictures);
-                    }
+                    listingDto.Variations.Pictures = productMatrixData
+                        .GetVariationPictures(allUrls.Where(p => p.LocalName.Contains("_")));
                 }
+
             }
+
             return listingDto;
         }
 

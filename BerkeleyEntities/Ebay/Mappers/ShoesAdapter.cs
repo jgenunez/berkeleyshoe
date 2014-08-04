@@ -88,30 +88,6 @@ namespace EbayServices.Mappers
             return nameValueList;
         }
 
-        public override string GetAttributeValue(string code)
-        {
-            var kvp = _item.Attributes.SingleOrDefault(p => p.Value.Code.Equals(code));
-
-            if (kvp == null)
-            {
-                return null;
-            }
-
-            if (kvp.Key.Equals("Width"))
-            {
-                return "Width-" + GetFormattedWidth();
-            }
-            else if(kvp.Key.Equals("Size"))
-            {
-                return GetSizeLabel() + "-" + kvp.Value.Value;
-            }
-            else
-            {
-                return "Color-" + kvp.Value.Value;
-            }
-            
-        }
-
         private string GetSizeLabel()
         {
             string label = "";

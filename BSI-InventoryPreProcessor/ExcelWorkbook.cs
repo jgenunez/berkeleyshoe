@@ -61,6 +61,7 @@ namespace BSI_InventoryPreProcessor
                         {
                             entries.Add(CreateEntry(row));
                         }
+
                         Entries.Add(marketplaceCode, entries);
                     }
                 }

@@ -25,7 +25,10 @@ namespace EbayServices
 
         public abstract List<NameValueListType> GetVariationSpecifics();
 
-        public abstract List<Attribute> GetMappedAttributes();
+        public List<KeyValuePair<string,BerkeleyEntities.Attribute>> GetAttributes()
+        {
+            return _item.Attributes.ToList();
+        }
 
         protected NameValueListType BuildItemSpecific(string name, string[] values)
         {

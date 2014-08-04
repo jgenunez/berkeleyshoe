@@ -69,7 +69,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Amazon\AmznMarketplace.cs" />
+    <Compile Include="Amazon\Marketplace.cs" />
     <Compile Include="Amazon\Mappers\ListingMapper.cs" />
     <Compile Include="Amazon\Mappers\ProductData.cs" />
     <Compile Include="Amazon\Mappers\ProductDataFactory.cs" />
@@ -90,8 +90,9 @@
     <Compile Include="bsi_quantities.cs" />
     <Compile Include="Catalog\Category.cs" />
     <Compile Include="Catalog\Department.cs" />
-    <Compile Include="Ebay\EbayMarketplace.cs" />
-    <Compile Include="Ebay\EbayPictureServiceUrl.cs" />
+    <Compile Include="Ebay\Marketplace.cs" />
+    <Compile Include="Ebay\PictureServiceUrl.cs" />
+    <Compile Include="Ebay\Listing.cs" />
     <Compile Include="Ebay\Mappers\ListingMapper.cs" />
     <Compile Include="Ebay\Mappers\PantsAdapter.cs" />
     <Compile Include="Ebay\Mappers\ProductData.cs" />
@@ -110,7 +111,7 @@
     <Compile Include="Catalog\PictureSet.cs" />
     <Compile Include="Factory\ProductFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Ebay\EbayOrder.cs" />
+    <Compile Include="Ebay\Order.cs" />
     <Compile Include="SyncListing.cs" />
   </ItemGroup>
   <ItemGroup>
