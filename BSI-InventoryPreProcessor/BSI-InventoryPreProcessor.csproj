@@ -84,27 +84,17 @@
   <ItemGroup>
     <Compile Include="EbayPublisher.cs" />
     <Compile Include="ExcelWorkbook.cs" />
-    <Compile Include="Form1.cs">
+    <Compile Include="PublisherForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="frmEbayPageSize.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmEbayPageSize.Designer.cs">
-      <DependentUpon>frmEbayPageSize.cs</DependentUpon>
+    <Compile Include="PublisherForm.Designer.cs">
+      <DependentUpon>PublisherForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Entry.cs" />
-    <Compile Include="ItemMarketplace.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmEbayPageSize.resx">
-      <DependentUpon>frmEbayPageSize.cs</DependentUpon>
+    <EmbeddedResource Include="PublisherForm.resx">
+      <DependentUpon>PublisherForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

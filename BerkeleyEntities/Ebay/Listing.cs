@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace BerkeleyEntities.Ebay
+namespace BerkeleyEntities
 {
     public partial class EbayListing
     {
