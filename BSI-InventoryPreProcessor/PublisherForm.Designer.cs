@@ -29,11 +29,11 @@
         private void InitializeComponent()
         {
             this.btnPublish = new System.Windows.Forms.Button();
-            this.tbOutput = new System.Windows.Forms.TextBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.cbMarketplaces = new System.Windows.Forms.ComboBox();
             this.lbCurrentWorkbook = new System.Windows.Forms.Label();
             this.btnSetWorkbook = new System.Windows.Forms.Button();
+            this.tcMarketplaceSheet = new System.Windows.Forms.TabControl();
             this.SuspendLayout();
             // 
             // btnPublish
@@ -45,19 +45,6 @@
             this.btnPublish.Text = "Publish";
             this.btnPublish.UseVisualStyleBackColor = true;
             this.btnPublish.Click += new System.EventHandler(this.btnPublish_Click);
-            // 
-            // tbOutput
-            // 
-            this.tbOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbOutput.Location = new System.Drawing.Point(12, 122);
-            this.tbOutput.Multiline = true;
-            this.tbOutput.Name = "tbOutput";
-            this.tbOutput.ReadOnly = true;
-            this.tbOutput.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbOutput.Size = new System.Drawing.Size(718, 550);
-            this.tbOutput.TabIndex = 8;
             // 
             // openFileDialog1
             // 
@@ -90,16 +77,24 @@
             this.btnSetWorkbook.UseVisualStyleBackColor = true;
             this.btnSetWorkbook.Click += new System.EventHandler(this.btnSetWorkbook_Click);
             // 
+            // tcMarketplaceSheet
+            // 
+            this.tcMarketplaceSheet.Location = new System.Drawing.Point(12, 121);
+            this.tcMarketplaceSheet.Name = "tcMarketplaceSheet";
+            this.tcMarketplaceSheet.SelectedIndex = 0;
+            this.tcMarketplaceSheet.Size = new System.Drawing.Size(718, 153);
+            this.tcMarketplaceSheet.TabIndex = 16;
+            // 
             // PublisherForm
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(742, 684);
+            this.Controls.Add(this.tcMarketplaceSheet);
             this.Controls.Add(this.btnSetWorkbook);
             this.Controls.Add(this.lbCurrentWorkbook);
             this.Controls.Add(this.cbMarketplaces);
-            this.Controls.Add(this.tbOutput);
             this.Controls.Add(this.btnPublish);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -113,11 +108,11 @@
         #endregion
 
         private System.Windows.Forms.Button btnPublish;
-        private System.Windows.Forms.TextBox tbOutput;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.ComboBox cbMarketplaces;
         private System.Windows.Forms.Label lbCurrentWorkbook;
         private System.Windows.Forms.Button btnSetWorkbook;
+        private System.Windows.Forms.TabControl tcMarketplaceSheet;
     }
 }
 

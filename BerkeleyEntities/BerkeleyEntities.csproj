@@ -41,17 +41,14 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\LIB\eBay .NET SDK v849 Release\eBay.Service.SDK.Attribute.dll</HintPath>
     </Reference>
-    <Reference Include="MarketplaceWebService, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\LIB\MarketplaceWebService\bin\Release\MarketplaceWebService.dll</HintPath>
+    <Reference Include="MarketplaceWebService">
+      <HintPath>..\LIB\MarketplaceWebService\bin\Debug\MarketplaceWebService.dll</HintPath>
     </Reference>
-    <Reference Include="MarketplaceWebServiceOrders, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\LIB\MarketplaceWebServiceOrders\src\MarketplaceWebServiceOrders\bin\Release\MarketplaceWebServiceOrders.dll</HintPath>
+    <Reference Include="MarketplaceWebServiceOrders">
+      <HintPath>..\LIB\MarketplaceWebServiceOrders\src\MarketplaceWebServiceOrders\bin\Debug\MarketplaceWebServiceOrders.dll</HintPath>
     </Reference>
-    <Reference Include="MarketplaceWebServiceProducts, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\LIB\MarketplaceWebServiceProducts\bin\Release\MarketplaceWebServiceProducts.dll</HintPath>
+    <Reference Include="MarketplaceWebServiceProducts">
+      <HintPath>..\LIB\MarketplaceWebServiceProducts\bin\Debug\MarketplaceWebServiceProducts.dll</HintPath>
     </Reference>
     <Reference Include="NLog">
       <HintPath>..\LIB\NLog-2.1.0\net40\NLog.dll</HintPath>

@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>BSI_InventoryPreProcessor</RootNamespace>
     <AssemblyName>BSI-InventoryPreProcessor</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>H:\Apps\CesarSpaghetti\Preprocessor\</PublishUrl>
@@ -39,6 +39,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -48,6 +49,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>AC0A081F7B46E3E097818DF7DBC118114B71455C</ManifestCertificateThumbprint>
@@ -83,7 +85,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EbayPublisher.cs" />
+    <Compile Include="EntryGrid.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="EntryGrid.Designer.cs">
+      <DependentUpon>EntryGrid.cs</DependentUpon>
+    </Compile>
     <Compile Include="ExcelWorkbook.cs" />
+    <Compile Include="IPublisher.cs" />
     <Compile Include="PublisherForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -93,6 +102,9 @@
     <Compile Include="Entry.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="EntryGrid.resx">
+      <DependentUpon>EntryGrid.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PublisherForm.resx">
       <DependentUpon>PublisherForm.cs</DependentUpon>
     </EmbeddedResource>

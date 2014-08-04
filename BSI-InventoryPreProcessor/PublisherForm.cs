@@ -79,9 +79,15 @@ namespace BSI_InventoryPreProcessor
             {
                 if (dataContext.EbayMarketplaces.Any(p => p.Code.Equals(marketplaceCode)))
                 {
-                    EbayPublisher publisher = new EbayPublisher();
+                    EbayMarketplace marketplace = dataContext.EbayMarketplaces.Single(p => p.Code.Equals(marketplaceCode));
 
-                    publisher.Publish(dataContext.EbayMarketplaces.Single(p => p.Code.Equals(marketplaceCode)).ID, _workbook.Entries[marketplaceCode]);
+                    EbayPublisher publisher = new EbayPublisher(marketplace.ID, _workbook.Entries[marketplaceCode]);
+
+                    TabPage tab = new TabPage();
+                    tab.Text = publisher.Header;
+                    tab.Controls.Add(new DataGridView() {  DataSource = publisher.Entries });
+                    tcMarketplaceSheet.TabPages.Add(tab);
+                    publisher.PublishAsync();
 
                 }
                 else if (dataContext.AmznMarketplaces.Any(p => p.Code.Equals(marketplaceCode)))
