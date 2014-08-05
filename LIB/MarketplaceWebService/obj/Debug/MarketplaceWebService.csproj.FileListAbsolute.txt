@@ -1,0 +1,5 @@
+C:\Users\juan\Documents\code\berkeleyshoe\LIB\MarketplaceWebService\bin\Debug\MarketplaceWebService.dll
+C:\Users\juan\Documents\code\berkeleyshoe\LIB\MarketplaceWebService\bin\Debug\MarketplaceWebService.pdb
+C:\Users\juan\Documents\code\berkeleyshoe\LIB\MarketplaceWebService\obj\Debug\MarketplaceWebService.csprojResolveAssemblyReference.cache
+C:\Users\juan\Documents\code\berkeleyshoe\LIB\MarketplaceWebService\obj\Debug\MarketplaceWebService.dll
+C:\Users\juan\Documents\code\berkeleyshoe\LIB\MarketplaceWebService\obj\Debug\MarketplaceWebService.pdb

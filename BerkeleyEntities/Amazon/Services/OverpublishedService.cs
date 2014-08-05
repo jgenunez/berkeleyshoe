@@ -50,14 +50,9 @@ namespace BerkeleyEntities.Amazon.Services
                 }
             }
 
-            _publisher.PublishInventoryData();
+            _publisher.Publish();
 
-            while (_publisher.AnyPendingSubmission)
-            {
-                Thread.Sleep(30000);
-
-                _publisher.PollSubmissionStatus();
-            }
+            
 
             _dataContext.Dispose();
         }

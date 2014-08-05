@@ -110,7 +110,7 @@ namespace SynchronizationService
             {
                 foreach (AmznMarketplace marketplace in dataContext.AmznMarketplaces)
                 {
-                    AmazonServices.OverpublishedService service = new AmazonServices.OverpublishedService(marketplace.ID);
+                    BerkeleyEntities.Amazon.Services.OverpublishedService service = new BerkeleyEntities.Amazon.Services.OverpublishedService(marketplace.ID);
 
                     try
                     {
@@ -128,7 +128,7 @@ namespace SynchronizationService
 
                 foreach (EbayMarketplace marketplace in dataContext.EbayMarketplaces)
                 {
-                    EbayServices.OverpublishedService service = new EbayServices.OverpublishedService(marketplace.ID);
+                    BerkeleyEntities.Ebay.Services.OverpublishedService service = new BerkeleyEntities.Ebay.Services.OverpublishedService(marketplace.ID);
 
                     try
                     {

@@ -57,7 +57,7 @@ namespace BSI_InventoryPreProcessor
             {
                 _workbook = new ExcelWorkbook(ofd.FileName);
                 _workbook.FetchEntries();
-                cbMarketplaces.DataSource = _workbook.Entries.Keys;
+                cbMarketplaces.DataSource = _workbook.EbayEntries.Keys;
                 lbCurrentWorkbook.Text = ofd.FileName;
             }
         }
@@ -81,7 +81,7 @@ namespace BSI_InventoryPreProcessor
                 {
                     EbayMarketplace marketplace = dataContext.EbayMarketplaces.Single(p => p.Code.Equals(marketplaceCode));
 
-                    EbayPublisher publisher = new EbayPublisher(marketplace.ID, _workbook.Entries[marketplaceCode]);
+                    EbayPublisher publisher = new EbayPublisher(marketplace.ID, _workbook.EbayEntries[marketplaceCode]);
 
                     TabPage tab = new TabPage();
                     tab.Text = publisher.Header;
@@ -92,7 +92,15 @@ namespace BSI_InventoryPreProcessor
                 }
                 else if (dataContext.AmznMarketplaces.Any(p => p.Code.Equals(marketplaceCode)))
                 {
+                    AmznMarketplace marketplace = dataContext.AmznMarketplaces.Single(p => p.Code.Equals(marketplaceCode));
 
+                    AmznPublisher publisher = new AmznPublisher(marketplace.ID, _workbook.AmznEntries[marketplace.Code]);
+
+                    TabPage tab = new TabPage();
+                    tab.Text = publisher.Header;
+                    tab.Controls.Add(new DataGridView() { DataSource = publisher.Entries });
+                    tcMarketplaceSheet.TabPages.Add(tab);
+                    publisher.PublishAsync();
                 }
 
 

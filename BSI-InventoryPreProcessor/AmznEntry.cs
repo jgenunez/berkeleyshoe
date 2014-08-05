@@ -6,9 +6,9 @@ using System.Text;
 
 namespace BSI_InventoryPreProcessor
 {
-    public class Entry
+    public class AmznEntry
     {
-        public EbayListing TargetListing { get; set;}
+        public AmznListingItem TargetListing { get; set; }
         public bool IsValid { get; set; }
         public uint RowIndex { get; set; }
         public string Brand { get; set; }
@@ -21,17 +21,5 @@ namespace BSI_InventoryPreProcessor
         public int Quantity { get; set; }
         public decimal Price { get; set; }
         public string Result { get; set; }
-        public bool IsAuction()
-        {
-            if (this.Format.Contains("A"))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
     }
 }
-

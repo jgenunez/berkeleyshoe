@@ -84,27 +84,19 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AmznEntry.cs" />
+    <Compile Include="AmznPublisher.cs" />
     <Compile Include="EbayPublisher.cs" />
-    <Compile Include="EntryGrid.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="EntryGrid.Designer.cs">
-      <DependentUpon>EntryGrid.cs</DependentUpon>
-    </Compile>
     <Compile Include="ExcelWorkbook.cs" />
-    <Compile Include="IPublisher.cs" />
     <Compile Include="PublisherForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="PublisherForm.Designer.cs">
       <DependentUpon>PublisherForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Entry.cs" />
+    <Compile Include="EbayEntry.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="EntryGrid.resx">
-      <DependentUpon>EntryGrid.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="PublisherForm.resx">
       <DependentUpon>PublisherForm.cs</DependentUpon>
     </EmbeddedResource>
