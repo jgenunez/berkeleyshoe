@@ -1,0 +1,4 @@
+C:\Users\juan\Documents\code\berkeleyshoe\LIB\MarketplaceWebServiceProducts\bin\Debug\MarketplaceWebServiceProducts.dll
+C:\Users\juan\Documents\code\berkeleyshoe\LIB\MarketplaceWebServiceProducts\bin\Debug\MarketplaceWebServiceProducts.pdb
+C:\Users\juan\Documents\code\berkeleyshoe\LIB\MarketplaceWebServiceProducts\obj\Debug\MarketplaceWebServiceProducts.dll
+C:\Users\juan\Documents\code\berkeleyshoe\LIB\MarketplaceWebServiceProducts\obj\Debug\MarketplaceWebServiceProducts.pdb

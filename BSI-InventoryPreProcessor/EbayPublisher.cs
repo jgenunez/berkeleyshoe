@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace BSI_InventoryPreProcessor
 {
@@ -16,35 +17,49 @@ namespace BSI_InventoryPreProcessor
         private EbayMarketplace _marketplace;
         private berkeleyEntities _dataContext;
 
+        private string _status = "Waiting";
+
         private PictureSetRepository _picSetRepository = new PictureSetRepository();
 
-
-        public void Publish(int marketplaceID, IEnumerable<Entry> entries)
+        public EbayPublisher(int marketplaceID, IEnumerable<EbayEntry> entries)
         {
-            using (_dataContext = new berkeleyEntities())
-            {
-                _marketplace = _dataContext.EbayMarketplaces.Single(p => p.ID == marketplaceID);
-
-                Publisher publisher = new Publisher(_dataContext, _marketplace);
-
-                HandleFixedPrice(entries.Where(p => !p.IsAuction()));
-
-                HandleAuctions(entries.Where(p => p.IsAuction()));
-
-                publisher.SaveChanges();
-
-            }
+            this.Entries = entries.ToList();
+            _dataContext = new berkeleyEntities();
+            _marketplace = _dataContext.EbayMarketplaces.Single(p => p.ID == marketplaceID);
         }
 
-        private void HandleFixedPrice(IEnumerable<Entry> entries)
+        public List<EbayEntry> Entries { get; set; }
+
+        public string Header 
+        {
+            get { return string.Format("{0} ({1})", _marketplace.Code, this.Entries.Count.ToString()); }
+        }
+
+        public async Task<string> PublishAsync()
+        {
+            Publisher publisher = new Publisher(_dataContext, _marketplace);
+
+            HandleFixedPriceEntries(this.Entries.Where(p => !p.IsAuction()));
+
+            HandleAuctionEntries(this.Entries.Where(p => p.IsAuction()));
+
+            publisher.SaveChanges();
+
+            string validCount = this.Entries.Where(p => p.IsValid).Count().ToString();
+            string total = this.Entries.Count.ToString();
+
+            return string.Format(" {0} / {1} " , validCount,total);
+        }
+
+        private void HandleFixedPriceEntries(IEnumerable<EbayEntry> entries)
         {
             var fixedPrice = _marketplace.Listings.Where(p => p.Status.Equals(STATUS_ACTIVE) && p.Format.Equals(FORMAT_FIXEDPRICE)).ToList();
 
             foreach (var group in entries.GroupBy(p => p.ClassName))
             {
-                List<Entry> pending = new List<Entry>();
+                List<EbayEntry> pending = new List<EbayEntry>();
 
-                foreach (Entry entry in group)
+                foreach (EbayEntry entry in group)
                 {
                     if (fixedPrice.Any(p => p.Sku.Equals(entry.Sku)))
                     {
@@ -52,6 +67,7 @@ namespace BSI_InventoryPreProcessor
                         EbayListingItem listingItem = listing.ListingItems.First();
                         listingItem.Quantity = entry.Quantity;
                         listingItem.Price = entry.Price;
+                        entry.SetListing(listing);
                     }
                     else
                     {
@@ -59,12 +75,12 @@ namespace BSI_InventoryPreProcessor
                     }
                 }
 
-                if (fixedPrice.Any(p => p.Sku.Equals(group.Key)) && pending.Count > 0)
+                if (pending.Count > 0 && fixedPrice.Any(p => p.Sku.Equals(group.Key)))
                 {
                     EbayListing listing = fixedPrice.Single(p => p.Sku.Equals(group.Key));
                     listing.Title = listing.Title;
 
-                    foreach (Entry entry in pending)
+                    foreach (EbayEntry entry in pending)
                     {
                         Item item = _dataContext.Items.Single(p => p.ItemLookupCode.Equals(entry.Sku));
                         EbayListingItem listingItem = listing.ListingItems.SingleOrDefault(p => p.Item.ID == item.ID);
@@ -76,12 +92,14 @@ namespace BSI_InventoryPreProcessor
 
                         listingItem.Quantity = entry.Quantity;
                         listingItem.Price = entry.Price;
-                    }
-                }
 
-                if (pending.Count() == 1)
+                        entry.SetListing(listing);
+                    }
+
+                }
+                else if (pending.Count() == 1)
                 {
-                    Entry entry = pending.First();
+                    EbayEntry entry = pending.First();
 
                     EbayListing listing = new EbayListing();
                     listing.Sku = group.Key;
@@ -100,6 +118,8 @@ namespace BSI_InventoryPreProcessor
                     listingItem.Price = entry.Price;
 
                     AssignPictures(listing);
+
+                    entry.SetListing(listing);
                 }
                 else if (pending.Count() > 1)
                 {
@@ -113,25 +133,28 @@ namespace BSI_InventoryPreProcessor
                     listing.Title = pending.First(p => !string.IsNullOrWhiteSpace(p.Title)).Title;
                     listing.IsVariation = true;
 
-                    foreach (Entry entry in pending)
+                    foreach (EbayEntry entry in pending)
                     {
                         EbayListingItem listingItem = new EbayListingItem();
                         listingItem.Item = _dataContext.Items.Single(p => p.ItemLookupCode.Equals(entry.Sku));
                         listingItem.Listing = listing;
                         listingItem.Quantity = entry.Quantity;
                         listingItem.Price = entry.Price;
+
+                        entry.SetListing(listing);
                     }
 
                     AssignPictures(listing);
+
                 }
             }
         }
 
-        private void HandleAuctions(IEnumerable<Entry> entries)
+        private void HandleAuctionEntries(IEnumerable<EbayEntry> entries)
         {
             var auctions = _marketplace.Listings.Where(p => p.Status.Equals(STATUS_ACTIVE) && p.Format.Equals(FORMAT_AUCTION)).ToList();
 
-            foreach (Entry entry in entries)
+            foreach (EbayEntry entry in entries)
             {
                 if (!auctions.Any(p => p.Sku.Equals(entry.Sku)))
                 {
@@ -154,6 +177,7 @@ namespace BSI_InventoryPreProcessor
 
                     AssignPictures(listing);
 
+                    entry.SetListing(listing);
                 }
                 else
                 {

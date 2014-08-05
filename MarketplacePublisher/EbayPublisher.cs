@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using BerkeleyEntities;
+using BerkeleyEntities.Ebay;
 using EbayServices;
 
 
@@ -115,21 +116,21 @@ namespace MarketplacePublisher
             listingItem.Quantity = entry.Qty;
             listingItem.Price = entry.Price;
 
-            PictureSet pictureSet = _pictureSetRepository.GetPictures(listingItem.Item.SubDescription1, listingItem.Item.ClassName);
+            //PictureSet pictureSet = _pictureSetRepository.GetPictures(listingItem.Item.SubDescription1, listingItem.Item.ClassName);
 
-            var picGroups = pictureSet.Pictures.GroupBy(p => p.VariationAttributeValue);
+            //var picGroups = pictureSet.Pictures.GroupBy(p => p.VariationAttributeValue);
 
 
-            if(picGroups.Any(p => !p.Key.Equals("N/A")))
-            {
-                var picGroup = picGroups.Single(p => listingItem.Item.Attributes.Values.Any(s => s.Value.Equals(p.Key)));
+            //if(picGroups.Any(p => !p.Key.Equals("N/A")))
+            //{
+            //    //var picGroup = picGroups.Single(p => listingItem.Item.Attributes.Values.Any(s => s.Value.Equals(p.Key)));
 
-                AssignPictures(listing, picGroup.ToList());
-            }
-            else
-            {
-                AssignPictures(listing, picGroups.Single(p => p.Key.Equals("N/A")).ToList());
-            }
+            //    AssignPictures(listing, picGroup.ToList());
+            //}
+            //else
+            //{
+            //    AssignPictures(listing, picGroups.Single(p => p.Key.Equals("N/A")).ToList());
+            //}
 
             return listing;
         }
@@ -215,14 +216,14 @@ namespace MarketplacePublisher
                 listingItem.Price = entry.Price;
             }
 
-            PictureSet pictureSet = _pictureSetRepository
-                .GetPictures(_dataContext.ItemClasses.Single(p => p.ItemLookupCode.Equals(entryGroup.Key)).SubDescription1, entryGroup.Key);
+            //PictureSet pictureSet = _pictureSetRepository
+            //    .GetPictures(_dataContext.ItemClasses.Single(p => p.ItemLookupCode.Equals(entryGroup.Key)).SubDescription1, entryGroup.Key);
 
-            var attributes = listing.ListingItems.SelectMany(p => p.Item.Attributes).Select(p => p.Value.Code);
+            //var attributes = listing.ListingItems.SelectMany(p => p.Item.Attributes).Select(p => p.Value.Code);
 
-            var pics = pictureSet.Pictures.Where(p => p.VariationAttributeValue.Equals("N/A") || attributes.Any(d => d.Equals(p.VariationAttributeValue)));
+            //var pics = pictureSet.Pictures.Where(p => p.VariationAttributeValue.Equals("N/A") || attributes.Any(d => d.Equals(p.VariationAttributeValue)));
 
-            AssignPictures(listing, pics.ToList());
+            //AssignPictures(listing, pics.ToList());
 
 
             return listing;
@@ -240,7 +241,7 @@ namespace MarketplacePublisher
                 {
                     url = new EbayPictureServiceUrl();
                     url.LocalName = picInfo.Name;
-                    url.VariationAttributeValue = picInfo.VariationAttributeValue;
+                    //url.VariationAttributeValue = picInfo.VariationAttributeValue;
                     url.Path = picInfo.Path;
 
                     new EbayPictureUrlRelation() { PictureServiceUrl = url, Listing = listing, CreatedTime = DateTime.UtcNow };

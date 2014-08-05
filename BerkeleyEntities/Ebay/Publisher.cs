@@ -45,6 +45,7 @@ namespace BerkeleyEntities.Ebay
                 }
                 catch (Exception e)
                 {
+                    listing.ErrorMessage = e.Message;
                     _dataContext.Detach(listing);
                 }
             }
@@ -57,6 +58,7 @@ namespace BerkeleyEntities.Ebay
                 }
                 catch (Exception e)
                 {
+                    listing.ErrorMessage = e.Message;
                     _dataContext.Detach(listing);
                 }
             }

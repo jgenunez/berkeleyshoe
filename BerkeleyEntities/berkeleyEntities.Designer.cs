@@ -1695,6 +1695,8 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
+        public Product ProductData { get; set; }
     }
     
     /// <summary>

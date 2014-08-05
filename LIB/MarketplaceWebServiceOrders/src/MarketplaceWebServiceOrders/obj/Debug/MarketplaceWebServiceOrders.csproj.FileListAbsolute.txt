@@ -1,0 +1,4 @@
+C:\Users\juan\Documents\code\berkeleyshoe\LIB\MarketplaceWebServiceOrders\src\MarketplaceWebServiceOrders\bin\Debug\MarketplaceWebServiceOrders.dll
+C:\Users\juan\Documents\code\berkeleyshoe\LIB\MarketplaceWebServiceOrders\src\MarketplaceWebServiceOrders\bin\Debug\MarketplaceWebServiceOrders.pdb
+C:\Users\juan\Documents\code\berkeleyshoe\LIB\MarketplaceWebServiceOrders\src\MarketplaceWebServiceOrders\obj\Debug\MarketplaceWebServiceOrders.dll
+C:\Users\juan\Documents\code\berkeleyshoe\LIB\MarketplaceWebServiceOrders\src\MarketplaceWebServiceOrders\obj\Debug\MarketplaceWebServiceOrders.pdb

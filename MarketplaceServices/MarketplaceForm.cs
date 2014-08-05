@@ -15,6 +15,7 @@ using BerkeleyEntities;
 using System.Timers;
 
 
+
 namespace MarketplaceManager
 {
     public partial class MarketplaceForm : Form
@@ -122,12 +123,12 @@ namespace MarketplaceManager
 
                 if (view.Host.Equals("Amazon"))
                 {
-                    AmazonServices.OverpublishedService service = new AmazonServices.OverpublishedService(view.DbID);
+                    BerkeleyEntities.Amazon.Services.OverpublishedService service = new BerkeleyEntities.Amazon.Services.OverpublishedService(view.DbID);
                     bw.DoWork += (_, args) => { service.BalanceQuantities(); args.Result = view; };
                 }
                 else
                 {
-                    EbayServices.OverpublishedService service = new EbayServices.OverpublishedService(view.DbID);
+                    BerkeleyEntities.Ebay.Services.OverpublishedService service = new BerkeleyEntities.Ebay.Services.OverpublishedService(view.DbID);
                     bw.DoWork += (_, args) => { service.BalanceQuantities();  args.Result = view; };
                 }
 

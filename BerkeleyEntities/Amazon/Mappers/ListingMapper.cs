@@ -65,45 +65,45 @@ namespace AmazonServices.Mappers
             return inventoryData;
         }
 
-        public void Map(Inventory inventoryData)
-        {
-            AmznListingItem listingItem = _dataContext.AmznListingItems.SingleOrDefault(p =>
-                p.MarketplaceID == _marketplace.ID &&
-                p.Item.ItemLookupCode.Equals(inventoryData.SKU));
+        //public void Map(Inventory inventoryData)
+        //{
+        //    AmznListingItem listingItem = _dataContext.AmznListingItems.SingleOrDefault(p =>
+        //        p.MarketplaceID == _marketplace.ID &&
+        //        p.Item.ItemLookupCode.Equals(inventoryData.SKU));
 
-            listingItem.Quantity = Convert.ToInt32(inventoryData.Item);
-        }
+        //    listingItem.Quantity = Convert.ToInt32(inventoryData.Item);
+        //}
 
-        public AmznListingItem Map(Product productData)
-        {
-            AmznListingItem listingItem = _dataContext.AmznListingItems.SingleOrDefault(p =>
-                p.MarketplaceID == _marketplace.ID &&
-                p.Item.ItemLookupCode.Equals(productData.SKU));
+        //public AmznListingItem Map(Product productData)
+        //{
+        //    AmznListingItem listingItem = _dataContext.AmznListingItems.SingleOrDefault(p =>
+        //        p.MarketplaceID == _marketplace.ID &&
+        //        p.Item.ItemLookupCode.Equals(productData.SKU));
 
-            if (listingItem == null)
-            {
-                listingItem = new AmznListingItem();
-                listingItem.MarketplaceID = _marketplace.ID;
-                listingItem.ASIN = "Unknown";
-                listingItem.Item = _dataContext.Items.Single(p => p.ItemLookupCode.Equals(productData.SKU));
-                listingItem.Price = 0;
-                listingItem.Quantity = 0;
-            }
+        //    if (listingItem == null)
+        //    {
+        //        listingItem = new AmznListingItem();
+        //        listingItem.MarketplaceID = _marketplace.ID;
+        //        listingItem.ASIN = "Unknown";
+        //        listingItem.Item = _dataContext.Items.Single(p => p.ItemLookupCode.Equals(productData.SKU));
+        //        listingItem.Price = 0;
+        //        listingItem.Quantity = 0;
+        //    }
 
-            listingItem.Condition = productData.Condition.ConditionType.ToString();
-            listingItem.Title = productData.DescriptionData.Title;
-            listingItem.IsActive = true;
+        //    listingItem.Condition = productData.Condition.ConditionType.ToString();
+        //    listingItem.Title = productData.DescriptionData.Title;
+        //    listingItem.IsActive = true;
 
-            return listingItem;
-        }
+        //    return listingItem;
+        //}
 
-        public void Map(Price priceData)
-        {
-            AmznListingItem listingItem = _dataContext.AmznListingItems.SingleOrDefault(p =>
-                p.MarketplaceID == _marketplace.ID &&
-                p.Item.ItemLookupCode.Equals(priceData.SKU));
+        //public void Map(Price priceData)
+        //{
+        //    AmznListingItem listingItem = _dataContext.AmznListingItems.SingleOrDefault(p =>
+        //        p.MarketplaceID == _marketplace.ID &&
+        //        p.Item.ItemLookupCode.Equals(priceData.SKU));
 
-            listingItem.Price = priceData.StandardPrice.Value;
-        }
+        //    listingItem.Price = priceData.StandardPrice.Value;
+        //}
     }
 }

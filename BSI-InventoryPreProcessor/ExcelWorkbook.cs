@@ -28,7 +28,7 @@ namespace BSI_InventoryPreProcessor
         public ExcelWorkbook(string path)
         {
             this.Path = path;
-            this.Entries = new Dictionary<string, List<Entry>>();
+            this.EbayEntries = new Dictionary<string, List<EbayEntry>>();
         }
 
         public string Path { get; set; }
@@ -55,13 +55,14 @@ namespace BSI_InventoryPreProcessor
                             !string.IsNullOrWhiteSpace(GetCellValue(c))
                             ).Select(p => p.Parent).Cast<Row>().Where(p => p.RowIndex != 1).ToList();
 
-                        List<Entry> entries = new List<Entry>();
+                        List<EbayEntry> entries = new List<EbayEntry>();
 
                         foreach (Row row in rows)
                         {
-                            entries.Add(CreateEntry(row));
+                            entries.Add(CreateEbayEntry(row));
                         }
-                        Entries.Add(marketplaceCode, entries);
+
+                        EbayEntries.Add(marketplaceCode, entries);
                     }
                 }
 
@@ -69,11 +70,13 @@ namespace BSI_InventoryPreProcessor
             }
         }
 
-        public Dictionary<string, List<Entry>> Entries { get; set; }
+        public Dictionary<string, List<EbayEntry>> EbayEntries { get; set; }
 
-        private Entry CreateEntry(Row row)
+        public Dictionary<string, List<AmznEntry>> AmznEntries { get; set; }
+
+        private EbayEntry CreateEbayEntry(Row row)
         {
-            Entry entry = new Entry();
+            EbayEntry entry = new EbayEntry();
             entry.RowIndex = row.RowIndex.Value;
 
             foreach (Cell cell in row.OfType<Cell>())
@@ -102,6 +105,38 @@ namespace BSI_InventoryPreProcessor
             return entry;
         }
 
+        private AmznEntry CreateAmznEntry(Row row) 
+        {
+            AmznEntry entry = new AmznEntry();
+            entry.RowIndex = row.RowIndex.Value;
+
+            foreach (Cell cell in row.OfType<Cell>())
+            {
+                string colRef = this.ParseColRefs(cell.CellReference);
+                string cellValue = this.GetCellValue(cell);
+
+                if (_colRefsToProp.ContainsKey(colRef) && !string.IsNullOrWhiteSpace(cellValue))
+                {
+                    PropertyInfo prop = _colRefsToProp[colRef];
+
+                    switch (prop.PropertyType.Name)
+                    {
+                        case "String":
+                            prop.SetValue(entry, cellValue, null); break;
+                        case "Int32":
+                            prop.SetValue(entry, Convert.ToInt32(cellValue), null); break;
+                        case "Decimal":
+                            prop.SetValue(entry, Convert.ToDecimal(cellValue), null); break;
+                        default:
+                            prop.SetValue(entry, cellValue, null); break;
+                    }
+                }
+            }
+
+            return entry;
+        
+        }
+
         private void RegisterColumns()
         {
             Row headerRow = _workSheetPart.Worksheet.Descendants<Row>().Single(p => p.RowIndex == 1);
@@ -119,7 +154,7 @@ namespace BSI_InventoryPreProcessor
                 _colHeadersToRefs.Add(header, columnRef);
             }
 
-            PropertyInfo[] props = typeof(Entry).GetProperties();
+            PropertyInfo[] props = typeof(EbayEntry).GetProperties();
 
             foreach (string colRef in _colRefsToHeaders.Keys)
             {
