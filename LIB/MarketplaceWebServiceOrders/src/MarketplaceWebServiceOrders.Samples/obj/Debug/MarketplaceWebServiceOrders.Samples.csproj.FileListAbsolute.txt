@@ -1,0 +1,14 @@
+C:\Users\JUAN\Documents\Visual Studio 2010\Projects\Berkeley\MWSOrdersCSharpClientLibrary-2011-01-01._V380028117_\src\MarketplaceWebServiceOrders.Samples\bin\Debug\MarketplaceWebServiceOrders.Samples.exe
+C:\Users\JUAN\Documents\Visual Studio 2010\Projects\Berkeley\MWSOrdersCSharpClientLibrary-2011-01-01._V380028117_\src\MarketplaceWebServiceOrders.Samples\bin\Debug\MarketplaceWebServiceOrders.Samples.pdb
+C:\Users\JUAN\Documents\Visual Studio 2010\Projects\Berkeley\MWSOrdersCSharpClientLibrary-2011-01-01._V380028117_\src\MarketplaceWebServiceOrders.Samples\bin\Debug\MarketplaceWebServiceOrders.dll
+C:\Users\JUAN\Documents\Visual Studio 2010\Projects\Berkeley\MWSOrdersCSharpClientLibrary-2011-01-01._V380028117_\src\MarketplaceWebServiceOrders.Samples\bin\Debug\MarketplaceWebServiceOrders.pdb
+C:\Users\JUAN\Documents\Visual Studio 2010\Projects\Berkeley\MWSOrdersCSharpClientLibrary-2011-01-01._V380028117_\src\MarketplaceWebServiceOrders.Samples\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\JUAN\Documents\Visual Studio 2010\Projects\Berkeley\MWSOrdersCSharpClientLibrary-2011-01-01._V380028117_\src\MarketplaceWebServiceOrders.Samples\obj\Debug\MarketplaceWebServiceOrders.Samples.exe
+C:\Users\JUAN\Documents\Visual Studio 2010\Projects\Berkeley\MWSOrdersCSharpClientLibrary-2011-01-01._V380028117_\src\MarketplaceWebServiceOrders.Samples\obj\Debug\MarketplaceWebServiceOrders.Samples.pdb
+C:\Users\JUAN\Documents\code\berkeleyshoe\LIB\MarketplaceWebServiceOrders\src\MarketplaceWebServiceOrders.Samples\obj\Debug\MarketplaceWebServiceOrders.Samples.exe
+C:\Users\JUAN\Documents\code\berkeleyshoe\LIB\MarketplaceWebServiceOrders\src\MarketplaceWebServiceOrders.Samples\obj\Debug\MarketplaceWebServiceOrders.Samples.pdb
+C:\Users\JUAN\Documents\code\berkeleyshoe\LIB\MarketplaceWebServiceOrders\src\MarketplaceWebServiceOrders.Samples\bin\Debug\MarketplaceWebServiceOrders.Samples.exe
+C:\Users\JUAN\Documents\code\berkeleyshoe\LIB\MarketplaceWebServiceOrders\src\MarketplaceWebServiceOrders.Samples\bin\Debug\MarketplaceWebServiceOrders.Samples.pdb
+C:\Users\JUAN\Documents\code\berkeleyshoe\LIB\MarketplaceWebServiceOrders\src\MarketplaceWebServiceOrders.Samples\bin\Debug\MarketplaceWebServiceOrders.dll
+C:\Users\JUAN\Documents\code\berkeleyshoe\LIB\MarketplaceWebServiceOrders\src\MarketplaceWebServiceOrders.Samples\bin\Debug\MarketplaceWebServiceOrders.pdb
+C:\Users\JUAN\Documents\code\berkeleyshoe\LIB\MarketplaceWebServiceOrders\src\MarketplaceWebServiceOrders.Samples\obj\Debug\ResolveAssemblyReference.cache

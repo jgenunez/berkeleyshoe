@@ -1,0 +1,27 @@
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\AttributesDemo\bin\Debug\ItemSpecificsDemo.exe.config
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\AttributesDemo\obj\Debug\Interop.SHDocVw.dll
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\AttributesDemo\obj\Debug\ItemSpecificsDemo.csproj.ResolveComReference.cache
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\AttributesDemo\bin\Debug\ItemSpecificsDemo.exe
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\AttributesDemo\bin\Debug\ItemSpecificsDemo.pdb
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\AttributesDemo\bin\Debug\eBay.Service.dll
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\AttributesDemo\bin\Debug\Samples.Helper.dll
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\AttributesDemo\bin\Debug\eBay.Service.xml
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\AttributesDemo\bin\Debug\Samples.Helper.xml
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\AttributesDemo\bin\Debug\Interop.SHDocVw.dll
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\AttributesDemo\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\AttributesDemo\obj\Debug\ItemSpecificsDemo.CategoryListForm.resources
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\AttributesDemo\obj\Debug\ItemSpecificsDemo.PleaseWaitDlg.resources
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\AttributesDemo\obj\Debug\ItemSpecificsDemo.SiteListForm.resources
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\AttributesDemo\obj\Debug\ItemSpecificsDemo.Properties.Resources.resources
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\AttributesDemo\obj\Debug\ItemSpecificsDemo.AddItemForm.resources
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\AttributesDemo\obj\Debug\ItemSpecificsDemo.ItemSpecificsForm.resources
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\AttributesDemo\obj\Debug\ItemSpecificsDemo.ReturnPolicyForm.resources
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\AttributesDemo\obj\Debug\GenerateResource.read.1.tlog
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\AttributesDemo\obj\Debug\GenerateResource.write.1.tlog
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\AttributesDemo\obj\Debug\ItemSpecificsDemo.exe
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\AttributesDemo\obj\Debug\ItemSpecificsDemo.pdb
+C:\Users\JUAN\Documents\Visual Studio 2010\Projects\Berkeley\eBay .NET SDK v849 Release\Samples\C#\AttributesDemo\bin\Debug\ItemSpecificsDemo.exe.config
+C:\Users\JUAN\Documents\Visual Studio 2010\Projects\Berkeley\eBay .NET SDK v849 Release\Samples\C#\AttributesDemo\obj\Debug\Interop.SHDocVw.dll
+C:\Users\JUAN\Documents\Visual Studio 2010\Projects\Berkeley\eBay .NET SDK v849 Release\Samples\C#\AttributesDemo\obj\Debug\ItemSpecificsDemo.csproj.ResolveComReference.cache
+C:\Users\JUAN\Documents\Visual Studio 2010\Projects\Berkeley\eBay .NET SDK v849 Release\Samples\C#\AttributesDemo\obj\Debug\ItemSpecificsDemo.exe
+C:\Users\JUAN\Documents\Visual Studio 2010\Projects\Berkeley\eBay .NET SDK v849 Release\Samples\C#\AttributesDemo\obj\Debug\ItemSpecificsDemo.pdb

@@ -1,0 +1,8 @@
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\ConsoleAddFixedPriceItem\bin\Debug\ConsoleAddFixedPriceItem.exe.config
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\ConsoleAddFixedPriceItem\bin\Debug\ConsoleAddFixedPriceItem.exe
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\ConsoleAddFixedPriceItem\bin\Debug\ConsoleAddFixedPriceItem.pdb
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\ConsoleAddFixedPriceItem\bin\Debug\eBay.Service.dll
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\ConsoleAddFixedPriceItem\bin\Debug\eBay.Service.xml
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\ConsoleAddFixedPriceItem\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\ConsoleAddFixedPriceItem\obj\Debug\ConsoleAddFixedPriceItem.exe
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\ConsoleAddFixedPriceItem\obj\Debug\ConsoleAddFixedPriceItem.pdb
