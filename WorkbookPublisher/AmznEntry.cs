@@ -4,18 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace BSI_InventoryPreProcessor
+namespace WorkbookPublisher
 {
     public class AmznEntry
     {
         private AmznListingItem _targetListing;
-        private uint _rowIndex;
 
-        public AmznEntry(uint rowIndex)
-        {
-            _rowIndex = rowIndex;
-        }
-
+        public uint RowIndex { get; set; }
         public bool IsValid { get; set; }
         public string Message { get; set; }
         public string Brand { get; set; }
@@ -24,7 +19,6 @@ namespace BSI_InventoryPreProcessor
         public string Format { get; set; }
         public string Title { get; set; }
         public string Condition { get; set; }
-        public string FullDescription { get; set; }
         public int Quantity { get; set; }
 
         public decimal Price { get; set; }

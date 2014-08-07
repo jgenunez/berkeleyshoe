@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OperationsDashboard", "Oper
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BSI-InventoryPreProcessor", "BSI-InventoryPreProcessor\BSI-InventoryPreProcessor.csproj", "{EACADC03-B363-4208-991E-E396DD0E3A3C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkbookPublisher", "WorkbookPublisher\WorkbookPublisher.csproj", "{8F0463F7-8E72-48B0-83DD-B3D18479E618}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -197,6 +199,18 @@ Global
 		{EACADC03-B363-4208-991E-E396DD0E3A3C}.Release|Win32.ActiveCfg = Release|x86
 		{EACADC03-B363-4208-991E-E396DD0E3A3C}.Release|x86.ActiveCfg = Release|x86
 		{EACADC03-B363-4208-991E-E396DD0E3A3C}.Release|x86.Build.0 = Release|x86
+		{8F0463F7-8E72-48B0-83DD-B3D18479E618}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F0463F7-8E72-48B0-83DD-B3D18479E618}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F0463F7-8E72-48B0-83DD-B3D18479E618}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{8F0463F7-8E72-48B0-83DD-B3D18479E618}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{8F0463F7-8E72-48B0-83DD-B3D18479E618}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{8F0463F7-8E72-48B0-83DD-B3D18479E618}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8F0463F7-8E72-48B0-83DD-B3D18479E618}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F0463F7-8E72-48B0-83DD-B3D18479E618}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F0463F7-8E72-48B0-83DD-B3D18479E618}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{8F0463F7-8E72-48B0-83DD-B3D18479E618}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{8F0463F7-8E72-48B0-83DD-B3D18479E618}.Release|Win32.ActiveCfg = Release|Any CPU
+		{8F0463F7-8E72-48B0-83DD-B3D18479E618}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -9,9 +9,15 @@ namespace BSI_InventoryPreProcessor
     public class EbayEntry
     {
         private EbayListing _targetListing;
+        private uint _rowIndex;
+
+        public EbayEntry(uint rowIndex)       
+        {
+            _rowIndex = rowIndex;
+        }
 
         public bool IsValid { get; set; }
-        public uint RowIndex { get; set; }
+        public string Message { get; set; }
         public string Brand { get; set; }
         public string ClassName { get; set; }
         public string Sku { get; set; }
@@ -21,7 +27,8 @@ namespace BSI_InventoryPreProcessor
         public string FullDescription { get; set; }
         public int Quantity { get; set; }
         public decimal Price { get; set; }
-        public string Result { get; set; }
+        
+
         public bool IsAuction()
         {
             if (this.Format.Contains("A"))
@@ -33,7 +40,6 @@ namespace BSI_InventoryPreProcessor
                 return false;
             }
         }
-
         public void SetListing(EbayListing listing)
         {
             _targetListing = listing;
