@@ -1,0 +1,8 @@
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\HelloWorld\bin\Debug\HelloWorld.exe.config
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\HelloWorld\bin\Debug\HelloWorld.exe
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\HelloWorld\bin\Debug\HelloWorld.pdb
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\HelloWorld\bin\Debug\eBay.Service.dll
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\HelloWorld\bin\Debug\eBay.Service.xml
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\HelloWorld\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\HelloWorld\obj\Debug\HelloWorld.exe
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\HelloWorld\obj\Debug\HelloWorld.pdb

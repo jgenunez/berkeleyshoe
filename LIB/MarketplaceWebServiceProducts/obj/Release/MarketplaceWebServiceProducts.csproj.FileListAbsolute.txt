@@ -1,0 +1,5 @@
+C:\Users\JUAN\Documents\Visual Studio 2010\Projects\Berkeley\MarketplaceWebServiceProducts\bin\Release\MarketplaceWebServiceProducts.dll
+C:\Users\JUAN\Documents\Visual Studio 2010\Projects\Berkeley\MarketplaceWebServiceProducts\bin\Release\MarketplaceWebServiceProducts.pdb
+C:\Users\JUAN\Documents\Visual Studio 2010\Projects\Berkeley\MarketplaceWebServiceProducts\obj\Release\ResolveAssemblyReference.cache
+C:\Users\JUAN\Documents\Visual Studio 2010\Projects\Berkeley\MarketplaceWebServiceProducts\obj\Release\MarketplaceWebServiceProducts.dll
+C:\Users\JUAN\Documents\Visual Studio 2010\Projects\Berkeley\MarketplaceWebServiceProducts\obj\Release\MarketplaceWebServiceProducts.pdb

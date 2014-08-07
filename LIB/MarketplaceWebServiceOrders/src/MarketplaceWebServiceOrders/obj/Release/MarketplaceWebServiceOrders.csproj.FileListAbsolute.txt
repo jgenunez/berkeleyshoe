@@ -1,0 +1,15 @@
+C:\Users\JUAN\Documents\Visual Studio 2010\Projects\Berkeley\MWSOrdersCSharpClientLibrary-2011-01-01._V380028117_\src\MarketplaceWebServiceOrders\bin\Release\MarketplaceWebServiceOrders.dll
+C:\Users\JUAN\Documents\Visual Studio 2010\Projects\Berkeley\MWSOrdersCSharpClientLibrary-2011-01-01._V380028117_\src\MarketplaceWebServiceOrders\bin\Release\MarketplaceWebServiceOrders.pdb
+C:\Users\JUAN\Documents\Visual Studio 2010\Projects\Berkeley\MWSOrdersCSharpClientLibrary-2011-01-01._V380028117_\src\MarketplaceWebServiceOrders\obj\Release\ResolveAssemblyReference.cache
+C:\Users\JUAN\Documents\Visual Studio 2010\Projects\Berkeley\MWSOrdersCSharpClientLibrary-2011-01-01._V380028117_\src\MarketplaceWebServiceOrders\obj\Release\MarketplaceWebServiceOrders.dll
+C:\Users\JUAN\Documents\Visual Studio 2010\Projects\Berkeley\MWSOrdersCSharpClientLibrary-2011-01-01._V380028117_\src\MarketplaceWebServiceOrders\obj\Release\MarketplaceWebServiceOrders.pdb
+C:\Users\JUAN\Documents\Visual Studio 2010\Projects\Berkeley\MarketplaceWebServiceOrders\src\MarketplaceWebServiceOrders\bin\Release\MarketplaceWebServiceOrders.dll
+C:\Users\JUAN\Documents\Visual Studio 2010\Projects\Berkeley\MarketplaceWebServiceOrders\src\MarketplaceWebServiceOrders\bin\Release\MarketplaceWebServiceOrders.pdb
+C:\Users\JUAN\Documents\Visual Studio 2010\Projects\Berkeley\MarketplaceWebServiceOrders\src\MarketplaceWebServiceOrders\obj\Release\ResolveAssemblyReference.cache
+C:\Users\JUAN\Documents\Visual Studio 2010\Projects\Berkeley\MarketplaceWebServiceOrders\src\MarketplaceWebServiceOrders\obj\Release\MarketplaceWebServiceOrders.dll
+C:\Users\JUAN\Documents\Visual Studio 2010\Projects\Berkeley\MarketplaceWebServiceOrders\src\MarketplaceWebServiceOrders\obj\Release\MarketplaceWebServiceOrders.pdb
+C:\Users\JUAN\Documents\code\berkeleyshoe\LIB\MarketplaceWebServiceOrders\src\MarketplaceWebServiceOrders\bin\Release\MarketplaceWebServiceOrders.dll
+C:\Users\JUAN\Documents\code\berkeleyshoe\LIB\MarketplaceWebServiceOrders\src\MarketplaceWebServiceOrders\bin\Release\MarketplaceWebServiceOrders.pdb
+C:\Users\JUAN\Documents\code\berkeleyshoe\LIB\MarketplaceWebServiceOrders\src\MarketplaceWebServiceOrders\obj\Release\ResolveAssemblyReference.cache
+C:\Users\JUAN\Documents\code\berkeleyshoe\LIB\MarketplaceWebServiceOrders\src\MarketplaceWebServiceOrders\obj\Release\MarketplaceWebServiceOrders.dll
+C:\Users\JUAN\Documents\code\berkeleyshoe\LIB\MarketplaceWebServiceOrders\src\MarketplaceWebServiceOrders\obj\Release\MarketplaceWebServiceOrders.pdb

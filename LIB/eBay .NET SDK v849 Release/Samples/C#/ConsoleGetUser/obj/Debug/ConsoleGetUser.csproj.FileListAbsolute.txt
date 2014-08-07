@@ -1,0 +1,8 @@
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\ConsoleGetUser\bin\Debug\ConsoleGetUser.exe.config
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\ConsoleGetUser\bin\Debug\ConsoleGetUser.exe
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\ConsoleGetUser\bin\Debug\ConsoleGetUser.pdb
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\ConsoleGetUser\bin\Debug\eBay.Service.dll
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\ConsoleGetUser\bin\Debug\eBay.Service.xml
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\ConsoleGetUser\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\ConsoleGetUser\obj\Debug\ConsoleGetUser.exe
+C:\Users\JUAN\Desktop\ebaySDK\eBay .NET SDK v849 Release\Samples\C#\ConsoleGetUser\obj\Debug\ConsoleGetUser.pdb

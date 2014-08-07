@@ -1,0 +1,43 @@
+[1/17/2014 6:19:10 PM, Informational]
+https://api.sandbox.ebay.com/wsapi?callname=GetOrders&siteid=0&client=netsoap
+
+[1/17/2014 6:19:13 PM, Informational]
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <soap:Header>
+    <RequesterCredentials xmlns="urn:ebay:apis:eBLBaseComponents">
+      <eBayAuthToken>******</eBayAuthToken>
+    </RequesterCredentials>
+  </soap:Header>
+  <soap:Body>
+    <GetOrdersRequest xmlns="urn:ebay:apis:eBLBaseComponents">
+      <ErrorLanguage>en_US</ErrorLanguage>
+      <MessageID>66538390-a2a5-40a6-ae36-3b0a143d8b2d</MessageID>
+      <Version>779</Version>
+      <OrderRole>Buyer</OrderRole>
+      <OrderStatus>Shipped</OrderStatus>
+    </GetOrdersRequest>
+  </soap:Body>
+</soap:Envelope>
+
+<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <soapenv:Body>
+    <soapenv:Fault>
+      <faultcode xmlns:ns1="http://xml.apache.org/axis/">ns1:FailedCheck</faultcode>
+      <faultstring>Auth token is invalid.</faultstring>
+      <faultactor>http://www.ebay.com/ws/websvc/eBayAPI</faultactor>
+      <detail>
+        <FaultDetail>
+          <ErrorCode>931</ErrorCode>
+          <Severity>Error</Severity>
+          <DetailedMessage>Validation of the authentication token in API request failed.</DetailedMessage>
+        </FaultDetail>
+      </detail>
+    </soapenv:Fault>
+  </soapenv:Body>
+</soapenv:Envelope>
+
+[1/17/2014 6:19:13 PM, Error]
+Validation of the authentication token in API request failed.
+

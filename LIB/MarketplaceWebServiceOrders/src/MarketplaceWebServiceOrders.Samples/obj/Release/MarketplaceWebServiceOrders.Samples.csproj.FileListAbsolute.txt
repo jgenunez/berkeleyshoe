@@ -1,0 +1,7 @@
+C:\Users\JUAN\Documents\code\berkeleyshoe\LIB\MarketplaceWebServiceOrders\src\MarketplaceWebServiceOrders.Samples\bin\Release\MarketplaceWebServiceOrders.Samples.exe
+C:\Users\JUAN\Documents\code\berkeleyshoe\LIB\MarketplaceWebServiceOrders\src\MarketplaceWebServiceOrders.Samples\bin\Release\MarketplaceWebServiceOrders.Samples.pdb
+C:\Users\JUAN\Documents\code\berkeleyshoe\LIB\MarketplaceWebServiceOrders\src\MarketplaceWebServiceOrders.Samples\bin\Release\MarketplaceWebServiceOrders.dll
+C:\Users\JUAN\Documents\code\berkeleyshoe\LIB\MarketplaceWebServiceOrders\src\MarketplaceWebServiceOrders.Samples\bin\Release\MarketplaceWebServiceOrders.pdb
+C:\Users\JUAN\Documents\code\berkeleyshoe\LIB\MarketplaceWebServiceOrders\src\MarketplaceWebServiceOrders.Samples\obj\Release\ResolveAssemblyReference.cache
+C:\Users\JUAN\Documents\code\berkeleyshoe\LIB\MarketplaceWebServiceOrders\src\MarketplaceWebServiceOrders.Samples\obj\Release\MarketplaceWebServiceOrders.Samples.exe
+C:\Users\JUAN\Documents\code\berkeleyshoe\LIB\MarketplaceWebServiceOrders\src\MarketplaceWebServiceOrders.Samples\obj\Release\MarketplaceWebServiceOrders.Samples.pdb
