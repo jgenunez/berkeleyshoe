@@ -1,0 +1,51 @@
+﻿<Window x:Class="WorkbookPublisher.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:WorkbookPublisher"
+        Title="Workbook Publisher" Height="500" Width="800">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="75"></RowDefinition>
+            <RowDefinition Height="75"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <Button Name="btnSetWorkbook" Click="btnSetWorkbook_Click"  Margin="5" Padding="10" VerticalAlignment="Center">Set Workbook</Button>
+            <Label Name="lbCurrentWorkbook" Margin="5" VerticalAlignment="Center"> NONE </Label>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <Button Name="btnShowAvailableHeader"  Margin="5" Padding="10" VerticalAlignment="Center" Click="btnShowAvailableHeader_Click">Show Headers</Button>
+        </StackPanel>
+
+        <TabControl Name="tcSheets" Margin="5"  Grid.Row="2" Grid.RowSpan="4">
+            <TabControl.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Header}" VerticalAlignment="Center" Margin="5"/>
+                        <Button VerticalAlignment="Center" Margin="5">Publish</Button>
+                    </StackPanel>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+            <TabControl.ContentTemplate>
+                <DataTemplate>
+                    <ListView ItemsSource="{Binding Entries}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Row" Width="Auto" DisplayMemberBinding="{Binding RowIndex}" />
+                                <GridViewColumn Header="SKU" Width="Auto" DisplayMemberBinding="{Binding Sku}" />
+                                <GridViewColumn Header="Valid" Width="Auto" DisplayMemberBinding="{Binding IsValid}" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </DataTemplate>
+            </TabControl.ContentTemplate>
+        </TabControl>
+
+    </Grid>
+</Window>

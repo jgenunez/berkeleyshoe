@@ -76,8 +76,7 @@ namespace BSI_InventoryPreProcessor
 
         private EbayEntry CreateEbayEntry(Row row)
         {
-            EbayEntry entry = new EbayEntry();
-            entry.RowIndex = row.RowIndex.Value;
+            EbayEntry entry = new EbayEntry(row.RowIndex.Value);
 
             foreach (Cell cell in row.OfType<Cell>())
             {
@@ -107,8 +106,7 @@ namespace BSI_InventoryPreProcessor
 
         private AmznEntry CreateAmznEntry(Row row) 
         {
-            AmznEntry entry = new AmznEntry();
-            entry.RowIndex = row.RowIndex.Value;
+            AmznEntry entry = new AmznEntry(row.RowIndex.Value);
 
             foreach (Cell cell in row.OfType<Cell>())
             {

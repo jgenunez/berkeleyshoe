@@ -16,6 +16,13 @@ namespace AutomaticSyncConsole
 
         public static void Main(string[] args)
         {
+            string fileName = DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString().PadLeft(2, '0') + DateTime.Now.Day.ToString().PadLeft(2, '0') + ".xlsx";
+
+            string path = @"P:\Unpublished Reports\" + fileName;
+
+            ReportGenerator reportGenerator = new ReportGenerator(path);
+            reportGenerator.GenerateExcelReport();
+
             if (DateTime.Now.Hour == 5 && DateTime.Now.Minute < 35)
             {
                 StartMarketplaceSync(true);
@@ -27,12 +34,12 @@ namespace AutomaticSyncConsole
 
                 FixOverpublished();
 
-                string fileName = DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString().PadLeft(2,'0') + DateTime.Now.Day.ToString().PadLeft(2,'0') + ".xlsx";
+                //string fileName = DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString().PadLeft(2,'0') + DateTime.Now.Day.ToString().PadLeft(2,'0') + ".xlsx";
 
-                string path = @"P:\Unpublished Reports\" + fileName;
+                //string path = @"P:\Unpublished Reports\" + fileName;
 
-                ReportGenerator reportGenerator = new ReportGenerator(path);
-                reportGenerator.GenerateExcelReport();
+                //ReportGenerator reportGenerator = new ReportGenerator(path);
+                //reportGenerator.GenerateExcelReport();
             }
             else
             {
