@@ -20,7 +20,7 @@
             <Label Name="lbCurrentWorkbook" Margin="5" VerticalAlignment="Center" Content="{Binding Path}"/>  
         </StackPanel>
         
-        <TabControl Name="tcSheets" Margin="5"  Grid.Row="1" Grid.RowSpan="4">
+        <TabControl Name="tcSheets" Margin="5"  Grid.Row="1" Grid.RowSpan="5" ItemsSource="{Binding Publishers}">
             <TabControl.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -30,21 +30,24 @@
             </TabControl.ItemTemplate>
             <TabControl.ContentTemplate>
                 <DataTemplate>
-                    <ListView ItemsSource="{Binding Publisher}">
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn Header="Row" Width="Auto" DisplayMemberBinding="{Binding RowIndex}" />
-                                <GridViewColumn Header="SKU" Width="Auto" DisplayMemberBinding="{Binding Sku}" />
-                                <GridViewColumn Header="Valid" Width="Auto" DisplayMemberBinding="{Binding IsValid}" />
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
+                    <StackPanel>
+                        <ListView ItemsSource="{Binding Entries}">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Row" Width="Auto" DisplayMemberBinding="{Binding RowIndex}" />
+                                    <GridViewColumn Header="SKU" Width="Auto" DisplayMemberBinding="{Binding Sku}" />
+                                    <GridViewColumn Header="Valid" Width="Auto" DisplayMemberBinding="{Binding IsValid}" />
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                        <Button Name="btnPublish" IsEnabled="{Binding CanPublish}" Margin="5" Padding="5" VerticalAlignment="Center" Command="{Binding Publish}">Publish</Button>
+                    </StackPanel>
                 </DataTemplate>
             </TabControl.ContentTemplate>
         </TabControl>
 
         <StackPanel Grid.Row="5" Orientation="Horizontal">
-            <Button Name="btnPublish" IsEnabled="{Binding CanPublish}" Margin="5" Padding="5" VerticalAlignment="Center" >Publish</Button>
+            
         </StackPanel>
 
     </Grid>

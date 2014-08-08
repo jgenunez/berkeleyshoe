@@ -4,76 +4,29 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="berkeleyModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2005" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
-        <EntityContainer Name="berkeleyModelStoreContainer">
-          <EntitySet Name="Alias" EntityType="berkeleyModel.Store.Alias" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="AmznListingItem" EntityType="berkeleyModel.Store.AmznListingItem" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="AmznMarketplace" EntityType="berkeleyModel.Store.AmznMarketplace" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="AmznOrder" EntityType="berkeleyModel.Store.AmznOrder" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="AmznOrderItem" EntityType="berkeleyModel.Store.AmznOrderItem" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="Bsi_LocationLog" EntityType="berkeleyModel.Store.Bsi_LocationLog" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="bsi_posting" EntityType="berkeleyModel.Store.bsi_posting" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="bsi_posts" EntityType="berkeleyModel.Store.bsi_posts" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="bsi_quantities" EntityType="berkeleyModel.Store.bsi_quantities" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="bsi_quantities_message" EntityType="berkeleyModel.Store.bsi_quantities_message" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="Category" EntityType="berkeleyModel.Store.Category" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="Customer" EntityType="berkeleyModel.Store.Customer" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="Department" EntityType="berkeleyModel.Store.Department" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="DepartmentDivision" EntityType="berkeleyModel.Store.DepartmentDivision" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="Division" EntityType="berkeleyModel.Store.Division" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="EbayListing" EntityType="berkeleyModel.Store.EbayListing" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="EbayListingItem" EntityType="berkeleyModel.Store.EbayListingItem" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="EbayMarketplace" EntityType="berkeleyModel.Store.EbayMarketplace" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="EbayOrder" EntityType="berkeleyModel.Store.EbayOrder" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="EbayOrderItem" EntityType="berkeleyModel.Store.EbayOrderItem" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="EbayPictureServiceUrl" EntityType="berkeleyModel.Store.EbayPictureServiceUrl" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="EbayPictureUrlRelation" EntityType="berkeleyModel.Store.EbayPictureUrlRelation" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="InventoryEntry" EntityType="berkeleyModel.Store.InventoryEntry" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="InventoryTransferLog" EntityType="berkeleyModel.Store.InventoryTransferLog" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="Item" EntityType="berkeleyModel.Store.Item" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="ItemClass" EntityType="berkeleyModel.Store.ItemClass" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="ItemClassComponent" EntityType="berkeleyModel.Store.ItemClassComponent" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="MatrixAttributeDisplayOrder" EntityType="berkeleyModel.Store.MatrixAttributeDisplayOrder" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="PhysicalInventory" EntityType="berkeleyModel.Store.PhysicalInventory" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="PhysicalInventoryEntry" EntityType="berkeleyModel.Store.PhysicalInventoryEntry" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="PurchaseOrder" EntityType="berkeleyModel.Store.PurchaseOrder" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="PurchaseOrderEntry" EntityType="berkeleyModel.Store.PurchaseOrderEntry" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="Supplier" EntityType="berkeleyModel.Store.Supplier" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="SupplierList" EntityType="berkeleyModel.Store.SupplierList" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="SyncListing" EntityType="berkeleyModel.Store.SyncListing" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="SyncOrder" EntityType="berkeleyModel.Store.SyncOrder" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="SyncOrderItem" EntityType="berkeleyModel.Store.SyncOrderItem" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="Transaction" EntityType="berkeleyModel.Store.Transaction" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="TransactionEntry" EntityType="berkeleyModel.Store.TransactionEntry" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="TransactionHold" EntityType="berkeleyModel.Store.TransactionHold" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="TransactionHoldEntry" EntityType="berkeleyModel.Store.TransactionHoldEntry" store:Type="Tables" Schema="dbo" />
-          <AssociationSet Name="FK_EbayOrderItem_EbayOrder" Association="berkeleyModel.Store.FK_EbayOrderItem_EbayOrder">
-            <End Role="EbayOrder" EntitySet="EbayOrder" />
-            <End Role="EbayOrderItem" EntitySet="EbayOrderItem" />
-          </AssociationSet>
-        </EntityContainer>
+    <Schema Namespace="berkeleyModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2005" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
         <EntityType Name="Alias">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ItemID" Type="int" Nullable="false" />
-          <Property Name="Alias" Type="nvarchar" Nullable="false" MaxLength="25" />
+          <Property Name="Alias" Type="nvarchar" MaxLength="25" Nullable="false" />
           <Property Name="DBTimeStamp" Type="timestamp" StoreGeneratedPattern="Computed" />
         </EntityType>
         <EntityType Name="AmznListingItem">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ItemID" Type="int" Nullable="false" />
           <Property Name="MarketplaceID" Type="int" Nullable="false" />
           <Property Name="Quantity" Type="int" Nullable="false" />
           <Property Name="Price" Type="money" Nullable="false" />
-          <Property Name="Title" Type="nvarchar" Nullable="false" MaxLength="200" />
+          <Property Name="Title" Type="nvarchar" MaxLength="200" Nullable="false" />
           <Property Name="OpenDate" Type="datetime" Nullable="false" />
-          <Property Name="Condition" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="ASIN" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="Condition" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ASIN" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
           <Property Name="LastSyncTime" Type="datetime" Nullable="false" />
         </EntityType>
@@ -81,30 +34,30 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
-          <Property Name="Code" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="AccessKeyId" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="SecretAccessKey" Type="nvarchar" Nullable="false" MaxLength="100" />
-          <Property Name="MerchantId" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="MarketplaceId" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Code" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="AccessKeyId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="SecretAccessKey" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="MerchantId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="MarketplaceId" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="OrderSyncTime" Type="datetime" />
           <Property Name="ListingSyncTime" Type="datetime" />
-          <Property Name="RootDir" Type="nvarchar" Nullable="false" MaxLength="400" />
+          <Property Name="RootDir" Type="nvarchar" MaxLength="400" Nullable="false" />
         </EntityType>
         <EntityType Name="AmznOrder">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
-          <Property Name="Code" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Code" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="MarketplaceID" Type="int" Nullable="false" />
-          <Property Name="Status" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="LastUpdatedDate" Type="datetime" Nullable="false" />
           <Property Name="PurchaseDate" Type="datetime" Nullable="false" />
-          <Property Name="PaymentMethod" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="PaymentMethod" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="BuyerName" Type="nvarchar" MaxLength="50" />
-          <Property Name="ShipServiceLevel" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="ShipServiceLevel" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="AddressLine1" Type="nvarchar" MaxLength="100" />
           <Property Name="AddressLine2" Type="nvarchar" MaxLength="100" />
           <Property Name="AddressLine3" Type="nvarchar" MaxLength="100" />
@@ -122,10 +75,10 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ListingItemID" Type="int" Nullable="false" />
           <Property Name="OrderID" Type="int" Nullable="false" />
-          <Property Name="Code" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="Code" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="QuantityOrdered" Type="int" Nullable="false" />
           <Property Name="QuantityShipped" Type="int" Nullable="false" />
           <Property Name="ItemPrice" Type="money" Nullable="false" />
@@ -137,68 +90,68 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ItemID" Type="int" Nullable="false" />
           <Property Name="Quantity" Type="int" Nullable="false" />
-          <Property Name="BeforeChange" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="Location" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="User" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="BeforeChange" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Location" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="User" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="UpdateDate" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="bsi_posting">
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="status" Type="tinyint" Nullable="false" />
-          <Property Name="sku" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="sku" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="creationDate" Type="datetime" Nullable="false" />
           <Property Name="pictures" Type="ntext" Nullable="false" />
-          <Property Name="gender" Type="nvarchar" Nullable="false" MaxLength="10" />
-          <Property Name="brand" Type="nvarchar" Nullable="false" MaxLength="100" />
-          <Property Name="size" Type="nvarchar" Nullable="false" MaxLength="10" />
-          <Property Name="width" Type="nvarchar" Nullable="false" MaxLength="10" />
-          <Property Name="condition" Type="nvarchar" Nullable="false" MaxLength="10" />
-          <Property Name="category" Type="nvarchar" Nullable="false" MaxLength="10" />
-          <Property Name="style" Type="nvarchar" Nullable="false" MaxLength="25" />
+          <Property Name="gender" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="brand" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="size" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="width" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="condition" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="category" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="style" Type="nvarchar" MaxLength="25" Nullable="false" />
           <Property Name="fullDescription" Type="ntext" Nullable="false" />
           <Property Name="keywords" Type="ntext" Nullable="false" />
-          <Property Name="material" Type="nvarchar" Nullable="false" MaxLength="25" />
-          <Property Name="color" Type="nvarchar" Nullable="false" MaxLength="20" />
-          <Property Name="shade" Type="nvarchar" Nullable="false" MaxLength="25" />
-          <Property Name="heelHeight" Type="nvarchar" Nullable="false" MaxLength="10" />
-          <Property Name="title" Type="nvarchar" Nullable="false" MaxLength="125" />
+          <Property Name="material" Type="nvarchar" MaxLength="25" Nullable="false" />
+          <Property Name="color" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="shade" Type="nvarchar" MaxLength="25" Nullable="false" />
+          <Property Name="heelHeight" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="title" Type="nvarchar" MaxLength="125" Nullable="false" />
           <Property Name="marketplaces" Type="int" Nullable="false" />
           <Property Name="variationType" Type="int" Nullable="false" />
-          <Property Name="variationDimensions" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="apparelClosureType" Type="nvarchar" Nullable="false" MaxLength="30" />
-          <Property Name="ocassionLifestyle" Type="nvarchar" Nullable="false" MaxLength="30" />
-          <Property Name="styleKeywords" Type="nvarchar" Nullable="false" MaxLength="100" />
-          <Property Name="patternStyle" Type="nvarchar" Nullable="false" MaxLength="30" />
+          <Property Name="variationDimensions" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="apparelClosureType" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="ocassionLifestyle" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="styleKeywords" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="patternStyle" Type="nvarchar" MaxLength="30" Nullable="false" />
           <Property Name="ListPrice" Type="nvarchar" MaxLength="15" />
         </EntityType>
         <EntityType Name="bsi_posts">
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="postingID" Type="int" Nullable="false" />
           <Property Name="marketplace" Type="int" Nullable="false" />
-          <Property Name="markerplaceItemID" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="markerplaceItemID" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="status" Type="tinyint" Nullable="false" />
-          <Property Name="sku" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="title" Type="nvarchar" Nullable="false" MaxLength="100" />
-          <Property Name="price" Type="nvarchar" Nullable="false" MaxLength="10" />
+          <Property Name="sku" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="title" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="price" Type="nvarchar" MaxLength="10" Nullable="false" />
           <Property Name="startDate" Type="datetime" Nullable="false" />
           <Property Name="endDate" Type="datetime" Nullable="false" />
           <Property Name="sellingFormat" Type="nvarchar" MaxLength="5" />
           <Property Name="errorMessage" Type="ntext" />
-          <Property Name="orderId" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="productFeedId" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="inventoryFeedId" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="priceFeedId" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="relationshipFeedId" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="imageFeedId" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="orderId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="productFeedId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="inventoryFeedId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="priceFeedId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="relationshipFeedId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="imageFeedId" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="purchaseOrder" Type="nvarchar" MaxLength="50" />
           <Property Name="listUser" Type="nvarchar" MaxLength="20" />
         </EntityType>
@@ -206,16 +159,16 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="postId" Type="int" Nullable="false" />
           <Property Name="itemId" Type="int" Nullable="false" />
-          <Property Name="itemLookupCode" Type="nvarchar" Nullable="false" MaxLength="100" />
-          <Property Name="title" Type="nvarchar" Nullable="false" MaxLength="100" />
-          <Property Name="size" Type="nvarchar" Nullable="false" MaxLength="20" />
-          <Property Name="width" Type="nvarchar" Nullable="false" MaxLength="20" />
-          <Property Name="color" Type="nvarchar" Nullable="false" MaxLength="20" />
+          <Property Name="itemLookupCode" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="title" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="size" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="width" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="color" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="quantity" Type="int" Nullable="false" />
-          <Property Name="price" Type="decimal" Nullable="false" Scale="2" />
+          <Property Name="price" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="purchaseOrder" Type="nvarchar" MaxLength="50" />
           <Property Name="listUser" Type="nvarchar" MaxLength="20" />
         </EntityType>
@@ -223,9 +176,9 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="postDetailId" Type="int" Nullable="false" />
-          <Property Name="messageNumber" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="messageNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="errorMessage" Type="nvarchar(max)" />
           <Property Name="confirmed" Type="bit" Nullable="false" />
           <Property Name="submissionId" Type="nvarchar" MaxLength="50" />
@@ -238,22 +191,22 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="HQID" Type="int" Nullable="false" />
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="DepartmentID" Type="int" Nullable="false" />
-          <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="30" />
-          <Property Name="Code" Type="nvarchar" Nullable="false" MaxLength="17" />
+          <Property Name="Name" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="Code" Type="nvarchar" MaxLength="17" Nullable="false" />
           <Property Name="DBTimeStamp" Type="timestamp" StoreGeneratedPattern="Computed" />
         </EntityType>
         <EntityType Name="Customer">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="AccountNumber" Type="nvarchar" Nullable="false" MaxLength="20" />
+          <Property Name="AccountNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="AccountTypeID" Type="int" Nullable="false" />
-          <Property Name="Address2" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="Address2" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="AssessFinanceCharges" Type="bit" Nullable="false" />
-          <Property Name="Company" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="Country" Type="nvarchar" Nullable="false" MaxLength="20" />
+          <Property Name="Company" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Country" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="CustomDate1" Type="datetime" />
           <Property Name="CustomDate2" Type="datetime" />
           <Property Name="CustomDate3" Type="datetime" />
@@ -264,11 +217,11 @@
           <Property Name="CustomNumber3" Type="float" Nullable="false" />
           <Property Name="CustomNumber4" Type="float" Nullable="false" />
           <Property Name="CustomNumber5" Type="float" Nullable="false" />
-          <Property Name="CustomText1" Type="nvarchar" Nullable="false" MaxLength="30" />
-          <Property Name="CustomText2" Type="nvarchar" Nullable="false" MaxLength="30" />
-          <Property Name="CustomText3" Type="nvarchar" Nullable="false" MaxLength="30" />
-          <Property Name="CustomText4" Type="nvarchar" Nullable="false" MaxLength="30" />
-          <Property Name="CustomText5" Type="nvarchar" Nullable="false" MaxLength="30" />
+          <Property Name="CustomText1" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="CustomText2" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="CustomText3" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="CustomText4" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="CustomText5" Type="nvarchar" MaxLength="30" Nullable="false" />
           <Property Name="GlobalCustomer" Type="bit" Nullable="false" />
           <Property Name="HQID" Type="int" Nullable="false" />
           <Property Name="LastStartingDate" Type="datetime" />
@@ -277,16 +230,16 @@
           <Property Name="LimitPurchase" Type="bit" Nullable="false" />
           <Property Name="LastClosingBalance" Type="money" Nullable="false" />
           <Property Name="PrimaryShipToID" Type="int" Nullable="false" />
-          <Property Name="State" Type="nvarchar" Nullable="false" MaxLength="20" />
+          <Property Name="State" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="StoreID" Type="int" Nullable="false" />
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="LayawayCustomer" Type="bit" Nullable="false" />
           <Property Name="Employee" Type="bit" Nullable="false" />
-          <Property Name="FirstName" Type="nvarchar" Nullable="false" MaxLength="30" />
-          <Property Name="LastName" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="Address" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="City" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="Zip" Type="nvarchar" Nullable="false" MaxLength="15" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Address" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="City" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Zip" Type="nvarchar" MaxLength="15" Nullable="false" />
           <Property Name="AccountBalance" Type="money" Nullable="false" />
           <Property Name="CreditLimit" Type="money" Nullable="false" />
           <Property Name="TotalSales" Type="money" Nullable="false" />
@@ -298,14 +251,14 @@
           <Property Name="PriceLevel" Type="smallint" Nullable="false" />
           <Property Name="TaxExempt" Type="bit" Nullable="false" />
           <Property Name="Notes" Type="ntext" />
-          <Property Name="Title" Type="nvarchar" Nullable="false" MaxLength="20" />
-          <Property Name="EmailAddress" Type="nvarchar" Nullable="false" MaxLength="255" />
+          <Property Name="Title" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="EmailAddress" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="DBTimeStamp" Type="timestamp" StoreGeneratedPattern="Computed" />
-          <Property Name="TaxNumber" Type="nvarchar" Nullable="false" MaxLength="20" />
-          <Property Name="PictureName" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="TaxNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="PictureName" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="DefaultShippingServiceID" Type="int" Nullable="false" />
-          <Property Name="PhoneNumber" Type="nvarchar" Nullable="false" MaxLength="30" />
-          <Property Name="FaxNumber" Type="nvarchar" Nullable="false" MaxLength="30" />
+          <Property Name="PhoneNumber" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="FaxNumber" Type="nvarchar" MaxLength="30" Nullable="false" />
           <Property Name="CashierID" Type="int" Nullable="false" />
           <Property Name="SalesRepID" Type="int" Nullable="false" />
           <Property Name="Vouchers" Type="money" Nullable="false" />
@@ -315,16 +268,16 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="HQID" Type="int" Nullable="false" />
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="30" />
-          <Property Name="code" Type="nvarchar" Nullable="false" MaxLength="17" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="code" Type="nvarchar" MaxLength="17" Nullable="false" />
           <Property Name="DBTimeStamp" Type="timestamp" StoreGeneratedPattern="Computed" />
         </EntityType>
         <EntityType Name="DepartmentDivision">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="DepartmentID" Type="int" Nullable="false" />
           <Property Name="DivisionID" Type="int" Nullable="false" />
         </EntityType>
@@ -332,34 +285,34 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
-          <Property Name="Type" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="EbayListing">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
-          <Property Name="Code" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Code" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="MarketplaceID" Type="int" Nullable="false" />
-          <Property Name="Sku" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="Status" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="Format" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="Duration" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="Sku" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Format" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Duration" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="StartTime" Type="datetime" Nullable="false" />
           <Property Name="EndTime" Type="datetime" Nullable="false" />
-          <Property Name="Title" Type="nvarchar" Nullable="false" MaxLength="200" />
+          <Property Name="Title" Type="nvarchar" MaxLength="200" Nullable="false" />
           <Property Name="FullDescription" Type="nvarchar(max)" />
           <Property Name="IsVariation" Type="bit" />
-          <Property Name="Condition" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="Condition" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="LastSyncTime" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="EbayListingItem">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ItemID" Type="int" Nullable="false" />
           <Property Name="ListingID" Type="int" Nullable="false" />
           <Property Name="Quantity" Type="int" Nullable="false" />
@@ -369,25 +322,25 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
-          <Property Name="Code" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Code" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Token" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="PayPalAccount" Type="nvarchar" Nullable="false" MaxLength="100" />
+          <Property Name="PayPalAccount" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="ListingSyncTime" Type="datetime" />
           <Property Name="OrdersSyncTime" Type="datetime" />
-          <Property Name="RootDir" Type="nvarchar" Nullable="false" MaxLength="400" />
+          <Property Name="RootDir" Type="nvarchar" MaxLength="400" Nullable="false" />
         </EntityType>
         <EntityType Name="EbayOrder">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
-          <Property Name="Code" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Code" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="MarketplaceID" Type="int" Nullable="false" />
           <Property Name="SalesRecordNumber" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedTime" Type="datetime" Nullable="false" />
-          <Property Name="OrderStatus" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="OrderStatus" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Subtotal" Type="money" Nullable="false" />
           <Property Name="ShippingService" Type="nvarchar" MaxLength="50" />
           <Property Name="ExpeditedService" Type="bit" />
@@ -399,21 +352,21 @@
           <Property Name="Total" Type="money" Nullable="false" />
           <Property Name="PaidAmount" Type="money" />
           <Property Name="PaidTime" Type="datetime" />
-          <Property Name="PaymentMethod" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="CheckoutStatus" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="PaymentMethod" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CheckoutStatus" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="EbayPaymentStatus" Type="nvarchar" MaxLength="50" />
           <Property Name="ShippedTime" Type="datetime" />
           <Property Name="BuyerID" Type="nvarchar" MaxLength="50" />
-          <Property Name="UserName" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="UserName" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="CompanyName" Type="nvarchar" MaxLength="50" />
-          <Property Name="CountryName" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="CountryCode" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="CountryName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CountryCode" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="CityName" Type="nvarchar" MaxLength="50" />
-          <Property Name="StateOrProvince" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="PostalCode" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="Street1" Type="nvarchar" Nullable="false" MaxLength="100" />
-          <Property Name="Street2" Type="nvarchar" Nullable="false" MaxLength="100" />
-          <Property Name="Phone" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="StateOrProvince" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="PostalCode" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Street1" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Street2" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Phone" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="IsMultiLegShipping" Type="bit" Nullable="false" />
           <Property Name="LastSyncTime" Type="datetime" Nullable="false" />
         </EntityType>
@@ -421,32 +374,31 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ListingItemID" Type="int" Nullable="false" />
           <Property Name="OrderID" Type="int" Nullable="false" />
-          <Property Name="Code" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="Code" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="QuantityPurchased" Type="int" Nullable="false" />
           <Property Name="TransactionPrice" Type="money" Nullable="false" />
-          <Property Name="UnpaidItemDisputeStatus" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="UnpaidItemDisputeType" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="UnpaidItemDisputeStatus" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="UnpaidItemDisputeType" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="EbayPictureServiceUrl">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
-          <Property Name="LocalName" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LocalName" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Path" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="VariationAttributeValue" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="Url" Type="nvarchar" Nullable="false" MaxLength="100" />
+          <Property Name="Url" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="TimeUploaded" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="EbayPictureUrlRelation">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ListingID" Type="int" Nullable="false" />
           <Property Name="PictureUrlID" Type="int" Nullable="false" />
           <Property Name="CreatedTime" Type="datetime" Nullable="false" />
@@ -455,19 +407,19 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ItemID" Type="int" Nullable="false" />
           <Property Name="PhysicalInventoryID" Type="int" Nullable="false" />
           <Property Name="Counted" Type="int" Nullable="false" />
-          <Property Name="Bin" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="User" Type="nvarchar" Nullable="false" MaxLength="100" />
+          <Property Name="Bin" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="User" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="LastModified" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="InventoryTransferLog">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ItemID" Type="int" Nullable="false" />
           <Property Name="DetailID" Type="int" Nullable="false" />
           <Property Name="Quantity" Type="float" Nullable="false" />
@@ -487,7 +439,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="BinLocation" Type="nvarchar" Nullable="false" MaxLength="20" />
+          <Property Name="BinLocation" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="BuydownPrice" Type="money" Nullable="false" />
           <Property Name="BuydownQuantity" Type="float" Nullable="false" />
           <Property Name="CommissionAmount" Type="money" Nullable="false" />
@@ -495,7 +447,7 @@
           <Property Name="CommissionMode" Type="int" Nullable="false" />
           <Property Name="CommissionPercentProfit" Type="real" Nullable="false" />
           <Property Name="CommissionPercentSale" Type="real" Nullable="false" />
-          <Property Name="Description" Type="nvarchar" Nullable="false" MaxLength="30" />
+          <Property Name="Description" Type="nvarchar" MaxLength="30" Nullable="false" />
           <Property Name="FoodStampable" Type="bit" Nullable="false" />
           <Property Name="HQID" Type="int" Nullable="false" />
           <Property Name="ItemNotDiscountable" Type="bit" Nullable="false" />
@@ -505,8 +457,8 @@
           <Property Name="QuantityCommitted" Type="float" Nullable="false" />
           <Property Name="SerialNumberCount" Type="int" Nullable="false" />
           <Property Name="TareWeightPercent" Type="float" Nullable="false" />
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
-          <Property Name="ItemLookupCode" Type="nvarchar" Nullable="false" MaxLength="25" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ItemLookupCode" Type="nvarchar" MaxLength="25" Nullable="false" />
           <Property Name="DepartmentID" Type="int" Nullable="false" />
           <Property Name="CategoryID" Type="int" Nullable="false" />
           <Property Name="MessageID" Type="int" Nullable="false" />
@@ -533,17 +485,17 @@
           <Property Name="BarcodeFormat" Type="smallint" Nullable="false" />
           <Property Name="PriceLowerBound" Type="money" Nullable="false" />
           <Property Name="PriceUpperBound" Type="money" Nullable="false" />
-          <Property Name="PictureName" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="PictureName" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="LastSold" Type="datetime" />
           <Property Name="ExtendedDescription" Type="ntext" Nullable="false" />
-          <Property Name="SubDescription1" Type="nvarchar" Nullable="false" MaxLength="30" />
-          <Property Name="SubDescription2" Type="nvarchar" Nullable="false" MaxLength="30" />
-          <Property Name="SubDescription3" Type="nvarchar" Nullable="false" MaxLength="30" />
-          <Property Name="UnitOfMeasure" Type="nvarchar" Nullable="false" MaxLength="4" />
+          <Property Name="SubDescription1" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="SubDescription2" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="SubDescription3" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="UnitOfMeasure" Type="nvarchar" MaxLength="4" Nullable="false" />
           <Property Name="SubCategoryID" Type="int" Nullable="false" />
           <Property Name="QuantityEntryNotAllowed" Type="bit" Nullable="false" />
           <Property Name="PriceMustBeEntered" Type="bit" Nullable="false" />
-          <Property Name="BlockSalesReason" Type="nvarchar" Nullable="false" MaxLength="30" />
+          <Property Name="BlockSalesReason" Type="nvarchar" MaxLength="30" Nullable="false" />
           <Property Name="BlockSalesAfterDate" Type="datetime" />
           <Property Name="Weight" Type="float" Nullable="false" />
           <Property Name="Taxable" Type="bit" Nullable="false" />
@@ -563,7 +515,7 @@
           <Property Name="MSRP" Type="money" Nullable="false" />
           <Property Name="DateCreated" Type="datetime" Nullable="false" />
           <Property Name="Content" Type="ntext" Nullable="false" />
-          <Property Name="UsuallyShip" Type="nvarchar" Nullable="false" MaxLength="255" />
+          <Property Name="UsuallyShip" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="NumberFormat" Type="nvarchar" MaxLength="20" />
           <Property Name="ItemCannotBeRet" Type="bit" />
           <Property Name="ItemCannotBeSold" Type="bit" />
@@ -576,17 +528,17 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
-          <Property Name="Description" Type="nvarchar" Nullable="false" MaxLength="30" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="30" Nullable="false" />
           <Property Name="Dimensions" Type="smallint" Nullable="false" />
-          <Property Name="Title1" Type="nvarchar" Nullable="false" MaxLength="20" />
-          <Property Name="Title2" Type="nvarchar" Nullable="false" MaxLength="20" />
-          <Property Name="Title3" Type="nvarchar" Nullable="false" MaxLength="20" />
+          <Property Name="Title1" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Title2" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Title3" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="ClassType" Type="smallint" Nullable="false" />
           <Property Name="DBTimeStamp" Type="timestamp" StoreGeneratedPattern="Computed" />
           <Property Name="UseComponentPrice" Type="bit" Nullable="false" />
           <Property Name="HQID" Type="int" Nullable="false" />
-          <Property Name="ItemLookupCode" Type="nvarchar" Nullable="false" MaxLength="25" />
+          <Property Name="ItemLookupCode" Type="nvarchar" MaxLength="25" Nullable="false" />
           <Property Name="Notes" Type="ntext" />
           <Property Name="DepartmentID" Type="int" Nullable="false" />
           <Property Name="CategoryID" Type="int" Nullable="false" />
@@ -594,22 +546,22 @@
           <Property Name="Cost" Type="money" Nullable="false" />
           <Property Name="SupplierID" Type="int" Nullable="false" />
           <Property Name="BarcodeFormat" Type="smallint" Nullable="false" />
-          <Property Name="SubDescription1" Type="nvarchar" Nullable="false" MaxLength="30" />
-          <Property Name="SubDescription2" Type="nvarchar" Nullable="false" MaxLength="30" />
-          <Property Name="SubDescription3" Type="nvarchar" Nullable="false" MaxLength="30" />
+          <Property Name="SubDescription1" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="SubDescription2" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="SubDescription3" Type="nvarchar" MaxLength="30" Nullable="false" />
           <Property Name="TaxID" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="ItemClassComponent">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ItemClassID" Type="int" Nullable="false" />
           <Property Name="ItemID" Type="int" Nullable="false" />
           <Property Name="Quantity" Type="float" Nullable="false" />
-          <Property Name="Detail1" Type="nvarchar" Nullable="false" MaxLength="30" />
-          <Property Name="Detail2" Type="nvarchar" Nullable="false" MaxLength="30" />
-          <Property Name="Detail3" Type="nvarchar" Nullable="false" MaxLength="30" />
+          <Property Name="Detail1" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="Detail2" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="Detail3" Type="nvarchar" MaxLength="30" Nullable="false" />
           <Property Name="LastUpdated" Type="datetime" Nullable="false" />
           <Property Name="DBTimeStamp" Type="timestamp" StoreGeneratedPattern="Computed" />
           <Property Name="Price" Type="money" Nullable="false" />
@@ -618,11 +570,11 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ItemClassID" Type="int" Nullable="false" />
           <Property Name="Dimension" Type="int" Nullable="false" />
-          <Property Name="Attribute" Type="nvarchar" Nullable="false" MaxLength="30" />
-          <Property Name="Code" Type="nvarchar" Nullable="false" MaxLength="5" />
+          <Property Name="Attribute" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="Code" Type="nvarchar" MaxLength="5" Nullable="false" />
           <Property Name="DisplayOrder" Type="int" />
           <Property Name="Inactive" Type="bit" Nullable="false" />
           <Property Name="HQID" Type="int" Nullable="false" />
@@ -631,27 +583,27 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="StoreID" Type="int" Nullable="false" />
           <Property Name="OpenTime" Type="datetime" />
           <Property Name="CloseTime" Type="datetime" />
           <Property Name="Status" Type="int" Nullable="false" />
           <Property Name="LastRefresh" Type="datetime" />
-          <Property Name="Description" Type="nvarchar" Nullable="false" MaxLength="100" />
-          <Property Name="Code" Type="nvarchar" Nullable="false" MaxLength="17" />
+          <Property Name="Description" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Code" Type="nvarchar" MaxLength="17" Nullable="false" />
           <Property Name="DBTimeStamp" Type="timestamp" StoreGeneratedPattern="Computed" />
         </EntityType>
         <EntityType Name="PhysicalInventoryEntry">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="StoreID" Type="int" Nullable="false" />
           <Property Name="PhysicalInventoryID" Type="int" Nullable="false" />
           <Property Name="ReasonCodeID" Type="int" Nullable="false" />
           <Property Name="CountTime" Type="datetime" />
           <Property Name="ItemID" Type="int" Nullable="false" />
-          <Property Name="BinLocation" Type="nvarchar" Nullable="false" MaxLength="100" />
+          <Property Name="BinLocation" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="Price" Type="money" Nullable="false" />
           <Property Name="Cost" Type="money" Nullable="false" />
           <Property Name="QuantityCounted" Type="float" Nullable="false" />
@@ -670,26 +622,26 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="LastUpdated" Type="datetime" Nullable="false" />
-          <Property Name="POTitle" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="POTitle" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="POType" Type="int" Nullable="false" />
           <Property Name="StoreID" Type="int" Nullable="false" />
           <Property Name="WorksheetID" Type="int" Nullable="false" />
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
-          <Property Name="PONumber" Type="nvarchar" Nullable="false" MaxLength="20" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PONumber" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="Status" Type="smallint" Nullable="false" />
           <Property Name="DateCreated" Type="datetime" Nullable="false" />
-          <Property Name="To" Type="nvarchar" Nullable="false" MaxLength="255" />
-          <Property Name="ShipTo" Type="nvarchar" Nullable="false" MaxLength="255" />
-          <Property Name="Requisitioner" Type="nvarchar" Nullable="false" MaxLength="20" />
-          <Property Name="ShipVia" Type="nvarchar" Nullable="false" MaxLength="20" />
-          <Property Name="FOBPoint" Type="nvarchar" Nullable="false" MaxLength="20" />
-          <Property Name="Terms" Type="nvarchar" Nullable="false" MaxLength="20" />
+          <Property Name="To" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="ShipTo" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Requisitioner" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="ShipVia" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="FOBPoint" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Terms" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="TaxRate" Type="real" Nullable="false" />
           <Property Name="Shipping" Type="money" Nullable="false" />
-          <Property Name="Freight" Type="nvarchar" Nullable="false" MaxLength="20" />
+          <Property Name="Freight" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="RequiredDate" Type="datetime" />
-          <Property Name="ConfirmingTo" Type="nvarchar" Nullable="false" MaxLength="20" />
-          <Property Name="Remarks" Type="nvarchar" Nullable="false" MaxLength="30" />
+          <Property Name="ConfirmingTo" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Remarks" Type="nvarchar" MaxLength="30" Nullable="false" />
           <Property Name="SupplierID" Type="int" Nullable="false" />
           <Property Name="DBTimeStamp" Type="timestamp" StoreGeneratedPattern="Computed" />
           <Property Name="OtherStoreID" Type="int" Nullable="false" />
@@ -709,17 +661,17 @@
           <Property Name="ParentPOId" Type="int" Nullable="false" />
           <Property Name="RootPOId" Type="int" Nullable="false" />
           <Property Name="OriginPOId" Type="int" Nullable="false" />
-          <Property Name="MasterPO" Type="nvarchar" Nullable="false" MaxLength="20" />
+          <Property Name="MasterPO" Type="nvarchar" MaxLength="20" Nullable="false" />
         </EntityType>
         <EntityType Name="PurchaseOrderEntry">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ItemDescription" Type="nvarchar" Nullable="false" MaxLength="30" />
+          <Property Name="ItemDescription" Type="nvarchar" MaxLength="30" Nullable="false" />
           <Property Name="LastUpdated" Type="datetime" Nullable="false" />
           <Property Name="QuantityReceivedToDate" Type="float" Nullable="false" />
           <Property Name="StoreID" Type="int" Nullable="false" />
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="PurchaseOrderID" Type="int" Nullable="false" />
           <Property Name="QuantityOrdered" Type="float" Nullable="false" />
           <Property Name="QuantityReceived" Type="float" Nullable="false" />
@@ -738,31 +690,31 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="Country" Type="nvarchar" Nullable="false" MaxLength="20" />
+          <Property Name="Country" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="HQID" Type="int" Nullable="false" />
           <Property Name="LastUpdated" Type="datetime" Nullable="false" />
-          <Property Name="State" Type="nvarchar" Nullable="false" MaxLength="20" />
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
-          <Property Name="SupplierName" Type="nvarchar" Nullable="false" MaxLength="30" />
-          <Property Name="ContactName" Type="nvarchar" Nullable="false" MaxLength="30" />
-          <Property Name="Address1" Type="nvarchar" Nullable="false" MaxLength="30" />
-          <Property Name="Address2" Type="nvarchar" Nullable="false" MaxLength="30" />
-          <Property Name="City" Type="nvarchar" Nullable="false" MaxLength="30" />
-          <Property Name="Zip" Type="nvarchar" Nullable="false" MaxLength="20" />
-          <Property Name="EmailAddress" Type="nvarchar" Nullable="false" MaxLength="255" />
-          <Property Name="WebPageAddress" Type="nvarchar" Nullable="false" MaxLength="255" />
-          <Property Name="Code" Type="nvarchar" Nullable="false" MaxLength="17" />
+          <Property Name="State" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SupplierName" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="ContactName" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="Address1" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="Address2" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="City" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="Zip" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="EmailAddress" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="WebPageAddress" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Code" Type="nvarchar" MaxLength="17" Nullable="false" />
           <Property Name="DBTimeStamp" Type="timestamp" StoreGeneratedPattern="Computed" />
-          <Property Name="AccountNumber" Type="nvarchar" Nullable="false" MaxLength="20" />
-          <Property Name="TaxNumber" Type="nvarchar" Nullable="false" MaxLength="20" />
+          <Property Name="AccountNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="TaxNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="CurrencyID" Type="int" Nullable="false" />
-          <Property Name="PhoneNumber" Type="nvarchar" Nullable="false" MaxLength="30" />
-          <Property Name="FaxNumber" Type="nvarchar" Nullable="false" MaxLength="30" />
-          <Property Name="CustomText1" Type="nvarchar" Nullable="false" MaxLength="30" />
-          <Property Name="CustomText2" Type="nvarchar" Nullable="false" MaxLength="30" />
-          <Property Name="CustomText3" Type="nvarchar" Nullable="false" MaxLength="30" />
-          <Property Name="CustomText4" Type="nvarchar" Nullable="false" MaxLength="30" />
-          <Property Name="CustomText5" Type="nvarchar" Nullable="false" MaxLength="30" />
+          <Property Name="PhoneNumber" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="FaxNumber" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="CustomText1" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="CustomText2" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="CustomText3" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="CustomText4" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="CustomText5" Type="nvarchar" MaxLength="30" Nullable="false" />
           <Property Name="CustomNumber1" Type="float" Nullable="false" />
           <Property Name="CustomNumber2" Type="float" Nullable="false" />
           <Property Name="CustomNumber3" Type="float" Nullable="false" />
@@ -774,18 +726,18 @@
           <Property Name="CustomDate4" Type="datetime" />
           <Property Name="CustomDate5" Type="datetime" />
           <Property Name="Notes" Type="ntext" Nullable="false" />
-          <Property Name="Terms" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="Terms" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="SupplierList">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="MinimumOrder" Type="float" Nullable="false" />
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ItemID" Type="int" Nullable="false" />
           <Property Name="SupplierID" Type="int" Nullable="false" />
           <Property Name="Cost" Type="money" Nullable="false" />
-          <Property Name="ReorderNumber" Type="nvarchar" Nullable="false" MaxLength="25" />
+          <Property Name="ReorderNumber" Type="nvarchar" MaxLength="25" Nullable="false" />
           <Property Name="MasterPackQuantity" Type="int" Nullable="false" />
           <Property Name="DBTimeStamp" Type="timestamp" StoreGeneratedPattern="Computed" />
           <Property Name="TaxRate" Type="float" Nullable="false" />
@@ -794,29 +746,29 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ItemID" Type="int" Nullable="false" />
-          <Property Name="Code" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="Marketplace" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="Code" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Marketplace" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Quantity" Type="int" Nullable="false" />
           <Property Name="Price" Type="money" Nullable="false" />
           <Property Name="StartTime" Type="datetime" Nullable="false" />
           <Property Name="EndTime" Type="datetime" />
-          <Property Name="Format" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="Duration" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="Title" Type="nvarchar" Nullable="false" MaxLength="150" />
+          <Property Name="Format" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Duration" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="150" Nullable="false" />
           <Property Name="Variation" Type="bit" Nullable="false" />
           <Property Name="Condition" Type="nvarchar" MaxLength="50" />
-          <Property Name="Active" Type="int" Nullable="false" StoreGeneratedPattern="Computed" />
+          <Property Name="Active" Type="int" StoreGeneratedPattern="Computed" Nullable="false" />
         </EntityType>
         <EntityType Name="SyncOrder">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
-          <Property Name="Code" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="Status" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="Marketplace" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Code" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Marketplace" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="CreatedTime" Type="datetime" Nullable="false" />
           <Property Name="Email" Type="nvarchar" MaxLength="50" />
         </EntityType>
@@ -824,10 +776,10 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="SyncOrderID" Type="int" Nullable="false" />
           <Property Name="SyncListingID" Type="int" Nullable="false" />
-          <Property Name="Code" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="Code" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="QuantityOrdered" Type="int" Nullable="false" />
           <Property Name="Price" Type="money" Nullable="false" />
           <Property Name="QuantityShipped" Type="int" Nullable="false" />
@@ -838,15 +790,15 @@
           </Key>
           <Property Name="ShipToID" Type="int" Nullable="false" />
           <Property Name="StoreID" Type="int" Nullable="false" />
-          <Property Name="TransactionNumber" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="TransactionNumber" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="BatchNumber" Type="int" Nullable="false" />
           <Property Name="Time" Type="datetime" Nullable="false" />
           <Property Name="CustomerID" Type="int" Nullable="false" />
           <Property Name="CashierID" Type="int" Nullable="false" />
           <Property Name="Total" Type="money" Nullable="false" />
           <Property Name="SalesTax" Type="money" Nullable="false" />
-          <Property Name="Comment" Type="nvarchar" Nullable="false" MaxLength="255" />
-          <Property Name="ReferenceNumber" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="Comment" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="ReferenceNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="DBTimeStamp" Type="timestamp" StoreGeneratedPattern="Computed" />
           <Property Name="Status" Type="int" Nullable="false" />
           <Property Name="ExchangeID" Type="int" Nullable="false" />
@@ -862,7 +814,7 @@
           <Property Name="Cost" Type="money" Nullable="false" />
           <Property Name="FullPrice" Type="money" Nullable="false" />
           <Property Name="StoreID" Type="int" Nullable="false" />
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="TransactionNumber" Type="int" Nullable="false" />
           <Property Name="ItemID" Type="int" Nullable="false" />
           <Property Name="Price" Type="money" Nullable="false" />
@@ -871,7 +823,7 @@
           <Property Name="SalesRepID" Type="int" Nullable="false" />
           <Property Name="Taxable" Type="bit" Nullable="false" />
           <Property Name="DetailID" Type="int" Nullable="false" />
-          <Property Name="Comment" Type="nvarchar" Nullable="false" MaxLength="255" />
+          <Property Name="Comment" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="DBTimeStamp" Type="timestamp" StoreGeneratedPattern="Computed" />
           <Property Name="DiscountReasonCodeID" Type="int" Nullable="false" />
           <Property Name="ReturnReasonCodeID" Type="int" Nullable="false" />
@@ -888,12 +840,12 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="StoreID" Type="int" Nullable="false" />
           <Property Name="TransactionType" Type="smallint" Nullable="false" />
-          <Property Name="HoldComment" Type="nvarchar" Nullable="false" MaxLength="255" />
+          <Property Name="HoldComment" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="RecallID" Type="int" Nullable="false" />
-          <Property Name="Comment" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="Comment" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="PriceLevel" Type="smallint" Nullable="false" />
           <Property Name="DiscountMethod" Type="smallint" Nullable="false" />
           <Property Name="DiscountPercent" Type="float" Nullable="false" />
@@ -909,11 +861,11 @@
           <Property Name="TransactionTime" Type="datetime" Nullable="false" />
           <Property Name="ExpirationOrDueDate" Type="datetime" Nullable="false" />
           <Property Name="ReturnMode" Type="bit" Nullable="false" />
-          <Property Name="ReferenceNumber" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="ReferenceNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="ShippingChargePurchased" Type="money" Nullable="false" />
           <Property Name="ShippingChargeOverride" Type="bit" Nullable="false" />
           <Property Name="ShippingServiceID" Type="int" Nullable="false" />
-          <Property Name="ShippingTrackingNumber" Type="nvarchar" Nullable="false" MaxLength="255" />
+          <Property Name="ShippingTrackingNumber" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="ShippingNotes" Type="ntext" Nullable="false" />
           <Property Name="DBTimeStamp" Type="timestamp" StoreGeneratedPattern="Computed" />
           <Property Name="ReasonCodeID" Type="int" Nullable="false" />
@@ -928,12 +880,12 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
-          <Property Name="EntryKey" Type="nvarchar" Nullable="false" MaxLength="10" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EntryKey" Type="nvarchar" MaxLength="10" Nullable="false" />
           <Property Name="StoreID" Type="int" Nullable="false" />
           <Property Name="TransactionHoldID" Type="int" Nullable="false" />
           <Property Name="RecallID" Type="int" Nullable="false" />
-          <Property Name="Description" Type="nvarchar" Nullable="false" MaxLength="30" />
+          <Property Name="Description" Type="nvarchar" MaxLength="30" Nullable="false" />
           <Property Name="QuantityPurchased" Type="float" Nullable="false" />
           <Property Name="QuantityOnOrder" Type="float" Nullable="false" />
           <Property Name="QuantityRTD" Type="float" Nullable="false" />
@@ -941,15 +893,15 @@
           <Property Name="Price" Type="money" Nullable="false" />
           <Property Name="FullPrice" Type="money" Nullable="false" />
           <Property Name="PriceSource" Type="smallint" Nullable="false" />
-          <Property Name="Comment" Type="nvarchar" Nullable="false" MaxLength="255" />
+          <Property Name="Comment" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="DetailID" Type="int" Nullable="false" />
           <Property Name="Taxable" Type="bit" Nullable="false" />
           <Property Name="ItemID" Type="int" Nullable="false" />
           <Property Name="SalesRepID" Type="int" Nullable="false" />
-          <Property Name="SerialNumber1" Type="nvarchar" Nullable="false" MaxLength="20" />
-          <Property Name="SerialNumber2" Type="nvarchar" Nullable="false" MaxLength="20" />
-          <Property Name="SerialNumber3" Type="nvarchar" Nullable="false" MaxLength="20" />
-          <Property Name="VoucherNumber" Type="nvarchar" Nullable="false" MaxLength="20" />
+          <Property Name="SerialNumber1" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="SerialNumber2" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="SerialNumber3" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="VoucherNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="VoucherExpirationDate" Type="datetime" />
           <Property Name="DBTimeStamp" Type="timestamp" StoreGeneratedPattern="Computed" />
           <Property Name="DiscountReasonCodeID" Type="int" Nullable="false" />
@@ -962,10 +914,10 @@
           <Property Name="VoucherID" Type="int" Nullable="false" />
         </EntityType>
         <Association Name="FK_EbayOrderItem_EbayOrder">
-          <End Role="EbayOrder" Type="berkeleyModel.Store.EbayOrder" Multiplicity="1">
+          <End Role="EbayOrder" Type="Self.EbayOrder" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Role="EbayOrderItem" Type="berkeleyModel.Store.EbayOrderItem" Multiplicity="*" />
+          <End Role="EbayOrderItem" Type="Self.EbayOrderItem" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="EbayOrder">
               <PropertyRef Name="ID" />
@@ -975,6 +927,53 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityContainer Name="berkeleyModelStoreContainer">
+          <EntitySet Name="Alias" EntityType="Self.Alias" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AmznListingItem" EntityType="Self.AmznListingItem" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AmznMarketplace" EntityType="Self.AmznMarketplace" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AmznOrder" EntityType="Self.AmznOrder" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AmznOrderItem" EntityType="Self.AmznOrderItem" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Bsi_LocationLog" EntityType="Self.Bsi_LocationLog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="bsi_posting" EntityType="Self.bsi_posting" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="bsi_posts" EntityType="Self.bsi_posts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="bsi_quantities" EntityType="Self.bsi_quantities" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="bsi_quantities_message" EntityType="Self.bsi_quantities_message" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Customer" EntityType="Self.Customer" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Department" EntityType="Self.Department" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DepartmentDivision" EntityType="Self.DepartmentDivision" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Division" EntityType="Self.Division" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EbayListing" EntityType="Self.EbayListing" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EbayListingItem" EntityType="Self.EbayListingItem" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EbayMarketplace" EntityType="Self.EbayMarketplace" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EbayOrder" EntityType="Self.EbayOrder" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EbayOrderItem" EntityType="Self.EbayOrderItem" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EbayPictureServiceUrl" EntityType="Self.EbayPictureServiceUrl" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EbayPictureUrlRelation" EntityType="Self.EbayPictureUrlRelation" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="InventoryEntry" EntityType="Self.InventoryEntry" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="InventoryTransferLog" EntityType="Self.InventoryTransferLog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Item" EntityType="Self.Item" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ItemClass" EntityType="Self.ItemClass" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ItemClassComponent" EntityType="Self.ItemClassComponent" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MatrixAttributeDisplayOrder" EntityType="Self.MatrixAttributeDisplayOrder" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PhysicalInventory" EntityType="Self.PhysicalInventory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PhysicalInventoryEntry" EntityType="Self.PhysicalInventoryEntry" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PurchaseOrder" EntityType="Self.PurchaseOrder" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PurchaseOrderEntry" EntityType="Self.PurchaseOrderEntry" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Supplier" EntityType="Self.Supplier" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SupplierList" EntityType="Self.SupplierList" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SyncListing" EntityType="Self.SyncListing" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SyncOrder" EntityType="Self.SyncOrder" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SyncOrderItem" EntityType="Self.SyncOrderItem" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Transaction" EntityType="Self.Transaction" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TransactionEntry" EntityType="Self.TransactionEntry" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TransactionHold" EntityType="Self.TransactionHold" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TransactionHoldEntry" EntityType="Self.TransactionHoldEntry" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_EbayOrderItem_EbayOrder" Association="Self.FK_EbayOrderItem_EbayOrder">
+            <End Role="EbayOrder" EntitySet="EbayOrder" />
+            <End Role="EbayOrderItem" EntitySet="EbayOrderItem" />
+          </AssociationSet>
+        </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
@@ -1256,8 +1255,8 @@
           <Property Name="FoodStampable" Type="Boolean" Nullable="false" />
           <Property Name="HQID" Type="Int32" Nullable="false" />
           <Property Name="ItemNotDiscountable" Type="Boolean" Nullable="false" />
-          <Property Name="LastReceived" Type="DateTime" />
-          <Property Name="LastUpdated" Type="DateTime" Nullable="false" />
+          <Property Name="LastReceived" Type="DateTime" Precision="3" />
+          <Property Name="LastUpdated" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="Notes" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
           <Property Name="QuantityCommitted" Type="Double" Nullable="false" />
           <Property Name="SerialNumberCount" Type="Int32" Nullable="false" />
@@ -1272,8 +1271,8 @@
           <Property Name="PriceB" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
           <Property Name="PriceC" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
           <Property Name="SalePrice" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
-          <Property Name="SaleStartDate" Type="DateTime" />
-          <Property Name="SaleEndDate" Type="DateTime" />
+          <Property Name="SaleStartDate" Type="DateTime" Precision="3" />
+          <Property Name="SaleEndDate" Type="DateTime" Precision="3" />
           <Property Name="QuantityDiscountID" Type="Int32" Nullable="false" />
           <Property Name="TaxID" Type="Int32" Nullable="false" />
           <Property Name="ItemType" Type="Int16" Nullable="false" />
@@ -1291,7 +1290,7 @@
           <Property Name="PriceLowerBound" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
           <Property Name="PriceUpperBound" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
           <Property Name="PictureName" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
-          <Property Name="LastSold" Type="DateTime" />
+          <Property Name="LastSold" Type="DateTime" Precision="3" />
           <Property Name="ExtendedDescription" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
           <Property Name="SubDescription1" Type="String" Nullable="false" MaxLength="30" Unicode="true" FixedLength="false" />
           <Property Name="SubDescription2" Type="String" Nullable="false" MaxLength="30" Unicode="true" FixedLength="false" />
@@ -1301,11 +1300,11 @@
           <Property Name="QuantityEntryNotAllowed" Type="Boolean" Nullable="false" />
           <Property Name="PriceMustBeEntered" Type="Boolean" Nullable="false" />
           <Property Name="BlockSalesReason" Type="String" Nullable="false" MaxLength="30" Unicode="true" FixedLength="false" />
-          <Property Name="BlockSalesAfterDate" Type="DateTime" />
+          <Property Name="BlockSalesAfterDate" Type="DateTime" Precision="3" />
           <Property Name="Weight" Type="Double" Nullable="false" />
           <Property Name="Taxable" Type="Boolean" Nullable="false" />
           <Property Name="DBTimeStamp" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
-          <Property Name="BlockSalesBeforeDate" Type="DateTime" />
+          <Property Name="BlockSalesBeforeDate" Type="DateTime" Precision="3" />
           <Property Name="LastCost" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
           <Property Name="ReplacementCost" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
           <Property Name="WebItem" Type="Boolean" Nullable="false" />
@@ -1315,10 +1314,10 @@
           <Property Name="SaleScheduleID" Type="Int32" Nullable="false" />
           <Property Name="Consignment" Type="Boolean" Nullable="false" />
           <Property Name="Inactive" Type="Boolean" Nullable="false" />
-          <Property Name="LastCounted" Type="DateTime" />
+          <Property Name="LastCounted" Type="DateTime" Precision="3" />
           <Property Name="DoNotOrder" Type="Boolean" Nullable="false" />
           <Property Name="MSRP" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
-          <Property Name="DateCreated" Type="DateTime" Nullable="false" />
+          <Property Name="DateCreated" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="Content" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
           <Property Name="UsuallyShip" Type="String" Nullable="false" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="NumberFormat" Type="String" MaxLength="20" Unicode="true" FixedLength="false" />
@@ -1388,7 +1387,7 @@
           <Property Name="Detail1" Type="String" Nullable="false" MaxLength="30" Unicode="true" FixedLength="false" />
           <Property Name="Detail2" Type="String" Nullable="false" MaxLength="30" Unicode="true" FixedLength="false" />
           <Property Name="Detail3" Type="String" Nullable="false" MaxLength="30" Unicode="true" FixedLength="false" />
-          <Property Name="LastUpdated" Type="DateTime" Nullable="false" />
+          <Property Name="LastUpdated" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="DBTimeStamp" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
           <Property Name="Price" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
           <NavigationProperty Name="Item" Relationship="BerkeleyEntities.ItemItemClassComponent" FromRole="ItemClassComponent" ToRole="Item" />
@@ -1414,10 +1413,10 @@
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="StoreID" Type="Int32" Nullable="false" />
-          <Property Name="OpenTime" Type="DateTime" />
-          <Property Name="CloseTime" Type="DateTime" />
+          <Property Name="OpenTime" Type="DateTime" Precision="3" />
+          <Property Name="CloseTime" Type="DateTime" Precision="3" />
           <Property Name="Status" Type="Int32" Nullable="false" />
-          <Property Name="LastRefresh" Type="DateTime" />
+          <Property Name="LastRefresh" Type="DateTime" Precision="3" />
           <Property Name="Description" Type="String" Nullable="false" MaxLength="100" Unicode="true" FixedLength="false" />
           <Property Name="Code" Type="String" Nullable="false" MaxLength="17" Unicode="true" FixedLength="false" />
           <Property Name="DBTimeStamp" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
@@ -1432,7 +1431,7 @@
           <Property Name="StoreID" Type="Int32" Nullable="false" />
           <Property Name="PhysicalInventoryID" Type="Int32" Nullable="false" />
           <Property Name="ReasonCodeID" Type="Int32" Nullable="false" />
-          <Property Name="CountTime" Type="DateTime" />
+          <Property Name="CountTime" Type="DateTime" Precision="3" />
           <Property Name="ItemID" Type="Int32" Nullable="false" />
           <Property Name="BinLocation" Type="String" Nullable="false" MaxLength="100" Unicode="true" FixedLength="false" />
           <Property Name="Price" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
@@ -1454,7 +1453,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="LastUpdated" Type="DateTime" Nullable="false" />
+          <Property Name="LastUpdated" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="POTitle" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
           <Property Name="POType" Type="Int32" Nullable="false" />
           <Property Name="StoreID" Type="Int32" Nullable="false" />
@@ -1462,7 +1461,7 @@
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="PONumber" Type="String" Nullable="false" MaxLength="20" Unicode="true" FixedLength="false" />
           <Property Name="Status" Type="Int16" Nullable="false" />
-          <Property Name="DateCreated" Type="DateTime" Nullable="false" />
+          <Property Name="DateCreated" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="To" Type="String" Nullable="false" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="ShipTo" Type="String" Nullable="false" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="Requisitioner" Type="String" Nullable="false" MaxLength="20" Unicode="true" FixedLength="false" />
@@ -1472,7 +1471,7 @@
           <Property Name="TaxRate" Type="Single" Nullable="false" />
           <Property Name="Shipping" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
           <Property Name="Freight" Type="String" Nullable="false" MaxLength="20" Unicode="true" FixedLength="false" />
-          <Property Name="RequiredDate" Type="DateTime" />
+          <Property Name="RequiredDate" Type="DateTime" Precision="3" />
           <Property Name="ConfirmingTo" Type="String" Nullable="false" MaxLength="20" Unicode="true" FixedLength="false" />
           <Property Name="Remarks" Type="String" Nullable="false" MaxLength="30" Unicode="true" FixedLength="false" />
           <Property Name="SupplierID" Type="Int32" Nullable="false" />
@@ -1483,7 +1482,7 @@
           <Property Name="OtherPOID" Type="Int32" Nullable="false" />
           <Property Name="InventoryLocation" Type="Int32" Nullable="false" />
           <Property Name="IsPlaced" Type="Boolean" Nullable="false" />
-          <Property Name="DatePlaced" Type="DateTime" />
+          <Property Name="DatePlaced" Type="DateTime" Precision="3" />
           <Property Name="BatchNumber" Type="Int32" Nullable="false" />
           <Property Name="EstShipping" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
           <Property Name="CurrentShipping" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
@@ -1502,7 +1501,7 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ItemDescription" Type="String" Nullable="false" MaxLength="30" Unicode="true" FixedLength="false" />
-          <Property Name="LastUpdated" Type="DateTime" Nullable="false" />
+          <Property Name="LastUpdated" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="QuantityReceivedToDate" Type="Double" Nullable="false" />
           <Property Name="StoreID" Type="Int32" Nullable="false" />
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
@@ -1518,7 +1517,7 @@
           <Property Name="ShippingPerItem" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
           <Property Name="OtherFeesPerItem" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
           <Property Name="LastQuantityReceived" Type="Double" Nullable="false" />
-          <Property Name="LastReceivedDate" Type="DateTime" />
+          <Property Name="LastReceivedDate" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Item" Relationship="BerkeleyEntities.PurchaseOrderEntryItem" FromRole="PurchaseOrderEntry" ToRole="Item" />
           <NavigationProperty Name="PurchaseOrder" Relationship="BerkeleyEntities.PurchaseOrderEntryPurchaseOrder" FromRole="PurchaseOrderEntry" ToRole="PurchaseOrder" />
         </EntityType>
@@ -1528,7 +1527,7 @@
           </Key>
           <Property Name="Country" Type="String" Nullable="false" MaxLength="20" Unicode="true" FixedLength="false" />
           <Property Name="HQID" Type="Int32" Nullable="false" />
-          <Property Name="LastUpdated" Type="DateTime" Nullable="false" />
+          <Property Name="LastUpdated" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="State" Type="String" Nullable="false" MaxLength="20" Unicode="true" FixedLength="false" />
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="SupplierName" Type="String" Nullable="false" MaxLength="30" Unicode="true" FixedLength="false" />
@@ -1556,11 +1555,11 @@
           <Property Name="CustomNumber3" Type="Double" Nullable="false" />
           <Property Name="CustomNumber4" Type="Double" Nullable="false" />
           <Property Name="CustomNumber5" Type="Double" Nullable="false" />
-          <Property Name="CustomDate1" Type="DateTime" />
-          <Property Name="CustomDate2" Type="DateTime" />
-          <Property Name="CustomDate3" Type="DateTime" />
-          <Property Name="CustomDate4" Type="DateTime" />
-          <Property Name="CustomDate5" Type="DateTime" />
+          <Property Name="CustomDate1" Type="DateTime" Precision="3" />
+          <Property Name="CustomDate2" Type="DateTime" Precision="3" />
+          <Property Name="CustomDate3" Type="DateTime" Precision="3" />
+          <Property Name="CustomDate4" Type="DateTime" Precision="3" />
+          <Property Name="CustomDate5" Type="DateTime" Precision="3" />
           <Property Name="Notes" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
           <Property Name="Terms" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
           <NavigationProperty Name="SupplierLists" Relationship="BerkeleyEntities.SupplierSupplierList" FromRole="Supplier" ToRole="SupplierList" />
@@ -1661,7 +1660,7 @@
           <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Type="Byte" Name="status" Nullable="false" />
           <Property Type="String" Name="sku" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="DateTime" Name="creationDate" Nullable="false" />
+          <Property Type="DateTime" Name="creationDate" Nullable="false" Precision="3" />
           <Property Type="String" Name="pictures" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="gender" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="brand" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
@@ -1699,8 +1698,8 @@
           <Property Type="String" Name="sku" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="title" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="price" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Type="DateTime" Name="startDate" Nullable="false" />
-          <Property Type="DateTime" Name="endDate" Nullable="false" />
+          <Property Type="DateTime" Name="startDate" Nullable="false" Precision="3" />
+          <Property Type="DateTime" Name="endDate" Nullable="false" Precision="3" />
           <Property Type="String" Name="sellingFormat" MaxLength="5" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="errorMessage" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="orderId" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -1745,7 +1744,7 @@
           <Property Type="Boolean" Name="confirmed" Nullable="false" />
           <Property Type="String" Name="submissionId" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="submissionType" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="DateTime" Name="submmitedDate" />
+          <Property Type="DateTime" Name="submmitedDate" Precision="3" />
           <Property Type="Boolean" Name="checked" />
           <NavigationProperty Name="bsi_quantities" Relationship="BerkeleyEntities.bsi_quantities_messagebsi_quantities" FromRole="bsi_quantities_message" ToRole="bsi_quantities" />
         </EntityType>
@@ -1881,7 +1880,7 @@
           <Property Type="Int32" Name="PhysicalInventoryID" Nullable="false" />
           <Property Type="String" Name="User" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="PhysicalInventory" Relationship="BerkeleyEntities.InventoryEntryPhysicalInventory" FromRole="InventoryEntry" ToRole="PhysicalInventory" />
-          <Property Type="DateTime" Name="LastModified" Nullable="false" />
+          <Property Type="DateTime" Name="LastModified" Nullable="false" Precision="3" />
           <Property Type="Int32" Name="Counted" Nullable="false" />
           <Property Type="String" Name="Bin" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Item" Relationship="BerkeleyEntities.InventoryEntryItem" FromRole="InventoryEntry" ToRole="Item" />
@@ -1997,7 +1996,7 @@
           <Property Type="String" Name="Code" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Status" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Marketplace" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="DateTime" Name="CreatedTime" Nullable="false" />
+          <Property Type="DateTime" Name="CreatedTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="SyncOrderItems" Relationship="BerkeleyEntities.SyncOrderSyncOrderItem" FromRole="SyncOrder" ToRole="SyncOrderItem" />
           <Property Type="String" Name="Email" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
@@ -2037,8 +2036,8 @@
           <Property Type="String" Name="Marketplace" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="Int32" Name="Quantity" Nullable="false" />
           <Property Type="Decimal" Name="Price" Nullable="false" Precision="19" Scale="4" />
-          <Property Type="DateTime" Name="StartTime" Nullable="false" />
-          <Property Type="DateTime" Name="EndTime" />
+          <Property Type="DateTime" Name="StartTime" Nullable="false" Precision="3" />
+          <Property Type="DateTime" Name="EndTime" Precision="3" />
           <Property Type="String" Name="Format" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Duration" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Title" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
@@ -2080,7 +2079,7 @@
           <Property Type="Int32" Name="ItemID" Nullable="false" />
           <Property Type="Int32" Name="DetailID" Nullable="false" />
           <Property Type="Double" Name="Quantity" Nullable="false" />
-          <Property Type="DateTime" Name="DateTransferred" Nullable="false" />
+          <Property Type="DateTime" Name="DateTransferred" Nullable="false" Precision="3" />
           <Property Type="Int32" Name="StoreID" Nullable="false" />
           <Property Type="Binary" Name="DBTimeStamp" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
           <Property Type="Int32" Name="ReferenceID" Nullable="false" />
@@ -2119,7 +2118,7 @@
           <Property Type="Int32" Name="QuantityDiscountID" Nullable="false" />
           <Property Type="Int32" Name="ItemType" Nullable="false" />
           <Property Type="Double" Name="ComputedQuantity" />
-          <Property Type="DateTime" Name="TransactionTime" />
+          <Property Type="DateTime" Name="TransactionTime" Precision="3" />
           <Property Type="Boolean" Name="IsAddMoney" Nullable="false" />
           <Property Type="Int32" Name="VoucherID" Nullable="false" />
           <NavigationProperty Name="Item" Relationship="BerkeleyEntities.TransactionEntryItem" FromRole="TransactionEntry" ToRole="Item" />
@@ -2171,8 +2170,8 @@
           <Property Type="Decimal" Name="TaxPrevious" Nullable="false" Precision="19" Scale="4" />
           <Property Type="Int32" Name="SalesRepID" Nullable="false" />
           <Property Type="Int32" Name="ShipToID" Nullable="false" />
-          <Property Type="DateTime" Name="TransactionTime" Nullable="false" />
-          <Property Type="DateTime" Name="ExpirationOrDueDate" Nullable="false" />
+          <Property Type="DateTime" Name="TransactionTime" Nullable="false" Precision="3" />
+          <Property Type="DateTime" Name="ExpirationOrDueDate" Nullable="false" Precision="3" />
           <Property Type="Boolean" Name="ReturnMode" Nullable="false" />
           <Property Type="String" Name="ReferenceNumber" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="Decimal" Name="ShippingChargePurchased" Nullable="false" Precision="19" Scale="4" />
@@ -2216,14 +2215,14 @@
           <Property Type="String" Name="SerialNumber2" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="SerialNumber3" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="VoucherNumber" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Type="DateTime" Name="VoucherExpirationDate" />
+          <Property Type="DateTime" Name="VoucherExpirationDate" Precision="3" />
           <Property Type="Binary" Name="DBTimeStamp" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
           <Property Type="Int32" Name="DiscountReasonCodeID" Nullable="false" />
           <Property Type="Int32" Name="ReturnReasonCodeID" Nullable="false" />
           <Property Type="Int32" Name="TaxChangeReasonCodeID" Nullable="false" />
           <Property Type="Int32" Name="ItemTaxID" Nullable="false" />
           <Property Type="Double" Name="ComponentQuantityReserved" Nullable="false" />
-          <Property Type="DateTime" Name="TransactionTime" />
+          <Property Type="DateTime" Name="TransactionTime" Precision="3" />
           <Property Type="Boolean" Name="IsAddMoney" Nullable="false" />
           <Property Type="Int32" Name="VoucherID" Nullable="false" />
           <NavigationProperty Name="Item" Relationship="BerkeleyEntities.TransactionHoldEntryItem" FromRole="TransactionHoldEntry" ToRole="Item" />
@@ -2263,7 +2262,7 @@
           <Property Type="String" Name="BeforeChange" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Location" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="User" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="DateTime" Name="UpdateDate" Nullable="false" />
+          <Property Type="DateTime" Name="UpdateDate" Nullable="false" Precision="3" />
           <NavigationProperty Name="Item" Relationship="BerkeleyEntities.Bsi_LocationLogItem" FromRole="Bsi_LocationLog" ToRole="Item" />
         </EntityType>
         <Association Name="Bsi_LocationLogItem">
@@ -2285,8 +2284,8 @@
           <Property Type="Int32" Name="ID" Nullable="false" />
           <Property Type="String" Name="Code" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Status" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="DateTime" Name="LastUpdatedDate" Nullable="false" />
-          <Property Type="DateTime" Name="PurchaseDate" Nullable="false" />
+          <Property Type="DateTime" Name="LastUpdatedDate" Nullable="false" Precision="3" />
+          <Property Type="DateTime" Name="PurchaseDate" Nullable="false" Precision="3" />
           <Property Type="String" Name="PaymentMethod" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="BuyerName" Nullable="true" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="ShipServiceLevel" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -2300,7 +2299,7 @@
           <Property Type="String" Name="StateOrRegion" Nullable="true" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="PostalCode" Nullable="true" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Phone" Nullable="true" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="DateTime" Name="LastSyncTime" Nullable="false" />
+          <Property Type="DateTime" Name="LastSyncTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="OrderItems" Relationship="BerkeleyEntities.SyncAmznOrderSyncAmznOrderItem" FromRole="SyncAmznOrder" ToRole="SyncAmznOrderItem" />
           <Property Type="Decimal" Name="Total" Nullable="false" Precision="19" Scale="4" />
           <Property Type="Int32" Name="MarketplaceID" Nullable="false" />
@@ -2329,12 +2328,12 @@
           <Property Type="Int32" Name="ID" Nullable="false" />
           <Property Type="String" Name="Code" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="OrderStatus" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="DateTime" Name="CreatedTime" Nullable="false" />
+          <Property Type="DateTime" Name="CreatedTime" Nullable="false" Precision="3" />
           <Property Type="String" Name="CheckoutStatus" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="PaymentMethod" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="Boolean" Name="IsMultiLegShipping" Nullable="false" />
-          <Property Type="DateTime" Name="PaidTime" Nullable="true" />
-          <Property Type="DateTime" Name="ShippedTime" Nullable="true" />
+          <Property Type="DateTime" Name="PaidTime" Nullable="true" Precision="3" />
+          <Property Type="DateTime" Name="ShippedTime" Nullable="true" Precision="3" />
           <Property Type="String" Name="Street1" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Street2" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="StateOrProvince" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -2345,7 +2344,7 @@
           <Property Type="String" Name="Phone" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="Decimal" Name="Subtotal" Nullable="false" Precision="19" Scale="4" />
           <Property Type="Decimal" Name="Total" Nullable="false" Precision="19" Scale="4" />
-          <Property Type="DateTime" Name="LastSyncTime" Nullable="false" />
+          <Property Type="DateTime" Name="LastSyncTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="OrderItems" Relationship="BerkeleyEntities.EbayOrderItemEbayOrder" FromRole="EbayOrder" ToRole="EbayOrderItem" />
           <Property Type="String" Name="EbayPaymentStatus" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="SalesRecordNumber" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -2375,7 +2374,7 @@
           <NavigationProperty Name="Order" Relationship="BerkeleyEntities.EbayOrderItemEbayOrder" FromRole="EbayOrderItem" ToRole="EbayOrder" />
           <Property Type="Int32" Name="ListingItemID" Nullable="false" />
           <NavigationProperty Name="ListingItem" Relationship="BerkeleyEntities.SyncEbayOrderItemSyncEbayListingItem" FromRole="SyncEbayOrderItem" ToRole="SyncEbayListingItem" />
-          <Property Type="DateTime" Name="CreatedDate" Nullable="false" />
+          <Property Type="DateTime" Name="CreatedDate" Nullable="false" Precision="3" />
           <Property Type="Decimal" Name="TransactionPrice" Nullable="false" Precision="19" Scale="4" />
         </EntityType>
         <Association Name="EbayOrderItemEbayOrder">
@@ -2401,12 +2400,12 @@
           <Property Type="Int32" Name="MarketplaceID" Nullable="false" />
           <Property Type="String" Name="Format" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Duration" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Type="DateTime" Name="StartTime" Nullable="false" />
-          <Property Type="DateTime" Name="EndTime" Nullable="false" />
-          <Property Type="String" Name="Title" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="DateTime" Name="StartTime" Nullable="false" Precision="3" />
+          <Property Type="DateTime" Name="EndTime" Nullable="false" Precision="3" />
+          <Property Type="String" Name="Title" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Condition" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="ListingItems" Relationship="BerkeleyEntities.SyncEbayListingSyncEbayListingItem" FromRole="SyncEbayListing" ToRole="SyncEbayListingItem" />
-          <Property Type="DateTime" Name="LastSyncTime" Nullable="false" />
+          <Property Type="DateTime" Name="LastSyncTime" Nullable="false" Precision="3" />
           <Property Type="String" Name="Status" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Sku" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="Boolean" Name="IsVariation" />
@@ -2496,11 +2495,11 @@
           <Property Type="Int32" Name="Quantity" Nullable="false" />
           <Property Type="Decimal" Name="Price" Nullable="false" Precision="19" Scale="4" />
           <Property Type="String" Name="Title" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Type="DateTime" Name="OpenDate" Nullable="false" />
+          <Property Type="DateTime" Name="OpenDate" Nullable="false" Precision="3" />
           <Property Type="String" Name="Condition" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="ASIN" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="Boolean" Name="IsActive" Nullable="false" />
-          <Property Type="DateTime" Name="LastSyncTime" Nullable="false" />
+          <Property Type="DateTime" Name="LastSyncTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="Item" Relationship="BerkeleyEntities.SyncAmznListingItemItem" FromRole="SyncAmznListingItem" ToRole="Item" />
           <NavigationProperty Name="OrderItems" Relationship="BerkeleyEntities.SyncAmznListingItemSyncAmznOrderItem" FromRole="SyncAmznListingItem" ToRole="SyncAmznOrderItem" />
           <Property Type="Int32" Name="MarketplaceID" Nullable="false" />
@@ -2540,8 +2539,8 @@
           <Property Type="String" Name="SecretAccessKey" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="MerchantId" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="MarketplaceId" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="DateTime" Name="OrderSyncTime" />
-          <Property Type="DateTime" Name="ListingSyncTime" />
+          <Property Type="DateTime" Name="OrderSyncTime" Precision="3" />
+          <Property Type="DateTime" Name="ListingSyncTime" Precision="3" />
           <NavigationProperty Name="ListingItems" Relationship="BerkeleyEntities.AmznMarketplaceSyncAmznListingItem" FromRole="AmznMarketplace" ToRole="SyncAmznListingItem" />
           <Property Type="String" Name="Code" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="RootDir" Nullable="false" MaxLength="400" FixedLength="false" Unicode="true" />
@@ -2567,8 +2566,8 @@
           <Property Type="String" Name="Token" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="PayPalAccount" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Listings" Relationship="BerkeleyEntities.EbayMarketplaceSyncEbayListing" FromRole="EbayMarketplace" ToRole="SyncEbayListing" />
-          <Property Type="DateTime" Name="ListingSyncTime" />
-          <Property Type="DateTime" Name="OrdersSyncTime" />
+          <Property Type="DateTime" Name="ListingSyncTime" Precision="3" />
+          <Property Type="DateTime" Name="OrdersSyncTime" Precision="3" />
           <Property Type="String" Name="Code" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="RootDir" Nullable="false" MaxLength="400" FixedLength="false" Unicode="true" />
         </EntityType>
@@ -2591,9 +2590,8 @@
           <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Type="String" Name="LocalName" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Url" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Type="DateTime" Name="TimeUploaded" Nullable="false" />
+          <Property Type="DateTime" Name="TimeUploaded" Nullable="false" Precision="3" />
           <NavigationProperty Name="Relations" Relationship="BerkeleyEntities.EbayPictureServiceUrlEbayPictureUrlRelation" FromRole="EbayPictureServiceUrl" ToRole="EbayPictureUrlRelation" />
-          <Property Type="String" Name="VariationAttributeValue" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Path" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="EbayPictureUrlRelation">
@@ -2603,7 +2601,7 @@
           <Property Type="Int32" Name="ID" Nullable="false" />
           <Property Type="Int32" Name="ListingID" Nullable="false" />
           <Property Type="Int32" Name="PictureUrlID" Nullable="false" />
-          <Property Type="DateTime" Name="CreatedTime" Nullable="false" />
+          <Property Type="DateTime" Name="CreatedTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="PictureServiceUrl" Relationship="BerkeleyEntities.EbayPictureServiceUrlEbayPictureUrlRelation" FromRole="EbayPictureUrlRelation" ToRole="EbayPictureServiceUrl" />
           <NavigationProperty Name="Listing" Relationship="BerkeleyEntities.EbayListingEbayPictureUrlRelation" FromRole="EbayPictureUrlRelation" ToRole="EbayListing" />
         </EntityType>
@@ -2641,11 +2639,11 @@
           <Property Type="Boolean" Name="AssessFinanceCharges" Nullable="false" />
           <Property Type="String" Name="Company" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Country" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Type="DateTime" Name="CustomDate1" />
-          <Property Type="DateTime" Name="CustomDate2" />
-          <Property Type="DateTime" Name="CustomDate3" />
-          <Property Type="DateTime" Name="CustomDate4" />
-          <Property Type="DateTime" Name="CustomDate5" />
+          <Property Type="DateTime" Name="CustomDate1" Precision="3" />
+          <Property Type="DateTime" Name="CustomDate2" Precision="3" />
+          <Property Type="DateTime" Name="CustomDate3" Precision="3" />
+          <Property Type="DateTime" Name="CustomDate4" Precision="3" />
+          <Property Type="DateTime" Name="CustomDate5" Precision="3" />
           <Property Type="Double" Name="CustomNumber1" Nullable="false" />
           <Property Type="Double" Name="CustomNumber2" Nullable="false" />
           <Property Type="Double" Name="CustomNumber3" Nullable="false" />
@@ -2658,9 +2656,9 @@
           <Property Type="String" Name="CustomText5" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Type="Boolean" Name="GlobalCustomer" Nullable="false" />
           <Property Type="Int32" Name="HQID" Nullable="false" />
-          <Property Type="DateTime" Name="LastStartingDate" />
-          <Property Type="DateTime" Name="LastClosingDate" />
-          <Property Type="DateTime" Name="LastUpdated" Nullable="false" />
+          <Property Type="DateTime" Name="LastStartingDate" Precision="3" />
+          <Property Type="DateTime" Name="LastClosingDate" Precision="3" />
+          <Property Type="DateTime" Name="LastUpdated" Nullable="false" Precision="3" />
           <Property Type="Boolean" Name="LimitPurchase" Nullable="false" />
           <Property Type="Decimal" Name="LastClosingBalance" Nullable="false" Precision="19" Scale="4" />
           <Property Type="Int32" Name="PrimaryShipToID" Nullable="false" />
@@ -2677,8 +2675,8 @@
           <Property Type="Decimal" Name="AccountBalance" Nullable="false" Precision="19" Scale="4" />
           <Property Type="Decimal" Name="CreditLimit" Nullable="false" Precision="19" Scale="4" />
           <Property Type="Decimal" Name="TotalSales" Nullable="false" Precision="19" Scale="4" />
-          <Property Type="DateTime" Name="AccountOpened" Nullable="false" />
-          <Property Type="DateTime" Name="LastVisit" Nullable="false" />
+          <Property Type="DateTime" Name="AccountOpened" Nullable="false" Precision="3" />
+          <Property Type="DateTime" Name="LastVisit" Nullable="false" Precision="3" />
           <Property Type="Int32" Name="TotalVisits" Nullable="false" />
           <Property Type="Decimal" Name="TotalSavings" Nullable="false" Precision="19" Scale="4" />
           <Property Type="Single" Name="CurrentDiscount" Nullable="false" />
@@ -2706,7 +2704,7 @@
           <Property Type="Int32" Name="StoreID" Nullable="false" />
           <Property Type="Int32" Name="TransactionNumber" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Type="Int32" Name="BatchNumber" Nullable="false" />
-          <Property Type="DateTime" Name="Time" Nullable="false" />
+          <Property Type="DateTime" Name="Time" Nullable="false" Precision="3" />
           <Property Type="Int32" Name="CustomerID" Nullable="false" />
           <Property Type="Int32" Name="CashierID" Nullable="false" />
           <Property Type="Decimal" Name="Total" Nullable="false" Precision="19" Scale="4" />
@@ -3542,7 +3540,6 @@
             <EntityTypeMapping TypeName="BerkeleyEntities.EbayPictureServiceUrl">
               <MappingFragment StoreEntitySet="EbayPictureServiceUrl">
                 <ScalarProperty Name="Path" ColumnName="Path" />
-                <ScalarProperty Name="VariationAttributeValue" ColumnName="VariationAttributeValue" />
                 <ScalarProperty Name="TimeUploaded" ColumnName="TimeUploaded" />
                 <ScalarProperty Name="Url" ColumnName="Url" />
                 <ScalarProperty Name="LocalName" ColumnName="LocalName" />
@@ -3666,6 +3663,7 @@
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
         <DesignerProperty Name="EnablePluralization" Value="True" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+        <DesignerProperty Name="UseLegacyProvider" Value="True" />
       </DesignerInfoPropertySet>
     </Options>
     <!-- Diagram content (shape and connector positions) -->
@@ -3934,7 +3932,7 @@
           <ConnectorPoint PointX="1.5625" PointY="10.25" />
           <ConnectorPoint PointX="1.5625" PointY="9.65" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="BerkeleyEntities.EbayPictureServiceUrl" Width="1.875" PointX="0.5" PointY="7.25" Height="0.4" IsExpanded="false" />
+        <EntityTypeShape EntityType="BerkeleyEntities.EbayPictureServiceUrl" Width="1.875" PointX="0.5" PointY="7.125" Height="0.4" IsExpanded="false" />
         <EntityTypeShape EntityType="BerkeleyEntities.EbayPictureUrlRelation" Width="1.875" PointX="0.625" PointY="8.25" Height="0.4" IsExpanded="false" />
         <AssociationConnector Association="BerkeleyEntities.EbayPictureServiceUrlEbayPictureUrlRelation">
           <ConnectorPoint PointX="1.5" PointY="7.65" />

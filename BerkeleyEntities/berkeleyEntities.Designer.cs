@@ -8,12 +8,13 @@
 //------------------------------------------------------------------------------
 
 using System;
+using System.ComponentModel;
+using System.Data.EntityClient;
 using System.Data.Objects;
 using System.Data.Objects.DataClasses;
-using System.Data.EntityClient;
-using System.ComponentModel;
-using System.Xml.Serialization;
+using System.Linq;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 [assembly: EdmSchemaAttribute()]
 #region EDM Relationship Metadata
@@ -771,6 +772,7 @@ namespace BerkeleyEntities
         private ObjectSet<Transaction> _Transactions;
 
         #endregion
+
         #region AddTo Methods
     
         /// <summary>
@@ -1102,11 +1104,11 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
-    
 
     #endregion
-    
+
     #region Entities
     
     /// <summary>
@@ -1135,6 +1137,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -1237,6 +1240,7 @@ namespace BerkeleyEntities
         partial void OnDBTimeStampChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -1279,6 +1283,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -1323,6 +1328,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -1593,6 +1599,7 @@ namespace BerkeleyEntities
         partial void OnMarketplaceIDChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -1696,6 +1703,7 @@ namespace BerkeleyEntities
 
         #endregion
 
+
         public Product ProductData { get; set; }
     }
     
@@ -1735,6 +1743,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -1981,6 +1990,7 @@ namespace BerkeleyEntities
         partial void OnRootDirChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -2007,6 +2017,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -2049,6 +2060,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -2559,6 +2571,7 @@ namespace BerkeleyEntities
         partial void OnMarketplaceIDChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -2585,6 +2598,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -2627,6 +2641,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -2873,6 +2888,7 @@ namespace BerkeleyEntities
         partial void OnCodeChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -2953,6 +2969,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -2989,6 +3006,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -3163,6 +3181,7 @@ namespace BerkeleyEntities
         partial void OnUpdateDateChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -3205,6 +3224,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -3279,6 +3299,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -3933,6 +3954,7 @@ namespace BerkeleyEntities
         partial void OnListPriceChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -3959,6 +3981,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -4013,6 +4036,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -4499,6 +4523,7 @@ namespace BerkeleyEntities
         partial void OnlistUserChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -4563,6 +4588,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -4605,6 +4631,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -4899,6 +4926,7 @@ namespace BerkeleyEntities
         partial void OnlistUserChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -5001,6 +5029,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -5031,6 +5060,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -5253,6 +5283,7 @@ namespace BerkeleyEntities
         partial void OncheckedChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -5295,6 +5326,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -5327,6 +5359,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -5477,6 +5510,7 @@ namespace BerkeleyEntities
         partial void OnDBTimeStampChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -5563,6 +5597,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -5689,6 +5724,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -7159,6 +7195,7 @@ namespace BerkeleyEntities
         partial void OnVouchersChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -7185,6 +7222,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -7215,6 +7253,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -7341,6 +7380,7 @@ namespace BerkeleyEntities
         partial void OnDBTimeStampChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -7433,6 +7473,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -7461,6 +7502,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -7539,6 +7581,7 @@ namespace BerkeleyEntities
         partial void OnDivisionIDChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -7619,6 +7662,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -7647,6 +7691,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -7725,6 +7770,7 @@ namespace BerkeleyEntities
         partial void OnNameChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -7751,6 +7797,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -7797,6 +7844,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -8139,6 +8187,7 @@ namespace BerkeleyEntities
         partial void OnFullDescriptionChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -8225,6 +8274,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -8257,6 +8307,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -8383,6 +8434,7 @@ namespace BerkeleyEntities
         partial void OnPriceChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -8485,6 +8537,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -8519,6 +8572,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -8717,6 +8771,7 @@ namespace BerkeleyEntities
         partial void OnRootDirChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -8743,6 +8798,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -8813,6 +8869,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -9635,6 +9692,7 @@ namespace BerkeleyEntities
         partial void OnCityNameChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -9661,6 +9719,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -9701,6 +9760,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -9923,6 +9983,7 @@ namespace BerkeleyEntities
         partial void OnTransactionPriceChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -10003,6 +10064,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -10022,21 +10084,20 @@ namespace BerkeleyEntities
         /// <param name="localName">Initial value of the LocalName property.</param>
         /// <param name="url">Initial value of the Url property.</param>
         /// <param name="timeUploaded">Initial value of the TimeUploaded property.</param>
-        /// <param name="variationAttributeValue">Initial value of the VariationAttributeValue property.</param>
         /// <param name="path">Initial value of the Path property.</param>
-        public static EbayPictureServiceUrl CreateEbayPictureServiceUrl(global::System.Int32 id, global::System.String localName, global::System.String url, global::System.DateTime timeUploaded, global::System.String variationAttributeValue, global::System.String path)
+        public static EbayPictureServiceUrl CreateEbayPictureServiceUrl(global::System.Int32 id, global::System.String localName, global::System.String url, global::System.DateTime timeUploaded, global::System.String path)
         {
             EbayPictureServiceUrl ebayPictureServiceUrl = new EbayPictureServiceUrl();
             ebayPictureServiceUrl.ID = id;
             ebayPictureServiceUrl.LocalName = localName;
             ebayPictureServiceUrl.Url = url;
             ebayPictureServiceUrl.TimeUploaded = timeUploaded;
-            ebayPictureServiceUrl.VariationAttributeValue = variationAttributeValue;
             ebayPictureServiceUrl.Path = path;
             return ebayPictureServiceUrl;
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -10143,30 +10204,6 @@ namespace BerkeleyEntities
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
-        public global::System.String VariationAttributeValue
-        {
-            get
-            {
-                return _VariationAttributeValue;
-            }
-            set
-            {
-                OnVariationAttributeValueChanging(value);
-                ReportPropertyChanging("VariationAttributeValue");
-                _VariationAttributeValue = StructuralObject.SetValidValue(value, false);
-                ReportPropertyChanged("VariationAttributeValue");
-                OnVariationAttributeValueChanged();
-            }
-        }
-        private global::System.String _VariationAttributeValue;
-        partial void OnVariationAttributeValueChanging(global::System.String value);
-        partial void OnVariationAttributeValueChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
         public global::System.String Path
         {
             get
@@ -10187,6 +10224,7 @@ namespace BerkeleyEntities
         partial void OnPathChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -10213,6 +10251,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -10243,6 +10282,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -10345,6 +10385,7 @@ namespace BerkeleyEntities
         partial void OnCreatedTimeChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -10425,6 +10466,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -10461,6 +10503,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -10635,6 +10678,7 @@ namespace BerkeleyEntities
         partial void OnBinChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -10715,6 +10759,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -10763,6 +10808,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -11129,6 +11175,7 @@ namespace BerkeleyEntities
         partial void OnComputedQuantityChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -11171,6 +11218,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -11333,6 +11381,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -13355,6 +13404,7 @@ namespace BerkeleyEntities
         partial void OnTenderIDChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -13743,6 +13793,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -13805,6 +13856,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -14339,6 +14391,7 @@ namespace BerkeleyEntities
         partial void OnTaxIDChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -14501,6 +14554,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -14541,6 +14595,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -14787,6 +14842,7 @@ namespace BerkeleyEntities
         partial void OnPriceChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -14867,6 +14923,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -14903,6 +14960,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -15101,6 +15159,7 @@ namespace BerkeleyEntities
         partial void OnHQIDChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -15143,6 +15202,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -15175,6 +15235,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -15397,6 +15458,7 @@ namespace BerkeleyEntities
         partial void OnDBTimeStampChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -15445,6 +15507,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -15501,6 +15564,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -15963,6 +16027,7 @@ namespace BerkeleyEntities
         partial void OnDBTimeStampChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -16043,6 +16108,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -16141,6 +16207,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -17131,6 +17198,7 @@ namespace BerkeleyEntities
         partial void OnMasterPOChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -17157,6 +17225,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -17209,6 +17278,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -17647,6 +17717,7 @@ namespace BerkeleyEntities
         partial void OnLastReceivedDateChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -17727,6 +17798,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -17811,6 +17883,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -18705,6 +18778,7 @@ namespace BerkeleyEntities
         partial void OnTermsChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -18753,6 +18827,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -18791,6 +18866,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -19013,6 +19089,7 @@ namespace BerkeleyEntities
         partial void OnTaxRateChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -19093,6 +19170,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -19139,6 +19217,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -19481,6 +19560,7 @@ namespace BerkeleyEntities
         partial void OnActiveChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -19545,6 +19625,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -19577,6 +19658,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -19727,6 +19809,7 @@ namespace BerkeleyEntities
         partial void OnEmailChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -19753,6 +19836,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -19789,6 +19873,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -19963,6 +20048,7 @@ namespace BerkeleyEntities
         partial void OnQuantityShippedChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -20043,6 +20129,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -20097,6 +20184,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -20511,6 +20599,7 @@ namespace BerkeleyEntities
         partial void OnRecallTypeChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -20575,6 +20664,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -20641,6 +20731,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -21247,6 +21338,7 @@ namespace BerkeleyEntities
         partial void OnVoucherIDChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -21327,6 +21419,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -21417,6 +21510,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -22263,6 +22357,7 @@ namespace BerkeleyEntities
         partial void OnBatchNumberChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -22289,6 +22384,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -22369,6 +22465,7 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -23143,6 +23240,7 @@ namespace BerkeleyEntities
         partial void OnVoucherIDChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -23223,8 +23321,10 @@ namespace BerkeleyEntities
         }
 
         #endregion
+
     }
 
     #endregion
+
     
 }

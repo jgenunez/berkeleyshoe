@@ -6,6 +6,8 @@ using BerkeleyEntities;
 using BerkeleyEntities.Amazon;
 using System.Threading.Tasks;
 using System.Threading;
+using System.Windows.Input;
+using Microsoft.TeamFoundation.MVVM;
 
 namespace WorkbookPublisher
 {
@@ -15,17 +17,33 @@ namespace WorkbookPublisher
         private berkeleyEntities _dataContext = new berkeleyEntities();
         private AmznMarketplace _marketplace;
 
+        private RelayCommand _publish;
+
         public AmznPublisher(int marketplaceID, IEnumerable<AmznEntry> entries)
         {
             _marketplace = _dataContext.AmznMarketplaces.Single(p => p.ID == marketplaceID);
             this.Entries = entries.ToList();
+            this.CanPublish = true;
         }
 
         public List<AmznEntry> Entries { get; set; }
 
         public bool CanPublish { get; set; }
 
-        public async Task<string> PublishAsync()
+        public ICommand Publish
+        {
+            get
+            {
+                if (_publish == null)
+                {
+                    _publish = new RelayCommand(PublishAsync);
+                }
+
+                return _publish;
+            }
+        }
+
+        private async void PublishAsync()
         {
             this.CanPublish = false;
 
@@ -43,8 +61,8 @@ namespace WorkbookPublisher
                     listingItem.Item = _dataContext.Items.Single(p => p.ItemLookupCode.Equals(entry.Sku));
                 }
 
-                listingItem.Quantity = entry.Quantity;
-                listingItem.Price = entry.Price;
+                listingItem.Quantity = entry.Q;
+                listingItem.Price = entry.P;
                 listingItem.Condition = entry.Condition;
                 listingItem.Title = entry.Title;
             }
@@ -56,7 +74,7 @@ namespace WorkbookPublisher
 
             this.CanPublish = true;
 
-            return string.Format(" {0} / {1} ", validCount, total);
+            // string.Format(" {0} / {1} ", validCount, total);
         }
 
         public string Header { get { return _marketplace.Code; } }

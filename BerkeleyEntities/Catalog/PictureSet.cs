@@ -25,38 +25,41 @@ namespace BerkeleyEntities
         public List<PictureInfo> GetPictures(string brand, List<string> skus)
         {
             string brandRoot = _root + brand + @"\";
-
             if (!Directory.Exists(brandRoot))
             {
-                throw new NotImplementedException("could not find directory:" + brandRoot);
+                throw new FileNotFoundException("could not find directory:" + brandRoot);
             }
 
             List<PictureInfo> pics = new List<PictureInfo>();
-
-            foreach (var group in skus.GroupBy(p => p.Split(new Char[1])[0]))
+            foreach (var group in skus.GroupBy(p => p.Split(new Char[1] {'-'})[0]))
             {
-                var targetPaths = GetFileNamesByBrandDir(brandRoot).Where(p => p.Contains(group.Key + "-") || p.Contains(group.Key + ".") || p.Contains(group.Key + "_"));
+                var targetPaths = GetFileNamesByBrandDir(brandRoot).Where(p => p.Contains(group.Key + ".") || p.Contains(group.Key + "-"));
                 foreach(string path in targetPaths)
                 {
                     string picName = Path.GetFileName(path).Split(new Char[1] { '.' })[0];
-                    string pattern = picName.Replace("_","-.*-?");
-
-                    if(group.Any(p => Regex.IsMatch(p, pattern)))
+                    if (!picName.Contains("_"))
                     {
                         PictureInfo picInfo = new PictureInfo();
                         picInfo.Path = path;
                         picInfo.LastModified = File.GetLastWriteTimeUtc(path);
                         picInfo.Name = picName;
-
-                        pics.Add(picInfo);
+                        pics.Add(picInfo);                
+                    }
+                    else
+                    {
+                        if (group.Any(p => Regex.IsMatch(p, picName.Replace("_", "-.*-?"))))
+                        {
+                            PictureInfo picInfo = new PictureInfo();
+                            picInfo.Path = path;
+                            picInfo.LastModified = File.GetLastWriteTimeUtc(path);
+                            picInfo.Name = picName;
+                            pics.Add(picInfo);
+                        }
                     }
                 }
             }
-
             return pics;
         }
-
-
 
         private string[] GetFileNamesByBrandDir(string path)
         {

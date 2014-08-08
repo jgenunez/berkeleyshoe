@@ -1,30 +1,34 @@
 ﻿using BerkeleyEntities;
 using BerkeleyEntities.Ebay;
+using Microsoft.TeamFoundation.MVVM;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace WorkbookPublisher
 {
     public class EbayPublisher
     {
         private const string STATUS_ACTIVE = "Active";
-        private const string FORMAT_FIXEDPRICE = "FixedPrice";
+        private const string FORMAT_FIXEDPRICE = "FixedPriceItem";
         private const string FORMAT_AUCTION = "Chinese";
 
-        private EbayMarketplace _marketplace;
-        private berkeleyEntities _dataContext;
+        private RelayCommand _publish;
 
-        private string _status = "Waiting";
+        private EbayMarketplace _marketplace;
+        private berkeleyEntities _dataContext = new berkeleyEntities();
+
 
         private PictureSetRepository _picSetRepository = new PictureSetRepository();
 
         public EbayPublisher(int marketplaceID, IEnumerable<EbayEntry> entries)
         {
             this.Entries = entries.ToList();
-            _dataContext = new berkeleyEntities();
+            this.CanPublish = true;
             _marketplace = _dataContext.EbayMarketplaces.Single(p => p.ID == marketplaceID);
         }
 
@@ -32,12 +36,25 @@ namespace WorkbookPublisher
 
         public string Header 
         {
-            get { return string.Format("{0} ({1})", _marketplace.Code, this.Entries.Count.ToString()); }
+            get { return _marketplace.Code; }
         }
 
         public bool CanPublish { get; set; }
 
-        public async Task<string> PublishAsync()
+        public ICommand Publish 
+        {
+            get
+            {
+                if (_publish == null)
+                {
+                    _publish = new RelayCommand(PublishAsync);
+                }
+
+                return _publish;
+            }
+        }
+
+        private async void PublishAsync()
         {
             this.CanPublish = false;
 
@@ -49,12 +66,9 @@ namespace WorkbookPublisher
 
             publisher.SaveChanges();
 
-            string validCount = this.Entries.Where(p => p.IsValid).Count().ToString();
-            string total = this.Entries.Count.ToString();
-
             this.CanPublish = true;
 
-            return string.Format(" {0} / {1} " , validCount,total);
+            //return string.Format(" {0} / {1} " , validCount,total);
         }
 
         private void HandleFixedPriceEntries(IEnumerable<EbayEntry> entries)
@@ -71,8 +85,8 @@ namespace WorkbookPublisher
                     {
                         EbayListing listing = fixedPrice.Single(p => p.Sku.Equals(entry.Sku));
                         EbayListingItem listingItem = listing.ListingItems.First();
-                        listingItem.Quantity = entry.Quantity;
-                        listingItem.Price = entry.Price;
+                        listingItem.Quantity = entry.Q;
+                        listingItem.Price = entry.P;
                         entry.SetListing(listing);
                     }
                     else
@@ -96,8 +110,8 @@ namespace WorkbookPublisher
                             listingItem = new EbayListingItem() { Item = item, Listing = listing };
                         }
 
-                        listingItem.Quantity = entry.Quantity;
-                        listingItem.Price = entry.Price;
+                        listingItem.Quantity = entry.Q;
+                        listingItem.Price = entry.P;
 
                         entry.SetListing(listing);
                     }
@@ -120,10 +134,19 @@ namespace WorkbookPublisher
                     EbayListingItem listingItem = new EbayListingItem();
                     listingItem.Item = _dataContext.Items.Single(p => p.ItemLookupCode.Equals(entry.Sku));
                     listingItem.Listing = listing;
-                    listingItem.Quantity = entry.Quantity;
-                    listingItem.Price = entry.Price;
+                    listingItem.Quantity = entry.Q;
+                    listingItem.Price = entry.P;
 
-                    AssignPictures(listing);
+                    try
+                    {
+                        AssignPictures(listing);
+                    }
+                    catch (FileNotFoundException e)
+                    {
+                        _dataContext.EbayListings.Detach(listing);
+                        entry.Message = e.Message;
+                        entry.IsValid = false;
+                    }
 
                     entry.SetListing(listing);
                 }
@@ -144,13 +167,22 @@ namespace WorkbookPublisher
                         EbayListingItem listingItem = new EbayListingItem();
                         listingItem.Item = _dataContext.Items.Single(p => p.ItemLookupCode.Equals(entry.Sku));
                         listingItem.Listing = listing;
-                        listingItem.Quantity = entry.Quantity;
-                        listingItem.Price = entry.Price;
+                        listingItem.Quantity = entry.Q;
+                        listingItem.Price = entry.P;
 
                         entry.SetListing(listing);
                     }
 
-                    AssignPictures(listing);
+                    try
+                    {
+                        AssignPictures(listing);
+                    }
+                    catch (FileNotFoundException e)
+                    {
+                        _dataContext.EbayListings.Detach(listing);
+                        pending.ForEach(p => p.Message = e.Message);
+                        pending.ForEach(p => p.IsValid = false);
+                    }
 
                 }
             }
@@ -158,7 +190,7 @@ namespace WorkbookPublisher
 
         private void HandleAuctionEntries(IEnumerable<EbayEntry> entries)
         {
-            var auctions = _marketplace.Listings.Where(p => p.Status.Equals(STATUS_ACTIVE) && p.Format.Equals(FORMAT_AUCTION)).ToList();
+            var auctions = _marketplace.Listings.Where(p => p.Format.Equals(FORMAT_AUCTION)).Where(p => p.Status.Equals(STATUS_ACTIVE)).ToList();
 
             foreach (EbayEntry entry in entries)
             {
@@ -177,13 +209,23 @@ namespace WorkbookPublisher
                     EbayListingItem listingItem = new EbayListingItem();
                     listingItem.Item = _dataContext.Items.Single(p => p.ItemLookupCode.Equals(entry.Sku));
                     listingItem.Listing = listing;
-                    listingItem.Quantity = entry.Quantity;
-                    listingItem.Price = entry.Price;
-
-
-                    AssignPictures(listing);
+                    listingItem.Quantity = entry.Q;
+                    listingItem.Price = entry.P;
 
                     entry.SetListing(listing);
+
+                    try
+                    {
+                        AssignPictures(listing);
+                    }
+                    catch (FileNotFoundException e)
+                    {
+                        _dataContext.EbayListings.Detach(listing);
+                        entry.Message = e.Message;
+                        entry.IsValid = false;
+                    }
+
+
                 }
                 else
                 {

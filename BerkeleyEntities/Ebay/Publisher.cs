@@ -34,8 +34,8 @@ namespace BerkeleyEntities.Ebay
 
         public void SaveChanges()
         {
-            var modified = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Modified).Select(p => p.Entity).OfType<EbayListing>();
-            var created = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added).Select(p => p.Entity).OfType<EbayListing>();
+            var modified = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Modified).Select(p => p.Entity).OfType<EbayListing>().ToList();
+            var created = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added).Select(p => p.Entity).OfType<EbayListing>().ToList();
 
             foreach (var listing in created)
             {
@@ -46,7 +46,7 @@ namespace BerkeleyEntities.Ebay
                 catch (Exception e)
                 {
                     listing.ErrorMessage = e.Message;
-                    _dataContext.Detach(listing);
+                    Detach(listing);
                 }
             }
 
@@ -59,7 +59,7 @@ namespace BerkeleyEntities.Ebay
                 catch (Exception e)
                 {
                     listing.ErrorMessage = e.Message;
-                    _dataContext.Detach(listing);
+                    Detach(listing);
                 }
             }
 
@@ -144,6 +144,21 @@ namespace BerkeleyEntities.Ebay
                 listing.LastSyncTime = DateTime.UtcNow;
                 
             }
+        }
+
+        private void Detach(EbayListing listing)
+        {
+            foreach (EbayListingItem listingItem in listing.ListingItems.ToList())
+            {
+                _dataContext.Detach(listingItem);
+            }
+
+            foreach (var relation in listing.Relations.ToList())
+            {
+                _dataContext.Detach(relation);
+            }
+
+            _dataContext.Detach(listing);
         }
 
         private string UploadToEPS(string path)

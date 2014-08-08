@@ -29,7 +29,7 @@ namespace EbayServices.Mappers
         {
             ItemType listingDto = null;
 
-            if (listing.EntityState.Equals(EntityState.Modified) || listing.ListingItems.Any(p => p.EntityState.Equals(EntityState.Modified)))
+            if (listing.EntityState.Equals(EntityState.Modified))
             {
                 listingDto = UpdateListingDto(listing);
             }
@@ -120,31 +120,28 @@ namespace EbayServices.Mappers
                 ShippingCostPaidByOption = "Buyer" 
             };
 
-            if (listing.Format.Equals("FixedPriceItem"))
-            {
-                listingDto.BestOfferEnabled = true;
-                listingDto.BestOfferEnabledSpecified = true;
-                listingDto.BestOfferDetails = new BestOfferDetailsType() { BestOfferEnabledSpecified = true, BestOfferEnabled = true };
-            }
-
             if (!(bool)listing.IsVariation)
             {
                 ProductData productData = _productDataFactory.GetProductData(listing.Sku);
-
                 listingDto.PrimaryCategory = new CategoryType() { CategoryID = productData.CategoryID };
 
                 var itemSpecifics = productData.GetItemSpecifics().Concat(productData.GetVariationSpecifics()).ToArray();
-
                 listingDto.ItemSpecifics = new NameValueListTypeCollection(itemSpecifics);
 
                 var urls = listing.Relations.Select(p => p.PictureServiceUrl).Select(p => p.Url);
-
                 listingDto.PictureDetails = new PictureDetailsType() { PictureURL = new StringCollection(urls.ToArray()) };
 
                 EbayListingItem listingItem = listing.ListingItems.First();
                 listingDto.QuantitySpecified = true;
                 listingDto.Quantity = listingItem.Quantity;
                 listingDto.StartPrice = new AmountType() {  currencyID = CurrencyCodeType.USD, Value = Convert.ToDouble(listingItem.Price)};
+
+                if (listing.Format.Equals("FixedPriceItem"))
+                {
+                    listingDto.BestOfferEnabled = true;
+                    listingDto.BestOfferEnabledSpecified = true;
+                    listingDto.BestOfferDetails = new BestOfferDetailsType() { BestOfferEnabledSpecified = true, BestOfferEnabled = true };
+                }
             }
             else
             {
