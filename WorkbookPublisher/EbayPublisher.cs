@@ -35,8 +35,12 @@ namespace WorkbookPublisher
             get { return string.Format("{0} ({1})", _marketplace.Code, this.Entries.Count.ToString()); }
         }
 
+        public bool CanPublish { get; set; }
+
         public async Task<string> PublishAsync()
         {
+            this.CanPublish = false;
+
             Publisher publisher = new Publisher(_dataContext, _marketplace);
 
             HandleFixedPriceEntries(this.Entries.Where(p => !p.IsAuction()));
@@ -47,6 +51,8 @@ namespace WorkbookPublisher
 
             string validCount = this.Entries.Where(p => p.IsValid).Count().ToString();
             string total = this.Entries.Count.ToString();
+
+            this.CanPublish = true;
 
             return string.Format(" {0} / {1} " , validCount,total);
         }

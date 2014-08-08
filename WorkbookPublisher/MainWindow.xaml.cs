@@ -21,57 +21,58 @@ namespace WorkbookPublisher
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
-    {
-        private ExcelWorkbook _workbook;
-        private berkeleyEntities _dataContext = new berkeleyEntities();
-        private ObservableCollection<EbayPublisher> _ebayPublishers = new ObservableCollection<EbayPublisher>();
-        private ObservableCollection<AmznPublisher> _amznPublisher = new ObservableCollection<AmznPublisher>();
-
-
-        public MainWindow()
+    public partial class WorkbookWindow : Window
+    {   
+        public WorkbookWindow()
         {
             InitializeComponent();
-            tcSheets.ItemsSource = new CompositeCollection() {
-                new CollectionContainer() { Collection = _ebayPublishers} ,
-                new CollectionContainer() { Collection = _amznPublisher }
-            };
-
-            
         }
 
         private void btnSetWorkbook_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
+
             ofd.Filter = "Excel Files|*.xlsx";
             
             if ((bool)ofd.ShowDialog())
-            {
-                _workbook = new ExcelWorkbook(ofd.FileName);
-
-                _workbook.ReadEntries();
-
-                lbCurrentWorkbook.Content = ofd.FileName;
-
-                foreach (string code in _workbook.EbayEntries.Keys)
-                {
-                    _ebayPublishers.Add(new EbayPublisher(_dataContext.EbayMarketplaces.Single(p => p.Code.Equals(code)).ID, _workbook.EbayEntries[code]));
-                }
-
-                foreach (string code in _workbook.AmznEntries.Keys)
-                {
-                    _amznPublisher.Add(new AmznPublisher(_dataContext.AmznMarketplaces.Single(p => p.Code.Equals(code)).ID, _workbook.AmznEntries[code]));
-                }
+            {     
+                this.DataContext = new ExcelWorkbook(ofd.FileName);
             }
         }
 
         private void btnShowAvailableHeader_Click(object sender, RoutedEventArgs e)
         {
+            StringBuilder sb = new StringBuilder();
+
             var ebayProps = typeof(EbayEntry).GetProperties();
 
+            sb.AppendLine("=========== Ebay valid columns =========== ");
 
+            foreach (var prop in ebayProps)
+            {
+                if (!prop.Name.Equals("RowIndex"))
+                {
+                    sb.AppendFormat("-{0}\t", prop.Name);
+                }
+            }
+
+            sb.AppendLine();
+            sb.AppendLine();
+            sb.AppendLine();
+
+            sb.AppendLine("=========== Amazon valid columns =========== ");
 
             var amznProps = typeof(AmznEntry).GetProperties();
+
+            foreach (var prop in amznProps)
+            {
+                if (!prop.Name.Equals("RowIndex"))
+                {
+                    sb.AppendFormat("-{0}\t", prop.Name);
+                }
+            }
+
+            MessageBox.Show(sb.ToString());
         }
 
 

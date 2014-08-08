@@ -10,6 +10,8 @@ using System.Globalization;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Drawing.Spreadsheet;
 using BerkeleyEntities;
+using System.Collections.ObjectModel;
+using System.Windows.Data;
 
 namespace WorkbookPublisher
 {
@@ -20,6 +22,9 @@ namespace WorkbookPublisher
         private SharedStringTablePart _stringTablePart;
         private WorksheetPart _workSheetPart;
 
+        private ObservableCollection<EbayPublisher> _ebayPublishers = new ObservableCollection<EbayPublisher>();
+        private ObservableCollection<AmznPublisher> _amznPublisher = new ObservableCollection<AmznPublisher>();
+
         private Dictionary<string, string> _colHeadersToRefs = new Dictionary<string, string>();
         private Dictionary<string, string> _colRefsToHeaders = new Dictionary<string, string>();
         private Dictionary<string, PropertyInfo> _colRefsToProp = new Dictionary<string, PropertyInfo>();
@@ -28,15 +33,22 @@ namespace WorkbookPublisher
         public ExcelWorkbook(string path)
         {
             this.Path = path;
-            this.EbayEntries = new Dictionary<string, List<EbayEntry>>();
-            this.AmznEntries = new Dictionary<string, List<AmznEntry>>();
+
+            this.Publishers = new CompositeCollection() {
+                new CollectionContainer() { Collection = _ebayPublishers} ,
+                new CollectionContainer() { Collection = _amznPublisher }
+            };
+
+            this.ReadEntries();
         }
 
         public string Path { get; set; }
 
-        public void ReadEntries()
+        public CompositeCollection Publishers { get; set; }
+
+        private void ReadEntries()
         {
-            using (SpreadsheetDocument document = SpreadsheetDocument.Open(this.Path, true))
+            using (SpreadsheetDocument document = SpreadsheetDocument.Open(this.Path, false))
             using(berkeleyEntities dataContext = new berkeleyEntities())
             {
                 _stringTablePart = document.WorkbookPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault();
@@ -65,7 +77,8 @@ namespace WorkbookPublisher
                             entries.Add(entry);
                         }
 
-                        this.EbayEntries.Add(code, entries);
+                        _ebayPublishers.Add(new EbayPublisher(dataContext.EbayMarketplaces.Single(p => p.Code.Equals(code)).ID, entries));
+                      
                     }
                     else if(dataContext.AmznMarketplaces.Any(p => p.Code.Equals(code)))
                     {
@@ -85,7 +98,7 @@ namespace WorkbookPublisher
                             entries.Add(entry);
                         }
 
-                        this.AmznEntries.Add(code, entries);
+                        _amznPublisher.Add(new AmznPublisher(dataContext.AmznMarketplaces.Single(p => p.Code.Equals(code)).ID,entries));
                     }
                     
                 }
@@ -93,10 +106,6 @@ namespace WorkbookPublisher
                 document.Close();
             }
         }
-
-        public Dictionary<string, List<EbayEntry>> EbayEntries { get; set; }
-
-        public Dictionary<string, List<AmznEntry>> AmznEntries { get; set; }
 
         private object CreateEntry(Row row, Type entryType)
         {

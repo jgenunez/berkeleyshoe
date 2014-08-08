@@ -23,8 +23,12 @@ namespace WorkbookPublisher
 
         public List<AmznEntry> Entries { get; set; }
 
+        public bool CanPublish { get; set; }
+
         public async Task<string> PublishAsync()
         {
+            this.CanPublish = false;
+
             Publisher publisher = new Publisher(_dataContext, _marketplace);
 
             var listingItems = _marketplace.ListingItems.Where(p => p.IsActive).ToList();
@@ -49,6 +53,8 @@ namespace WorkbookPublisher
 
             string validCount = this.Entries.Where(p => p.IsValid).Count().ToString();
             string total = this.Entries.Count.ToString();
+
+            this.CanPublish = true;
 
             return string.Format(" {0} / {1} ", validCount, total);
         }
