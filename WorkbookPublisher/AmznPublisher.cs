@@ -49,11 +49,9 @@ namespace WorkbookPublisher
 
             Publisher publisher = new Publisher(_dataContext, _marketplace);
 
-            var listingItems = _marketplace.ListingItems.Where(p => p.IsActive).ToList();
-
             foreach (AmznEntry entry in this.Entries)
             {
-                AmznListingItem listingItem = _marketplace.ListingItems.SingleOrDefault(p => p.IsActive && p.Item.ItemLookupCode.Equals(entry.Sku));
+                AmznListingItem listingItem = _dataContext.AmznListingItems.SingleOrDefault(p => p.IsActive && p.MarketplaceID == _marketplace.ID &&  p.Item.ItemLookupCode.Equals(entry.Sku));
 
                 if (listingItem == null)
                 {

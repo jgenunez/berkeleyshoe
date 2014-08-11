@@ -1705,6 +1705,12 @@ namespace BerkeleyEntities
 
 
         public Product ProductData { get; set; }
+
+        public string ErrorMessage { get; set; }
+
+        public Product ParentProductData { get; set; }
+
+        public string ParentErrorMessage { get; set; }
     }
     
     /// <summary>

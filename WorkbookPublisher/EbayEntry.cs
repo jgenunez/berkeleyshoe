@@ -7,6 +7,8 @@ using System.Text;
 
 namespace WorkbookPublisher
 {
+    enum StatusCode {  PENDING, PENDING_CREATION, PENDING_UPDATE, COMPLETED }
+
     public class EbayEntry
     {
         private EbayListing _targetListing;
@@ -29,11 +31,11 @@ namespace WorkbookPublisher
         public string FullDescription { get; set; }
         public bool IsValid { get; set; }
 
-        public string Message
+        public string Status
         {
             get 
             {
-                if (_message != null)
+                if (!string.IsNullOrWhiteSpace(_message))
                 {
                     return _message;
                 }
@@ -50,6 +52,11 @@ namespace WorkbookPublisher
                             return "pending creation";
                         }
                         else if (_targetListing.EntityState.Equals(EntityState.Modified))
+                        {
+                            
+                            return "pending update";
+                        }
+                        else if (_targetListing.EntityState.Equals(EntityState.Unchanged))
                         {
                             return "pending update";
                         }
@@ -77,6 +84,13 @@ namespace WorkbookPublisher
         {
             _targetListing = listing;
         }
+
+        //private bool IsCompleted()
+        //{
+        //    EbayListingItem listingItem = _targetListing.ListingItems.Single(p => p.Item.ItemLookupCode.Equals(this.Sku));
+
+            
+        //}
     }
 }
 

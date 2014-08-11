@@ -10,14 +10,6 @@ namespace BerkeleyEntities
     partial class ItemClass
     {
 
-        public string Brand 
-        {
-            get 
-            {
-                return this.SubDescription1;
-            }
-        }
-
         public IEnumerable<SyncListing> GetActiveVariationListings(string marketplace)
         {
             return this.ItemClassComponents.SelectMany(p => p.Item.SyncListings).ToList().Where(p =>
@@ -37,7 +29,12 @@ namespace BerkeleyEntities
             return MatrixAttributeDisplayOrders.First(p => p.Code.Equals(code)).Attribute;
         }
 
-        
-       
+
+
+
+        public bool AnyActiveListing(int marketplaceID)
+        {
+            return this.ItemClassComponents.Any(p => p.Item.AmznListingItems.Any(a => a.MarketplaceID == marketplaceID && a.IsActive));
+        }
     }
 }

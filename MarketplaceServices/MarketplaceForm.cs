@@ -33,6 +33,7 @@ namespace MarketplaceManager
         public MarketplaceForm()
         {
             InitializeComponent();
+
         }
 
         private void SyncForm_Load(object sender, EventArgs e)

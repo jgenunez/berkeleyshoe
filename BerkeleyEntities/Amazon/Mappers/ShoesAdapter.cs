@@ -16,59 +16,85 @@ namespace AmazonServices
 
         public override Product GetProductDto(string condition, string title)
         {
-            ConditionInfo conditionInfo = new ConditionInfo();
-            conditionInfo.ConditionType = ConditionType.New;
-
-            StandardProductID sid = new StandardProductID();
-            sid.Type = StandardProductIDType.UPC;
-            //sid.Value = 
-
-            ProductDescriptionData descriptiondata = new ProductDescriptionData();
-            descriptiondata.Brand = GetBrand();
-            //descriptiondata.Description = this.FullDescription;
-            descriptiondata.ItemType = GetItemType();
-            descriptiondata.Title = title;
-
             ShoesVariationData variationData = new ShoesVariationData();
-            variationData.Size = GetSize();
             variationData.ParentageSpecified = true;
             variationData.Parentage = ShoesVariationDataParentage.child;
+            
+            switch (_item.DimCount)
+            {
+                case 1:
+                case 2:
+                    variationData.Size = GetSize(); break;
+
+                case 3:
+                    variationData.Size = GetSize(); 
+                    variationData.Color = GetColor(); break;
+            }
 
             ShoesClassificationData classificationData = new ShoesClassificationData();
             classificationData.Department = GetDepartment();
             classificationData.MaterialType = GetMaterial();
+            classificationData.ColorMap = GetColorMap();
 
             Shoes shoes = new Shoes();
             shoes.ClothingType = ShoesClothingType.Shoes;
             shoes.ClassificationData = classificationData;
             shoes.VariationData = variationData;
 
-            //if (!String.IsNullOrEmpty(postDetail.AmznColor)) { shoes.ClassificationData.ColorMap = postDetail.AmznColor; }
-            //if (!String.IsNullOrEmpty(postDetail.AmznShade)) { shoes.VariationData.Color = postDetail.AmznShade; }
-
-            ProductProductData productdata = new ProductProductData();
-            productdata.Item = shoes;
-
-            Product product = new Product();
-            product.SKU = _item.ItemLookupCode;
-            product.StandardProductID = sid;
-            product.ItemPackageQuantity = "1";
-            product.NumberOfItems = "1";
-            product.Condition = conditionInfo;
-            product.DescriptionData = descriptiondata;
-            product.ProductData = productdata;
-            //product.ReleaseDateSpecified = true;
-            //product.ReleaseDate = post.startDate;
+            Product product = base.GetProductDto(condition, title);
+            product.DescriptionData.ItemType = GetItemType();
+            product.ProductData = new ProductProductData() { Item = shoes };
 
             return product;
         }
 
-        private string GetItemType()
+        public override Product GetParentProductDto(string condition, string title)
+        {
+            ShoesVariationData variationData = new ShoesVariationData();
+            variationData.ParentageSpecified = true;
+            variationData.Parentage = ShoesVariationDataParentage.parent;
+
+            switch (_item.DimCount)
+            {
+                case 1:
+                case 2:
+                    variationData.VariationTheme = ShoesVariationDataVariationTheme.Size; break;
+                case 3:
+                    variationData.VariationTheme = ShoesVariationDataVariationTheme.SizeColor; break;
+
+            }
+
+            variationData.VariationThemeSpecified = true;
+
+
+            ShoesClassificationData classificationData = new ShoesClassificationData();
+            classificationData.MaterialType = GetMaterial();
+            classificationData.Department = GetDepartment();
+
+            Shoes parentShoes = new Shoes();
+            parentShoes.ClothingType = ShoesClothingType.Shoes;
+            parentShoes.ClassificationData = classificationData;
+            parentShoes.VariationData = variationData;
+
+
+            Product parentProduct = base.GetParentProductDto(condition, title);
+
+            parentProduct.ProductData = new ProductProductData() { Item = parentShoes };
+
+            return parentProduct;
+        }
+
+        private string GetColorMap()
         {
             throw new NotImplementedException();
         }
 
-        private string GetBrand()
+        private string GetColor()
+        {
+            throw new NotImplementedException();
+        }
+
+        private string GetItemType()
         {
             throw new NotImplementedException();
         }
@@ -87,6 +113,8 @@ namespace AmazonServices
         {
             return null;
         }
+
+
 
         
     }

@@ -59,9 +59,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="WorkbookWindow.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Compile Include="AmznEntry.cs" />
     <Compile Include="AmznPublisher.cs" />
@@ -72,9 +72,8 @@
     <Compile Include="EbayEntry.cs" />
     <Compile Include="EbayPublisher.cs" />
     <Compile Include="ExcelWorkbook.cs" />
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
+    <Compile Include="WorkbookWindow.xaml.cs">
+      <DependentUpon>WorkbookWindow.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

@@ -259,7 +259,7 @@ namespace BerkeleyEntities
             {
                 string[] skuDetails = _item.ItemLookupCode.Split(new Char[1] { '-' });
 
-                switch (skuDetails.Length)
+                switch (_item.DimCount)
                 {
                     case 2:
                         _item.Attributes.Add("Size", new Attribute() { Code = skuDetails[1], Value = skuDetails[1] });

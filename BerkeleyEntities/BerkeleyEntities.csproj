@@ -70,9 +70,7 @@
     <Compile Include="Amazon\Mappers\ListingMapper.cs" />
     <Compile Include="Amazon\Mappers\ProductData.cs" />
     <Compile Include="Amazon\Mappers\ProductDataFactory.cs" />
-    <Compile Include="Amazon\Mappers\ProductMatrixData.cs" />
     <Compile Include="Amazon\Mappers\ShoesAdapter.cs" />
-    <Compile Include="Amazon\Mappers\ShoesMatrixAdapter.cs" />
     <Compile Include="Amazon\Publisher.cs" />
     <Compile Include="Amazon\Services\GetCompetivePriceService.cs" />
     <Compile Include="Amazon\Services\ListingSyncService.cs" />

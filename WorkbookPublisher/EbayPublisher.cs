@@ -19,8 +19,10 @@ namespace WorkbookPublisher
 
         private RelayCommand _publish;
 
-        private EbayMarketplace _marketplace;
         private berkeleyEntities _dataContext = new berkeleyEntities();
+        private EbayMarketplace _marketplace;
+        private Publisher _publisher;
+       
 
 
         private PictureSetRepository _picSetRepository = new PictureSetRepository();
@@ -58,13 +60,13 @@ namespace WorkbookPublisher
         {
             this.CanPublish = false;
 
-            Publisher publisher = new Publisher(_dataContext, _marketplace);
+            _publisher = new Publisher(_dataContext, _marketplace);
 
             HandleFixedPriceEntries(this.Entries.Where(p => !p.IsAuction()));
 
             HandleAuctionEntries(this.Entries.Where(p => p.IsAuction()));
 
-            publisher.SaveChanges();
+            _publisher.SaveChanges();
 
             this.CanPublish = true;
 
@@ -143,8 +145,8 @@ namespace WorkbookPublisher
                     }
                     catch (FileNotFoundException e)
                     {
-                        _dataContext.EbayListings.Detach(listing);
-                        entry.Message = e.Message;
+                        _publisher.Detach(listing);
+                        listing.ErrorMessage = e.Message;
                         entry.IsValid = false;
                     }
 
@@ -179,8 +181,8 @@ namespace WorkbookPublisher
                     }
                     catch (FileNotFoundException e)
                     {
-                        _dataContext.EbayListings.Detach(listing);
-                        pending.ForEach(p => p.Message = e.Message);
+                        _publisher.Detach(listing);
+                        listing.ErrorMessage = e.Message;
                         pending.ForEach(p => p.IsValid = false);
                     }
 
@@ -221,7 +223,7 @@ namespace WorkbookPublisher
                     catch (FileNotFoundException e)
                     {
                         _dataContext.EbayListings.Detach(listing);
-                        entry.Message = e.Message;
+                        entry.Status = e.Message;
                         entry.IsValid = false;
                     }
 
@@ -230,7 +232,7 @@ namespace WorkbookPublisher
                 else
                 {
                     entry.IsValid = false;
-                    entry.Message = "cannot modify auctions";
+                    entry.Status = "cannot modify auctions";
                 }
             }
 
@@ -247,13 +249,14 @@ namespace WorkbookPublisher
             {
                 var urls = _dataContext.EbayPictureServiceUrls.Where(p => p.LocalName.Equals(picInfo.Name)).ToList();
 
-                EbayPictureServiceUrl url = urls.SingleOrDefault(p => !p.IsExpired() && picInfo.LastModified > p.TimeUploaded);
+                EbayPictureServiceUrl url = urls.SingleOrDefault(p => !p.IsExpired() && picInfo.LastModified < p.TimeUploaded);
 
                 if (url == null)
                 {
                     url = new EbayPictureServiceUrl();
                     url.LocalName = picInfo.Name;
                     url.Path = picInfo.Path;
+                    
 
                     new EbayPictureUrlRelation() { PictureServiceUrl = url, Listing = listing, CreatedTime = DateTime.UtcNow };
                 }

@@ -20,25 +20,34 @@ namespace AmazonServices.Mappers
             _productDataFactory = new ProductDataFactory(_dataContext);
         }
 
-        public Product MapToParentProductDto(ItemClass itemClass, string title)
+        public List<Product> MapToProductDto(List<AmznListingItem> listingItems)
         {
-            ProductMatrixData productMatrixData = _productDataFactory.CreateProductMatrix(itemClass);
+            List<Product> products = new List<Product>();
 
-            return productMatrixData.GetProductMatrixDto(title);
+            for(int i = 0; i < listingItems.Count; i++)
+            {
+                AmznListingItem listingItem = listingItems[i];
+
+                ProductData productData = _productDataFactory.GetProductData(listingItem.Item.ItemLookupCode);
+               
+                products.Add(productData.GetProductDto(listingItem.Condition, listingItem.Title));
+
+                if(i == 0 && listingItem.Item.ItemClass != null && !listingItem.Item.ItemClass.AnyActiveListing(_marketplace.ID))
+                {
+                    products.Add(productData.GetParentProductDto(listingItem.Condition, listingItem.Title));
+                }
+            }
+
+            return products;
         }
 
-        public Relationship MapToRelationshipDto(ItemClass itemClass, int marketplaceID)
+        public Relationship MapToRelationshipDto(List<AmznListingItem> listingItems)
         {
-            ProductMatrixData productMatrixData = _productDataFactory.CreateProductMatrix(itemClass);
+            AmznListingItem listingItem = listingItems.First();
 
-            return productMatrixData.GetRelationshipDto(marketplaceID);
-        }
+            ProductData productData = _productDataFactory.GetProductData(listingItem.Item.ItemLookupCode);
 
-        public Product MapToProductDto(AmznListingItem listingItem)
-        {
-            ProductData productData = _productDataFactory.CreateProductData(listingItem.Item);
-
-            return productData.GetProductDto(listingItem.Condition, listingItem.Title);
+            return productData.GetRelationshipDto(_marketplace.ID);
         }
 
         public Price MapToPriceDto(AmznListingItem listingItem)

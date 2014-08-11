@@ -146,7 +146,7 @@ namespace BerkeleyEntities.Ebay
             }
         }
 
-        private void Detach(EbayListing listing)
+        public void Detach(EbayListing listing)
         {
             foreach (EbayListingItem listingItem in listing.ListingItems.ToList())
             {

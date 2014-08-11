@@ -113,14 +113,6 @@ namespace BerkeleyEntities
             }
         }
 
-        public string Brand 
-        {
-            get 
-            {
-                return this.SubDescription1;
-            }
-        }
-
         public Dictionary<string, Attribute> Attributes { get; set; }
 
         public string ClassName
@@ -680,6 +672,26 @@ namespace BerkeleyEntities
 
 
 
-        
+
+
+        public int DimCount
+        {
+            get 
+            {
+                int dimCount = 0;
+
+                if (this.ItemClass != null)
+                {
+                    dimCount = this.ItemClass.Dimensions;
+                }
+                else
+                {
+                    dimCount = this.ItemLookupCode.Split(new Char[1] { '-' }).Length - 1;
+                }
+
+                return dimCount;
+            }
+            
+        }
     }
 }

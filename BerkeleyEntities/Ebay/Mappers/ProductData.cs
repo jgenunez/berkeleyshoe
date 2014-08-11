@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using eBay.Service.Core.Soap;
 using BerkeleyEntities;
+using System.Globalization;
 
 namespace EbayServices
 {
@@ -37,6 +38,12 @@ namespace EbayServices
             itemSpecific.Value = new StringCollection(values);
 
             return itemSpecific;
+        }
+
+        protected string ToTitleCase(string word)
+        {
+            TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
+            return textInfo.ToTitleCase(word);
         }
     }
 }

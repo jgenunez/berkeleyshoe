@@ -8,25 +8,26 @@ namespace AmazonServices
 {
     public class ProductDataFactory : ProductFactory
     {
+        private ProductData _productData;
+
         public ProductDataFactory(berkeleyEntities dataContext) 
             : base(dataContext)
         {
 
         }
 
-        public ProductData CreateProductData(Item item)
+        public ProductData GetProductData(string sku)
         {
-            return null;
-        }
+            base.GetProduct(sku);
 
-        public ProductMatrixData CreateProductMatrix(ItemClass itemClass)
-        {
-            return null;
+            return _productData;
         }
 
         protected override void CreateShoes()
         {
-           
+            base.CreateShoes();
+
+            _productData = new ShoesAdapter(_item);
         }
     }
 }

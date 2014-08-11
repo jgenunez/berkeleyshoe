@@ -20,7 +20,7 @@ namespace WorkbookPublisher
         public string Title { get; set; }
         public string Condition { get; set; }    
         public bool IsValid { get; set; }
-        public string Message { get; set; }
+        public string Status { get; set; }
 
         private void SetListing(AmznListingItem listingItem)
         {

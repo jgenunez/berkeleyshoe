@@ -9,7 +9,7 @@ namespace EbayServices.Mappers
     public class ProductDataFactory : ProductFactory
     {
         private ProductData _productData;
-        private PictureSetRepository _pictureSetRepository = new PictureSetRepository();
+
 
         public ProductDataFactory(berkeleyEntities dataContext)
             : base(dataContext)

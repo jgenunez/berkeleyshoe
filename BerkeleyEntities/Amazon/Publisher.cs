@@ -35,7 +35,9 @@ namespace BerkeleyEntities.Amazon
         private const string INVENTORY_DATA = "_POST_INVENTORY_AVAILABILITY_DATA_";
         private const string RELATIONSHIP_DATA = "_POST_PRODUCT_RELATIONSHIP_DATA_";
 
-        
+        private List<AmznListingItem> _addedListingItems = new List<AmznListingItem>();
+
+
 
         public Publisher(berkeleyEntities dataContext, AmznMarketplace marketplace)
         {
@@ -45,7 +47,8 @@ namespace BerkeleyEntities.Amazon
             _listingMapper = new ListingMapper(dataContext, marketplace);
 
             this.SubmittedEnvelopes = new Dictionary<string, AmazonEnvelope>();
-            this.Submissions = new Queue<FeedSubmissionInfo>();
+            this.PendingSubmissions = new List<FeedSubmissionInfo>();
+            this.Errors = new List<AmazonEnvelope>();
         }
 
         public void Publish()
@@ -59,9 +62,21 @@ namespace BerkeleyEntities.Amazon
             PublishRelationshipData();
 
             PollSubmissionStatus();
-
-            _dataContext.SaveChanges();
         }
+
+        public void Republish()
+        {
+            foreach (AmazonEnvelope envelope in this.Errors.Where(p => p.MessageType.Equals(AmazonEnvelopeMessageType.Product)))
+            {
+                SubmitFeed(envelope);
+            }
+        }
+
+        public List<FeedSubmissionInfo> PendingSubmissions { get; set; }
+
+        public List<AmazonEnvelope> Errors { get; set; }
+
+        public Dictionary<string, AmazonEnvelope> SubmittedEnvelopes { get; set; }
 
         private void PublishProductData()
         {
@@ -73,7 +88,7 @@ namespace BerkeleyEntities.Amazon
 
             foreach (AmznListingItem listingItem in listingItems.Where(p => p.Item.ItemClass == null))
             {
-                Product product = _listingMapper.MapToProductDto(listingItem);
+                Product product = _listingMapper.MapToProductDto(new List<AmznListingItem>() { listingItem }).First();
 
                 messages.Add(BuildMessage(product, currentMsg));
 
@@ -84,22 +99,15 @@ namespace BerkeleyEntities.Amazon
 
             foreach (var classGroup in classGroups)
             {
-                string title = "";
+                var products = _listingMapper.MapToProductDto(classGroup.ToList());
 
-                Product product = _listingMapper.MapToParentProductDto(classGroup.Key, title);
-
-                messages.Add(BuildMessage(product, currentMsg));
-
-                currentMsg++;
-
-                foreach (AmznListingItem listingItem in classGroup)
+                foreach (Product product in products)
                 {
-                    product = _listingMapper.MapToProductDto(listingItem);
-
                     messages.Add(BuildMessage(product, currentMsg));
 
                     currentMsg++;
                 }
+
             }
 
             if (messages.Count > 0)
@@ -118,11 +126,11 @@ namespace BerkeleyEntities.Amazon
 
             int currentMsg = 1;
 
-            var classGroups = listingItems.Where(p => p.Item.ItemClass != null).GroupBy(p => p.Item.ItemClass);
+            var classGroups = listingItems.Where(p => p.Item.ItemClass != null).GroupBy(p => p.Item.ItemClass.ItemLookupCode);
 
             foreach (var classGroup in classGroups)
             {
-                Relationship relationship = _listingMapper.MapToRelationshipDto(classGroup.Key, _marketplace.ID);
+                Relationship relationship = _listingMapper.MapToRelationshipDto(classGroup.ToList());
 
                 messages.Add(BuildMessage(relationship, currentMsg));
 
@@ -142,6 +150,9 @@ namespace BerkeleyEntities.Amazon
             var entries = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Modified)
                 .Where(p => p.GetModifiedProperties().Contains("Quantity"))
                 .Select(p => p.Entity).OfType<AmznListingItem>();
+
+
+            this.Errors.Where(p => p.MessageType.Equals(AmazonEnvelopeMessageType.Product));
 
             var updateList = entries.Concat(_dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added).Select(p => p.Entity).Cast<AmznListingItem>());
 
@@ -195,6 +206,150 @@ namespace BerkeleyEntities.Amazon
             }
         }
 
+        private void PollSubmissionStatus()
+        {
+            while (AnyPendingSubmission)
+            {
+                Thread.Sleep(20000);
+
+                GetFeedSubmissionListRequest request = new GetFeedSubmissionListRequest();
+                request.FeedSubmissionIdList = new IdList();
+                request.Merchant = _marketplace.MerchantId;
+                request.FeedSubmissionIdList.Id.AddRange(this.PendingSubmissions.Select(p => p.FeedSubmissionId));
+
+                GetFeedSubmissionListResponse response = _marketplace.GetMWSClient().GetFeedSubmissionList(request);
+
+                foreach (FeedSubmissionInfo updatedSubmission in response.GetFeedSubmissionListResult.FeedSubmissionInfo)
+                {
+                    FeedSubmissionInfo submission = this.PendingSubmissions.Single(p => p.FeedSubmissionId.Equals(updatedSubmission.FeedSubmissionId));
+                    submission.FeedProcessingStatus = updatedSubmission.FeedProcessingStatus;
+                    submission.SubmittedDate = updatedSubmission.SubmittedDate;
+                    submission.CompletedProcessingDate = updatedSubmission.CompletedProcessingDate;
+                    submission.StartedProcessingDate = updatedSubmission.StartedProcessingDate;
+                }
+
+                var completed = this.PendingSubmissions.Where(p => p.FeedProcessingStatus.Equals(STATUS_DONE)).ToList();
+
+                foreach (var submission in completed)
+                {
+                    HandleProcessingResult(submission);
+                    this.PendingSubmissions.Remove(submission);
+                }
+            }
+        }
+
+        private void HandleProcessingResult(FeedSubmissionInfo submission)
+        {
+            ProcessingReport processingReport = GetProcessingReport(submission.FeedSubmissionId);
+            AmazonEnvelope envelope = this.SubmittedEnvelopes[submission.FeedSubmissionId];
+            
+            if (processingReport.ProcessingSummary.MessagesProcessed.Equals("0"))
+            {
+                throw new InvalidOperationException("Error processing feed: " + submission.FeedSubmissionId);
+            }
+
+            foreach (var result in processingReport.Result)
+            {
+                var msg = envelope.Message.Single(p => p.MessageID.Equals(result.MessageID));
+
+                msg.ProcessingResult = result;
+            }
+
+            var completed = envelope.Message.Where(p => p.ProcessingResult == null || p.ProcessingResult.ResultCode.Equals(ProcessingReportResultResultCode.Warning)).ToList();
+
+            switch (submission.FeedType)
+            {
+                case PRODUCT_DATA:
+                    SaveProductDataChanges(completed); break;
+                case INVENTORY_DATA:
+                    SaveInventoryDataChanges(completed); break;
+                case PRICE_DATA:
+                    SavePriceDataChanges(completed); break;
+                case RELATIONSHIP_DATA:
+                    break;
+            }
+
+            envelope.Message = envelope.Message.Where(p => p.ProcessingResult != null && p.ProcessingResult.ResultCode.Equals(ProcessingReportResultResultCode.Error)).ToArray();
+
+            if (envelope.Message.Count() > 0)
+            {
+                this.Errors.Add(envelope);
+            }
+
+            this.PendingSubmissions.Remove(submission);
+        }
+
+        private void SaveProductDataChanges(IEnumerable<AmazonEnvelopeMessage> msgs)
+        {
+            using (berkeleyEntities dataContext = new berkeleyEntities())
+            {
+                foreach (var msg in msgs)
+                {
+                    Product product = (Product)msg.Item;
+
+                    if (dataContext.Items.Any(p => p.ItemLookupCode.Equals(product.SKU)))
+                    {
+                        AmznListingItem listingItem = dataContext.AmznListingItems
+                            .SingleOrDefault(p => p.Item.ItemLookupCode.Equals(product.SKU) && p.MarketplaceID == _marketplace.ID && p.IsActive);
+
+                        if (listingItem == null)
+                        {
+                            listingItem = new AmznListingItem();
+                            listingItem.Item = dataContext.Items.Single(p => p.ItemLookupCode.Equals(product.SKU));
+                            listingItem.Marketplace = dataContext.AmznMarketplaces.Single(p => p.ID == _marketplace.ID);
+                            listingItem.OpenDate = DateTime.UtcNow;
+                            listingItem.LastSyncTime = DateTime.UtcNow;
+                            listingItem.ASIN = "UNKNOWN";
+                            listingItem.IsActive = true;
+                            listingItem.Quantity = 0;
+                            listingItem.Price = 0;
+                            listingItem.Condition = product.Condition.ConditionType.ToString();
+                            listingItem.Title = product.DescriptionData.Title;
+                        }
+                    } 
+                }
+
+                dataContext.SaveChanges();
+            }
+            
+        }
+
+        private void SavePriceDataChanges(IEnumerable<AmazonEnvelopeMessage> msgs)
+        {
+            using (berkeleyEntities dataContext = new berkeleyEntities())
+            {
+                foreach (AmazonEnvelopeMessage msg in msgs)
+                {
+                    Price priceData = (Price)msg.Item;
+
+                    AmznListingItem listingItem = dataContext.AmznListingItems
+                        .Single(p => p.Item.ItemLookupCode.Equals(priceData.SKU) && p.MarketplaceID == _marketplace.ID && p.IsActive);
+
+                    listingItem.Price = priceData.StandardPrice.Value;
+                }
+
+                dataContext.SaveChanges();
+            }
+        }
+
+        private void SaveInventoryDataChanges(IEnumerable<AmazonEnvelopeMessage> msgs)
+        {
+            using (berkeleyEntities dataContext = new berkeleyEntities())
+            {
+                foreach (AmazonEnvelopeMessage msg in msgs)
+                {
+                    Inventory inventoryData = (Inventory)msg.Item;
+
+                    AmznListingItem listingItem = dataContext.AmznListingItems
+                        .Single(p => p.Item.ItemLookupCode.Equals(inventoryData.SKU) && p.MarketplaceID == _marketplace.ID && p.IsActive);
+
+                    listingItem.Quantity = Convert.ToInt32(inventoryData.Item);
+                }
+
+                dataContext.SaveChanges();
+            }
+        }
+
         private void SubmitFeed(AmazonEnvelope envelope)
         {
             SubmitFeedRequest request = new SubmitFeedRequest();
@@ -219,101 +374,17 @@ namespace BerkeleyEntities.Amazon
             FeedSubmissionInfo info = response.SubmitFeedResult.FeedSubmissionInfo;
 
             this.SubmittedEnvelopes.Add(info.FeedSubmissionId, envelope);
-            this.Submissions.Enqueue(info);
-        }
-
-        private void PollSubmissionStatus()
-        {
-            while (AnyPendingSubmission)
-            {
-                Thread.Sleep(20000);
-
-                GetFeedSubmissionListRequest request = new GetFeedSubmissionListRequest();
-                request.FeedSubmissionIdList = new IdList();
-                request.Merchant = _marketplace.MerchantId;
-                request.FeedSubmissionIdList.Id.AddRange(this.Submissions.Select(p => p.FeedSubmissionId));
-
-                GetFeedSubmissionListResponse response = _marketplace.GetMWSClient().GetFeedSubmissionList(request);
-
-                foreach (FeedSubmissionInfo updatedSubmission in response.GetFeedSubmissionListResult.FeedSubmissionInfo)
-                {
-                    FeedSubmissionInfo submission = this.Submissions.Single(p => p.FeedSubmissionId.Equals(updatedSubmission.FeedSubmissionId));
-                    submission.FeedProcessingStatus = updatedSubmission.FeedProcessingStatus;
-                    submission.SubmittedDate = updatedSubmission.SubmittedDate;
-                    submission.CompletedProcessingDate = updatedSubmission.CompletedProcessingDate;
-                    submission.StartedProcessingDate = updatedSubmission.StartedProcessingDate;
-                }
-
-                while (this.Submissions.Peek().FeedProcessingStatus.Equals(STATUS_DONE))
-                {
-                    HandleProcessingResult(this.Submissions.Dequeue());
-                }
-            }
+            this.PendingSubmissions.Add(info);
         }
 
         private bool AnyPendingSubmission 
         { 
             get 
             {
-                return this.Submissions.Any(p =>
+                return this.PendingSubmissions.Any(p =>
                     !p.FeedProcessingStatus.Equals(Publisher.STATUS_CANCELLED) &&
                     !p.FeedProcessingStatus.Equals(Publisher.STATUS_DONE));
             } 
-        }
-
-        public Queue<FeedSubmissionInfo> Submissions { get; set; }
-
-        public Dictionary<string, AmazonEnvelope> SubmittedEnvelopes { get; set; }
-     
-        private void HandleProcessingResult(FeedSubmissionInfo submission)
-        {
-            ProcessingReport processingReport = GetProcessingReport(submission.FeedSubmissionId);
-
-            if (processingReport.ProcessingSummary.MessagesProcessed.Equals("0"))
-            {
-                throw new InvalidOperationException("Error processing feed: " + submission.FeedSubmissionId);
-            }
-
-            AmazonEnvelope envelope = this.SubmittedEnvelopes[submission.FeedSubmissionId];
-            if (processingReport.Result != null)
-            {
-                var changedEntities = _dataContext.ObjectStateManager
-                    .GetObjectStateEntries(EntityState.Added | EntityState.Modified).Select(p => p.Entity).OfType<AmznListingItem>();
-
-                foreach (ProcessingReportResult result in processingReport.Result)
-                {
-                    AmazonEnvelopeMessage msg = envelope.Message.SingleOrDefault(p => p.MessageID.Equals(result.MessageID));
-
-                    if (msg == null)
-                        continue;
-
-                    msg.ProcessingResult = result;
-
-                    if (submission.FeedType.Equals(PRODUCT_DATA))
-                    {
-                        Product product = (Product)msg.Item;
-
-                        if (!_dataContext.ItemClasses.Any(p => p.ItemLookupCode.Equals(product.SKU)))
-                        {
-                            AmznListingItem listingItem = changedEntities.Single(p => p.Item.ItemLookupCode.Equals(product.SKU));
-                            listingItem.ProductData = product;
-                            _dataContext.Detach(listingItem);
-                        }    
-                    }
-                    else if (submission.FeedType.Equals(PRICE_DATA))
-                    {
-                        string sku = ((Price)msg.Item).SKU;
-                        AmznListingItem listingItem = changedEntities.Single(p => p.Item.ItemLookupCode.Equals(sku));
-                        listingItem.Price = 0;
-                    }
-                    else if (submission.FeedType.Equals(INVENTORY_DATA))
-                    {
-                        string sku = ((Inventory)msg.Item).SKU;
-                        AmznListingItem listingItem = changedEntities.Single(p => p.Item.ItemLookupCode.Equals(sku));
-                        listingItem.Quantity = 0;
-                    }
-                } 
-            }
         }
 
         private ProcessingReport GetProcessingReport(string submissionID)
