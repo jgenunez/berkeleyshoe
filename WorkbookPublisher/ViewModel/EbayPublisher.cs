@@ -147,7 +147,7 @@ namespace WorkbookPublisher
                     {
                         _publisher.Detach(listing);
                         listing.ErrorMessage = e.Message;
-                        entry.IsValid = false;
+                        entry.Completed = false;
                     }
 
                     entry.SetListing(listing);
@@ -183,7 +183,7 @@ namespace WorkbookPublisher
                     {
                         _publisher.Detach(listing);
                         listing.ErrorMessage = e.Message;
-                        pending.ForEach(p => p.IsValid = false);
+                        pending.ForEach(p => p.Completed = false);
                     }
 
                 }
@@ -224,14 +224,14 @@ namespace WorkbookPublisher
                     {
                         _dataContext.EbayListings.Detach(listing);
                         entry.Status = e.Message;
-                        entry.IsValid = false;
+                        entry.Completed = false;
                     }
 
 
                 }
                 else
                 {
-                    entry.IsValid = false;
+                    entry.Completed = false;
                     entry.Status = "cannot modify auctions";
                 }
             }

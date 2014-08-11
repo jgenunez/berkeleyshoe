@@ -16,7 +16,7 @@ namespace WorkbookPublisher
 
         public EbayEntry()
         {
-            this.IsValid = true;
+            this.Completed = true;
         }
 
         public uint RowIndex { get; set; }
@@ -29,7 +29,7 @@ namespace WorkbookPublisher
         public string Title { get; set; }
         public string Condition { get; set; }
         public string FullDescription { get; set; }
-        public bool IsValid { get; set; }
+        public bool Completed { get; set; }
 
         public string Status
         {

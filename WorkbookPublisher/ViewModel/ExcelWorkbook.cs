@@ -74,7 +74,7 @@ namespace WorkbookPublisher
                         {
                             EbayEntry entry = CreateEntry(row, typeof(EbayEntry)) as EbayEntry;
                             entry.RowIndex = row.RowIndex.Value;
-                            entry.IsValid = true;
+                            entry.Completed = true;
                             entries.Add(entry);
                         }
 
@@ -95,7 +95,7 @@ namespace WorkbookPublisher
                         foreach (Row row in rows)
                         {
                             AmznEntry entry = CreateEntry(row, typeof(AmznEntry)) as AmznEntry;
-                            entry.IsValid = true;
+                            entry.Completed = true;
                             entry.RowIndex = row.RowIndex.Value;
                             entries.Add(entry);
                         }

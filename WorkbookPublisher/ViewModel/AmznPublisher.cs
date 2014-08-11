@@ -15,6 +15,7 @@ namespace WorkbookPublisher
     public class AmznPublisher
     {
         private berkeleyEntities _dataContext = new berkeleyEntities();
+        private Publisher _publisher;
         private AmznMarketplace _marketplace;
 
         private RelayCommand _publish;
@@ -22,9 +23,12 @@ namespace WorkbookPublisher
         public AmznPublisher(int marketplaceID, IEnumerable<AmznEntry> entries)
         {
             _marketplace = _dataContext.AmznMarketplaces.Single(p => p.ID == marketplaceID);
+            _publisher = new Publisher(_dataContext, _marketplace);
             this.Entries = entries.ToList();
             this.CanPublish = true;
         }
+
+        public string Header { get { return _marketplace.Code; } }
 
         public List<AmznEntry> Entries { get; set; }
 
@@ -43,11 +47,9 @@ namespace WorkbookPublisher
             }
         }
 
-        private async void PublishAsync()
+        private void PublishAsync()
         {
             this.CanPublish = false;
-
-            Publisher publisher = new Publisher(_dataContext, _marketplace);
 
             foreach (AmznEntry entry in this.Entries)
             {
@@ -65,9 +67,9 @@ namespace WorkbookPublisher
                 listingItem.Title = entry.Title;
             }
 
-            publisher.Publish();
+            _publisher.Publish();
 
-            string validCount = this.Entries.Where(p => p.IsValid).Count().ToString();
+            string validCount = this.Entries.Where(p => p.Completed).Count().ToString();
             string total = this.Entries.Count.ToString();
 
             this.CanPublish = true;
@@ -75,6 +77,13 @@ namespace WorkbookPublisher
             // string.Format(" {0} / {1} ", validCount, total);
         }
 
-        public string Header { get { return _marketplace.Code; } }
+        private void Republish()
+        {
+            
+        }
+
+        
+
+        
     }
 }

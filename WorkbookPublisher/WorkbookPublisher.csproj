@@ -59,20 +59,27 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="WorkbookWindow.xaml">
+    <Page Include="View\ShoesDataWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Compile Include="AmznEntry.cs" />
-    <Compile Include="AmznPublisher.cs" />
+    <Page Include="View\WorkbookWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Compile Include="ViewModel\AmznEntry.cs" />
+    <Compile Include="ViewModel\AmznPublisher.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="EbayEntry.cs" />
-    <Compile Include="EbayPublisher.cs" />
-    <Compile Include="ExcelWorkbook.cs" />
-    <Compile Include="WorkbookWindow.xaml.cs">
+    <Compile Include="ViewModel\EbayEntry.cs" />
+    <Compile Include="ViewModel\EbayPublisher.cs" />
+    <Compile Include="ViewModel\ExcelWorkbook.cs" />
+    <Compile Include="View\ShoesDataWindow.xaml.cs">
+      <DependentUpon>ShoesDataWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\WorkbookWindow.xaml.cs">
       <DependentUpon>WorkbookWindow.xaml</DependentUpon>
     </Compile>
   </ItemGroup>

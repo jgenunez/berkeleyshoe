@@ -30,25 +30,29 @@
                 <DataTemplate>
                     <StackPanel>
                         <ListView Name="lvEntries" ItemsSource="{Binding Entries}">
-                            <ListView.View>
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Margin="10" Text="{Binding RowIndex}"/>
+                                        <TextBlock Margin="10" Text="{Binding Brand}"/>
+                                        <TextBlock Margin="10" Text="{Binding Sku}"/>
+                                        <TextBlock Margin="10" Text="{Binding Completed}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                            <!--<ListView.View>
                                 <GridView>
                                     <GridViewColumn Header="Row" Width="Auto" DisplayMemberBinding="{Binding RowIndex}" />
                                     <GridViewColumn Header="Brand" Width="Auto" DisplayMemberBinding="{Binding Brand}"/>
                                     <GridViewColumn Header="SKU" Width="Auto" DisplayMemberBinding="{Binding Sku}" />
                                     <GridViewColumn Header="Status" Width="Auto" DisplayMemberBinding="{Binding Status}"/>
                                 </GridView>
-                            </ListView.View>
-                            <!--<ListView.GroupStyle>
-                            <GroupStyle>
-                              <GroupStyle.HeaderTemplate>  
-                                <DataTemplate>
-                                  <TextBlock FontWeight="Bold" FontSize="14" Text="TESTING"></TextBlock>
-                                </DataTemplate>
-                              </GroupStyle.HeaderTemplate>
-                            </GroupStyle>
-                          </ListView.GroupStyle>-->
+                            </ListView.View>-->                          
                         </ListView>
-                        <Button Name="btnPublish" IsEnabled="{Binding CanPublish}" Margin="5" Padding="5" VerticalAlignment="Center" Command="{Binding Publish}">Publish</Button>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Name="btnPublish" IsEnabled="{Binding CanPublish}" Margin="5" Padding="5" VerticalAlignment="Center" Command="{Binding Publish}">Publish</Button>
+                            <Button Name="btnRepublish" IsEnabled="{Binding CanPublish}" Margin="5" Padding="5" VerticalAlignment="Center" Command="{Binding Publish}">Publish</Button>
+                        </StackPanel>
                     </StackPanel>
                 </DataTemplate>
             </TabControl.ContentTemplate>
