@@ -59,7 +59,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="View\ShoesDataWindow.xaml">
+    <Page Include="View\RepublishDataWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -76,8 +76,8 @@
     <Compile Include="ViewModel\EbayEntry.cs" />
     <Compile Include="ViewModel\EbayPublisher.cs" />
     <Compile Include="ViewModel\ExcelWorkbook.cs" />
-    <Compile Include="View\ShoesDataWindow.xaml.cs">
-      <DependentUpon>ShoesDataWindow.xaml</DependentUpon>
+    <Compile Include="View\RepublishDataWindow.xaml.cs">
+      <DependentUpon>RepublishDataWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\WorkbookWindow.xaml.cs">
       <DependentUpon>WorkbookWindow.xaml</DependentUpon>

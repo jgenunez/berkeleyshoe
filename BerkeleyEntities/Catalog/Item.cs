@@ -251,14 +251,6 @@ namespace BerkeleyEntities
             }
         }
 
-        public string ASIN 
-        {
-            get 
-            {
-                return null;
-            }
-        }
-
         public string GtinType
         {
             get
@@ -640,6 +632,7 @@ namespace BerkeleyEntities
                     // wrong number of digits
                     return false;
             }
+
             // calculate check digit
             int[] a = new int[13];
             a[0] = int.Parse(code[0].ToString()) * 3;

@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Windows.Input;
 using Microsoft.TeamFoundation.MVVM;
+using WorkbookPublisher.View;
+using BerkeleyEntities.Amazon;
 
 namespace WorkbookPublisher
 {
@@ -79,7 +81,21 @@ namespace WorkbookPublisher
 
         private void Republish()
         {
-            
+            var envelopeGroups = _publisher.WaitingRepublishing.GroupBy(p => p.MessageType);
+
+            foreach (var group in envelopeGroups)
+            {
+                var msgs = group.SelectMany(p => p.Message);
+
+                switch (group.Key)
+                {
+                    case AmazonEnvelopeMessageType.Product :
+                        RepublishDataWindow republishForm = new RepublishDataWindow();
+                        republishForm.DataContext = msgs.First().ProcessingResult.ResultDescription;
+                        break;
+
+                }
+            }
         }
 
         

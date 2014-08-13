@@ -55,7 +55,6 @@
     <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AmazonSchema.cs" />
     <Compile Include="Marketplace.cs" />
     <Compile Include="MarketplaceWebService\*.cs" />
     <Compile Include="MarketplaceWebService\Attributes\*.cs" />
