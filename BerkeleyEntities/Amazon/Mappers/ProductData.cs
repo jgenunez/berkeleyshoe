@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using BerkeleyEntities;
 using System.Globalization;
+using BerkeleyEntities.Amazon;
 
 namespace AmazonServices
 {
@@ -45,7 +46,7 @@ namespace AmazonServices
             product.DescriptionData = descriptiondata;
             //product.ReleaseDateSpecified = true;
             //product.ReleaseDate = post.startDate;
-
+            
             return product;
         }
 

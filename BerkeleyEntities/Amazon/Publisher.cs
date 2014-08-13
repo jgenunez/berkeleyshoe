@@ -11,8 +11,7 @@ using AmazonServices.Mappers;
 using System.Data;
 using System.Threading;
 using System.Data.Objects;
-using System.Collections;
-using System.Threading.Tasks;
+using BerkeleyEntities.Amazon;
 
 namespace BerkeleyEntities.Amazon
 {
@@ -36,10 +35,8 @@ namespace BerkeleyEntities.Amazon
         private const string RELATIONSHIP_DATA = "_POST_PRODUCT_RELATIONSHIP_DATA_";
 
         private List<AmznListingItem> _productFeedCompleted = new List<AmznListingItem>();
-
         private List<FeedSubmissionInfo> _waitingProcessingResult = new List<FeedSubmissionInfo>();
         private List<FeedSubmissionInfo> _completedProcessingResult = new List<FeedSubmissionInfo>();
-
         private Dictionary<string, AmazonEnvelope> _envelopes = new Dictionary<string,AmazonEnvelope>();
 
         public Publisher(berkeleyEntities dataContext, AmznMarketplace marketplace)
@@ -48,13 +45,14 @@ namespace BerkeleyEntities.Amazon
             _marketplace = marketplace;
 
             _listingMapper = new ListingMapper(dataContext, marketplace);
+
             this.WaitingRepublishing = new List<AmazonEnvelope>();
-           
+
         }
 
-        public async Task Publish()
+        public void Publish()
         {
-            var added = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added).Select(p => p.Entity).OfType<AmznListingItem>();
+            var added = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added).Select(p => p.Entity).Cast<AmznListingItem>();
 
             var priceModified = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Modified)
                 .Where(p => p.GetModifiedProperties().Contains("Price")).Select(p => p.Entity).OfType<AmznListingItem>();
@@ -77,7 +75,7 @@ namespace BerkeleyEntities.Amazon
             PollSubmissionStatus();
         }
 
-        public async Task Republish(IEnumerable<AmazonEnvelope> envelopes)
+        public void Republish(IEnumerable<AmazonEnvelope> envelopes)
         {
             foreach (var envelope in envelopes)
             {
@@ -93,8 +91,6 @@ namespace BerkeleyEntities.Amazon
             _productFeedCompleted.Clear();
 
             PollSubmissionStatus();
-
-            envelopes.First().Message.First().Item.
         }
 
         public List<AmazonEnvelope> WaitingRepublishing { get; set; }
@@ -135,6 +131,7 @@ namespace BerkeleyEntities.Amazon
         private void HandleProcessingResult(FeedSubmissionInfo submission)
         {
             ProcessingReport processingReport = GetProcessingReport(submission.FeedSubmissionId);
+
             AmazonEnvelope envelope = _envelopes[submission.FeedSubmissionId];
             
             if (processingReport.ProcessingSummary.MessagesProcessed.Equals("0"))
@@ -145,7 +142,6 @@ namespace BerkeleyEntities.Amazon
             foreach (var result in processingReport.Result)
             {
                 var msg = envelope.Message.Single(p => p.MessageID.Equals(result.MessageID));
-
                 msg.ProcessingResult = result;
             }
 
@@ -163,23 +159,7 @@ namespace BerkeleyEntities.Amazon
                     break;
             }
 
-            var errors = envelope.Message.Where(p => p.ProcessingResult != null  && p.ProcessingResult.Equals(ProcessingReportResultResultCode.Error));
-
-            if (errors.Count() > 0)
-            {
-                List<AmazonEnvelopeMessage> msgs = new List<AmazonEnvelopeMessage>();
-                int currentMsg = 1;
-
-                foreach (var error in errors)
-                {
-                    var msg = _listingMapper.BuildMessage(error.Item, currentMsg);
-                    msg.ProcessingResult = error.ProcessingResult;
-                    msgs.Add(msg);
-                    currentMsg++;
-                }
-
-                this.WaitingRepublishing.Add(_listingMapper.BuildEnvelope(envelope.MessageType, msgs));
-            }
+            this.WaitingRepublishing.Add(_listingMapper.RebuildEnvelope(envelope));
         }
 
         private void SubmitFeed(AmazonEnvelope envelope)

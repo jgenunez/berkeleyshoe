@@ -9,7 +9,7 @@ using System.Threading;
 using System.Windows.Input;
 using Microsoft.TeamFoundation.MVVM;
 using WorkbookPublisher.View;
-using System.Windows.Data;
+using BerkeleyEntities.Amazon;
 
 namespace WorkbookPublisher
 {
@@ -49,7 +49,7 @@ namespace WorkbookPublisher
             }
         }
 
-        private async void PublishAsync()
+        private void PublishAsync()
         {
             this.CanPublish = false;
 
@@ -69,30 +69,31 @@ namespace WorkbookPublisher
                 listingItem.Title = entry.Title;
             }
 
-            await _publisher.Publish();
+            _publisher.Publish();
 
-            //string validCount = this.Entries.Where(p => p.Completed).Count().ToString();
-            //string total = this.Entries.Count.ToString();
+            string validCount = this.Entries.Where(p => p.Completed).Count().ToString();
+            string total = this.Entries.Count.ToString();
 
             this.CanPublish = true;
 
             // string.Format(" {0} / {1} ", validCount, total);
         }
 
-        private async void Republish()
+        private void Republish()
         {
-            
             var envelopeGroups = _publisher.WaitingRepublishing.GroupBy(p => p.MessageType);
-
 
             foreach (var group in envelopeGroups)
             {
+                var msgs = group.SelectMany(p => p.Message);
+
                 switch (group.Key)
                 {
-                    case AmazonEnvelopeMessageType.Product:
-                        ShoesDataWindow productDataForm = new ShoesDataWindow();
-                        productDataForm.DataContext = CollectionViewSource.GetDefaultView(group.ToList().SelectMany(p => p.Message));
-                        productDataForm.ShowDialog(); break;
+                    case AmazonEnvelopeMessageType.Product :
+                        RepublishDataWindow republishForm = new RepublishDataWindow();
+                        republishForm.DataContext = msgs.First().ProcessingResult.ResultDescription;
+                        break;
+
                 }
             }
         }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using BerkeleyEntities;
 using System.Data;
+using BerkeleyEntities.Amazon;
 
 namespace AmazonServices.Mappers
 {
@@ -20,6 +21,7 @@ namespace AmazonServices.Mappers
             _marketplace = marketplace;
             _productDataFactory = new ProductDataFactory(_dataContext);
         }
+
 
         public AmazonEnvelopeMessage BuildMessage(object item, int messageID)
         {
@@ -43,6 +45,106 @@ namespace AmazonServices.Mappers
 
             return envelope;
         }
+
+        public AmazonEnvelope RebuildEnvelope(AmazonEnvelope envelope)
+        {
+            var errors = envelope.Message.Where(p => p.ProcessingResult != null && p.ProcessingResult.ResultCode.Equals(ProcessingReportResultResultCode.Error)).ToList();
+
+            List<AmazonEnvelopeMessage> msgs = new List<AmazonEnvelopeMessage>();
+
+            int currentMsg = 1;
+
+            foreach (var error in errors)
+            {
+                AmazonEnvelopeMessage msg = BuildMessage(error.Item, currentMsg);
+                msg.ProcessingResult = error.ProcessingResult;
+                
+                currentMsg++;
+            }
+
+            return BuildEnvelope(envelope.MessageType, msgs);
+        }
+
+        public List<AmznListingItem> SaveProductDataChanges(IEnumerable<AmazonEnvelopeMessage> msgs)
+        {
+            var added = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added).Select(p => p.Entity).Cast<AmznListingItem>();
+
+            List<AmznListingItem> listingItems = new List<AmznListingItem>();
+
+            using (berkeleyEntities dataContext = new berkeleyEntities())
+            {
+                foreach (var msg in msgs)
+                {
+                    Product product = (Product)msg.Item;
+
+                    if (dataContext.Items.Any(p => p.ItemLookupCode.Equals(product.SKU)))
+                    {
+                        AmznListingItem listingItem = dataContext.AmznListingItems
+                            .SingleOrDefault(p => p.Item.ItemLookupCode.Equals(product.SKU) && p.MarketplaceID == _marketplace.ID && p.IsActive);
+
+                        listingItems.Add(added.Single(p => p.Item.ItemLookupCode.Equals(product.SKU)));
+
+                        if (listingItem == null)
+                        {
+                            listingItem = new AmznListingItem();
+                            listingItem.Item = dataContext.Items.Single(p => p.ItemLookupCode.Equals(product.SKU));
+                            listingItem.Marketplace = dataContext.AmznMarketplaces.Single(p => p.ID == _marketplace.ID);
+                            listingItem.OpenDate = DateTime.UtcNow;
+                            listingItem.LastSyncTime = DateTime.UtcNow;
+                            listingItem.ASIN = "UNKNOWN";
+                            listingItem.IsActive = true;
+                            listingItem.Quantity = 0;
+                            listingItem.Price = 0;
+                            listingItem.Condition = product.Condition.ConditionType.ToString();
+                            listingItem.Title = product.DescriptionData.Title;
+                        }
+
+                    }
+                }
+
+                dataContext.SaveChanges();
+            }
+
+            return listingItems;
+        }
+
+        public void SavePriceDataChanges(IEnumerable<AmazonEnvelopeMessage> msgs)
+        {
+            using (berkeleyEntities dataContext = new berkeleyEntities())
+            {
+                foreach (AmazonEnvelopeMessage msg in msgs)
+                {
+                    Price priceData = (Price)msg.Item;
+
+                    AmznListingItem listingItem = dataContext.AmznListingItems
+                        .Single(p => p.Item.ItemLookupCode.Equals(priceData.SKU) && p.MarketplaceID == _marketplace.ID && p.IsActive);
+
+                    listingItem.Price = priceData.StandardPrice.Value;
+                }
+
+                dataContext.SaveChanges();
+            }
+        }
+
+        public void SaveInventoryDataChanges(IEnumerable<AmazonEnvelopeMessage> msgs)
+        {
+            using (berkeleyEntities dataContext = new berkeleyEntities())
+            {
+                foreach (AmazonEnvelopeMessage msg in msgs)
+                {
+                    Inventory inventoryData = (Inventory)msg.Item;
+
+                    AmznListingItem listingItem = dataContext.AmznListingItems
+                        .Single(p => p.Item.ItemLookupCode.Equals(inventoryData.SKU) && p.MarketplaceID == _marketplace.ID && p.IsActive);
+
+                    listingItem.Quantity = Convert.ToInt32(inventoryData.Item);
+                }
+
+                dataContext.SaveChanges();
+            }
+        }
+
+        
 
         public AmazonEnvelope BuildProductData(IEnumerable<AmznListingItem> listingItems)
         {
@@ -133,86 +235,6 @@ namespace AmazonServices.Mappers
             return BuildEnvelope(AmazonEnvelopeMessageType.Price, messages);
         }
 
-        public List<AmznListingItem> SaveProductDataChanges(IEnumerable<AmazonEnvelopeMessage> msgs)
-        {
-            var added = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added).Select(p => p.Entity).OfType<AmznListingItem>();
-
-            var result = new List<AmznListingItem>();
-
-            using (berkeleyEntities dataContext = new berkeleyEntities())
-            {
-                foreach (var msg in msgs)
-                {
-                    Product product = (Product)msg.Item;
-
-                    if (dataContext.Items.Any(p => p.ItemLookupCode.Equals(product.SKU)))
-                    {
-                        AmznListingItem listingItem = dataContext.AmznListingItems
-                            .SingleOrDefault(p => p.Item.ItemLookupCode.Equals(product.SKU) && p.MarketplaceID == _marketplace.ID && p.IsActive);
-
-                        result.Add(added.Single(p => p.Item.ItemLookupCode.Equals(product.SKU)));
-
-                        if (listingItem == null)
-                        {
-                            listingItem = new AmznListingItem();
-                            listingItem.Item = dataContext.Items.Single(p => p.ItemLookupCode.Equals(product.SKU));
-                            listingItem.Marketplace = dataContext.AmznMarketplaces.Single(p => p.ID == _marketplace.ID);
-                            listingItem.OpenDate = DateTime.UtcNow;
-                            listingItem.LastSyncTime = DateTime.UtcNow;
-                            listingItem.ASIN = "UNKNOWN";
-                            listingItem.IsActive = true;
-                            listingItem.Quantity = 0;
-                            listingItem.Price = 0;
-                            listingItem.Condition = product.Condition.ConditionType.ToString();
-                            listingItem.Title = product.DescriptionData.Title;
-                        }
-
-                    }
-                }
-
-                dataContext.SaveChanges();
-            }
-
-            return result;
-        }
-
-        public void SavePriceDataChanges(IEnumerable<AmazonEnvelopeMessage> msgs)
-        {
-            using (berkeleyEntities dataContext = new berkeleyEntities())
-            {
-                foreach (AmazonEnvelopeMessage msg in msgs)
-                {
-                    Price priceData = (Price)msg.Item;
-
-                    AmznListingItem listingItem = dataContext.AmznListingItems
-                        .Single(p => p.Item.ItemLookupCode.Equals(priceData.SKU) && p.MarketplaceID == _marketplace.ID && p.IsActive);
-
-                    listingItem.Price = priceData.StandardPrice.Value;
-                }
-
-                dataContext.SaveChanges();
-            }
-        }
-
-        public void SaveInventoryDataChanges(IEnumerable<AmazonEnvelopeMessage> msgs)
-        {
-            using (berkeleyEntities dataContext = new berkeleyEntities())
-            {
-                foreach (AmazonEnvelopeMessage msg in msgs)
-                {
-                    Inventory inventoryData = (Inventory)msg.Item;
-
-                    AmznListingItem listingItem = dataContext.AmznListingItems
-                        .Single(p => p.Item.ItemLookupCode.Equals(inventoryData.SKU) && p.MarketplaceID == _marketplace.ID && p.IsActive);
-
-                    listingItem.Quantity = Convert.ToInt32(inventoryData.Item);
-                }
-
-                dataContext.SaveChanges();
-            }
-        }
-
-
 
         private List<Product> MapToProductDto(List<AmznListingItem> listingItems)
         {
@@ -268,9 +290,7 @@ namespace AmazonServices.Mappers
             return inventoryData;
         }
 
-
         
-
 
         //public void Map(Inventory inventoryData)
         //{

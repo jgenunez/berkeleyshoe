@@ -15,11 +15,11 @@ using System.Windows.Shapes;
 namespace WorkbookPublisher.View
 {
     /// <summary>
-    /// Interaction logic for AmazonProductDataWindow.xaml
+    /// Interaction logic for ProductDataWindow.xaml
     /// </summary>
-    public partial class ShoesDataWindow : Window
+    public partial class RepublishDataWindow : Window
     {
-        public ShoesDataWindow()
+        public RepublishDataWindow()
         {
             InitializeComponent();
         }
