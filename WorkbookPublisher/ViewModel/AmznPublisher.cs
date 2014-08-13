@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Windows.Input;
 using Microsoft.TeamFoundation.MVVM;
+using WorkbookPublisher.View;
+using System.Windows.Data;
 
 namespace WorkbookPublisher
 {
@@ -47,7 +49,7 @@ namespace WorkbookPublisher
             }
         }
 
-        private void PublishAsync()
+        private async void PublishAsync()
         {
             this.CanPublish = false;
 
@@ -67,19 +69,32 @@ namespace WorkbookPublisher
                 listingItem.Title = entry.Title;
             }
 
-            _publisher.Publish();
+            await _publisher.Publish();
 
-            string validCount = this.Entries.Where(p => p.Completed).Count().ToString();
-            string total = this.Entries.Count.ToString();
+            //string validCount = this.Entries.Where(p => p.Completed).Count().ToString();
+            //string total = this.Entries.Count.ToString();
 
             this.CanPublish = true;
 
             // string.Format(" {0} / {1} ", validCount, total);
         }
 
-        private void Republish()
+        private async void Republish()
         {
             
+            var envelopeGroups = _publisher.WaitingRepublishing.GroupBy(p => p.MessageType);
+
+
+            foreach (var group in envelopeGroups)
+            {
+                switch (group.Key)
+                {
+                    case AmazonEnvelopeMessageType.Product:
+                        ShoesDataWindow productDataForm = new ShoesDataWindow();
+                        productDataForm.DataContext = CollectionViewSource.GetDefaultView(group.ToList().SelectMany(p => p.Message));
+                        productDataForm.ShowDialog(); break;
+                }
+            }
         }
 
         

@@ -11,6 +11,8 @@ using AmazonServices.Mappers;
 using System.Data;
 using System.Threading;
 using System.Data.Objects;
+using System.Collections;
+using System.Threading.Tasks;
 
 namespace BerkeleyEntities.Amazon
 {
@@ -34,8 +36,10 @@ namespace BerkeleyEntities.Amazon
         private const string RELATIONSHIP_DATA = "_POST_PRODUCT_RELATIONSHIP_DATA_";
 
         private List<AmznListingItem> _productFeedCompleted = new List<AmznListingItem>();
+
         private List<FeedSubmissionInfo> _waitingProcessingResult = new List<FeedSubmissionInfo>();
         private List<FeedSubmissionInfo> _completedProcessingResult = new List<FeedSubmissionInfo>();
+
         private Dictionary<string, AmazonEnvelope> _envelopes = new Dictionary<string,AmazonEnvelope>();
 
         public Publisher(berkeleyEntities dataContext, AmznMarketplace marketplace)
@@ -44,15 +48,13 @@ namespace BerkeleyEntities.Amazon
             _marketplace = marketplace;
 
             _listingMapper = new ListingMapper(dataContext, marketplace);
-
-            this._envelopes = new Dictionary<string, AmazonEnvelope>();
-            this._waitingProcessingResult = new List<FeedSubmissionInfo>();
-            this._completedProcessingResult = new List<FeedSubmissionInfo>();
+            this.WaitingRepublishing = new List<AmazonEnvelope>();
+           
         }
 
-        public void Publish()
+        public async Task Publish()
         {
-            var added = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added).Select(p => p.Entity).Cast<AmznListingItem>();
+            var added = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added).Select(p => p.Entity).OfType<AmznListingItem>();
 
             var priceModified = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Modified)
                 .Where(p => p.GetModifiedProperties().Contains("Price")).Select(p => p.Entity).OfType<AmznListingItem>();
@@ -60,22 +62,22 @@ namespace BerkeleyEntities.Amazon
             var qtyModified = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Modified)
                 .Where(p => p.GetModifiedProperties().Contains("Quantity")).Select(p => p.Entity).OfType<AmznListingItem>();
 
-            SubmitFeed(BuildProductData(added));
-            SubmitFeed(BuildInventoryData(qtyModified));
-            SubmitFeed(BuildPriceData(priceModified));
+            SubmitFeed(_listingMapper.BuildProductData(added));
+            SubmitFeed(_listingMapper.BuildInventoryData(qtyModified));
+            SubmitFeed(_listingMapper.BuildPriceData(priceModified));
 
             PollSubmissionStatus();
 
-            SubmitFeed(BuildInventoryData(_productFeedCompleted));
-            SubmitFeed(BuildPriceData(_productFeedCompleted));
-            SubmitFeed(BuildRelationshipData(_productFeedCompleted));
+            SubmitFeed(_listingMapper.BuildInventoryData(_productFeedCompleted));
+            SubmitFeed(_listingMapper.BuildPriceData(_productFeedCompleted));
+            SubmitFeed(_listingMapper.BuildRelationshipData(_productFeedCompleted));
 
             _productFeedCompleted.Clear();
 
             PollSubmissionStatus();
         }
 
-        public void Republish(IEnumerable<AmazonEnvelope> envelopes)
+        public async Task Republish(IEnumerable<AmazonEnvelope> envelopes)
         {
             foreach (var envelope in envelopes)
             {
@@ -84,114 +86,18 @@ namespace BerkeleyEntities.Amazon
 
             PollSubmissionStatus();
 
-            SubmitFeed(BuildInventoryData(_productFeedCompleted));
-            SubmitFeed(BuildPriceData(_productFeedCompleted));
-            SubmitFeed(BuildRelationshipData(_productFeedCompleted));
+            SubmitFeed(_listingMapper.BuildInventoryData(_productFeedCompleted));
+            SubmitFeed(_listingMapper.BuildPriceData(_productFeedCompleted));
+            SubmitFeed(_listingMapper.BuildRelationshipData(_productFeedCompleted));
 
             _productFeedCompleted.Clear();
 
             PollSubmissionStatus();
+
+            envelopes.First().Message.First().Item.
         }
 
-        public AmazonEnvelope GetWaitingUserInput()
-        {
-            var submissions = _completedProcessingResult.Where(p => p.FeedType.Equals(PRODUCT_DATA));
-
-            var submission = submissions.Single(p => p.CompletedProcessingDate.Equals(submissions.Max(m => m.CompletedProcessingDate)));
-
-            AmazonEnvelope envelope = _envelopes[submission.FeedSubmissionId];
-
-            return envelope;
-        }
-
-        private AmazonEnvelope BuildProductData(IEnumerable<AmznListingItem> listingItems)
-        {
-            List<AmazonEnvelopeMessage> messages = new List<AmazonEnvelopeMessage>();
-
-            int currentMsg = 1;
-
-            foreach (AmznListingItem listingItem in listingItems.Where(p => p.Item.ItemClass == null))
-            {
-                Product product = _listingMapper.MapToProductDto(new List<AmznListingItem>() { listingItem }).First();
-
-                messages.Add(BuildMessage(product, currentMsg));
-
-                currentMsg++;
-            }
-
-            var classGroups = listingItems.Where(p => p.Item.ItemClass != null).GroupBy(p => p.Item.ItemClass);
-
-            foreach (var classGroup in classGroups)
-            {
-                var products = _listingMapper.MapToProductDto(classGroup.ToList());
-
-                foreach (Product product in products)
-                {
-                    messages.Add(BuildMessage(product, currentMsg));
-
-                    currentMsg++;
-                }
-
-            }
-
-            return BuildEnvelope(AmazonEnvelopeMessageType.Product, messages);
-        }
-
-        private AmazonEnvelope BuildRelationshipData(IEnumerable<AmznListingItem> listingItems)
-        {
-            List<AmazonEnvelopeMessage> messages = new List<AmazonEnvelopeMessage>();
-
-            int currentMsg = 1;
-
-            var classGroups = listingItems.Where(p => p.Item.ItemClass != null).GroupBy(p => p.Item.ItemClass.ItemLookupCode);
-
-            foreach (var classGroup in classGroups)
-            {
-                Relationship relationship = _listingMapper.MapToRelationshipDto(classGroup.ToList());
-
-                messages.Add(BuildMessage(relationship, currentMsg));
-
-                currentMsg++;
-            }
-
-            return BuildEnvelope(AmazonEnvelopeMessageType.Relationship, messages);
-        }
-
-        private AmazonEnvelope BuildInventoryData(IEnumerable<AmznListingItem> listingItems)
-        {
-            List<AmazonEnvelopeMessage> messages = new List<AmazonEnvelopeMessage>();
-
-            int currentMsg = 1;
-
-            foreach (AmznListingItem listingItem in listingItems)
-            {
-                Inventory inventoryData = _listingMapper.MapToInventoryDto(listingItem);
-
-                messages.Add(BuildMessage(inventoryData, currentMsg));
-
-                currentMsg++;
-            }
-
-            return BuildEnvelope(AmazonEnvelopeMessageType.Inventory, messages);
-        }
-
-        private AmazonEnvelope BuildPriceData(IEnumerable<AmznListingItem> listingItems)
-        {
-            List<AmazonEnvelopeMessage> messages = new List<AmazonEnvelopeMessage>();
-
-            int currentMsg = 1;
-
-            foreach (AmznListingItem listingItem in listingItems)
-            {
-                Price priceData = _listingMapper.MapToPriceDto(listingItem);
-
-                messages.Add(BuildMessage(priceData, currentMsg));
-
-                currentMsg++;
-            }
-
-            return BuildEnvelope(AmazonEnvelopeMessageType.Price, messages);
-        }
+        public List<AmazonEnvelope> WaitingRepublishing { get; set; }
 
         private void PollSubmissionStatus()
         {
@@ -248,88 +154,31 @@ namespace BerkeleyEntities.Amazon
             switch (submission.FeedType)
             {
                 case PRODUCT_DATA:
-                    SaveProductDataChanges(completed); break;
+                    _productFeedCompleted.AddRange(_listingMapper.SaveProductDataChanges(completed)); break;
                 case INVENTORY_DATA:
-                    SaveInventoryDataChanges(completed); break;
+                    _listingMapper.SaveInventoryDataChanges(completed); break;
                 case PRICE_DATA:
-                    SavePriceDataChanges(completed); break;
+                    _listingMapper.SavePriceDataChanges(completed); break;
                 case RELATIONSHIP_DATA:
                     break;
             }
-        }
 
-        private void SaveProductDataChanges(IEnumerable<AmazonEnvelopeMessage> msgs)
-        {
-            var added = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added).Select(p => p.Entity).Cast<AmznListingItem>();
+            var errors = envelope.Message.Where(p => p.ProcessingResult != null  && p.ProcessingResult.Equals(ProcessingReportResultResultCode.Error));
 
-            using (berkeleyEntities dataContext = new berkeleyEntities())
+            if (errors.Count() > 0)
             {
-                foreach (var msg in msgs)
+                List<AmazonEnvelopeMessage> msgs = new List<AmazonEnvelopeMessage>();
+                int currentMsg = 1;
+
+                foreach (var error in errors)
                 {
-                    Product product = (Product)msg.Item;
-
-                    if (dataContext.Items.Any(p => p.ItemLookupCode.Equals(product.SKU)))
-                    {
-                        AmznListingItem listingItem = dataContext.AmznListingItems
-                            .SingleOrDefault(p => p.Item.ItemLookupCode.Equals(product.SKU) && p.MarketplaceID == _marketplace.ID && p.IsActive);
-
-                        _productFeedCompleted.Add(added.Single(p => p.Item.ItemLookupCode.Equals(product.SKU)));
-
-                        if (listingItem == null)
-                        {
-                            listingItem = new AmznListingItem();
-                            listingItem.Item = dataContext.Items.Single(p => p.ItemLookupCode.Equals(product.SKU));
-                            listingItem.Marketplace = dataContext.AmznMarketplaces.Single(p => p.ID == _marketplace.ID);
-                            listingItem.OpenDate = DateTime.UtcNow;
-                            listingItem.LastSyncTime = DateTime.UtcNow;
-                            listingItem.ASIN = "UNKNOWN";
-                            listingItem.IsActive = true;
-                            listingItem.Quantity = 0;
-                            listingItem.Price = 0;
-                            listingItem.Condition = product.Condition.ConditionType.ToString();
-                            listingItem.Title = product.DescriptionData.Title;
-                        }
-
-                    } 
+                    var msg = _listingMapper.BuildMessage(error.Item, currentMsg);
+                    msg.ProcessingResult = error.ProcessingResult;
+                    msgs.Add(msg);
+                    currentMsg++;
                 }
 
-                dataContext.SaveChanges();
-            }          
-        }
-
-        private void SavePriceDataChanges(IEnumerable<AmazonEnvelopeMessage> msgs)
-        {
-            using (berkeleyEntities dataContext = new berkeleyEntities())
-            {
-                foreach (AmazonEnvelopeMessage msg in msgs)
-                {
-                    Price priceData = (Price)msg.Item;
-
-                    AmznListingItem listingItem = dataContext.AmznListingItems
-                        .Single(p => p.Item.ItemLookupCode.Equals(priceData.SKU) && p.MarketplaceID == _marketplace.ID && p.IsActive);
-
-                    listingItem.Price = priceData.StandardPrice.Value;
-                }
-
-                dataContext.SaveChanges();
-            }
-        }
-
-        private void SaveInventoryDataChanges(IEnumerable<AmazonEnvelopeMessage> msgs)
-        {
-            using (berkeleyEntities dataContext = new berkeleyEntities())
-            {
-                foreach (AmazonEnvelopeMessage msg in msgs)
-                {
-                    Inventory inventoryData = (Inventory)msg.Item;
-
-                    AmznListingItem listingItem = dataContext.AmznListingItems
-                        .Single(p => p.Item.ItemLookupCode.Equals(inventoryData.SKU) && p.MarketplaceID == _marketplace.ID && p.IsActive);
-
-                    listingItem.Quantity = Convert.ToInt32(inventoryData.Item);
-                }
-
-                dataContext.SaveChanges();
+                this.WaitingRepublishing.Add(_listingMapper.BuildEnvelope(envelope.MessageType, msgs));
             }
         }
 
@@ -391,29 +240,6 @@ namespace BerkeleyEntities.Amazon
             ProcessingReport processingReport = (ProcessingReport)msg.Item;
 
             return processingReport;
-        }
-
-        public AmazonEnvelopeMessage BuildMessage(object item, int messageID)
-        {
-            AmazonEnvelopeMessage msg = new AmazonEnvelopeMessage();
-            msg.OperationTypeSpecified = true;
-            msg.OperationType = AmazonEnvelopeMessageOperationType.Update;
-            msg.Item = item;
-            msg.MessageID = messageID.ToString();
-
-            return msg;
-        }
-
-        public AmazonEnvelope BuildEnvelope(AmazonEnvelopeMessageType msgType, IEnumerable<AmazonEnvelopeMessage> msgs)
-        {
-            AmazonEnvelope envelope = new AmazonEnvelope();
-            envelope.MessageType = msgType;
-            envelope.Message = msgs.ToArray();
-            envelope.Header = new Header();
-            envelope.Header.MerchantIdentifier = _marketplace.MerchantId;
-            envelope.Header.DocumentVersion = "1.01";
-
-            return envelope;
         }
 
         private string Serialize(object objectToSerialize)

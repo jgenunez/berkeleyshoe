@@ -42,6 +42,8 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -50,15 +52,21 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="UIAutomationProvider" />
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="View\ProductDataWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\ShoesDataWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -76,6 +84,9 @@
     <Compile Include="ViewModel\EbayEntry.cs" />
     <Compile Include="ViewModel\EbayPublisher.cs" />
     <Compile Include="ViewModel\ExcelWorkbook.cs" />
+    <Compile Include="View\ProductDataWindow.xaml.cs">
+      <DependentUpon>ProductDataWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\ShoesDataWindow.xaml.cs">
       <DependentUpon>ShoesDataWindow.xaml</DependentUpon>
     </Compile>
