@@ -34,7 +34,7 @@ namespace MarketplacePublisher
             {
                 Item item = _dataContext.Items.Single(p => p.ItemLookupCode.Equals(entry.Sku));
                 entry.ClassName = item.ClassName;
-                entry.Brand = item.Brand;
+                entry.Brand = item.SubDescription1;
             }
 
             var marketplaceGroups = _entries.GroupBy(p => p.GetMarketplaceName());

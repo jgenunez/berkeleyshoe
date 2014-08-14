@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
   <!-- EF Runtime content -->
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="berkeleyModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2005" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+    <Schema Namespace="berkeleyModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2005" Alias="Self" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Alias">
           <Key>
             <PropertyRef Name="ID" />
@@ -928,47 +928,47 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="berkeleyModelStoreContainer">
-          <EntitySet Name="Alias" EntityType="Self.Alias" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="AmznListingItem" EntityType="Self.AmznListingItem" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="AmznMarketplace" EntityType="Self.AmznMarketplace" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="AmznOrder" EntityType="Self.AmznOrder" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="AmznOrderItem" EntityType="Self.AmznOrderItem" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Bsi_LocationLog" EntityType="Self.Bsi_LocationLog" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="bsi_posting" EntityType="Self.bsi_posting" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="bsi_posts" EntityType="Self.bsi_posts" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="bsi_quantities" EntityType="Self.bsi_quantities" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="bsi_quantities_message" EntityType="Self.bsi_quantities_message" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Customer" EntityType="Self.Customer" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Department" EntityType="Self.Department" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="DepartmentDivision" EntityType="Self.DepartmentDivision" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Division" EntityType="Self.Division" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="EbayListing" EntityType="Self.EbayListing" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="EbayListingItem" EntityType="Self.EbayListingItem" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="EbayMarketplace" EntityType="Self.EbayMarketplace" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="EbayOrder" EntityType="Self.EbayOrder" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="EbayOrderItem" EntityType="Self.EbayOrderItem" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="EbayPictureServiceUrl" EntityType="Self.EbayPictureServiceUrl" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="EbayPictureUrlRelation" EntityType="Self.EbayPictureUrlRelation" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="InventoryEntry" EntityType="Self.InventoryEntry" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="InventoryTransferLog" EntityType="Self.InventoryTransferLog" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Item" EntityType="Self.Item" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="ItemClass" EntityType="Self.ItemClass" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="ItemClassComponent" EntityType="Self.ItemClassComponent" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="MatrixAttributeDisplayOrder" EntityType="Self.MatrixAttributeDisplayOrder" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="PhysicalInventory" EntityType="Self.PhysicalInventory" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="PhysicalInventoryEntry" EntityType="Self.PhysicalInventoryEntry" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="PurchaseOrder" EntityType="Self.PurchaseOrder" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="PurchaseOrderEntry" EntityType="Self.PurchaseOrderEntry" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Supplier" EntityType="Self.Supplier" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="SupplierList" EntityType="Self.SupplierList" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="SyncListing" EntityType="Self.SyncListing" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="SyncOrder" EntityType="Self.SyncOrder" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="SyncOrderItem" EntityType="Self.SyncOrderItem" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Transaction" EntityType="Self.Transaction" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="TransactionEntry" EntityType="Self.TransactionEntry" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="TransactionHold" EntityType="Self.TransactionHold" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="TransactionHoldEntry" EntityType="Self.TransactionHoldEntry" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Alias" EntityType="Self.Alias" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="AmznListingItem" EntityType="Self.AmznListingItem" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="AmznMarketplace" EntityType="Self.AmznMarketplace" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="AmznOrder" EntityType="Self.AmznOrder" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="AmznOrderItem" EntityType="Self.AmznOrderItem" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="Bsi_LocationLog" EntityType="Self.Bsi_LocationLog" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="bsi_posting" EntityType="Self.bsi_posting" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="bsi_posts" EntityType="Self.bsi_posts" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="bsi_quantities" EntityType="Self.bsi_quantities" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="bsi_quantities_message" EntityType="Self.bsi_quantities_message" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="Customer" EntityType="Self.Customer" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="Department" EntityType="Self.Department" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="DepartmentDivision" EntityType="Self.DepartmentDivision" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="Division" EntityType="Self.Division" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="EbayListing" EntityType="Self.EbayListing" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="EbayListingItem" EntityType="Self.EbayListingItem" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="EbayMarketplace" EntityType="Self.EbayMarketplace" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="EbayOrder" EntityType="Self.EbayOrder" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="EbayOrderItem" EntityType="Self.EbayOrderItem" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="EbayPictureServiceUrl" EntityType="Self.EbayPictureServiceUrl" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="EbayPictureUrlRelation" EntityType="Self.EbayPictureUrlRelation" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="InventoryEntry" EntityType="Self.InventoryEntry" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="InventoryTransferLog" EntityType="Self.InventoryTransferLog" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="Item" EntityType="Self.Item" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="ItemClass" EntityType="Self.ItemClass" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="ItemClassComponent" EntityType="Self.ItemClassComponent" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="MatrixAttributeDisplayOrder" EntityType="Self.MatrixAttributeDisplayOrder" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="PhysicalInventory" EntityType="Self.PhysicalInventory" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="PhysicalInventoryEntry" EntityType="Self.PhysicalInventoryEntry" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="PurchaseOrder" EntityType="Self.PurchaseOrder" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="PurchaseOrderEntry" EntityType="Self.PurchaseOrderEntry" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="Supplier" EntityType="Self.Supplier" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="SupplierList" EntityType="Self.SupplierList" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="SyncListing" EntityType="Self.SyncListing" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="SyncOrder" EntityType="Self.SyncOrder" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="SyncOrderItem" EntityType="Self.SyncOrderItem" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="Transaction" EntityType="Self.Transaction" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="TransactionEntry" EntityType="Self.TransactionEntry" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="TransactionHold" EntityType="Self.TransactionHold" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="TransactionHoldEntry" EntityType="Self.TransactionHoldEntry" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
           <AssociationSet Name="FK_EbayOrderItem_EbayOrder" Association="Self.FK_EbayOrderItem_EbayOrder">
             <End Role="EbayOrder" EntitySet="EbayOrder" />
             <End Role="EbayOrderItem" EntitySet="EbayOrderItem" />
@@ -977,8 +977,8 @@
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="BerkeleyEntities" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
-        <EntityContainer Name="berkeleyEntities" annotation:LazyLoadingEnabled="true">
+      <Schema Namespace="BerkeleyEntities" Alias="Self" xmlns="http://schemas.microsoft.com/ado/2009/11/edm" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation">
+        <EntityContainer Name="berkeleyEntities" annotation:LazyLoadingEnabled="true" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation">
           <EntitySet Name="Aliases" EntityType="BerkeleyEntities.Alias" />
           <EntitySet Name="Categories" EntityType="BerkeleyEntities.Category" />
           <EntitySet Name="Departments" EntityType="BerkeleyEntities.Department" />
@@ -1205,10 +1205,10 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Name="ItemID" Type="Int32" Nullable="false" />
           <Property Name="Alias1" Type="String" Nullable="false" MaxLength="25" Unicode="true" FixedLength="false" />
-          <Property Name="DBTimeStamp" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="DBTimeStamp" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <NavigationProperty Name="Item" Relationship="BerkeleyEntities.AliasItem" FromRole="Alias" ToRole="Item" />
         </EntityType>
         <EntityType Name="Category">
@@ -1216,11 +1216,11 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="HQID" Type="Int32" Nullable="false" />
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Name="DepartmentID" Type="Int32" Nullable="false" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="30" Unicode="true" FixedLength="false" />
           <Property Name="Code" Type="String" Nullable="false" MaxLength="17" Unicode="true" FixedLength="false" />
-          <Property Name="DBTimeStamp" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="DBTimeStamp" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <NavigationProperty Name="Department" Relationship="BerkeleyEntities.CategoryDepartment" FromRole="Category" ToRole="Department" />
           <NavigationProperty Name="Items" Relationship="BerkeleyEntities.ItemCategory" FromRole="Category" ToRole="Item" />
           <NavigationProperty Name="ItemClasses" Relationship="BerkeleyEntities.ItemClassCategory" FromRole="Category" ToRole="ItemClass" />
@@ -1230,10 +1230,10 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="HQID" Type="Int32" Nullable="false" />
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="30" Unicode="true" FixedLength="false" />
           <Property Name="code" Type="String" Nullable="false" MaxLength="17" Unicode="true" FixedLength="false" />
-          <Property Name="DBTimeStamp" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="DBTimeStamp" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <NavigationProperty Name="Items" Relationship="BerkeleyEntities.DepartmentItem" FromRole="Department" ToRole="Item" />
           <NavigationProperty Name="Categories" Relationship="BerkeleyEntities.CategoryDepartment" FromRole="Department" ToRole="Category" />
           <NavigationProperty Name="ItemClasses" Relationship="BerkeleyEntities.ItemClassDepartment" FromRole="Department" ToRole="ItemClass" />
@@ -1261,7 +1261,7 @@
           <Property Name="QuantityCommitted" Type="Double" Nullable="false" />
           <Property Name="SerialNumberCount" Type="Int32" Nullable="false" />
           <Property Name="TareWeightPercent" Type="Double" Nullable="false" />
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Name="ItemLookupCode" Type="String" Nullable="false" MaxLength="25" Unicode="true" FixedLength="false" />
           <Property Name="DepartmentID" Type="Int32" Nullable="false" />
           <Property Name="CategoryID" Type="Int32" Nullable="false" />
@@ -1303,7 +1303,7 @@
           <Property Name="BlockSalesAfterDate" Type="DateTime" Precision="3" />
           <Property Name="Weight" Type="Double" Nullable="false" />
           <Property Name="Taxable" Type="Boolean" Nullable="false" />
-          <Property Name="DBTimeStamp" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="DBTimeStamp" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Name="BlockSalesBeforeDate" Type="DateTime" Precision="3" />
           <Property Name="LastCost" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
           <Property Name="ReplacementCost" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
@@ -1348,14 +1348,14 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Name="Description" Type="String" Nullable="false" MaxLength="30" Unicode="true" FixedLength="false" />
           <Property Name="Dimensions" Type="Int16" Nullable="false" />
           <Property Name="Title1" Type="String" Nullable="false" MaxLength="20" Unicode="true" FixedLength="false" />
           <Property Name="Title2" Type="String" Nullable="false" MaxLength="20" Unicode="true" FixedLength="false" />
           <Property Name="Title3" Type="String" Nullable="false" MaxLength="20" Unicode="true" FixedLength="false" />
           <Property Name="ClassType" Type="Int16" Nullable="false" />
-          <Property Name="DBTimeStamp" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="DBTimeStamp" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Name="UseComponentPrice" Type="Boolean" Nullable="false" />
           <Property Name="HQID" Type="Int32" Nullable="false" />
           <Property Name="ItemLookupCode" Type="String" Nullable="false" MaxLength="25" Unicode="true" FixedLength="false" />
@@ -1380,7 +1380,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Name="ItemClassID" Type="Int32" Nullable="false" />
           <Property Name="ItemID" Type="Int32" Nullable="false" />
           <Property Name="Quantity" Type="Double" Nullable="false" />
@@ -1388,7 +1388,7 @@
           <Property Name="Detail2" Type="String" Nullable="false" MaxLength="30" Unicode="true" FixedLength="false" />
           <Property Name="Detail3" Type="String" Nullable="false" MaxLength="30" Unicode="true" FixedLength="false" />
           <Property Name="LastUpdated" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="DBTimeStamp" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="DBTimeStamp" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Name="Price" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
           <NavigationProperty Name="Item" Relationship="BerkeleyEntities.ItemItemClassComponent" FromRole="ItemClassComponent" ToRole="Item" />
           <NavigationProperty Name="ItemClass" Relationship="BerkeleyEntities.ItemClassItemClassComponent" FromRole="ItemClassComponent" ToRole="ItemClass" />
@@ -1397,7 +1397,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Name="ItemClassID" Type="Int32" Nullable="false" />
           <Property Name="Dimension" Type="Int32" Nullable="false" />
           <Property Name="Attribute" Type="String" Nullable="false" MaxLength="30" Unicode="true" FixedLength="false" />
@@ -1411,7 +1411,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Name="StoreID" Type="Int32" Nullable="false" />
           <Property Name="OpenTime" Type="DateTime" Precision="3" />
           <Property Name="CloseTime" Type="DateTime" Precision="3" />
@@ -1419,7 +1419,7 @@
           <Property Name="LastRefresh" Type="DateTime" Precision="3" />
           <Property Name="Description" Type="String" Nullable="false" MaxLength="100" Unicode="true" FixedLength="false" />
           <Property Name="Code" Type="String" Nullable="false" MaxLength="17" Unicode="true" FixedLength="false" />
-          <Property Name="DBTimeStamp" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="DBTimeStamp" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <NavigationProperty Name="PhysicalInventoryEntries" Relationship="BerkeleyEntities.PhysicalInventoryPhysicalInventoryEntry" FromRole="PhysicalInventory" ToRole="PhysicalInventoryEntry" />
           <NavigationProperty Name="InventoryEntries" Relationship="BerkeleyEntities.InventoryEntryPhysicalInventory" FromRole="PhysicalInventory" ToRole="InventoryEntry" />
         </EntityType>
@@ -1427,7 +1427,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Name="StoreID" Type="Int32" Nullable="false" />
           <Property Name="PhysicalInventoryID" Type="Int32" Nullable="false" />
           <Property Name="ReasonCodeID" Type="Int32" Nullable="false" />
@@ -1445,7 +1445,7 @@
           <Property Name="QuantityToOffline" Type="Double" Nullable="false" />
           <Property Name="QuantityFromOffline" Type="Double" Nullable="false" />
           <Property Name="QuantityRefreshed" Type="Double" Nullable="false" />
-          <Property Name="DBTimeStamp" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="DBTimeStamp" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <NavigationProperty Name="Item" Relationship="BerkeleyEntities.PhysicalInventoryEntryItem" FromRole="PhysicalInventoryEntry" ToRole="Item" />
           <NavigationProperty Name="PhysicalInventory" Relationship="BerkeleyEntities.PhysicalInventoryPhysicalInventoryEntry" FromRole="PhysicalInventoryEntry" ToRole="PhysicalInventory" />
         </EntityType>
@@ -1458,7 +1458,7 @@
           <Property Name="POType" Type="Int32" Nullable="false" />
           <Property Name="StoreID" Type="Int32" Nullable="false" />
           <Property Name="WorksheetID" Type="Int32" Nullable="false" />
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Name="PONumber" Type="String" Nullable="false" MaxLength="20" Unicode="true" FixedLength="false" />
           <Property Name="Status" Type="Int16" Nullable="false" />
           <Property Name="DateCreated" Type="DateTime" Nullable="false" Precision="3" />
@@ -1475,7 +1475,7 @@
           <Property Name="ConfirmingTo" Type="String" Nullable="false" MaxLength="20" Unicode="true" FixedLength="false" />
           <Property Name="Remarks" Type="String" Nullable="false" MaxLength="30" Unicode="true" FixedLength="false" />
           <Property Name="SupplierID" Type="Int32" Nullable="false" />
-          <Property Name="DBTimeStamp" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="DBTimeStamp" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Name="OtherStoreID" Type="Int32" Nullable="false" />
           <Property Name="CurrencyID" Type="Int32" Nullable="false" />
           <Property Name="ExchangeRate" Type="Double" Nullable="false" />
@@ -1504,14 +1504,14 @@
           <Property Name="LastUpdated" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="QuantityReceivedToDate" Type="Double" Nullable="false" />
           <Property Name="StoreID" Type="Int32" Nullable="false" />
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Name="PurchaseOrderID" Type="Int32" Nullable="false" />
           <Property Name="QuantityOrdered" Type="Double" Nullable="false" />
           <Property Name="QuantityReceived" Type="Double" Nullable="false" />
           <Property Name="ItemID" Type="Int32" Nullable="false" />
           <Property Name="OrderNumber" Type="String" MaxLength="25" Unicode="true" FixedLength="false" />
           <Property Name="Price" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
-          <Property Name="DBTimeStamp" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="DBTimeStamp" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Name="TaxRate" Type="Double" Nullable="false" />
           <Property Name="InventoryOfflineID" Type="Int32" Nullable="false" />
           <Property Name="ShippingPerItem" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
@@ -1529,7 +1529,7 @@
           <Property Name="HQID" Type="Int32" Nullable="false" />
           <Property Name="LastUpdated" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="State" Type="String" Nullable="false" MaxLength="20" Unicode="true" FixedLength="false" />
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Name="SupplierName" Type="String" Nullable="false" MaxLength="30" Unicode="true" FixedLength="false" />
           <Property Name="ContactName" Type="String" Nullable="false" MaxLength="30" Unicode="true" FixedLength="false" />
           <Property Name="Address1" Type="String" Nullable="false" MaxLength="30" Unicode="true" FixedLength="false" />
@@ -1539,7 +1539,7 @@
           <Property Name="EmailAddress" Type="String" Nullable="false" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="WebPageAddress" Type="String" Nullable="false" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="Code" Type="String" Nullable="false" MaxLength="17" Unicode="true" FixedLength="false" />
-          <Property Name="DBTimeStamp" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="DBTimeStamp" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Name="AccountNumber" Type="String" Nullable="false" MaxLength="20" Unicode="true" FixedLength="false" />
           <Property Name="TaxNumber" Type="String" Nullable="false" MaxLength="20" Unicode="true" FixedLength="false" />
           <Property Name="CurrencyID" Type="Int32" Nullable="false" />
@@ -1570,13 +1570,13 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="MinimumOrder" Type="Double" Nullable="false" />
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Name="ItemID" Type="Int32" Nullable="false" />
           <Property Name="SupplierID" Type="Int32" Nullable="false" />
           <Property Name="Cost" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
           <Property Name="ReorderNumber" Type="String" Nullable="false" MaxLength="25" Unicode="true" FixedLength="false" />
           <Property Name="MasterPackQuantity" Type="Int32" Nullable="false" />
-          <Property Name="DBTimeStamp" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="DBTimeStamp" Type="Binary" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Name="TaxRate" Type="Double" Nullable="false" />
           <NavigationProperty Name="Item" Relationship="BerkeleyEntities.ItemSupplierList" FromRole="SupplierList" ToRole="Item" />
           <NavigationProperty Name="Supplier" Relationship="BerkeleyEntities.SupplierSupplierList" FromRole="SupplierList" ToRole="Supplier" />
@@ -1657,7 +1657,7 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="Byte" Name="status" Nullable="false" />
           <Property Type="String" Name="sku" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="DateTime" Name="creationDate" Nullable="false" Precision="3" />
@@ -1690,7 +1690,7 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="Int32" Name="postingID" Nullable="false" />
           <Property Type="Int32" Name="marketplace" Nullable="false" />
           <Property Type="String" Name="markerplaceItemID" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -1717,7 +1717,7 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="Int32" Name="postId" Nullable="false" />
           <Property Type="Int32" Name="itemId" Nullable="false" />
           <Property Type="String" Name="itemLookupCode" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
@@ -1737,7 +1737,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="Int32" Name="postDetailId" Nullable="false" />
           <Property Type="String" Name="messageNumber" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="errorMessage" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -1761,9 +1761,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="bsi_quantities_messagebsi_quantities">
-          <End Type="BerkeleyEntities.bsi_quantities_message" Role="bsi_quantities_message" Multiplicity="*" >
+          <End Type="BerkeleyEntities.bsi_quantities_message" Role="bsi_quantities_message" Multiplicity="*">
           </End>
-          <End Type="BerkeleyEntities.bsi_quantities" Role="bsi_quantities" Multiplicity="1" >
+          <End Type="BerkeleyEntities.bsi_quantities" Role="bsi_quantities" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
           <ReferentialConstraint>
@@ -1875,7 +1875,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="Int32" Name="ItemID" Nullable="false" />
           <Property Type="Int32" Name="PhysicalInventoryID" Nullable="false" />
           <Property Type="String" Name="User" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
@@ -1937,7 +1937,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="Int32" Name="DepartmentID" Nullable="false" />
           <Property Type="Int32" Name="DivisionID" Nullable="false" />
           <NavigationProperty Name="Division" Relationship="BerkeleyEntities.DivisionDepartmentDivision" FromRole="DepartmentDivision" ToRole="Division" />
@@ -1947,7 +1947,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="String" Name="Type" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Name" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="DepartmentDivisions" Relationship="BerkeleyEntities.DivisionDepartmentDivision" FromRole="Division" ToRole="DepartmentDivision" />
@@ -2045,7 +2045,7 @@
           <NavigationProperty Name="SyncOrderItems" Relationship="BerkeleyEntities.SyncListingSyncOrderItem" FromRole="SyncListing" ToRole="SyncOrderItem" />
           <Property Type="Boolean" Name="Variation" Nullable="false" />
           <Property Type="String" Name="Condition" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="Int32" Name="Active" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Type="Int32" Name="Active" Nullable="false" annotation:StoreGeneratedPattern="Computed" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
         </EntityType>
         <Association Name="SyncListingItem">
           <End Type="BerkeleyEntities.SyncListing" Role="SyncListing" Multiplicity="*" />
@@ -2075,13 +2075,13 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="Int32" Name="ItemID" Nullable="false" />
           <Property Type="Int32" Name="DetailID" Nullable="false" />
           <Property Type="Double" Name="Quantity" Nullable="false" />
           <Property Type="DateTime" Name="DateTransferred" Nullable="false" Precision="3" />
           <Property Type="Int32" Name="StoreID" Nullable="false" />
-          <Property Type="Binary" Name="DBTimeStamp" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Type="Binary" Name="DBTimeStamp" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="Int32" Name="ReferenceID" Nullable="false" />
           <Property Type="Int32" Name="ReasonCodeID" Nullable="false" />
           <Property Type="Int32" Name="CashierID" Nullable="false" />
@@ -2100,7 +2100,7 @@
           <Property Type="Decimal" Name="Cost" Nullable="false" Precision="19" Scale="4" />
           <Property Type="Decimal" Name="FullPrice" Nullable="false" Precision="19" Scale="4" />
           <Property Type="Int32" Name="StoreID" Nullable="false" />
-          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="Int32" Name="TransactionNumber" Nullable="false" />
           <Property Type="Int32" Name="ItemID" Nullable="false" />
           <Property Type="Decimal" Name="Price" Nullable="false" Precision="19" Scale="4" />
@@ -2110,7 +2110,7 @@
           <Property Type="Boolean" Name="Taxable" Nullable="false" />
           <Property Type="Int32" Name="DetailID" Nullable="false" />
           <Property Type="String" Name="Comment" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Type="Binary" Name="DBTimeStamp" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Type="Binary" Name="DBTimeStamp" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="Int32" Name="DiscountReasonCodeID" Nullable="false" />
           <Property Type="Int32" Name="ReturnReasonCodeID" Nullable="false" />
           <Property Type="Int32" Name="TaxChangeReasonCodeID" Nullable="false" />
@@ -2152,7 +2152,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="Int32" Name="StoreID" Nullable="false" />
           <Property Type="Int16" Name="TransactionType" Nullable="false" />
           <Property Type="String" Name="HoldComment" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
@@ -2179,7 +2179,7 @@
           <Property Type="Int32" Name="ShippingServiceID" Nullable="false" />
           <Property Type="String" Name="ShippingTrackingNumber" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="ShippingNotes" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Type="Binary" Name="DBTimeStamp" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Type="Binary" Name="DBTimeStamp" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="Int32" Name="ReasonCodeID" Nullable="false" />
           <Property Type="Int32" Name="ExchangeID" Nullable="false" />
           <Property Type="Int32" Name="ChannelType" Nullable="false" />
@@ -2193,7 +2193,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="String" Name="EntryKey" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Type="Int32" Name="StoreID" Nullable="false" />
           <Property Type="Int32" Name="TransactionHoldID" Nullable="false" />
@@ -2216,7 +2216,7 @@
           <Property Type="String" Name="SerialNumber3" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="VoucherNumber" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Type="DateTime" Name="VoucherExpirationDate" Precision="3" />
-          <Property Type="Binary" Name="DBTimeStamp" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Type="Binary" Name="DBTimeStamp" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="Int32" Name="DiscountReasonCodeID" Nullable="false" />
           <Property Type="Int32" Name="ReturnReasonCodeID" Nullable="false" />
           <Property Type="Int32" Name="TaxChangeReasonCodeID" Nullable="false" />
@@ -2256,7 +2256,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="Int32" Name="ItemID" Nullable="false" />
           <Property Type="Int32" Name="Quantity" Nullable="false" />
           <Property Type="String" Name="BeforeChange" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -2379,7 +2379,7 @@
         </EntityType>
         <Association Name="EbayOrderItemEbayOrder">
           <End Type="BerkeleyEntities.EbayOrderItem" Role="EbayOrderItem" Multiplicity="*" />
-          <End Type="BerkeleyEntities.EbayOrder" Role="EbayOrder" Multiplicity="1" >
+          <End Type="BerkeleyEntities.EbayOrder" Role="EbayOrder" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
           <ReferentialConstraint>
@@ -2490,7 +2490,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="Int32" Name="ItemID" Nullable="false" />
           <Property Type="Int32" Name="Quantity" Nullable="false" />
           <Property Type="Decimal" Name="Price" Nullable="false" Precision="19" Scale="4" />
@@ -2533,7 +2533,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="String" Name="Name" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="AccessKeyId" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="SecretAccessKey" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
@@ -2561,7 +2561,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="String" Name="Name" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Token" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="PayPalAccount" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
@@ -2587,7 +2587,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="String" Name="LocalName" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Url" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Type="DateTime" Name="TimeUploaded" Nullable="false" Precision="3" />
@@ -2664,7 +2664,7 @@
           <Property Type="Int32" Name="PrimaryShipToID" Nullable="false" />
           <Property Type="String" Name="State" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Type="Int32" Name="StoreID" Nullable="false" />
-          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="Boolean" Name="LayawayCustomer" Nullable="false" />
           <Property Type="Boolean" Name="Employee" Nullable="false" />
           <Property Type="String" Name="FirstName" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
@@ -2685,7 +2685,7 @@
           <Property Type="String" Name="Notes" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Title" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="EmailAddress" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Type="Binary" Name="DBTimeStamp" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Type="Binary" Name="DBTimeStamp" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="String" Name="TaxNumber" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="PictureName" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="Int32" Name="DefaultShippingServiceID" Nullable="false" />
@@ -2702,7 +2702,7 @@
           </Key>
           <Property Type="Int32" Name="ShipToID" Nullable="false" />
           <Property Type="Int32" Name="StoreID" Nullable="false" />
-          <Property Type="Int32" Name="TransactionNumber" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="TransactionNumber" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="Int32" Name="BatchNumber" Nullable="false" />
           <Property Type="DateTime" Name="Time" Nullable="false" Precision="3" />
           <Property Type="Int32" Name="CustomerID" Nullable="false" />
@@ -2711,7 +2711,7 @@
           <Property Type="Decimal" Name="SalesTax" Nullable="false" Precision="19" Scale="4" />
           <Property Type="String" Name="Comment" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="ReferenceNumber" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="Binary" Name="DBTimeStamp" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Type="Binary" Name="DBTimeStamp" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="Int32" Name="Status" Nullable="false" />
           <Property Type="Int32" Name="ExchangeID" Nullable="false" />
           <Property Type="Int32" Name="ChannelType" Nullable="false" />
@@ -2748,7 +2748,7 @@
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
-      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="berkeleyModelStoreContainer" CdmEntityContainer="berkeleyEntities">
           <EntitySetMapping Name="Aliases"><EntityTypeMapping TypeName="BerkeleyEntities.Alias"><MappingFragment StoreEntitySet="Alias">
             <ScalarProperty Name="ID" ColumnName="ID" />
@@ -3652,7 +3652,7 @@
     </edmx:Mappings>
   </edmx:Runtime>
   <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
-  <Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <Connection>
       <DesignerInfoPropertySet>
         <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
