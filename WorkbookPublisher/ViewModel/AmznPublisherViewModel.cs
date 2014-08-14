@@ -14,7 +14,7 @@ using BerkeleyEntities.Amazon;
 namespace WorkbookPublisher
 {
     
-    public class AmznPublisher
+    public class AmznPublisherViewModel
     {
         private berkeleyEntities _dataContext = new berkeleyEntities();
         private Publisher _publisher;
@@ -22,12 +22,15 @@ namespace WorkbookPublisher
 
         private RelayCommand _publish;
 
-        public AmznPublisher(int marketplaceID, IEnumerable<AmznEntry> entries)
+        public AmznPublisherViewModel(int marketplaceID, IEnumerable<AmznEntry> entries)
         {
-            _marketplace = _dataContext.AmznMarketplaces.Single(p => p.ID == marketplaceID);
-            _publisher = new Publisher(_dataContext, _marketplace);
             this.Entries = entries.ToList();
             this.CanPublish = true;
+
+            _marketplace = _dataContext.AmznMarketplaces.Single(p => p.ID == marketplaceID);
+            _publisher = new Publisher(_dataContext, _marketplace);
+
+            UpdateCompetedStatus();
         }
 
         public string Header { get { return _marketplace.Code; } }
@@ -53,7 +56,7 @@ namespace WorkbookPublisher
         {
             this.CanPublish = false;
 
-            foreach (AmznEntry entry in this.Entries)
+            foreach (AmznEntry entry in this.Entries.Where(p => p.Completed == false))
             {
                 AmznListingItem listingItem = _dataContext.AmznListingItems.SingleOrDefault(p => p.IsActive && p.MarketplaceID == _marketplace.ID &&  p.Item.ItemLookupCode.Equals(entry.Sku));
 
@@ -98,8 +101,40 @@ namespace WorkbookPublisher
             }
         }
 
-        
+        private void UpdateCompetedStatus()
+        {
+            using (berkeleyEntities dataContext = new berkeleyEntities())
+            {
+                foreach (AmznEntry entry in this.Entries)
+                {
+                    AmznListingItem listingItem = _dataContext.AmznListingItems.SingleOrDefault(p => p.IsActive && p.MarketplaceID == _marketplace.ID && p.Item.ItemLookupCode.Equals(entry.Sku));
 
-        
+                    if (listingItem != null && listingItem.Quantity == entry.Q && listingItem.Price == entry.P)
+                    {
+                        entry.Completed = true;
+                    }
+                    else
+                    {
+                        entry.Completed = false;
+                    }
+                }
+            }
+        }
+
+    }
+
+    public class AmznEntry
+    {
+        public uint RowIndex { get; set; }
+
+        public string Brand { get; set; }
+        public string ClassName { get; set; }
+        public string Sku { get; set; }
+        public int Q { get; set; }
+        public decimal P { get; set; }
+        public string Title { get; set; }
+        public string Condition { get; set; }
+        public bool Completed { get; set; }
+        public string Status { get; set; }
     }
 }

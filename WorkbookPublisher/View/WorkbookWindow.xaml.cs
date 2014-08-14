@@ -49,7 +49,7 @@ namespace WorkbookPublisher
         {
             using (BerkeleyEntities.berkeleyEntities dataContext = new BerkeleyEntities.berkeleyEntities())
             {
-                //string result = string.Join("\n", dataContext.Items.Where(p => p.SubDescription1.Contains("EARTH") &&  !p.Inactive && p.Quantity > 0).ToList().GroupBy(p => p.ClassName).Where(p => p.Sum(s => s.Quantity) < 3).SelectMany(p => p).Select(p => p.SubDescription1 + "," + p.ItemLookupCode + "," + p.Quantity));
+                //string result = string.Join("\n", dataContext.Items.Where(p => p.SubDescription1.Equals("NIKE") && !p.Inactive && p.Quantity > 0).ToList().GroupBy(p => p.ClassName).Where(p => p.Sum(s => s.Quantity) < 3).SelectMany(p => p).Select(p => p.SubDescription1 + "," + p.ItemLookupCode + "," + p.Quantity));
                 //System.IO.File.WriteAllText(@"c:\Users\Juan\Desktop\testting.txt", result);
 
                 BerkeleyEntities.Amazon.Publisher publisher = new BerkeleyEntities.Amazon.Publisher(dataContext, dataContext.AmznMarketplaces.First());

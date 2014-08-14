@@ -22,8 +22,8 @@ namespace WorkbookPublisher
         private SharedStringTablePart _stringTablePart;
         private WorksheetPart _workSheetPart;
 
-        private ObservableCollection<EbayPublisher> _ebayPublishers = new ObservableCollection<EbayPublisher>();
-        private ObservableCollection<AmznPublisher> _amznPublisher = new ObservableCollection<AmznPublisher>();
+        private ObservableCollection<EbayPublisherViewModel> _ebayPublishers = new ObservableCollection<EbayPublisherViewModel>();
+        private ObservableCollection<AmznPublisherViewModel> _amznPublisher = new ObservableCollection<AmznPublisherViewModel>();
 
         private Dictionary<string, string> _colHeadersToRefs = new Dictionary<string, string>();
         private Dictionary<string, string> _colRefsToHeaders = new Dictionary<string, string>();
@@ -78,7 +78,7 @@ namespace WorkbookPublisher
                             entries.Add(entry);
                         }
 
-                        _ebayPublishers.Add(new EbayPublisher(dataContext.EbayMarketplaces.Single(p => p.Code.Equals(code)).ID, entries));
+                        _ebayPublishers.Add(new EbayPublisherViewModel(dataContext.EbayMarketplaces.Single(p => p.Code.Equals(code)).ID, entries));
                       
                     }
                     else if(dataContext.AmznMarketplaces.Any(p => p.Code.Equals(code)))
@@ -100,7 +100,7 @@ namespace WorkbookPublisher
                             entries.Add(entry);
                         }
 
-                        _amznPublisher.Add(new AmznPublisher(dataContext.AmznMarketplaces.Single(p => p.Code.Equals(code)).ID,entries));
+                        _amznPublisher.Add(new AmznPublisherViewModel(dataContext.AmznMarketplaces.Single(p => p.Code.Equals(code)).ID,entries));
                     }
                     
                 }

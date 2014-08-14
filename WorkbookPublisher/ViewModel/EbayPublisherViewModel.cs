@@ -11,7 +11,9 @@ using System.Windows.Input;
 
 namespace WorkbookPublisher
 {
-    public class EbayPublisher
+    enum StatusCode { PENDING, PENDING_CREATION, PENDING_UPDATE, COMPLETED }
+
+    public class EbayPublisherViewModel
     {
         private const string STATUS_ACTIVE = "Active";
         private const string FORMAT_FIXEDPRICE = "FixedPriceItem";
@@ -23,15 +25,16 @@ namespace WorkbookPublisher
         private EbayMarketplace _marketplace;
         private Publisher _publisher;
        
-
-
         private PictureSetRepository _picSetRepository = new PictureSetRepository();
 
-        public EbayPublisher(int marketplaceID, IEnumerable<EbayEntry> entries)
+        public EbayPublisherViewModel(int marketplaceID, IEnumerable<EbayEntry> entries)
         {
             this.Entries = entries.ToList();
             this.CanPublish = true;
+
             _marketplace = _dataContext.EbayMarketplaces.Single(p => p.ID == marketplaceID);
+
+            UpdateCompletedStatus();
         }
 
         public List<EbayEntry> Entries { get; set; }
@@ -56,15 +59,18 @@ namespace WorkbookPublisher
             }
         }
 
-        private async void PublishAsync()
+        private void PublishAsync()
         {
             this.CanPublish = false;
 
             _publisher = new Publisher(_dataContext, _marketplace);
 
-            HandleFixedPriceEntries(this.Entries.Where(p => !p.IsAuction()));
 
-            HandleAuctionEntries(this.Entries.Where(p => p.IsAuction()));
+            var incompleteEntries = this.Entries.Where(p => p.Completed == false);
+
+            HandleFixedPriceEntries(incompleteEntries.Where(p => !p.IsAuction()));
+
+            HandleAuctionEntries(incompleteEntries.Where(p => p.IsAuction()));
 
             _publisher.SaveChanges();
 
@@ -294,5 +300,94 @@ namespace WorkbookPublisher
                 default : return null;
             }
         }
+
+        private void UpdateCompletedStatus()
+        {
+            foreach (EbayEntry entry in this.Entries)
+            {
+                string format = string.Empty;
+
+                if (entry.Format.Equals("BIN") || entry.Format.Equals("GTC"))
+                {
+                    format = FORMAT_FIXEDPRICE;
+                }
+
+                if (format.Equals(FORMAT_FIXEDPRICE))
+                {
+                    EbayListing listing = _marketplace.Listings.SingleOrDefault(p => p.Status.Equals(STATUS_ACTIVE) && p.Format.Equals(format) && (p.Sku.Equals(entry.Sku) || p.Sku.Equals(entry.ClassName)));
+                    if (listing != null)
+                    {
+                        EbayListingItem listingItem = listing.ListingItems.SingleOrDefault(p => p.Item.ItemLookupCode.Equals(entry.Sku));
+                        if (listingItem != null && listingItem.Quantity == entry.Q && listingItem.Price == entry.P)
+                        {
+                            entry.Completed = true;
+                        }
+                        else
+                        {
+                            entry.Completed = false;
+                        }
+                    }
+                    else
+                    {
+                        entry.Completed = false;
+                    }
+                }
+                else
+                {
+                    EbayListing listing = _marketplace.Listings.SingleOrDefault(p => p.Status.Equals(STATUS_ACTIVE) && p.Format.Equals(format) && p.Sku.Equals(entry.Sku));
+                    if (listing != null)
+                    {
+                        entry.Completed = true;
+                    }
+                    else
+                    {
+                        entry.Completed = false;
+                    }
+                }
+            }
+        }
+    }
+
+    public class EbayEntry
+    {
+        private EbayListing _targetListing;
+        private string _message;
+
+        public EbayEntry()
+        {
+            this.Completed = true;
+        }
+
+        public uint RowIndex { get; set; }
+        public string Brand { get; set; }
+        public string ClassName { get; set; }
+        public string Sku { get; set; }
+        public int Q { get; set; }
+        public decimal P { get; set; }
+        public string Format { get; set; }
+        public string Title { get; set; }
+        public string Condition { get; set; }
+        public string FullDescription { get; set; }
+        public bool Completed { get; set; }
+
+        public string Status { get; set; }
+
+        public bool IsAuction()
+        {
+            if (this.Format.Contains("A"))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public void SetListing(EbayListing listing)
+        {
+            _targetListing = listing;
+        }
+
     }
 }

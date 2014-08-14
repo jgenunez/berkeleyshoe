@@ -23,5 +23,33 @@ namespace WorkbookPublisher.View
         {
             InitializeComponent();
         }
+
+        private void btnPrevious_Click(object sender, RoutedEventArgs e)
+        {
+            var source = this.DataContext as CollectionView;
+
+            if (!source.MoveCurrentToPrevious())
+            {
+                source.MoveCurrentToLast();
+            }
+
+        }
+
+        private void btnNext_Click(object sender, RoutedEventArgs e)
+        {
+            var source = this.DataContext as CollectionView;
+
+            if (!source.MoveCurrentToNext())
+            {
+                source.MoveCurrentToFirst();
+            }
+        }
+
+        private void btnDone_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+
     }
 }
