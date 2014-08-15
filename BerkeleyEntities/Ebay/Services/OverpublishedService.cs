@@ -32,15 +32,15 @@ namespace BerkeleyEntities.Ebay.Services
 
         public void BalanceQuantities()
         {
-            if (!_marketplace.ListingSyncTime.HasValue || _marketplace.ListingSyncTime.Value < DateTime.UtcNow.AddHours(-1))
-            {
-                throw new InvalidOperationException(_marketplace.Name + " listings must be synchronized in order to fix overpublished");
-            }
+            //if (!_marketplace.ListingSyncTime.HasValue || _marketplace.ListingSyncTime.Value < DateTime.UtcNow.AddHours(-1))
+            //{
+            //    throw new InvalidOperationException(_marketplace.Name + " listings must be synchronized in order to fix overpublished");
+            //}
 
-            if (!_marketplace.OrdersSyncTime.HasValue || _marketplace.OrdersSyncTime.Value < DateTime.UtcNow.AddHours(-1))
-            {
-                throw new InvalidOperationException(_marketplace.Name + " orders must be synchronized in order to fix overpublished");
-            }
+            //if (!_marketplace.OrdersSyncTime.HasValue || _marketplace.OrdersSyncTime.Value < DateTime.UtcNow.AddHours(-1))
+            //{
+            //    throw new InvalidOperationException(_marketplace.Name + " orders must be synchronized in order to fix overpublished");
+            //}
 
             var activeListings = _dataContext.EbayListings
                 .Include("ListingItems.OrderItems")

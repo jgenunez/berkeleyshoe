@@ -29,29 +29,26 @@
             <TabControl.ContentTemplate>
                 <DataTemplate>
                     <StackPanel>
+                        
                         <ListView Name="lvEntries" ItemsSource="{Binding Entries}">
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Margin="10" Text="{Binding RowIndex}"/>
-                                        <TextBlock Margin="10" Text="{Binding Brand}"/>
-                                        <TextBlock Margin="10" Text="{Binding Sku}"/>
-                                        <TextBlock Margin="10" Text="{Binding Completed}"/>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                            <!--<ListView.View>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.View>
                                 <GridView>
-                                    <GridViewColumn Header="Row" Width="Auto" DisplayMemberBinding="{Binding RowIndex}" />
-                                    <GridViewColumn Header="Brand" Width="Auto" DisplayMemberBinding="{Binding Brand}"/>
-                                    <GridViewColumn Header="SKU" Width="Auto" DisplayMemberBinding="{Binding Sku}" />
-                                    <GridViewColumn Header="Status" Width="Auto" DisplayMemberBinding="{Binding Status}"/>
+                                    <GridViewColumn Header="Row" DisplayMemberBinding="{Binding Path=RowIndex}" Width="auto"/>
+                                    <GridViewColumn Header="Brand" DisplayMemberBinding="{Binding Path=Brand}" Width="auto"/>
+                                    <GridViewColumn Header="Sku" DisplayMemberBinding="{Binding Path=Sku}" Width="auto"/>
+                                    <GridViewColumn Header="Status" DisplayMemberBinding="{Binding Path=Status}" Width="auto"/>
+                                    <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Path=Message}" Width="auto"/>
                                 </GridView>
-                            </ListView.View>-->                          
+                            </ListView.View>         
                         </ListView>
                         <StackPanel Orientation="Horizontal">
                             <Button Name="btnPublish" IsEnabled="{Binding CanPublish}" Margin="5" Padding="5" VerticalAlignment="Center" Command="{Binding Publish}">Publish</Button>
-                            <Button Name="btnRepublish" IsEnabled="{Binding CanPublish}" Margin="5" Padding="5" VerticalAlignment="Center" Command="{Binding Publish}">Publish</Button>
+                            <Button Name="btnRepublish" IsEnabled="{Binding CanPublish}" Margin="5" Padding="5" VerticalAlignment="Center" Command="{Binding Publish}">Republish</Button>
                         </StackPanel>
                     </StackPanel>
                 </DataTemplate>

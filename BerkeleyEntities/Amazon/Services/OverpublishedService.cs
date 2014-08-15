@@ -31,10 +31,10 @@ namespace BerkeleyEntities.Amazon.Services
             //    throw new InvalidOperationException(_marketplace.Name + " listings must be synchronized in order to fix overpublished");
             //}
 
-            if (!_marketplace.OrderSyncTime.HasValue || _marketplace.OrderSyncTime.Value < DateTime.UtcNow.AddHours(-1))
-            {
-                throw new InvalidOperationException(_marketplace.Name + " orders must be synchronized in order to fix overpublished");
-            }
+            //if (!_marketplace.OrderSyncTime.HasValue || _marketplace.OrderSyncTime.Value < DateTime.UtcNow.AddHours(-1))
+            //{
+            //    throw new InvalidOperationException(_marketplace.Name + " orders must be synchronized in order to fix overpublished");
+            //}
 
             var activeListings = _dataContext.AmznListingItems
                 .Include("OrderItems")

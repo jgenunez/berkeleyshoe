@@ -50,6 +50,11 @@ namespace WorkbookPublisher.View
             this.Close();
         }
 
+        private void DockPanel_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.MouseDown += delegate { DragMove(); };
+        }
+
 
     }
 }

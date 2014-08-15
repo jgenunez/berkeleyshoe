@@ -132,6 +132,8 @@ namespace AmazonServices
 
         private void PersistListings(Queue<string> lines)
         {
+            lines.Dequeue();
+
             while (lines.Count > 0)
             {
                 int i = 0;

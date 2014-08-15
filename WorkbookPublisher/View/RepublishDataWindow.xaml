@@ -4,7 +4,7 @@
         xmlns:bky="clr-namespace:BerkeleyEntities.Amazon"
         Title="Republish Data" ResizeMode="NoResize"  Width="500" Height="500" WindowStyle="None" >
     <Border BorderThickness="10" CornerRadius="5" BorderBrush="CadetBlue">
-        <DockPanel>
+        <DockPanel Loaded="DockPanel_Loaded">
         
         <Grid DockPanel.Dock="Bottom">
             <Grid.ColumnDefinitions>

@@ -46,25 +46,6 @@ namespace AmazonServices.Mappers
             return envelope;
         }
 
-        public AmazonEnvelope RebuildEnvelope(AmazonEnvelope envelope)
-        {
-            var errors = envelope.Message.Where(p => p.ProcessingResult != null && p.ProcessingResult.ResultCode.Equals(ProcessingReportResultResultCode.Error)).ToList();
-
-            List<AmazonEnvelopeMessage> msgs = new List<AmazonEnvelopeMessage>();
-
-            int currentMsg = 1;
-
-            foreach (var error in errors)
-            {
-                AmazonEnvelopeMessage msg = BuildMessage(error.Item, currentMsg);
-                msg.ProcessingResult = error.ProcessingResult;
-                
-                currentMsg++;
-            }
-
-            return BuildEnvelope(envelope.MessageType, msgs);
-        }
-
         public List<AmznListingItem> SaveProductDataChanges(IEnumerable<AmazonEnvelopeMessage> msgs)
         {
             var added = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added).Select(p => p.Entity).Cast<AmznListingItem>();

@@ -10,6 +10,8 @@ using System.Windows.Input;
 using Microsoft.TeamFoundation.MVVM;
 using WorkbookPublisher.View;
 using BerkeleyEntities.Amazon;
+using System.ComponentModel;
+using System.Windows.Data;
 
 namespace WorkbookPublisher
 {
@@ -17,9 +19,10 @@ namespace WorkbookPublisher
     public class AmznPublisherViewModel
     {
         private berkeleyEntities _dataContext = new berkeleyEntities();
+        private List<AmazonEnvelope> _needUserInput = new List<AmazonEnvelope>();
+        private Dictionary<AmznListingItem, AmznEntry> _targetListings = new Dictionary<AmznListingItem, AmznEntry>();
         private Publisher _publisher;
         private AmznMarketplace _marketplace;
-
         private RelayCommand _publish;
 
         public AmznPublisherViewModel(int marketplaceID, IEnumerable<AmznEntry> entries)
@@ -29,6 +32,7 @@ namespace WorkbookPublisher
 
             _marketplace = _dataContext.AmznMarketplaces.Single(p => p.ID == marketplaceID);
             _publisher = new Publisher(_dataContext, _marketplace);
+            _publisher.Error += Publisher_Error;
 
             UpdateCompetedStatus();
         }
@@ -84,7 +88,7 @@ namespace WorkbookPublisher
 
         private void Republish()
         {
-            var envelopeGroups = _publisher.WaitingRepublishing.GroupBy(p => p.MessageType);
+            var envelopeGroups = _needUserInput.GroupBy(p => p.MessageType);
 
             foreach (var group in envelopeGroups)
             {
@@ -94,11 +98,55 @@ namespace WorkbookPublisher
                 {
                     case AmazonEnvelopeMessageType.Product :
                         RepublishDataWindow republishForm = new RepublishDataWindow();
-                        republishForm.DataContext = msgs.First().ProcessingResult.ResultDescription;
+                        republishForm.DataContext = CollectionViewSource.GetDefaultView(msgs);
+                        republishForm.ShowDialog();
+                        _publisher.Republish(group.ToList());
                         break;
 
                 }
             }
+        }
+
+        private void Publisher_Error(ErrorArgs e)
+        {
+            var errors = e.Envelope.Message.Where(p => p.ProcessingResult != null && p.ProcessingResult.Equals(ProcessingReportResultResultCode.Error));
+
+            AmazonEnvelope newEnvelope = new AmazonEnvelope();
+            newEnvelope.MessageType = e.Envelope.MessageType;
+            newEnvelope.Header = e.Envelope.Header;
+            newEnvelope.MarketplaceName = e.Envelope.MarketplaceName;
+
+            List<AmazonEnvelopeMessage> newMsgs = new List<AmazonEnvelopeMessage>();
+
+            int currentMsg = 1;
+
+            foreach(AmazonEnvelopeMessage msg in errors)
+            {
+                string sku = msg.Item.GetType().GetProperty("SKU").GetValue(msg.Item) as string;
+
+                newMsgs.Add(
+                    new AmazonEnvelopeMessage() 
+                    { 
+                        Item = msg.Item, MessageID = currentMsg.ToString(), OperationType = msg.OperationType, 
+                        OperationTypeSpecified = msg.OperationTypeSpecified, ProcessingResult = msg.ProcessingResult
+                    });
+
+
+                AmznListingItem listingItem = _dataContext.AmznListingItems
+                    .Single(p => p.Item.ItemLookupCode.Equals(sku) && p.MarketplaceID == _marketplace.ID && p.IsActive);
+
+                AmznEntry entry = _targetListings[listingItem];
+
+                var existingErrors = entry.Message.Split(new Char[1] { '|' }).ToList();
+                existingErrors.Add(msg.ProcessingResult.ResultDescription);
+
+                entry.Message = string.Join("|", existingErrors.Distinct());
+                entry.Completed = false;
+            }
+
+            newEnvelope.Message = newMsgs.ToArray();
+
+            _needUserInput.Add(newEnvelope);
         }
 
         private void UpdateCompetedStatus()
@@ -109,7 +157,7 @@ namespace WorkbookPublisher
                 {
                     AmznListingItem listingItem = _dataContext.AmznListingItems.SingleOrDefault(p => p.IsActive && p.MarketplaceID == _marketplace.ID && p.Item.ItemLookupCode.Equals(entry.Sku));
 
-                    if (listingItem != null && listingItem.Quantity == entry.Q && listingItem.Price == entry.P)
+                    if (listingItem != null && listingItem.Quantity == entry.Q)
                     {
                         entry.Completed = true;
                     }
@@ -123,8 +171,11 @@ namespace WorkbookPublisher
 
     }
 
-    public class AmznEntry
+    public class AmznEntry : INotifyPropertyChanged
     {
+        private bool _completed;
+        private string _message;
+
         public uint RowIndex { get; set; }
 
         public string Brand { get; set; }
@@ -134,7 +185,56 @@ namespace WorkbookPublisher
         public decimal P { get; set; }
         public string Title { get; set; }
         public string Condition { get; set; }
-        public bool Completed { get; set; }
-        public string Status { get; set; }
+
+        public bool Completed
+        {
+            get { return _completed; }
+            set 
+            {
+                if (this.PropertyChanged != null)
+                {
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("Completed"));
+                }
+
+                _completed = value; 
+            }
+        }
+        public string Message
+        {
+            get { return _message; }
+            set 
+            {
+                if (this.PropertyChanged != null)
+                {
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("Message")); 
+                }
+                
+                _message = value; 
+            }
+        }
+
+        public string Status
+        {
+            get
+            {
+                if (this.Completed)
+                {
+                    return "completed";
+                }
+                else
+                {
+                    if (string.IsNullOrWhiteSpace(this.Message))
+                    {
+                        return "waiting";
+                    }
+                    else
+                    {
+                        return "error";
+                    }
+                }
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

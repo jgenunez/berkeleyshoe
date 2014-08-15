@@ -15,6 +15,8 @@ using BerkeleyEntities.Amazon;
 
 namespace BerkeleyEntities.Amazon
 {
+    public delegate void PublishingErrorHandler(ErrorArgs e);
+
     public class Publisher
     {
         private berkeleyEntities _dataContext;
@@ -39,15 +41,13 @@ namespace BerkeleyEntities.Amazon
         private List<FeedSubmissionInfo> _completedProcessingResult = new List<FeedSubmissionInfo>();
         private Dictionary<string, AmazonEnvelope> _envelopes = new Dictionary<string,AmazonEnvelope>();
 
+        
+
         public Publisher(berkeleyEntities dataContext, AmznMarketplace marketplace)
         {
             _dataContext = dataContext;
             _marketplace = marketplace;
-
             _listingMapper = new ListingMapper(dataContext, marketplace);
-
-            this.WaitingRepublishing = new List<AmazonEnvelope>();
-
         }
 
         public void Publish()
@@ -93,7 +93,7 @@ namespace BerkeleyEntities.Amazon
             PollSubmissionStatus();
         }
 
-        public List<AmazonEnvelope> WaitingRepublishing { get; set; }
+        public event PublishingErrorHandler Error;
 
         private void PollSubmissionStatus()
         {
@@ -131,7 +131,6 @@ namespace BerkeleyEntities.Amazon
         private void HandleProcessingResult(FeedSubmissionInfo submission)
         {
             ProcessingReport processingReport = GetProcessingReport(submission.FeedSubmissionId);
-
             AmazonEnvelope envelope = _envelopes[submission.FeedSubmissionId];
             
             if (processingReport.ProcessingSummary.MessagesProcessed.Equals("0"))
@@ -139,10 +138,13 @@ namespace BerkeleyEntities.Amazon
                 throw new InvalidOperationException("Error processing feed: " + submission.FeedSubmissionId);
             }
 
-            foreach (var result in processingReport.Result)
+            if (processingReport.Result != null)
             {
-                var msg = envelope.Message.Single(p => p.MessageID.Equals(result.MessageID));
-                msg.ProcessingResult = result;
+                foreach (var result in processingReport.Result)
+                {
+                    var msg = envelope.Message.Single(p => p.MessageID.Equals(result.MessageID));
+                    msg.ProcessingResult = result;
+                } 
             }
 
             var completed = envelope.Message.Where(p => p.ProcessingResult == null || p.ProcessingResult.ResultCode.Equals(ProcessingReportResultResultCode.Warning)).ToList();
@@ -159,11 +161,19 @@ namespace BerkeleyEntities.Amazon
                     break;
             }
 
-            this.WaitingRepublishing.Add(_listingMapper.RebuildEnvelope(envelope));
+            if (envelope.Message.Any(p => p.ProcessingResult != null && p.ProcessingResult.Equals(ProcessingReportResultResultCode.Error)))
+            {
+                this.Error(new ErrorArgs() { Envelope = envelope });
+            }
         }
 
         private void SubmitFeed(AmazonEnvelope envelope)
         {
+            if (envelope.Message.Count() == 0)
+            {
+                return;
+            }
+
             SubmitFeedRequest request = new SubmitFeedRequest();
             request.Merchant = _marketplace.MerchantId;
             request.MarketplaceIdList = new IdList();
@@ -257,5 +267,10 @@ namespace BerkeleyEntities.Amazon
         //    serializer = new XmlSerializer(typeof(Dictionary<string, AmazonEnvelope>));
         //    this.SubmittedEnvelopes = serializer.Deserialize(new StreamReader(_envelopesFile)) as Dictionary<string,AmazonEnvelope>;
         //}
+    }
+
+    public class ErrorArgs
+    {
+        public AmazonEnvelope Envelope { get; set; }
     }
 }

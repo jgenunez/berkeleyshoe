@@ -15,6 +15,8 @@ using System.Data;
 
 namespace BerkeleyEntities.Ebay
 {
+    public delegate void PublishingErrorHandler(ErrorArgs e);
+
     public class Publisher
     {
         private berkeleyEntities _dataContext;
@@ -22,7 +24,7 @@ namespace BerkeleyEntities.Ebay
         private EbayMarketplace _marketplace;
         private ListingSyncService _listingSyncService;
 
-          
+
         public Publisher(berkeleyEntities dataContext,  EbayMarketplace marketplace)
         {
             _marketplace = marketplace;
@@ -31,6 +33,8 @@ namespace BerkeleyEntities.Ebay
             _listingSyncService = new ListingSyncService(marketplace.ID);
             _listingMapper = new ListingMapper(_dataContext, _marketplace);
         }
+
+        public event PublishingErrorHandler Error;
 
         public void SaveChanges()
         {
@@ -45,7 +49,8 @@ namespace BerkeleyEntities.Ebay
                 }
                 catch (Exception e)
                 {
-                    listing.ErrorMessage = e.Message;
+
+                    this.Error(new ErrorArgs() { Listing = listing, Message = e.Message });
                     Detach(listing);
                 }
             }
@@ -58,7 +63,7 @@ namespace BerkeleyEntities.Ebay
                 }
                 catch (Exception e)
                 {
-                    listing.ErrorMessage = e.Message;
+                    this.Error(new ErrorArgs() { Listing = listing, Message = e.Message });
                     Detach(listing);
                 }
             }
@@ -79,8 +84,6 @@ namespace BerkeleyEntities.Ebay
             EndItemResponseType response = call.ExecuteRequest(request) as EndItemResponseType;
 
             _listingSyncService.SyncListings(new StringCollection() { code }, DateTime.UtcNow);
-
-            
         }
 
         public void PublishListing(EbayListing listing)
@@ -242,5 +245,12 @@ namespace BerkeleyEntities.Ebay
 
             return list[0].InnerText;
         }
+    }
+
+    public class ErrorArgs
+    {
+        public string Message {get; set;}
+
+        public EbayListing Listing {get; set;}
     }
 }

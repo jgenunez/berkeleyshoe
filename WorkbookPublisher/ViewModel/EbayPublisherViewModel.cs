@@ -3,6 +3,7 @@ using BerkeleyEntities.Ebay;
 using Microsoft.TeamFoundation.MVVM;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -21,11 +22,12 @@ namespace WorkbookPublisher
 
         private RelayCommand _publish;
 
+        private PictureSetRepository _picSetRepository = new PictureSetRepository();
         private berkeleyEntities _dataContext = new berkeleyEntities();
         private EbayMarketplace _marketplace;
         private Publisher _publisher;
-       
-        private PictureSetRepository _picSetRepository = new PictureSetRepository();
+
+        private Dictionary<EbayListing, EbayEntry> _targetListings = new Dictionary<EbayListing, EbayEntry>();
 
         public EbayPublisherViewModel(int marketplaceID, IEnumerable<EbayEntry> entries)
         {
@@ -33,6 +35,8 @@ namespace WorkbookPublisher
             this.CanPublish = true;
 
             _marketplace = _dataContext.EbayMarketplaces.Single(p => p.ID == marketplaceID);
+            _publisher = new Publisher(_dataContext, _marketplace);
+            _publisher.Error += Publisher_Error;
 
             UpdateCompletedStatus();
         }
@@ -63,7 +67,7 @@ namespace WorkbookPublisher
         {
             this.CanPublish = false;
 
-            _publisher = new Publisher(_dataContext, _marketplace);
+            
 
 
             var incompleteEntries = this.Entries.Where(p => p.Completed == false);
@@ -95,7 +99,7 @@ namespace WorkbookPublisher
                         EbayListingItem listingItem = listing.ListingItems.First();
                         listingItem.Quantity = entry.Q;
                         listingItem.Price = entry.P;
-                        entry.SetListing(listing);
+                        _targetListings.Add(listing, entry);
                     }
                     else
                     {
@@ -120,8 +124,7 @@ namespace WorkbookPublisher
 
                         listingItem.Quantity = entry.Q;
                         listingItem.Price = entry.P;
-
-                        entry.SetListing(listing);
+                        _targetListings.Add(listing, entry);
                     }
 
                 }
@@ -152,11 +155,11 @@ namespace WorkbookPublisher
                     catch (FileNotFoundException e)
                     {
                         _publisher.Detach(listing);
-                        listing.ErrorMessage = e.Message;
+                        entry.Message = e.Message;
                         entry.Completed = false;
                     }
 
-                    entry.SetListing(listing);
+                    _targetListings.Add(listing, entry);
                 }
                 else if (pending.Count() > 1)
                 {
@@ -178,7 +181,7 @@ namespace WorkbookPublisher
                         listingItem.Quantity = entry.Q;
                         listingItem.Price = entry.P;
 
-                        entry.SetListing(listing);
+                        _targetListings.Add(listing, entry);
                     }
 
                     try
@@ -188,8 +191,8 @@ namespace WorkbookPublisher
                     catch (FileNotFoundException e)
                     {
                         _publisher.Detach(listing);
-                        listing.ErrorMessage = e.Message;
                         pending.ForEach(p => p.Completed = false);
+                        pending.ForEach(p => p.Message = e.Message);
                     }
 
                 }
@@ -220,7 +223,8 @@ namespace WorkbookPublisher
                     listingItem.Quantity = entry.Q;
                     listingItem.Price = entry.P;
 
-                    entry.SetListing(listing);
+                    _targetListings.Add(listing, entry);
+
 
                     try
                     {
@@ -229,7 +233,7 @@ namespace WorkbookPublisher
                     catch (FileNotFoundException e)
                     {
                         _dataContext.EbayListings.Detach(listing);
-                        entry.Status = e.Message;
+                        entry.Message = e.Message;
                         entry.Completed = false;
                     }
 
@@ -238,7 +242,7 @@ namespace WorkbookPublisher
                 else
                 {
                     entry.Completed = false;
-                    entry.Status = "cannot modify auctions";
+                    entry.Message = "cannot modify auctions";
                 }
             }
 
@@ -301,6 +305,13 @@ namespace WorkbookPublisher
             }
         }
 
+        private void Publisher_Error(ErrorArgs e)
+        {
+            EbayEntry entry = _targetListings[e.Listing];
+            entry.Message = e.Message;
+            entry.Completed = false;
+        }
+
         private void UpdateCompletedStatus()
         {
             foreach (EbayEntry entry in this.Entries)
@@ -318,7 +329,8 @@ namespace WorkbookPublisher
                     if (listing != null)
                     {
                         EbayListingItem listingItem = listing.ListingItems.SingleOrDefault(p => p.Item.ItemLookupCode.Equals(entry.Sku));
-                        if (listingItem != null && listingItem.Quantity == entry.Q && listingItem.Price == entry.P)
+
+                        if (listingItem != null && listingItem.Quantity == entry.Q)
                         {
                             entry.Completed = true;
                         }
@@ -348,9 +360,9 @@ namespace WorkbookPublisher
         }
     }
 
-    public class EbayEntry
+    public class EbayEntry : INotifyPropertyChanged
     {
-        private EbayListing _targetListing;
+        private bool _completed;
         private string _message;
 
         public EbayEntry()
@@ -368,9 +380,55 @@ namespace WorkbookPublisher
         public string Title { get; set; }
         public string Condition { get; set; }
         public string FullDescription { get; set; }
-        public bool Completed { get; set; }
 
-        public string Status { get; set; }
+        public bool Completed
+        {
+            get { return _completed; }
+            set
+            {
+                if (this.PropertyChanged != null)
+                {
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("Completed"));
+                }
+
+                _completed = value;
+            }
+        }
+        public string Message
+        {
+            get { return _message; }
+            set
+            {
+                if (this.PropertyChanged != null)
+                {
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("Message"));
+                }
+
+                _message = value;
+            }
+        }
+
+        public string Status 
+        {
+            get 
+            {
+                if (this.Completed)
+                {
+                    return "completed";
+                }
+                else
+                {
+                    if (string.IsNullOrWhiteSpace(this.Message))
+                    {
+                        return "waiting";
+                    }
+                    else
+                    {
+                        return "error";
+                    }
+                }
+            }
+        }
 
         public bool IsAuction()
         {
@@ -384,10 +442,7 @@ namespace WorkbookPublisher
             }
         }
 
-        public void SetListing(EbayListing listing)
-        {
-            _targetListing = listing;
-        }
 
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }
