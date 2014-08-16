@@ -60,6 +60,12 @@ namespace EbayServices.Mappers
             listingDto.DispatchTimeMaxSpecified = true;
             listingDto.DispatchTimeMax = 1;
 
+            if (!listing.StartTime.Equals(DateTime.MinValue))
+            {
+                listingDto.ScheduleTimeSpecified = true;
+                listingDto.ScheduleTime = listing.StartTime;
+            }
+
             listingDto.CountrySpecified = true;
             listingDto.Country = CountryCodeType.US;
 
@@ -234,21 +240,6 @@ namespace EbayServices.Mappers
                 listing.MarketplaceID = _marketplace.ID;
             }
 
-            listing.Duration = listingDto.ListingDuration != null ? listingDto.ListingDuration : listing.Duration;
-
-            listing.EndTime = listingDto.ListingDetails != null && listingDto.ListingDetails.EndTimeSpecified ? 
-                listingDto.ListingDetails.EndTime : listing.EndTime;
-
-            listing.StartTime = listingDto.ListingDetails != null && listingDto.ListingDetails.StartTimeSpecified? 
-                listingDto.ListingDetails.StartTime : listing.StartTime;
-
-            listing.Title = listingDto.Title != null ? listingDto.Title : listing.Title;
-            listing.Sku = listingDto.SKU != null ? listingDto.SKU : listing.Sku;
-            listing.Condition = listingDto.ConditionIDSpecified ? listingDto.ConditionID.ToString() : listing.Condition;
-
-            listing.Status = listingDto.SellingStatus != null && listingDto.SellingStatus.ListingStatusSpecified ?
-                listingDto.SellingStatus.ListingStatus.ToString() : listing.Status;
-
             if (listingDto.Variations == null)
             {
                 listing.IsVariation = false;
@@ -259,6 +250,21 @@ namespace EbayServices.Mappers
                 listing.IsVariation = true;
                 MapListingItem(listing, listingDto.Variations);
             }
+
+            listing.Duration = listingDto.ListingDuration != null ? listingDto.ListingDuration : listing.Duration;
+
+            listing.EndTime = listingDto.ListingDetails != null && listingDto.ListingDetails.EndTimeSpecified ?
+                listingDto.ListingDetails.EndTime : listing.EndTime;
+
+            listing.StartTime = listingDto.ListingDetails != null && listingDto.ListingDetails.StartTimeSpecified ?
+                listingDto.ListingDetails.StartTime : listing.StartTime;
+
+            listing.Title = listingDto.Title != null ? listingDto.Title : listing.Title;
+            listing.Sku = listingDto.SKU != null ? listingDto.SKU : listing.Sku;
+            listing.Condition = listingDto.ConditionIDSpecified ? listingDto.ConditionID.ToString() : listing.Condition;
+
+            listing.Status = listingDto.SellingStatus != null && listingDto.SellingStatus.ListingStatusSpecified ?
+                listingDto.SellingStatus.ListingStatus.ToString() : listing.Status;
 
             return listing;
         }

@@ -26,7 +26,7 @@
                 </TextBlock.Text>
             </TextBlock>
             </Grid>
-        <TextBlock DockPanel.Dock="Bottom" Margin="30" Text="{Binding Path=ProcessingResult.ResultDescription}"/>
+        <TextBlock DockPanel.Dock="Bottom" Margin="30" TextWrapping="Wrap" Text="{Binding Path=ProcessingResult.ResultDescription}"/>
         <ContentPresenter Margin="10" Content="{Binding Item}">
             <ContentPresenter.ContentTemplate>
                 <DataTemplate DataType="bky:Product">

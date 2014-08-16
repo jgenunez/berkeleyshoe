@@ -161,7 +161,7 @@ namespace BerkeleyEntities.Amazon
                     break;
             }
 
-            if (envelope.Message.Any(p => p.ProcessingResult != null && p.ProcessingResult.Equals(ProcessingReportResultResultCode.Error)))
+            if (envelope.Message.Any(p => p.ProcessingResult != null && p.ProcessingResult.ResultCode.Equals(ProcessingReportResultResultCode.Error)))
             {
                 this.Error(new ErrorArgs() { Envelope = envelope });
             }

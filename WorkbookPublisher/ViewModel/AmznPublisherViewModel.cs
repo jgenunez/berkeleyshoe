@@ -12,6 +12,7 @@ using WorkbookPublisher.View;
 using BerkeleyEntities.Amazon;
 using System.ComponentModel;
 using System.Windows.Data;
+using System.Collections.ObjectModel;
 
 namespace WorkbookPublisher
 {
@@ -24,11 +25,13 @@ namespace WorkbookPublisher
         private Publisher _publisher;
         private AmznMarketplace _marketplace;
         private RelayCommand _publish;
+        private RelayCommand _fixErrors;
 
         public AmznPublisherViewModel(int marketplaceID, IEnumerable<AmznEntry> entries)
         {
-            this.Entries = entries.ToList();
+            this.Entries = new ObservableCollection<AmznEntry>(entries);
             this.CanPublish = true;
+            this.CanFixErrors = false;
 
             _marketplace = _dataContext.AmznMarketplaces.Single(p => p.ID == marketplaceID);
             _publisher = new Publisher(_dataContext, _marketplace);
@@ -39,9 +42,11 @@ namespace WorkbookPublisher
 
         public string Header { get { return _marketplace.Code; } }
 
-        public List<AmznEntry> Entries { get; set; }
+        public ObservableCollection<AmznEntry> Entries { get; set; }
 
         public bool CanPublish { get; set; }
+
+        public bool CanFixErrors { get; set; }
 
         public ICommand Publish
         {
@@ -56,7 +61,20 @@ namespace WorkbookPublisher
             }
         }
 
-        private void PublishAsync()
+        public ICommand FixErrors
+        {
+            get 
+            {
+                if (_fixErrors == null)
+                {
+                    _fixErrors = new RelayCommand(FixErrorsAsync);
+                }
+
+                return _fixErrors;
+            }
+        }
+
+        private async void PublishAsync()
         {
             this.CanPublish = false;
 
@@ -71,24 +89,25 @@ namespace WorkbookPublisher
                 }
 
                 listingItem.Quantity = entry.Q;
-                listingItem.Price = entry.P;
+                listingItem.Price = entry.P;    
                 listingItem.Condition = entry.Condition;
                 listingItem.Title = entry.Title;
+
+                _targetListings.Add(listingItem, entry);
             }
 
-            _publisher.Publish();
+            await Task.Run(() => _publisher.Publish());
 
-            string validCount = this.Entries.Where(p => p.Completed).Count().ToString();
-            string total = this.Entries.Count.ToString();
-
-            this.CanPublish = true;
-
-            // string.Format(" {0} / {1} ", validCount, total);
+            UpdateCompetedStatus();
         }
 
-        private void Republish()
+        private async void FixErrorsAsync()
         {
-            var envelopeGroups = _needUserInput.GroupBy(p => p.MessageType);
+            var envelopeGroups = _needUserInput.GroupBy(p => p.MessageType).ToList();
+
+            _needUserInput.Clear();
+
+            this.CanFixErrors = false;
 
             foreach (var group in envelopeGroups)
             {
@@ -100,7 +119,7 @@ namespace WorkbookPublisher
                         RepublishDataWindow republishForm = new RepublishDataWindow();
                         republishForm.DataContext = CollectionViewSource.GetDefaultView(msgs);
                         republishForm.ShowDialog();
-                        _publisher.Republish(group.ToList());
+                        await Task.Run( () => _publisher.Republish(group.ToList()));
                         break;
 
                 }
@@ -109,7 +128,9 @@ namespace WorkbookPublisher
 
         private void Publisher_Error(ErrorArgs e)
         {
-            var errors = e.Envelope.Message.Where(p => p.ProcessingResult != null && p.ProcessingResult.Equals(ProcessingReportResultResultCode.Error));
+            this.CanFixErrors = true;
+
+            var errors = e.Envelope.Message.Where(p => p.ProcessingResult != null && p.ProcessingResult.ResultCode.Equals(ProcessingReportResultResultCode.Error));
 
             AmazonEnvelope newEnvelope = new AmazonEnvelope();
             newEnvelope.MessageType = e.Envelope.MessageType;
@@ -132,10 +153,7 @@ namespace WorkbookPublisher
                     });
 
 
-                AmznListingItem listingItem = _dataContext.AmznListingItems
-                    .Single(p => p.Item.ItemLookupCode.Equals(sku) && p.MarketplaceID == _marketplace.ID && p.IsActive);
-
-                AmznEntry entry = _targetListings[listingItem];
+                AmznEntry entry = _targetListings.Single(p => p.Key.Item.ItemLookupCode.Equals(sku)).Value;
 
                 var existingErrors = entry.Message.Split(new Char[1] { '|' }).ToList();
                 existingErrors.Add(msg.ProcessingResult.ResultDescription);
@@ -167,6 +185,11 @@ namespace WorkbookPublisher
                     }
                 }
             }
+
+            if (this.Entries.All(p => p.Status.Equals("completed")))
+            {
+                this.CanPublish = false;
+            }
         }
 
     }
@@ -175,6 +198,12 @@ namespace WorkbookPublisher
     {
         private bool _completed;
         private string _message;
+
+
+        public AmznEntry()
+        {
+            this.Message = string.Empty;
+        }
 
         public uint RowIndex { get; set; }
 

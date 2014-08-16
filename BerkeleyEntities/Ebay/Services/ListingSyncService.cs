@@ -205,11 +205,6 @@ namespace EbayServices.Services
                 catch (Exception e)
                 {
                     _logger.Error(string.Format("Listing ( {1} | {0} ) synchronization failed: {2}", listingDto.ItemID, _marketplace.Code , e.Message));
-
-                    //if (!_pendingListings.Contains(listingDto.ItemID))
-                    //{
-                    //    _pendingListings.Add(listingDto.ItemID);
-                    //}
                 }
             }
 

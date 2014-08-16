@@ -48,7 +48,7 @@
                         </ListView>
                         <StackPanel Orientation="Horizontal">
                             <Button Name="btnPublish" IsEnabled="{Binding CanPublish}" Margin="5" Padding="5" VerticalAlignment="Center" Command="{Binding Publish}">Publish</Button>
-                            <Button Name="btnRepublish" IsEnabled="{Binding CanPublish}" Margin="5" Padding="5" VerticalAlignment="Center" Command="{Binding Publish}">Republish</Button>
+                            <Button Name="btnRepublish" IsEnabled="{Binding CanFixErrors}" Margin="5" Padding="5" VerticalAlignment="Center" Command="{Binding FixErrors}">Fix Errors</Button>
                         </StackPanel>
                     </StackPanel>
                 </DataTemplate>

@@ -3,6 +3,7 @@ using BerkeleyEntities.Ebay;
 using Microsoft.TeamFoundation.MVVM;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -27,12 +28,13 @@ namespace WorkbookPublisher
         private EbayMarketplace _marketplace;
         private Publisher _publisher;
 
-        private Dictionary<EbayListing, EbayEntry> _targetListings = new Dictionary<EbayListing, EbayEntry>();
+        private Dictionary<EbayListing, List<EbayEntry>> _targetListings = new Dictionary<EbayListing, List<EbayEntry>>();
 
         public EbayPublisherViewModel(int marketplaceID, IEnumerable<EbayEntry> entries)
         {
-            this.Entries = entries.ToList();
+            this.Entries = new ObservableCollection<EbayEntry>(entries);
             this.CanPublish = true;
+            this.CanFixErrors = false;
 
             _marketplace = _dataContext.EbayMarketplaces.Single(p => p.ID == marketplaceID);
             _publisher = new Publisher(_dataContext, _marketplace);
@@ -41,7 +43,7 @@ namespace WorkbookPublisher
             UpdateCompletedStatus();
         }
 
-        public List<EbayEntry> Entries { get; set; }
+        public ObservableCollection<EbayEntry> Entries { get; set; }
 
         public string Header 
         {
@@ -49,6 +51,8 @@ namespace WorkbookPublisher
         }
 
         public bool CanPublish { get; set; }
+
+        public bool CanFixErrors { get; set; }
 
         public ICommand Publish 
         {
@@ -63,12 +67,9 @@ namespace WorkbookPublisher
             }
         }
 
-        private void PublishAsync()
+        private async void PublishAsync()
         {
             this.CanPublish = false;
-
-            
-
 
             var incompleteEntries = this.Entries.Where(p => p.Completed == false);
 
@@ -76,11 +77,9 @@ namespace WorkbookPublisher
 
             HandleAuctionEntries(incompleteEntries.Where(p => p.IsAuction()));
 
-            _publisher.SaveChanges();
+            await Task.Run( () => _publisher.SaveChanges());
 
-            this.CanPublish = true;
-
-            //return string.Format(" {0} / {1} " , validCount,total);
+            UpdateCompletedStatus();
         }
 
         private void HandleFixedPriceEntries(IEnumerable<EbayEntry> entries)
@@ -99,7 +98,8 @@ namespace WorkbookPublisher
                         EbayListingItem listingItem = listing.ListingItems.First();
                         listingItem.Quantity = entry.Q;
                         listingItem.Price = entry.P;
-                        _targetListings.Add(listing, entry);
+
+                        _targetListings.Add(listing, new List<EbayEntry>() { entry });
                     }
                     else
                     {
@@ -124,8 +124,9 @@ namespace WorkbookPublisher
 
                         listingItem.Quantity = entry.Q;
                         listingItem.Price = entry.P;
-                        _targetListings.Add(listing, entry);
                     }
+
+                    _targetListings.Add(listing, pending.ToList());
 
                 }
                 else if (pending.Count() == 1)
@@ -141,6 +142,11 @@ namespace WorkbookPublisher
                     listing.FullDescription = entry.FullDescription;
                     listing.Title = entry.Title;
                     listing.IsVariation = false;
+
+                    if (!entry.StartDate.Equals(DateTime.MinValue))
+                    {
+                        listing.StartTime = entry.StartDate;
+                    }
 
                     EbayListingItem listingItem = new EbayListingItem();
                     listingItem.Item = _dataContext.Items.Single(p => p.ItemLookupCode.Equals(entry.Sku));
@@ -159,7 +165,7 @@ namespace WorkbookPublisher
                         entry.Completed = false;
                     }
 
-                    _targetListings.Add(listing, entry);
+                    _targetListings.Add(listing, new List<EbayEntry>() { entry });
                 }
                 else if (pending.Count() > 1)
                 {
@@ -173,6 +179,11 @@ namespace WorkbookPublisher
                     listing.Title = pending.First(p => !string.IsNullOrWhiteSpace(p.Title)).Title;
                     listing.IsVariation = true;
 
+                    if (!pending.Any(p => p.StartDate.Equals(DateTime.MinValue)))
+                    {
+                        listing.StartTime = pending.First(p => !p.StartDate.Equals(DateTime.MinValue)).StartDate;
+                    }
+
                     foreach (EbayEntry entry in pending)
                     {
                         EbayListingItem listingItem = new EbayListingItem();
@@ -180,8 +191,6 @@ namespace WorkbookPublisher
                         listingItem.Listing = listing;
                         listingItem.Quantity = entry.Q;
                         listingItem.Price = entry.P;
-
-                        _targetListings.Add(listing, entry);
                     }
 
                     try
@@ -195,6 +204,7 @@ namespace WorkbookPublisher
                         pending.ForEach(p => p.Message = e.Message);
                     }
 
+                    _targetListings.Add(listing, pending.ToList());
                 }
             }
         }
@@ -217,13 +227,21 @@ namespace WorkbookPublisher
                     listing.Title = entry.Title;
                     listing.IsVariation = false;
 
+                    if (!entry.StartDate.Equals(DateTime.MinValue))
+                    {
+                        listing.StartTime = entry.StartDate;
+                    }
+
+
                     EbayListingItem listingItem = new EbayListingItem();
                     listingItem.Item = _dataContext.Items.Single(p => p.ItemLookupCode.Equals(entry.Sku));
                     listingItem.Listing = listing;
                     listingItem.Quantity = entry.Q;
                     listingItem.Price = entry.P;
 
-                    _targetListings.Add(listing, entry);
+                    
+
+                    _targetListings.Add(listing, new List<EbayEntry>() { entry });
 
 
                     try
@@ -288,6 +306,14 @@ namespace WorkbookPublisher
 
                 case "BIN": return "Days_30";
 
+                case "A": return "Days_7";
+
+                case "A1": return "Days_1";
+
+                case "A3": return "Days_3";
+
+                case "A5": return "Days_5";
+
                 default: return null;
             }
         }
@@ -307,9 +333,11 @@ namespace WorkbookPublisher
 
         private void Publisher_Error(ErrorArgs e)
         {
-            EbayEntry entry = _targetListings[e.Listing];
-            entry.Message = e.Message;
-            entry.Completed = false;
+            foreach (EbayEntry entry in _targetListings[e.Listing])
+            {
+                entry.Message = e.Message;
+                entry.Completed = false;
+            }
         }
 
         private void UpdateCompletedStatus()
@@ -321,6 +349,10 @@ namespace WorkbookPublisher
                 if (entry.Format.Equals("BIN") || entry.Format.Equals("GTC"))
                 {
                     format = FORMAT_FIXEDPRICE;
+                }
+                else
+                {
+                    format = FORMAT_AUCTION;
                 }
 
                 if (format.Equals(FORMAT_FIXEDPRICE))
@@ -357,6 +389,11 @@ namespace WorkbookPublisher
                     }
                 }
             }
+
+            if (this.Entries.All(p => p.Status.Equals("completed")))
+            {
+                this.CanPublish = false;
+            }
         }
     }
 
@@ -367,7 +404,7 @@ namespace WorkbookPublisher
 
         public EbayEntry()
         {
-            this.Completed = true;
+            this.Message = string.Empty;
         }
 
         public uint RowIndex { get; set; }
@@ -376,6 +413,7 @@ namespace WorkbookPublisher
         public string Sku { get; set; }
         public int Q { get; set; }
         public decimal P { get; set; }
+        public DateTime StartDate { get; set; }
         public string Format { get; set; }
         public string Title { get; set; }
         public string Condition { get; set; }

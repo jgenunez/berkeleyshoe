@@ -27,9 +27,20 @@ namespace AmazonServices
             ConditionInfo conditionInfo = new ConditionInfo();
             conditionInfo.ConditionType = ConditionType.New;
 
+            
+
             StandardProductID sid = new StandardProductID();
-            sid.Type = StandardProductIDType.UPC;
-            //sid.Value = 
+
+            if (_item.GtinType.Equals("UPC"))
+            {
+                sid.Type = StandardProductIDType.UPC;
+            }
+            else
+            {
+                sid.Type = StandardProductIDType.EAN;
+            }
+            
+            sid.Value = _item.GTIN;
 
             ProductDescriptionData descriptiondata = new ProductDescriptionData();
             descriptiondata.Brand = ToTitleCase(_item.SubDescription1);

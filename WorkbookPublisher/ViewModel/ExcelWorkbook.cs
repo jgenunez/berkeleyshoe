@@ -128,6 +128,8 @@ namespace WorkbookPublisher
                             prop.SetValue(entry, Convert.ToInt32(cellValue), null); break;
                         case "Decimal":
                             prop.SetValue(entry, Convert.ToDecimal(cellValue), null); break;
+                        case "DateTime" :
+                            prop.SetValue(entry, DateTime.FromOADate(Convert.ToDouble(cellValue)).ToUniversalTime(), null); break;
                         default:
                             prop.SetValue(entry, cellValue, null); break;
                     }
