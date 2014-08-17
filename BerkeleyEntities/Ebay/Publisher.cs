@@ -15,7 +15,7 @@ using System.Data;
 
 namespace BerkeleyEntities.Ebay
 {
-    public delegate void PublishingErrorHandler(ErrorArgs e);
+    public delegate void PublishingResultHandler(ResultArgs e);
 
     public class Publisher
     {
@@ -34,44 +34,48 @@ namespace BerkeleyEntities.Ebay
             _listingMapper = new ListingMapper(_dataContext, _marketplace);
         }
 
-        public event PublishingErrorHandler Error;
+        public event PublishingResultHandler Result;
 
-        public void SaveChanges()
+        public void Publish()
         {
             var modified = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Modified).Select(p => p.Entity).OfType<EbayListing>().ToList();
             var created = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added).Select(p => p.Entity).OfType<EbayListing>().ToList();
 
-            foreach (var listing in created)
+            using (berkeleyEntities dataContext = new berkeleyEntities())
             {
-                try
+                foreach (var listing in created)
                 {
-                    PublishListing(listing);
+                    try
+                    {
+                        PublishListing(listing);
+                        dataContext.EbayListings.Attach(listing);
+                        dataContext.SaveChanges();
+                        this.Result(new ResultArgs() { Listing = listing, Message = string.Empty, IsError = false });
+                    }
+                    catch (Exception e)
+                    {
+                        this.Result(new ResultArgs() { Listing = listing, Message = e.Message, IsError = true });
+                    }
                 }
-                catch (Exception e)
-                {
 
-                    this.Error(new ErrorArgs() { Listing = listing, Message = e.Message });
-                    Detach(listing);
-                }
+                foreach (var listing in modified)
+                {
+                    try
+                    {
+                        ReviseListing(listing);
+                        dataContext.EbayListings.Attach(listing);
+                        dataContext.SaveChanges();
+                        this.Result(new ResultArgs() { Listing = listing, Message = string.Empty, IsError = false });
+                    }
+                    catch (Exception e)
+                    {
+                        this.Result(new ResultArgs() { Listing = listing, Message = e.Message, IsError = true });
+                    }
+                } 
             }
-
-            foreach (var listing in modified)
-            {
-                try
-                {
-                    ReviseListing(listing);
-                }
-                catch (Exception e)
-                {
-                    this.Error(new ErrorArgs() { Listing = listing, Message = e.Message });
-                    Detach(listing);
-                }
-            }
-
-            _dataContext.SaveChanges();
         }
 
-        public void EndListing(string code)
+        private void EndListing(string code)
         {
             EndItemRequestType request = new EndItemRequestType();
             request.ItemID = code;
@@ -86,7 +90,7 @@ namespace BerkeleyEntities.Ebay
             _listingSyncService.SyncListings(new StringCollection() { code }, DateTime.UtcNow);
         }
 
-        public void PublishListing(EbayListing listing)
+        private void PublishListing(EbayListing listing)
         {
             var pendingUrls = listing.Relations.Select(p => p.PictureServiceUrl).Where(p => p.Url == null);
 
@@ -124,7 +128,7 @@ namespace BerkeleyEntities.Ebay
             }
         }
 
-        public void ReviseListing(EbayListing listing)
+        private void ReviseListing(EbayListing listing)
         {
             if ((bool)listing.IsVariation)
             {
@@ -247,8 +251,10 @@ namespace BerkeleyEntities.Ebay
         }
     }
 
-    public class ErrorArgs
+    public class ResultArgs
     {
+        public bool IsError { get; set; }
+
         public string Message {get; set;}
 
         public EbayListing Listing {get; set;}
