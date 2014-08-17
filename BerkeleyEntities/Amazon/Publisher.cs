@@ -15,7 +15,7 @@ using BerkeleyEntities.Amazon;
 
 namespace BerkeleyEntities.Amazon
 {
-    public delegate void PublishingErrorHandler(ErrorArgs e);
+    public delegate void PublishingResultHandler(ResultArgs e);
 
     public class Publisher
     {
@@ -93,7 +93,7 @@ namespace BerkeleyEntities.Amazon
             PollSubmissionStatus();
         }
 
-        public event PublishingErrorHandler Error;
+        public event PublishingResultHandler Result;
 
         private void PollSubmissionStatus()
         {
@@ -161,10 +161,7 @@ namespace BerkeleyEntities.Amazon
                     break;
             }
 
-            if (envelope.Message.Any(p => p.ProcessingResult != null && p.ProcessingResult.ResultCode.Equals(ProcessingReportResultResultCode.Error)))
-            {
-                this.Error(new ErrorArgs() { Envelope = envelope });
-            }
+            this.Result(new ResultArgs() { Envelope = envelope });
         }
 
         private void SubmitFeed(AmazonEnvelope envelope)
@@ -269,7 +266,7 @@ namespace BerkeleyEntities.Amazon
         //}
     }
 
-    public class ErrorArgs
+    public class ResultArgs
     {
         public AmazonEnvelope Envelope { get; set; }
     }

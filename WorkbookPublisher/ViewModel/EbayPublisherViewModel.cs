@@ -38,7 +38,7 @@ namespace WorkbookPublisher
 
             _marketplace = _dataContext.EbayMarketplaces.Single(p => p.ID == marketplaceID);
             _publisher = new Publisher(_dataContext, _marketplace);
-            _publisher.Error += Publisher_Error;
+            _publisher.Result += Publisher_Result;
 
             UpdateCompletedStatus();
         }
@@ -77,7 +77,7 @@ namespace WorkbookPublisher
 
             HandleAuctionEntries(incompleteEntries.Where(p => p.IsAuction()));
 
-            await Task.Run( () => _publisher.SaveChanges());
+            await Task.Run( () => _publisher.Publish());
 
             UpdateCompletedStatus();
         }
@@ -331,12 +331,12 @@ namespace WorkbookPublisher
             }
         }
 
-        private void Publisher_Error(ErrorArgs e)
+        private void Publisher_Result(ResultArgs e)
         {
             foreach (EbayEntry entry in _targetListings[e.Listing])
             {
                 entry.Message = e.Message;
-                entry.Completed = false;
+                entry.Completed = !e.IsError;
             }
         }
 

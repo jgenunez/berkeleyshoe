@@ -35,7 +35,7 @@ namespace WorkbookPublisher
 
             _marketplace = _dataContext.AmznMarketplaces.Single(p => p.ID == marketplaceID);
             _publisher = new Publisher(_dataContext, _marketplace);
-            _publisher.Error += Publisher_Error;
+            _publisher.Result += Publisher_Result;
 
             UpdateCompetedStatus();
         }
@@ -126,45 +126,54 @@ namespace WorkbookPublisher
             }
         }
 
-        private void Publisher_Error(ErrorArgs e)
+        private void Publisher_Result(ResultArgs e)
         {
-            this.CanFixErrors = true;
-
-            var errors = e.Envelope.Message.Where(p => p.ProcessingResult != null && p.ProcessingResult.ResultCode.Equals(ProcessingReportResultResultCode.Error));
-
-            AmazonEnvelope newEnvelope = new AmazonEnvelope();
-            newEnvelope.MessageType = e.Envelope.MessageType;
-            newEnvelope.Header = e.Envelope.Header;
-            newEnvelope.MarketplaceName = e.Envelope.MarketplaceName;
-
             List<AmazonEnvelopeMessage> newMsgs = new List<AmazonEnvelopeMessage>();
 
             int currentMsg = 1;
 
-            foreach(AmazonEnvelopeMessage msg in errors)
+            foreach(AmazonEnvelopeMessage msg in e.Envelope.Message)
             {
                 string sku = msg.Item.GetType().GetProperty("SKU").GetValue(msg.Item) as string;
-
-                newMsgs.Add(
-                    new AmazonEnvelopeMessage() 
-                    { 
-                        Item = msg.Item, MessageID = currentMsg.ToString(), OperationType = msg.OperationType, 
-                        OperationTypeSpecified = msg.OperationTypeSpecified, ProcessingResult = msg.ProcessingResult
-                    });
-
-
                 AmznEntry entry = _targetListings.Single(p => p.Key.Item.ItemLookupCode.Equals(sku)).Value;
 
-                var existingErrors = entry.Message.Split(new Char[1] { '|' }).ToList();
-                existingErrors.Add(msg.ProcessingResult.ResultDescription);
+                if (msg.ProcessingResult != null && msg.ProcessingResult.ResultCode.Equals(ProcessingReportResultResultCode.Error))
+                {
+                    newMsgs.Add(
+                        new AmazonEnvelopeMessage()
+                        {
+                            Item = msg.Item,
+                            MessageID = currentMsg.ToString(),
+                            OperationType = msg.OperationType,
+                            OperationTypeSpecified = msg.OperationTypeSpecified,
+                            ProcessingResult = msg.ProcessingResult
+                        });
 
-                entry.Message = string.Join("|", existingErrors.Distinct());
-                entry.Completed = false;
+                    var existingErrors = entry.Message.Split(new Char[1] { '|' }).ToList();
+                    existingErrors.Add(msg.ProcessingResult.ResultDescription);
+
+                    entry.Message = string.Join("|", existingErrors.Distinct());
+                    entry.Completed = false;
+
+                    currentMsg++;
+                }
+                else
+                {
+                    entry.Completed = true;
+                }
             }
 
-            newEnvelope.Message = newMsgs.ToArray();
 
-            _needUserInput.Add(newEnvelope);
+            if (newMsgs.Count > 0)
+            {
+                AmazonEnvelope newEnvelope = new AmazonEnvelope();
+                newEnvelope.MessageType = e.Envelope.MessageType;
+                newEnvelope.Header = e.Envelope.Header;
+                newEnvelope.MarketplaceName = e.Envelope.MarketplaceName;
+                newEnvelope.Message = newMsgs.ToArray();
+                _needUserInput.Add(newEnvelope);
+                this.CanFixErrors = true;
+            }
         }
 
         private void UpdateCompetedStatus()
