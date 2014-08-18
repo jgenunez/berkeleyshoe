@@ -298,11 +298,11 @@ namespace WorkbookPublisher
             }
         }
 
-        private string GetDuration(string format)
+        private string GetDuration(string code)
         {
-            switch (format)
+            switch (code)
             {
-                case "GTC": return format;
+                case "GTC": return code;
 
                 case "BIN": return "Days_30";
 
@@ -314,7 +314,24 @@ namespace WorkbookPublisher
 
                 case "A5": return "Days_5";
 
-                default: return null;
+                default: return string.Empty;
+            }
+        }
+
+        private string GetFormat(string code)
+        {
+            switch (code)
+            {
+                case "BIN" :
+                case "GTC" :
+                    return FORMAT_FIXEDPRICE;
+                case "A1":
+                case "A3":
+                case "A5":
+                case "A" :
+                    return FORMAT_AUCTION;
+                default :
+                    return string.Empty;
             }
         }
 
@@ -344,56 +361,61 @@ namespace WorkbookPublisher
         {
             foreach (EbayEntry entry in this.Entries)
             {
-                string format = string.Empty;
+                Item item = _dataContext.Items.SingleOrDefault();
 
-                if (entry.Format.Equals("BIN") || entry.Format.Equals("GTC"))
+                if (item == null)
                 {
-                    format = FORMAT_FIXEDPRICE;
-                }
-                else
-                {
-                    format = FORMAT_AUCTION;
+                    entry.Message = "sku not found";
+                    continue;
                 }
 
-                if (format.Equals(FORMAT_FIXEDPRICE))
-                {
-                    EbayListing listing = _marketplace.Listings.SingleOrDefault(p => p.Status.Equals(STATUS_ACTIVE) && p.Format.Equals(format) && (p.Sku.Equals(entry.Sku) || p.Sku.Equals(entry.ClassName)));
-                    if (listing != null)
-                    {
-                        EbayListingItem listingItem = listing.ListingItems.SingleOrDefault(p => p.Item.ItemLookupCode.Equals(entry.Sku));
+                string format = GetFormat(entry.Format);
 
-                        if (listingItem != null && listingItem.Quantity == entry.Q)
-                        {
-                            entry.Completed = true;
-                        }
-                        else
-                        {
-                            entry.Completed = false;
-                        }
-                    }
-                    else
-                    {
-                        entry.Completed = false;
-                    }
-                }
-                else
+                var listingItems = item.EbayListingItems.Where(p =>
+                    p.Listing.MarketplaceID == _marketplace.ID &&
+                    p.Listing.Status.Equals("ACTIVE") && 
+                    p.Listing.Format.Equals(format)
+                    );
+
+
+               
+
+                if (listingItems.Count() == 1 && entry.Q == listingItem.Quantity)
                 {
-                    EbayListing listing = _marketplace.Listings.SingleOrDefault(p => p.Status.Equals(STATUS_ACTIVE) && p.Format.Equals(format) && p.Sku.Equals(entry.Sku));
-                    if (listing != null)
+                    entry.Completed = true;
+                }
+
+                if (entry.Status.Equals("waiting"))
+                {
+                    if (format.Equals(FORMAT_AUCTION) && entry.Q > 1)
                     {
-                        entry.Completed = true;
+                        entry.Message = "auction max qty is 1";
                     }
-                    else
+                    if (entry.Q > listingItem.Item.Quantity)
                     {
-                        entry.Completed = false;
+                        entry.Message = "qty to publish exceeds on-hand";
+                    }
+                    if (listingItem.Item.Department == null)
+                    {
+                        entry.Message = "department classification required";
+                    }
+                    if (entry.Title.Count() > 80)
+                    {
+                        entry.Message = "title max characters is 80";
                     }
                 }
+
             }
 
-            if (this.Entries.All(p => p.Status.Equals("completed")))
+            if (this.Entries.All(p => p.Status.Equals("completed") || p.Status.Equals("error")))
             {
                 this.CanPublish = false;
             }
+        }
+
+        private string FindTitle(EbayEntry entry)
+        {
+ 
         }
     }
 
@@ -405,6 +427,9 @@ namespace WorkbookPublisher
         public EbayEntry()
         {
             this.Message = string.Empty;
+            this.Completed = false;
+            this.Title = string.Empty;
+            this.StartDate = DateTime.UtcNow;
         }
 
         public uint RowIndex { get; set; }
@@ -414,6 +439,7 @@ namespace WorkbookPublisher
         public int Q { get; set; }
         public decimal P { get; set; }
         public DateTime StartDate { get; set; }
+        public bool StartDateSpecified { get; set; }
         public string Format { get; set; }
         public string Title { get; set; }
         public string Condition { get; set; }
@@ -424,12 +450,12 @@ namespace WorkbookPublisher
             get { return _completed; }
             set
             {
+                _completed = value;
+
                 if (this.PropertyChanged != null)
                 {
-                    this.PropertyChanged(this, new PropertyChangedEventArgs("Completed"));
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("Status"));
                 }
-
-                _completed = value;
             }
         }
         public string Message
@@ -437,12 +463,19 @@ namespace WorkbookPublisher
             get { return _message; }
             set
             {
+                var msgs = _message.Split(new Char[1] { '|' }).ToList();
+
+                msgs.Add(value);
+
+                msgs.ForEach(p => p = p.Trim());
+
+                _message = string.Join(" | ", msgs);
+
                 if (this.PropertyChanged != null)
                 {
                     this.PropertyChanged(this, new PropertyChangedEventArgs("Message"));
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("Status"));
                 }
-
-                _message = value;
             }
         }
 

@@ -41,7 +41,7 @@ namespace WorkbookPublisher
 
             if ((bool)ofd.ShowDialog())
             {
-                this.DataContext =  new ExcelWorkbook(ofd.FileName);
+                this.DataContext =  new ExcelWorkbookViewModel(ofd.FileName);
             }
         }
 

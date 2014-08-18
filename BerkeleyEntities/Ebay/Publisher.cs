@@ -153,21 +153,6 @@ namespace BerkeleyEntities.Ebay
             }
         }
 
-        public void Detach(EbayListing listing)
-        {
-            foreach (EbayListingItem listingItem in listing.ListingItems.ToList())
-            {
-                _dataContext.Detach(listingItem);
-            }
-
-            foreach (var relation in listing.Relations.ToList())
-            {
-                _dataContext.Detach(relation);
-            }
-
-            _dataContext.Detach(listing);
-        }
-
         private string UploadToEPS(string path)
         {
             string boundary = "MIME_boundary";

@@ -149,12 +149,8 @@ namespace WorkbookPublisher
                             ProcessingResult = msg.ProcessingResult
                         });
 
-                    var existingErrors = entry.Message.Split(new Char[1] { '|' }).ToList();
-                    existingErrors.Add(msg.ProcessingResult.ResultDescription);
 
-                    entry.Message = string.Join("|", existingErrors.Distinct());
-                    entry.Completed = false;
-
+                    entry.Message = msg.ProcessingResult.ResultDescription;
                     currentMsg++;
                 }
                 else
@@ -171,7 +167,9 @@ namespace WorkbookPublisher
                 newEnvelope.Header = e.Envelope.Header;
                 newEnvelope.MarketplaceName = e.Envelope.MarketplaceName;
                 newEnvelope.Message = newMsgs.ToArray();
+
                 _needUserInput.Add(newEnvelope);
+
                 this.CanFixErrors = true;
             }
         }
@@ -191,11 +189,26 @@ namespace WorkbookPublisher
                     else
                     {
                         entry.Completed = false;
+
+                        if (entry.Q > listingItem.Item.Quantity)
+                        {
+                            entry.Message = "qty to publish exceeds stock";
+                        }
+
+                        if (string.IsNullOrEmpty(listingItem.Item.GTIN))
+                        {
+                            entry.Message = "UPC or EAN required";
+                        }
+
+                        if (listingItem.Item.Department == null)
+                        {
+                            entry.Message = "department classification required";
+                        }
                     }
                 }
             }
 
-            if (this.Entries.All(p => p.Status.Equals("completed")))
+            if (this.Entries.All(p => p.Status.Equals("completed") || p.Status.Equals("error")))
             {
                 this.CanPublish = false;
             }
@@ -212,6 +225,7 @@ namespace WorkbookPublisher
         public AmznEntry()
         {
             this.Message = string.Empty;
+            this.Completed = false;
         }
 
         public uint RowIndex { get; set; }
@@ -229,12 +243,12 @@ namespace WorkbookPublisher
             get { return _completed; }
             set 
             {
+                _completed = value; 
+
                 if (this.PropertyChanged != null)
                 {
-                    this.PropertyChanged(this, new PropertyChangedEventArgs("Completed"));
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("Status"));
                 }
-
-                _completed = value; 
             }
         }
         public string Message
@@ -242,12 +256,19 @@ namespace WorkbookPublisher
             get { return _message; }
             set 
             {
+                var msgs = _message.Split(new Char[1] { '|' }).ToList();
+
+                msgs.Add(value);
+
+                msgs.ForEach(p => p = p.Trim());
+
+                _message = string.Join(" | ", msgs);
+
                 if (this.PropertyChanged != null)
                 {
-                    this.PropertyChanged(this, new PropertyChangedEventArgs("Message")); 
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("Message"));
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("Status"));
                 }
-                
-                _message = value; 
             }
         }
 

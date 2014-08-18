@@ -15,7 +15,7 @@ using System.Windows.Data;
 
 namespace WorkbookPublisher
 {
-    public class ExcelWorkbook
+    public class ExcelWorkbookViewModel
     {
         const string COLUMN_SKU = "SKU";
 
@@ -30,7 +30,7 @@ namespace WorkbookPublisher
         private Dictionary<string, PropertyInfo> _colRefsToProp = new Dictionary<string, PropertyInfo>();
 
 
-        public ExcelWorkbook(string path)
+        public ExcelWorkbookViewModel(string path)
         {
             this.Path = path;
 
