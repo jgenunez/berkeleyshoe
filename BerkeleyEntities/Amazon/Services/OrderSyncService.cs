@@ -7,6 +7,7 @@ using System.Threading;
 using BerkeleyEntities;
 using System.Timers;
 using NLog;
+using System.Data;
 
 namespace AmazonServices
 {
@@ -14,7 +15,6 @@ namespace AmazonServices
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
         private berkeleyEntities _dataContext = new berkeleyEntities();
-        //private List<string> _pendingSync = new List<string>();
         private AmznMarketplace _marketplace;
         private DateTime _currentSyncTime;
 
@@ -30,18 +30,11 @@ namespace AmazonServices
             _marketplace = _dataContext.AmznMarketplaces.Single(p => p.ID == marketplaceID);
         }
 
-        public void MarginalSync()
+        public List<string> MarginalSync()
         {
             Initilialize();
 
             _currentSyncTime = DateTime.UtcNow.AddMinutes(-5);
-
-            //var waitingOrders = _marketplace.GetWaitingSyncOrders();
-
-            //if (waitingOrders.Count > 0)
-            //{
-            //    SyncOrders(waitingOrders);
-            //}
 
             if (!_marketplace.OrderSyncTime.HasValue)
             {
@@ -58,16 +51,21 @@ namespace AmazonServices
                 SyncOrdersByModifiedTime(from, to);
             }
 
-            //_marketplace.SetWaitingSyncOrders(_pendingSync);
+
+            var added = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added)
+                .Select(p => p.Entity).OfType<AmznOrderItem>().Select(p => p.ListingItem.Item.ItemLookupCode);
+
+            var modified = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Modified)
+                .Select(p => p.Entity).OfType<AmznOrderItem>().Select(p => p.ListingItem.Item.ItemLookupCode);
 
             _marketplace.OrderSyncTime = _currentSyncTime;
 
             _dataContext.SaveChanges();
 
-            _dataContext.Dispose();
-
             _timer2Sec.Enabled = false;
             _timer1Min.Enabled = false;
+
+            return added.Concat(modified).ToList();
         }
 
         private void Initilialize()

@@ -19,11 +19,14 @@ namespace BerkeleyEntities.Ebay
 
     public class Publisher
     {
+        public const string FORMAT_FIXEDPRICE = "FixedPriceItem";
+        public const string FORMAT_AUCTION = "Chinese";
+        public const string STATUS_ACTIVE = "Active";
+
         private berkeleyEntities _dataContext;
         private ListingMapper _listingMapper;
         private EbayMarketplace _marketplace;
         private ListingSyncService _listingSyncService;
-
 
         public Publisher(berkeleyEntities dataContext,  EbayMarketplace marketplace)
         {
@@ -41,53 +44,76 @@ namespace BerkeleyEntities.Ebay
             var modified = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Modified).Select(p => p.Entity).OfType<EbayListing>().ToList();
             var created = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added).Select(p => p.Entity).OfType<EbayListing>().ToList();
 
-            using (berkeleyEntities dataContext = new berkeleyEntities())
+            foreach (var listing in created)
             {
-                foreach (var listing in created)
+                try
                 {
-                    try
-                    {
-                        PublishListing(listing);
-                        dataContext.EbayListings.Attach(listing);
-                        dataContext.SaveChanges();
-                        this.Result(new ResultArgs() { Listing = listing, Message = string.Empty, IsError = false });
-                    }
-                    catch (Exception e)
-                    {
-                        this.Result(new ResultArgs() { Listing = listing, Message = e.Message, IsError = true });
-                    }
+                    PublishListing(listing);
+                    this.Result(new ResultArgs() { Listing = listing, Message = string.Empty, IsError = false });
                 }
-
-                foreach (var listing in modified)
+                catch (Exception e)
                 {
-                    try
+                    Revert(listing);
+                    this.Result(new ResultArgs() { Listing = listing, Message = e.Message, IsError = true });
+                }
+            }
+
+            foreach (var listing in modified)
+            {
+                try
+                {
+                    if (listing.ListingItems.All(p => p.Quantity == 0))
+                    {
+                        EndListing(listing);
+                    }
+                    else
                     {
                         ReviseListing(listing);
-                        dataContext.EbayListings.Attach(listing);
-                        dataContext.SaveChanges();
-                        this.Result(new ResultArgs() { Listing = listing, Message = string.Empty, IsError = false });
                     }
-                    catch (Exception e)
-                    {
-                        this.Result(new ResultArgs() { Listing = listing, Message = e.Message, IsError = true });
-                    }
-                } 
-            }
+
+                    this.Result(new ResultArgs() { Listing = listing, Message = string.Empty, IsError = false });
+                }
+                catch (Exception e)
+                {
+                    Revert(listing);
+                    this.Result(new ResultArgs() { Listing = listing, Message = e.Message, IsError = true });
+                }
+            } 
+
         }
 
-        private void EndListing(string code)
+        public void Revert(EbayListing listing)
+        {
+            foreach (EbayListingItem listingItem in listing.ListingItems.ToList())
+            {
+                _dataContext.EbayListingItems.Detach(listingItem);
+            }
+
+            foreach (EbayPictureUrlRelation relation in listing.Relations.ToList())
+            {
+                _dataContext.EbayPictureUrlRelations.Detach(relation);
+            }
+
+            _dataContext.EbayListings.Detach(listing);
+        }
+
+        private void EndListing(EbayListing listing)
         {
             EndItemRequestType request = new EndItemRequestType();
-            request.ItemID = code;
+            request.ItemID = listing.Code;
             request.EndingReasonSpecified = true;
             request.EndingReason = EndReasonCodeType.NotAvailable;
-                 
-            
+                           
             EndItemCall call = new EndItemCall(_marketplace.GetApiContext());
 
             EndItemResponseType response = call.ExecuteRequest(request) as EndItemResponseType;
+        
+            listing.Status = "Completed";
 
-            _listingSyncService.SyncListings(new StringCollection() { code }, DateTime.UtcNow);
+            if (response.EndTimeSpecified)
+            {
+                listing.EndTime = response.EndTime;
+            }
         }
 
         private void PublishListing(EbayListing listing)

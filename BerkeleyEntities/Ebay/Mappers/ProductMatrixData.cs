@@ -9,20 +9,16 @@ namespace EbayServices.Mappers
 {
     public class ProductMatrixData 
     {
-        private ItemClass _itemClass;
         private List<ProductData> _products;
 
-        public ProductMatrixData(ItemClass itemClass, List<ProductData> products)
+        public ProductMatrixData(List<ProductData> products)
         {
             _products = products;
-            _itemClass = itemClass;
-
-            
         }
 
         public string CategoryID
         {
-            get { return _itemClass.Department.code;  }
+            get { return _products.First().CategoryID; }
         }
 
         public List<NameValueListType> GetItemSpecifics()

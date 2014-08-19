@@ -25,8 +25,6 @@ namespace EbayServices.Mappers
 
         public ProductMatrixData GetProductMatrixData(string className, IEnumerable<string> skus)
         {
-            ItemClass itemClass = _dataContext.ItemClasses.Single(p => p.ItemLookupCode.Equals(className));
-
             List<ProductData> products = new List<ProductData>();
 
             foreach (string sku in skus)
@@ -34,7 +32,7 @@ namespace EbayServices.Mappers
                 products.Add(GetProductData(sku));
             }
 
-            return new ProductMatrixData(itemClass, products);
+            return new ProductMatrixData(products);
         }
 
         protected override void CreateShoes()

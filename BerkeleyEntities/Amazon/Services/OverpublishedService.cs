@@ -24,37 +24,30 @@ namespace BerkeleyEntities.Amazon.Services
             _publisher = new Publisher(_dataContext, _marketplace);
         }
 
-        public void BalanceQuantities()
+        public void BalanceQuantities(IEnumerable<string> skus)
         {
             //if (!_marketplace.ListingSyncTime.HasValue || _marketplace.ListingSyncTime.Value < DateTime.UtcNow.AddHours(-1))
             //{
             //    throw new InvalidOperationException(_marketplace.Name + " listings must be synchronized in order to fix overpublished");
             //}
 
-            //if (!_marketplace.OrderSyncTime.HasValue || _marketplace.OrderSyncTime.Value < DateTime.UtcNow.AddHours(-1))
-            //{
-            //    throw new InvalidOperationException(_marketplace.Name + " orders must be synchronized in order to fix overpublished");
-            //}
-
-            var activeListings = _dataContext.AmznListingItems
-                .Include("OrderItems")
-                .Include("Item.EbayListingItems.OrderItems.Order")
-                .Where(p => p.IsActive && p.Quantity > 0).ToList();
-
-
-            foreach (AmznListingItem listingItem in activeListings)
+            if (!_marketplace.OrderSyncTime.HasValue || _marketplace.OrderSyncTime.Value < DateTime.UtcNow.AddHours(-1))
             {
-                if (listingItem.Quantity > listingItem.Item.QtyAvailable)
+                throw new InvalidOperationException(_marketplace.Name + " orders must be synchronized in order to fix overpublished");
+            }
+
+            foreach (string sku in skus)
+            {
+                AmznListingItem listingItem = _dataContext.AmznListingItems
+                    .SingleOrDefault(p => p.Item.ItemLookupCode.Equals(sku) && p.MarketplaceID == _marketplace.ID && p.IsActive);
+
+                if (listingItem != null && listingItem.Quantity > listingItem.Item.QtyAvailable)
                 {
                     listingItem.Quantity = listingItem.Item.QtyAvailable;
                 }
             }
 
             _publisher.Publish();
-
-            
-
-            _dataContext.Dispose();
         }
 
         //private void DetermineOverpublished()

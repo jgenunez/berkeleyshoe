@@ -52,7 +52,7 @@ namespace BerkeleyEntities.Amazon
 
         public void Publish()
         {
-            var added = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added).Select(p => p.Entity).Cast<AmznListingItem>();
+            var added = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added).Select(p => p.Entity).OfType<AmznListingItem>();
 
             var priceModified = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Modified)
                 .Where(p => p.GetModifiedProperties().Contains("Price")).Select(p => p.Entity).OfType<AmznListingItem>();

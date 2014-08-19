@@ -37,10 +37,20 @@ namespace WorkbookPublisher
             _publisher = new Publisher(_dataContext, _marketplace);
             _publisher.Result += Publisher_Result;
 
-            UpdateCompetedStatus();
+            UpdateEntries();
         }
 
         public string Header { get { return _marketplace.Code; } }
+
+        public string Progress 
+        {
+            get 
+            {
+                int completed = this.Entries.Where(p => p.Status.Equals("completed")).Count();
+
+                return completed.ToString() + " / " + this.Entries.Count;
+            }
+        }
 
         public ObservableCollection<AmznEntry> Entries { get; set; }
 
@@ -98,7 +108,7 @@ namespace WorkbookPublisher
 
             await Task.Run(() => _publisher.Publish());
 
-            UpdateCompetedStatus();
+            UpdateEntries();
         }
 
         private async void FixErrorsAsync()
@@ -174,7 +184,7 @@ namespace WorkbookPublisher
             }
         }
 
-        private void UpdateCompetedStatus()
+        private void UpdateEntries()
         {
             using (berkeleyEntities dataContext = new berkeleyEntities())
             {
@@ -218,15 +228,9 @@ namespace WorkbookPublisher
 
     public class AmznEntry : INotifyPropertyChanged
     {
-        private bool _completed;
-        private string _message;
+        private bool _completed = false;
+        private List<string> _messages = new List<string>();
 
-
-        public AmznEntry()
-        {
-            this.Message = string.Empty;
-            this.Completed = false;
-        }
 
         public uint RowIndex { get; set; }
 
@@ -248,26 +252,22 @@ namespace WorkbookPublisher
                 if (this.PropertyChanged != null)
                 {
                     this.PropertyChanged(this, new PropertyChangedEventArgs("Status"));
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("Progress"));
                 }
             }
         }
         public string Message
         {
-            get { return _message; }
+            get { return string.Join(" | ", _messages); }
             set 
             {
-                var msgs = _message.Split(new Char[1] { '|' }).ToList();
-
-                msgs.Add(value);
-
-                msgs.ForEach(p => p = p.Trim());
-
-                _message = string.Join(" | ", msgs);
+                _messages.Add(value);
 
                 if (this.PropertyChanged != null)
                 {
                     this.PropertyChanged(this, new PropertyChangedEventArgs("Message"));
                     this.PropertyChanged(this, new PropertyChangedEventArgs("Status"));
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("Progress"));
                 }
             }
         }

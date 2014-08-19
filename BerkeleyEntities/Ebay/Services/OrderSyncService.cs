@@ -7,6 +7,7 @@ using BerkeleyEntities;
 using eBay.Service.Call;
 using System.IO;
 using NLog;
+using System.Data;
 
 
 namespace EbayServices
@@ -15,7 +16,6 @@ namespace EbayServices
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
         private berkeleyEntities _dataContext = new berkeleyEntities();
-        //private List<string> _pendingSync = new List<string>();
         private EbayMarketplace _marketplace;
         private DateTime _currentSyncTime;
 
@@ -25,26 +25,25 @@ namespace EbayServices
         }
 
 
-        public void MarginalSync()
+        public List<string> MarginalSync()
         {
             _currentSyncTime = DateTime.UtcNow.AddMinutes(-3);
-
-            //var waitingOrders = new StringCollection(_marketplace.GetWaitingSyncOrders().ToArray());
-
-            //if (waitingOrders.Count > 0)
-            //{
-            //    SyncOrders(waitingOrders);
-            //}
             
             DateTime from = _marketplace.OrdersSyncTime.HasValue ? _marketplace.OrdersSyncTime.Value.AddMinutes(-5) : DateTime.UtcNow.AddDays(-29);
 
             SyncOrdersByModifiedTime(from, _currentSyncTime);
 
-            //_marketplace.SetWaitingSyncOrders(_pendingSync);
+            var added = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added)
+                .Select(p => p.Entity).OfType<EbayOrderItem>().Select(p => p.ListingItem.Item.ItemLookupCode);
+
+            var modified = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Modified)
+                .Select(p => p.Entity).OfType<EbayOrderItem>().Select(p => p.ListingItem.Item.ItemLookupCode);
 
             _marketplace.OrdersSyncTime = _currentSyncTime;
 
             _dataContext.SaveChanges();
+
+            return added.Concat(modified).ToList();
         }
 
         private void SyncOrdersByModifiedTime(DateTime from, DateTime to)

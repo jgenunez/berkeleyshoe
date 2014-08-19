@@ -8,6 +8,7 @@ using eBay.Service.Call;
 using eBay.Service.Core.Sdk;
 using NLog;
 using EbayServices.Mappers;
+using System.Data;
 
 namespace EbayServices.Services
 {
@@ -15,7 +16,6 @@ namespace EbayServices.Services
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
         private berkeleyEntities _dataContext = new berkeleyEntities();
-        //private List<string> _pendingListings = new List<string>();
         private EbayMarketplace _marketplace;       
         private ListingMapper _listingMapper;
 
@@ -25,20 +25,15 @@ namespace EbayServices.Services
             _listingMapper = new ListingMapper(_dataContext, _marketplace);
         }
 
-        public void MarginalSync()
+        public List<string> MarginalSync()
         {
             DateTime syncTime = DateTime.UtcNow.AddMinutes(-3);
-
-            //var listingIds = new StringCollection(_marketplace.GetWaitingSyncListings().ToArray());
-
-            //SyncListings(listingIds, syncTime);
 
             if (_marketplace.ListingSyncTime.HasValue && _marketplace.ListingSyncTime.Value > syncTime.AddDays(-3))
             {
                 DateTime from = _marketplace.ListingSyncTime.Value.AddMinutes(-5);
 
                 SyncListingsByCreatedTime(from, syncTime);
-
                 SyncListingsByModifiedTime(from, syncTime);
             }
             else
@@ -49,16 +44,20 @@ namespace EbayServices.Services
                 SyncListingsByEndTime(from, to);
             }
 
-            //_marketplace.SetWaitingSyncListings(_pendingListings);
+            var added = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added)
+                .Select(p => p.Entity).OfType<EbayListingItem>().Select(p => p.Item.ItemLookupCode);
+
+            var modified = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Modified)
+                .Select(p => p.Entity).OfType<EbayListingItem>().Select(p => p.Item.ItemLookupCode);
 
             _marketplace.ListingSyncTime = syncTime;
 
             _dataContext.SaveChanges();
 
-            _dataContext.Dispose();
+            return added.Concat(modified).ToList();
         }
 
-        public void SyncListings(StringCollection listings, DateTime syncTime)
+        private void SyncListings(StringCollection listings, DateTime syncTime)
         {
             ItemTypeCollection listingDtos = new ItemTypeCollection();
 
@@ -102,8 +101,16 @@ namespace EbayServices.Services
             request.StartTimeFrom = from;
             request.StartTimeTo = to;
 
-            
-            ProcessListingData(ExecuteGetSellerList(request), to);
+
+            try
+            {
+                ProcessListingData(ExecuteGetSellerList(request), to);
+            }
+            catch (Exception e)
+            {
+
+                _logger.Error(e.Message);
+            }
             
         }
 
@@ -116,8 +123,15 @@ namespace EbayServices.Services
             request.EndTimeFrom = from;
             request.EndTimeTo = to;
 
-            
-            ProcessListingData(ExecuteGetSellerList(request), to);
+
+            try
+            {
+                ProcessListingData(ExecuteGetSellerList(request), to);
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message);
+            }
             
         }
 
@@ -145,9 +159,16 @@ namespace EbayServices.Services
             GetSellerEventsCall call = new GetSellerEventsCall(_marketplace.GetApiContext());
             call.ApiCallBase.Timeout = 120000;
 
-            
-            GetSellerEventsResponseType response = call.ExecuteRequest(request) as GetSellerEventsResponseType;
-            ProcessListingData(response.ItemArray, to);
+
+            try
+            {
+                GetSellerEventsResponseType response = call.ExecuteRequest(request) as GetSellerEventsResponseType;
+                ProcessListingData(response.ItemArray, to);
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message);
+            }
 
         }
 

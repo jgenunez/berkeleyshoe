@@ -74,7 +74,6 @@ namespace WorkbookPublisher
                         {
                             EbayEntry entry = CreateEntry(row, typeof(EbayEntry)) as EbayEntry;
                             entry.RowIndex = row.RowIndex.Value;
-                            entry.Completed = true;
                             entries.Add(entry);
                         }
 
@@ -95,7 +94,6 @@ namespace WorkbookPublisher
                         foreach (Row row in rows)
                         {
                             AmznEntry entry = CreateEntry(row, typeof(AmznEntry)) as AmznEntry;
-                            entry.Completed = true;
                             entry.RowIndex = row.RowIndex.Value;
                             entries.Add(entry);
                         }
@@ -221,6 +219,7 @@ namespace WorkbookPublisher
         private Cell GetCell(Row row, string colRef)
         {
             SheetData sheetData = _workSheetPart.Worksheet.GetFirstChild<SheetData>();
+
             string cellRef = colRef + row.RowIndex.Value.ToString();
 
             // If there is not a cell with the specified column name, insert one.

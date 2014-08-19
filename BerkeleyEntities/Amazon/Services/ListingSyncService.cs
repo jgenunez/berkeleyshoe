@@ -7,6 +7,7 @@ using MarketplaceWebService.Model;
 using System.Threading;
 using System.IO;
 using NLog;
+using System.Data;
 
 namespace AmazonServices
 {
@@ -23,7 +24,6 @@ namespace AmazonServices
         const string REPORT_LISTINGS = "_GET_MERCHANT_LISTINGS_DATA_";
 
         private berkeleyEntities _dataContext = new berkeleyEntities();
-        //private List<string> _pendingListings = new List<string>();
         private AmznMarketplace _marketplace;
         private DateTime _currentSyncTime;
 
@@ -32,7 +32,7 @@ namespace AmazonServices
             _marketplace = _dataContext.AmznMarketplaces.Single(p => p.ID.Equals(marketplaceID));
         }
 
-        public void Synchronize()
+        public List<string> Synchronize()
         {
             ReportRequestInfo requestInfo = CheckForExistingRequest(REPORT_LISTINGS);
 
@@ -49,16 +49,12 @@ namespace AmazonServices
                 requestInfo = Poll(requestInfo.ReportRequestId);
             }
 
-            if (requestInfo.ReportProcessingStatus.Equals(FEED_DONE))
-            {
-                var lines = GetReport(requestInfo.GeneratedReportId);
 
-                _currentSyncTime = requestInfo.SubmittedDate.ToUniversalTime();
+            var lines = GetReport(requestInfo.GeneratedReportId);
 
-                PersistListings(new Queue<string>(lines));
-            }
+            _currentSyncTime = requestInfo.SubmittedDate.ToUniversalTime();
 
-            _dataContext.Dispose();
+            return PersistListings(new Queue<string>(lines));
         }
 
         private ReportRequestInfo RequestReport(string reportType)
@@ -130,9 +126,11 @@ namespace AmazonServices
             return reader.ReadToEnd().Split(new Char[1] { '\n' }).Where(p => !string.IsNullOrWhiteSpace(p));
         }
 
-        private void PersistListings(Queue<string> lines)
+        private List<string> PersistListings(Queue<string> lines)
         {
             lines.Dequeue();
+
+            List<string> qtyChanged = new List<string>();
 
             while (lines.Count > 0)
             {
@@ -149,17 +147,17 @@ namespace AmazonServices
                     catch (Exception e)
                     {
                         string sku = line.Split(new Char[1] { '\t' })[3];
-
                         _logger.Error(string.Format("Listing ( {1} | {0} ) synchronization failed: {2}", sku, _marketplace.Code, e.Message));
-
-                        //if (!_pendingListings.Contains(sku))
-                        //{
-                        //    _pendingListings.Add(sku);
-                        //}
                     }
   
                     i++;
                 }
+
+                qtyChanged.AddRange(_dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Modified)
+                    .Where(p => p.GetModifiedProperties().Contains("Quantity")).Select(p => p.Entity).OfType<AmznListingItem>().Select(p => p.Item.ItemLookupCode));
+
+                qtyChanged.AddRange(_dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added)
+                    .Select(p => p.Entity).OfType<AmznListingItem>().Select(p => p.Item.ItemLookupCode));
 
                 _dataContext.SaveChanges();
             }
@@ -175,6 +173,8 @@ namespace AmazonServices
             _marketplace.ListingSyncTime = _currentSyncTime;
 
             _dataContext.SaveChanges();
+
+            return qtyChanged;
         }
 
         private void ProccessLine(string line)
@@ -208,7 +208,9 @@ namespace AmazonServices
             }
 
 
-            if (listingItem.LastSyncTime < _currentSyncTime)
+            int qty = int.Parse(quantity);
+
+            if (listingItem.LastSyncTime < _currentSyncTime && listingItem.Quantity != qty)
             {
                 listingItem.Quantity = int.Parse(quantity);
             }
