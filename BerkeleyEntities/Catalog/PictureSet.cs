@@ -25,18 +25,22 @@ namespace BerkeleyEntities
         public List<PictureInfo> GetPictures(string brand, List<string> skus)
         {
             string brandRoot = _root + brand + @"\";
+
             if (!Directory.Exists(brandRoot))
             {
                 throw new FileNotFoundException("could not find directory:" + brandRoot);
             }
 
             List<PictureInfo> pics = new List<PictureInfo>();
+
             foreach (var group in skus.GroupBy(p => p.Split(new Char[1] {'-'})[0]))
             {
                 var targetPaths = GetFileNamesByBrandDir(brandRoot).Where(p => p.Contains(group.Key + ".") || p.Contains(group.Key + "-"));
+
                 foreach(string path in targetPaths)
                 {
                     string picName = Path.GetFileName(path).Split(new Char[1] { '.' })[0];
+
                     if (!picName.Contains("_"))
                     {
                         PictureInfo picInfo = new PictureInfo();
@@ -58,6 +62,7 @@ namespace BerkeleyEntities
                     }
                 }
             }
+
             return pics;
         }
 

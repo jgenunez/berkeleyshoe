@@ -579,6 +579,8 @@ namespace BerkeleyEntities
         //    return dimension;
         //}
 
+
+
         private string[] GetAttributes() 
         {
             string[] attributes = null;

@@ -28,6 +28,8 @@ namespace WorkbookPublisher
         private EbayMarketplace _marketplace;
         private Publisher _publisher;
 
+        private List<>
+
         private Dictionary<EbayListing, List<EbayEntry>> _targetListings = new Dictionary<EbayListing, List<EbayEntry>>();
 
         public EbayPublisherViewModel(int marketplaceID, IEnumerable<EbayEntry> entries)
@@ -40,7 +42,7 @@ namespace WorkbookPublisher
             _publisher = new Publisher(_dataContext, _marketplace);
             _publisher.Result += Publisher_Result;
 
-            UpdateCompletedStatus();
+            UpdateEntries();
         }
 
         public ObservableCollection<EbayEntry> Entries { get; set; }
@@ -71,15 +73,70 @@ namespace WorkbookPublisher
         {
             this.CanPublish = false;
 
-            var incompleteEntries = this.Entries.Where(p => p.Completed == false);
+            var pendingEntries = this.Entries.Where(p => p.Status.Equals("waiting"));
 
-            HandleFixedPriceEntries(incompleteEntries.Where(p => !p.IsAuction()));
+            HandleFixedPriceEntries(pendingEntries.Where(p => !p.IsAuction()));
 
-            HandleAuctionEntries(incompleteEntries.Where(p => p.IsAuction()));
+            HandleAuctionEntries(pendingEntries.Where(p => p.IsAuction()));
 
             await Task.Run( () => _publisher.Publish());
+        }
 
-            UpdateCompletedStatus();
+        private void HandleAuctionEntries(IEnumerable<EbayEntry> entries)
+        {
+            var auctions = _marketplace.Listings.Where(p => p.Format.Equals(FORMAT_AUCTION)).Where(p => p.Status.Equals(STATUS_ACTIVE)).ToList();
+
+            foreach (EbayEntry entry in entries)
+            {
+                if (!auctions.Any(p => p.Sku.Equals(entry.Sku)))
+                {
+                    
+                    CreateAuction(entry);
+
+                }
+                else
+                {
+                    entry.Completed = false;
+                    entry.Message = "cannot modify auctions";
+                }
+            }
+
+        }
+
+        private void CreateAuction(EbayEntry entry)
+        {
+            EbayListing listing = new EbayListing();
+            listing.Sku = entry.Sku;
+            listing.Marketplace = _marketplace;
+            listing.Condition = GetConditionID(entry.Condition);
+            listing.Duration = GetDuration(entry.Format);
+            listing.Format = FORMAT_AUCTION;
+            listing.FullDescription = entry.FullDescription;
+            listing.Title = entry.Title;
+            listing.IsVariation = false;
+
+            if (entry.StartDateSpecified)
+            {
+                listing.StartTime = entry.StartDate;
+            }
+
+            EbayListingItem listingItem = new EbayListingItem();
+            listingItem.Item = _dataContext.Items.Single(p => p.ItemLookupCode.Equals(entry.Sku));
+            listingItem.Listing = listing;
+            listingItem.Quantity = entry.Q;
+            listingItem.Price = entry.P;
+
+            _targetListings.Add(listing, new List<EbayEntry>() { entry });
+
+            try
+            {
+                AssignPictures(listing);
+            }
+            catch (FileNotFoundException e)
+            {
+                _dataContext.EbayListings.Detach(listing);
+                entry.Message = e.Message;
+            }
         }
 
         private void HandleFixedPriceEntries(IEnumerable<EbayEntry> entries)
@@ -94,12 +151,7 @@ namespace WorkbookPublisher
                 {
                     if (fixedPrice.Any(p => p.Sku.Equals(entry.Sku)))
                     {
-                        EbayListing listing = fixedPrice.Single(p => p.Sku.Equals(entry.Sku));
-                        EbayListingItem listingItem = listing.ListingItems.First();
-                        listingItem.Quantity = entry.Q;
-                        listingItem.Price = entry.P;
-
-                        _targetListings.Add(listing, new List<EbayEntry>() { entry });
+                        UpdateIndividualListing(fixedPrice.Single(p => p.Sku.Equals(entry.Sku)), entry);
                     }
                     else
                     {
@@ -109,161 +161,130 @@ namespace WorkbookPublisher
 
                 if (pending.Count > 0 && fixedPrice.Any(p => p.Sku.Equals(group.Key)))
                 {
-                    EbayListing listing = fixedPrice.Single(p => p.Sku.Equals(group.Key));
-                    listing.Title = listing.Title;
-
-                    foreach (EbayEntry entry in pending)
-                    {
-                        Item item = _dataContext.Items.Single(p => p.ItemLookupCode.Equals(entry.Sku));
-                        EbayListingItem listingItem = listing.ListingItems.SingleOrDefault(p => p.Item.ID == item.ID);
-
-                        if (listingItem == null)
-                        {
-                            listingItem = new EbayListingItem() { Item = item, Listing = listing };
-                        }
-
-                        listingItem.Quantity = entry.Q;
-                        listingItem.Price = entry.P;
-                    }
-
-                    _targetListings.Add(listing, pending.ToList());
-
+                    UpdateVariationListing(fixedPrice.Single(p => p.Sku.Equals(group.Key)), pending);
                 }
                 else if (pending.Count() == 1)
                 {
-                    EbayEntry entry = pending.First();
-
-                    EbayListing listing = new EbayListing();
-                    listing.Sku = group.Key;
-                    listing.Marketplace = _marketplace;
-                    listing.Condition = GetConditionID(entry.Condition);
-                    listing.Duration = GetDuration(entry.Format);
-                    listing.Format = FORMAT_FIXEDPRICE;
-                    listing.FullDescription = entry.FullDescription;
-                    listing.Title = entry.Title;
-                    listing.IsVariation = false;
-
-                    if (!entry.StartDate.Equals(DateTime.MinValue))
-                    {
-                        listing.StartTime = entry.StartDate;
-                    }
-
-                    EbayListingItem listingItem = new EbayListingItem();
-                    listingItem.Item = _dataContext.Items.Single(p => p.ItemLookupCode.Equals(entry.Sku));
-                    listingItem.Listing = listing;
-                    listingItem.Quantity = entry.Q;
-                    listingItem.Price = entry.P;
-
-                    try
-                    {
-                        AssignPictures(listing);
-                    }
-                    catch (FileNotFoundException e)
-                    {
-                        _publisher.Detach(listing);
-                        entry.Message = e.Message;
-                        entry.Completed = false;
-                    }
-
-                    _targetListings.Add(listing, new List<EbayEntry>() { entry });
+                    CreateIndividualListing(pending.First());
                 }
                 else if (pending.Count() > 1)
                 {
-                    EbayListing listing = new EbayListing();
-                    listing.Sku = group.Key;
-                    listing.Marketplace = _marketplace;
-                    listing.Condition = GetConditionID(pending.First(p => !string.IsNullOrWhiteSpace(p.Condition)).Condition);
-                    listing.Duration = GetDuration(pending.First(p => !string.IsNullOrWhiteSpace(p.Format)).Format);
-                    listing.Format = FORMAT_FIXEDPRICE;
-                    listing.FullDescription = pending.First(p => !string.IsNullOrWhiteSpace(p.FullDescription)).FullDescription;
-                    listing.Title = pending.First(p => !string.IsNullOrWhiteSpace(p.Title)).Title;
-                    listing.IsVariation = true;
-
-                    if (!pending.Any(p => p.StartDate.Equals(DateTime.MinValue)))
-                    {
-                        listing.StartTime = pending.First(p => !p.StartDate.Equals(DateTime.MinValue)).StartDate;
-                    }
-
-                    foreach (EbayEntry entry in pending)
-                    {
-                        EbayListingItem listingItem = new EbayListingItem();
-                        listingItem.Item = _dataContext.Items.Single(p => p.ItemLookupCode.Equals(entry.Sku));
-                        listingItem.Listing = listing;
-                        listingItem.Quantity = entry.Q;
-                        listingItem.Price = entry.P;
-                    }
-
-                    try
-                    {
-                        AssignPictures(listing);
-                    }
-                    catch (FileNotFoundException e)
-                    {
-                        _publisher.Detach(listing);
-                        pending.ForEach(p => p.Completed = false);
-                        pending.ForEach(p => p.Message = e.Message);
-                    }
-
-                    _targetListings.Add(listing, pending.ToList());
+                    CreateVariationListing(pending, group.Key);
                 }
             }
         }
 
-        private void HandleAuctionEntries(IEnumerable<EbayEntry> entries)
+        private void UpdateIndividualListing(EbayListing listing, EbayEntry entry)
         {
-            var auctions = _marketplace.Listings.Where(p => p.Format.Equals(FORMAT_AUCTION)).Where(p => p.Status.Equals(STATUS_ACTIVE)).ToList();
+            EbayListingItem listingItem = listing.ListingItems.First();
+
+            listingItem.Quantity = entry.Q;
+            listingItem.Price = entry.P;
+
+            if (!string.IsNullOrWhiteSpace(entry.Title))
+            {
+                listing.Title = entry.Title;
+            }
+            if (!string.IsNullOrWhiteSpace(entry.FullDescription))
+            {
+                listing.FullDescription = entry.FullDescription;
+            }
+
+            _targetListings.Add(listing, new List<EbayEntry>() { entry });
+        }
+
+        private void CreateIndividualListing(EbayEntry entry)
+        {
+            EbayListing listing = new EbayListing();
+            listing.Sku = entry.Sku;
+            listing.Marketplace = _marketplace;
+            listing.Condition = GetConditionID(entry.Condition);
+            listing.Duration = GetDuration(entry.Format);
+            listing.Format = FORMAT_FIXEDPRICE;
+            listing.FullDescription = entry.FullDescription;
+            listing.Title = entry.Title;
+            listing.IsVariation = false;
+
+            EbayListingItem listingItem = new EbayListingItem();
+            listingItem.Item = _dataContext.Items.Single(p => p.ItemLookupCode.Equals(entry.Sku));
+            listingItem.Listing = listing;
+            listingItem.Quantity = entry.Q;
+            listingItem.Price = entry.P;
+
+            try
+            {
+                AssignPictures(listing);
+            }
+            catch (FileNotFoundException e)
+            {
+                entry.Message = e.Message;
+            }
+
+            _targetListings.Add(listing, new List<EbayEntry>() { entry });
+        }
+
+        private void UpdateVariationListing(EbayListing listing, IEnumerable<EbayEntry> entries)
+        {
+            if (entries.Any(p => !string.IsNullOrWhiteSpace(p.Title)))
+            {
+                EbayEntry entry = entries.First(p => !string.IsNullOrWhiteSpace(p.Title));
+            }
+            if (entries.Any(p => !string.IsNullOrWhiteSpace(p.FullDescription)))
+            {
+                listing.FullDescription = entries.First(p => !string.IsNullOrWhiteSpace(p.FullDescription)).FullDescription;
+            }
+
+            listing.Title = listing.Title;
 
             foreach (EbayEntry entry in entries)
             {
-                if (!auctions.Any(p => p.Sku.Equals(entry.Sku)))
+                Item item = _dataContext.Items.Single(p => p.ItemLookupCode.Equals(entry.Sku));
+
+                EbayListingItem listingItem = listing.ListingItems.SingleOrDefault(p => p.Item.ID == item.ID);
+
+                if (listingItem == null)
                 {
-                    EbayListing listing = new EbayListing();
-                    listing.Sku = entry.Sku;
-                    listing.Marketplace = _marketplace;
-                    listing.Condition = GetConditionID(entry.Condition);
-                    listing.Duration = GetDuration(entry.Format);
-                    listing.Format = FORMAT_AUCTION;
-                    listing.FullDescription = entry.FullDescription;
-                    listing.Title = entry.Title;
-                    listing.IsVariation = false;
-
-                    if (!entry.StartDate.Equals(DateTime.MinValue))
-                    {
-                        listing.StartTime = entry.StartDate;
-                    }
-
-
-                    EbayListingItem listingItem = new EbayListingItem();
-                    listingItem.Item = _dataContext.Items.Single(p => p.ItemLookupCode.Equals(entry.Sku));
-                    listingItem.Listing = listing;
-                    listingItem.Quantity = entry.Q;
-                    listingItem.Price = entry.P;
-
-                    
-
-                    _targetListings.Add(listing, new List<EbayEntry>() { entry });
-
-
-                    try
-                    {
-                        AssignPictures(listing);
-                    }
-                    catch (FileNotFoundException e)
-                    {
-                        _dataContext.EbayListings.Detach(listing);
-                        entry.Message = e.Message;
-                        entry.Completed = false;
-                    }
-
-
+                    listingItem = new EbayListingItem() { Item = item, Listing = listing };
                 }
-                else
-                {
-                    entry.Completed = false;
-                    entry.Message = "cannot modify auctions";
-                }
+
+                listingItem.Quantity = entry.Q;
+                listingItem.Price = entry.P;
             }
 
+            _targetListings.Add(listing, entries.ToList());
+        }
+
+        private void CreateVariationListing(IEnumerable<EbayEntry> entries, string className)
+        {
+            EbayListing listing = new EbayListing();
+            listing.Sku = className;
+            listing.Marketplace = _marketplace;
+            listing.Condition = GetConditionID(entries.First(p => !string.IsNullOrWhiteSpace(p.Condition)).Condition);
+            listing.Duration = GetDuration(entries.First(p => !string.IsNullOrWhiteSpace(p.Format)).Format);
+            listing.Format = FORMAT_FIXEDPRICE;
+            listing.FullDescription = entries.First(p => !string.IsNullOrWhiteSpace(p.FullDescription)).FullDescription;
+            listing.Title = entries.First(p => !string.IsNullOrWhiteSpace(p.Title)).Title;
+            listing.IsVariation = true;
+
+            foreach (EbayEntry entry in entries)
+            {
+                EbayListingItem listingItem = new EbayListingItem();
+                listingItem.Item = _dataContext.Items.Single(p => p.ItemLookupCode.Equals(entry.Sku));
+                listingItem.Listing = listing;
+                listingItem.Quantity = entry.Q;
+                listingItem.Price = entry.P;
+            }
+
+            try
+            {
+                AssignPictures(listing);
+            }
+            catch (FileNotFoundException e)
+            {
+                entries.ToList().ForEach(p => p.Message = e.Message);
+            }
+
+            _targetListings.Add(listing, entries.ToList());
         }
 
         private void AssignPictures(EbayListing listing)
@@ -284,8 +305,6 @@ namespace WorkbookPublisher
                     url = new EbayPictureServiceUrl();
                     url.LocalName = picInfo.Name;
                     url.Path = picInfo.Path;
-                    
-
                     new EbayPictureUrlRelation() { PictureServiceUrl = url, Listing = listing, CreatedTime = DateTime.UtcNow };
                 }
                 else
@@ -306,7 +325,7 @@ namespace WorkbookPublisher
 
                 case "BIN": return "Days_30";
 
-                case "A": return "Days_7";
+                case "A7": return "Days_7";
 
                 case "A1": return "Days_1";
 
@@ -328,7 +347,7 @@ namespace WorkbookPublisher
                 case "A1":
                 case "A3":
                 case "A5":
-                case "A" :
+                case "A7" :
                     return FORMAT_AUCTION;
                 default :
                     return string.Empty;
@@ -357,11 +376,13 @@ namespace WorkbookPublisher
             }
         }
 
-        private void UpdateCompletedStatus()
+        private void UpdateEntries()
         {
             foreach (EbayEntry entry in this.Entries)
             {
                 Item item = _dataContext.Items.SingleOrDefault();
+                entry.Brand = item.SubDescription1;
+                entry.ClassName = item.ClassName;
 
                 if (item == null)
                 {
@@ -371,31 +392,49 @@ namespace WorkbookPublisher
 
                 string format = GetFormat(entry.Format);
 
-                var listingItems = item.EbayListingItems.Where(p =>
-                    p.Listing.MarketplaceID == _marketplace.ID &&
-                    p.Listing.Status.Equals("ACTIVE") && 
-                    p.Listing.Format.Equals(format)
-                    );
-
-
-               
-
-                if (listingItems.Count() == 1 && entry.Q == listingItem.Quantity)
+                if (format.Equals(FORMAT_FIXEDPRICE))
                 {
-                    entry.Completed = true;
-                }
+                    var listingItems = item.EbayListingItems.Where(p =>
+                        p.Listing.MarketplaceID == _marketplace.ID &&
+                        p.Listing.Status.Equals("ACTIVE") &&
+                        p.Listing.Format.Equals(format)
+                        );
 
+                    if (listingItems.Count() == 1 && entry.Q == listingItems.First().Quantity)
+                    {
+                        entry.Completed = true;
+                    }
+
+                }
+                else if (format.Equals(FORMAT_AUCTION))
+                {
+                    double days = double.Parse(GetDuration(entry.Format).Split(new Char[1]{'_'})[1]);
+                    DateTime endDate = entry.StartDate.AddDays(days);
+
+                    var listingItems = item.EbayListingItems.Where(p =>
+                        p.Listing.MarketplaceID == _marketplace.ID &&
+                        p.Listing.Status.Equals("ACTIVE") &&
+                        (!(entry.StartDate > p.Listing.EndTime) && !(endDate < p.Listing.StartTime)) &&
+                        p.Listing.Format.Equals(format)
+                        );
+
+                    if (listingItems.Count() > 0)
+                    {
+                        entry.Completed = true;
+                    }
+                }
+                
                 if (entry.Status.Equals("waiting"))
                 {
                     if (format.Equals(FORMAT_AUCTION) && entry.Q > 1)
                     {
                         entry.Message = "auction max qty is 1";
                     }
-                    if (entry.Q > listingItem.Item.Quantity)
+                    if (entry.Q > item.Quantity)
                     {
                         entry.Message = "qty to publish exceeds on-hand";
                     }
-                    if (listingItem.Item.Department == null)
+                    if (item.Department == null)
                     {
                         entry.Message = "department classification required";
                     }
@@ -411,11 +450,6 @@ namespace WorkbookPublisher
             {
                 this.CanPublish = false;
             }
-        }
-
-        private string FindTitle(EbayEntry entry)
-        {
- 
         }
     }
 
@@ -515,5 +549,12 @@ namespace WorkbookPublisher
 
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public bool EndDate { 
+            get 
+            { 
+                switch()
+            } 
+        }
     }
 }
