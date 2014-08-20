@@ -15,96 +15,91 @@ using System.Windows.Data;
 
 namespace WorkbookPublisher
 {
-    public class ExcelWorkbookViewModel
+    public class ExcelWorkbook
     {
         const string COLUMN_SKU = "SKU";
 
         private SharedStringTablePart _stringTablePart;
         private WorksheetPart _workSheetPart;
 
-        private ObservableCollection<EbayPublisherViewModel> _ebayPublishers = new ObservableCollection<EbayPublisherViewModel>();
-        private ObservableCollection<AmznPublisherViewModel> _amznPublisher = new ObservableCollection<AmznPublisherViewModel>();
-
         private Dictionary<string, string> _colHeadersToRefs = new Dictionary<string, string>();
         private Dictionary<string, string> _colRefsToHeaders = new Dictionary<string, string>();
         private Dictionary<string, PropertyInfo> _colRefsToProp = new Dictionary<string, PropertyInfo>();
 
 
-        public ExcelWorkbookViewModel(string path)
+        public ExcelWorkbook(string path)
         {
             this.Path = path;
-
-            this.Publishers = new CompositeCollection() {
-                new CollectionContainer() { Collection = _ebayPublishers} ,
-                new CollectionContainer() { Collection = _amznPublisher }
-            };
-
-            this.ReadEntries();
         }
 
         public string Path { get; set; }
 
-        public CompositeCollection Publishers { get; set; }
-
-        private void ReadEntries()
+        public List<EbayEntry> ReadEbayEntries(string code)
         {
+            List<EbayEntry> entries = new List<EbayEntry>();
+
             using (SpreadsheetDocument document = SpreadsheetDocument.Open(this.Path, false))
-            using(berkeleyEntities dataContext = new berkeleyEntities())
             {
                 _stringTablePart = document.WorkbookPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault();
-                foreach (Sheet sheet in document.WorkbookPart.Workbook.Sheets)
+
+                Sheet sheet = document.WorkbookPart.Workbook.Sheets.Descendants<Sheet>().SingleOrDefault(p => p.Name.Value.Equals(code));
+
+                if (sheet != null)
                 {
-                    _workSheetPart = document.WorkbookPart.GetPartById(sheet.Id) as WorksheetPart;      
-           
-                    string code = sheet.Name.Value.ToUpper().Trim();
+                    _workSheetPart = document.WorkbookPart.GetPartById(sheet.Id) as WorksheetPart;
 
-                    if (dataContext.EbayMarketplaces.Any(p => p.Code.Equals(code)))
+                    RegisterColumns(typeof(EbayEntry));
+
+                    foreach (Row row in GetValidRows())
                     {
-
-                        RegisterColumns(typeof(EbayEntry));
-
-                        var rows = _workSheetPart.Worksheet.Descendants<Cell>().Where(c =>
-                            string.Compare(ParseColRefs(c.CellReference.Value), _colHeadersToRefs[COLUMN_SKU], true) == 0 &&
-                            !string.IsNullOrWhiteSpace(GetCellValue(c))
-                            ).Select(p => p.Parent).Cast<Row>().Where(p => p.RowIndex != 1).ToList();
-
-                        List<EbayEntry> entries = new List<EbayEntry>();
-
-                        foreach (Row row in rows)
-                        {
-                            EbayEntry entry = CreateEntry(row, typeof(EbayEntry)) as EbayEntry;
-                            entry.RowIndex = row.RowIndex.Value;
-                            entries.Add(entry);
-                        }
-
-                        _ebayPublishers.Add(new EbayPublisherViewModel(dataContext.EbayMarketplaces.Single(p => p.Code.Equals(code)).ID, entries));
-                      
+                        EbayEntry entry = CreateEntry(row, typeof(EbayEntry)) as EbayEntry;
+                        entry.RowIndex = row.RowIndex.Value;
+                        entries.Add(entry);
                     }
-                    else if(dataContext.AmznMarketplaces.Any(p => p.Code.Equals(code)))
-                    {
-                        RegisterColumns(typeof(AmznEntry));
-
-                        var rows = _workSheetPart.Worksheet.Descendants<Cell>().Where(c =>
-                            string.Compare(ParseColRefs(c.CellReference.Value), _colHeadersToRefs[COLUMN_SKU], true) == 0 &&
-                            !string.IsNullOrWhiteSpace(GetCellValue(c))
-                            ).Select(p => p.Parent).Cast<Row>().Where(p => p.RowIndex != 1).ToList();
-
-                        List<AmznEntry> entries = new List<AmznEntry>();
-
-                        foreach (Row row in rows)
-                        {
-                            AmznEntry entry = CreateEntry(row, typeof(AmznEntry)) as AmznEntry;
-                            entry.RowIndex = row.RowIndex.Value;
-                            entries.Add(entry);
-                        }
-
-                        _amznPublisher.Add(new AmznPublisherViewModel(dataContext.AmznMarketplaces.Single(p => p.Code.Equals(code)).ID,entries));
-                    }
-                    
                 }
 
                 document.Close();
             }
+
+            return entries;
+        }
+
+        public List<AmznEntry> ReadAmznEntries(string code)
+        {
+            List<AmznEntry> entries = new List<AmznEntry>();
+
+            using (SpreadsheetDocument document = SpreadsheetDocument.Open(this.Path, false))
+            {
+                _stringTablePart = document.WorkbookPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault();
+
+                Sheet sheet = document.WorkbookPart.Workbook.Sheets.OfType<Sheet>().SingleOrDefault(p => p.Name.Equals(code)) as Sheet;
+
+                if (sheet != null)
+                {
+                    _workSheetPart = document.WorkbookPart.GetPartById(sheet.Id) as WorksheetPart;
+
+                    RegisterColumns(typeof(AmznEntry));
+
+                    foreach (Row row in GetValidRows())
+                    {
+                        AmznEntry entry = CreateEntry(row, typeof(AmznEntry)) as AmznEntry;
+                        entry.RowIndex = row.RowIndex.Value;
+                        entries.Add(entry);
+                    } 
+                }
+
+                document.Close();
+            }
+
+            return entries;
+        }
+
+        private List<Row> GetValidRows()
+        {
+            return _workSheetPart.Worksheet.Descendants<Cell>().Where(c =>
+                string.Compare(ParseColRefs(c.CellReference.Value), _colHeadersToRefs[COLUMN_SKU], true) == 0 &&
+                !string.IsNullOrWhiteSpace(GetCellValue(c))
+                ).Select(p => p.Parent).Cast<Row>().Where(p => p.RowIndex != 1).ToList();
         }
 
         private object CreateEntry(Row row, Type entryType)

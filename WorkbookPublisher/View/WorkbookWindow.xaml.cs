@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using BerkeleyEntities;
 
 namespace WorkbookPublisher
 {
@@ -20,6 +21,8 @@ namespace WorkbookPublisher
     /// </summary>
     public partial class WorkbookWindow : Window
     {
+
+
 
         public WorkbookWindow()
         {
@@ -41,7 +44,27 @@ namespace WorkbookPublisher
 
             if ((bool)ofd.ShowDialog())
             {
-                this.DataContext =  new ExcelWorkbookViewModel(ofd.FileName);
+                lbCurrentWorkbook.Content = ofd.FileName;
+
+                using (berkeleyEntities dataContext = new berkeleyEntities())
+                {
+                    ExcelWorkbook workbook = new ExcelWorkbook(ofd.FileName);
+
+                    CompositeCollection composite = new CompositeCollection();
+
+                    foreach (var marketplace in dataContext.EbayMarketplaces)
+                    {
+                        composite.Add(new EbayPublisherViewModel(workbook, marketplace.ID));
+                    }
+
+                    foreach (var marketplace in dataContext.AmznMarketplaces)
+                    {
+                        composite.Add(new AmznPublisherViewModel(workbook, marketplace.ID));
+                    }
+
+                    tcSheets.ItemsSource = composite;
+                }
+                
             }
         }
 

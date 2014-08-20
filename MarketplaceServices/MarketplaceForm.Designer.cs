@@ -170,7 +170,6 @@
             this.btnFixOverpublished.TabIndex = 8;
             this.btnFixOverpublished.Text = "Fix Overpublished";
             this.btnFixOverpublished.UseVisualStyleBackColor = true;
-            this.btnFixOverpublished.Click += new System.EventHandler(this.btnFixOverpublished_Click);
             // 
             // tbCheckItem
             // 

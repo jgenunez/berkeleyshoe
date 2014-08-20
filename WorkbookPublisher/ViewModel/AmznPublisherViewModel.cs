@@ -22,22 +22,21 @@ namespace WorkbookPublisher
         private berkeleyEntities _dataContext = new berkeleyEntities();
         private List<AmazonEnvelope> _needUserInput = new List<AmazonEnvelope>();
         private Dictionary<AmznListingItem, AmznEntry> _targetListings = new Dictionary<AmznListingItem, AmznEntry>();
+        private ExcelWorkbook _workbook;
         private Publisher _publisher;
         private AmznMarketplace _marketplace;
         private RelayCommand _publish;
         private RelayCommand _fixErrors;
 
-        public AmznPublisherViewModel(int marketplaceID, IEnumerable<AmznEntry> entries)
+        public AmznPublisherViewModel(ExcelWorkbook workbook, int marketplaceID)
         {
-            this.Entries = new ObservableCollection<AmznEntry>(entries);
             this.CanPublish = true;
             this.CanFixErrors = false;
 
+            _workbook = workbook;
             _marketplace = _dataContext.AmznMarketplaces.Single(p => p.ID == marketplaceID);
             _publisher = new Publisher(_dataContext, _marketplace);
             _publisher.Result += Publisher_Result;
-
-            UpdateEntries();
         }
 
         public string Header { get { return _marketplace.Code; } }
@@ -46,13 +45,55 @@ namespace WorkbookPublisher
         {
             get 
             {
-                int completed = this.Entries.Where(p => p.Status.Equals("completed")).Count();
+                var entries = this.Entries.OfType<AmznEntry>();
 
-                return completed.ToString() + " / " + this.Entries.Count;
+                int completed = entries.Where(p => p.Status.Equals("completed")).Count();
+
+                return completed.ToString() + " / " + entries.Count();
             }
         }
 
-        public ObservableCollection<AmznEntry> Entries { get; set; }
+        public void UpdateEntries()
+        {
+            using (berkeleyEntities dataContext = new berkeleyEntities())
+            {
+                foreach (AmznEntry entry in this.Entries)
+                {
+                    AmznListingItem listingItem = _dataContext.AmznListingItems.SingleOrDefault(p => p.IsActive && p.MarketplaceID == _marketplace.ID && p.Item.ItemLookupCode.Equals(entry.Sku));
+
+                    if (listingItem != null && listingItem.Quantity == entry.Q)
+                    {
+                        entry.Completed = true;
+                    }
+                    else
+                    {
+                        entry.Completed = false;
+
+                        if (entry.Q > listingItem.Item.Quantity)
+                        {
+                            entry.Message = "qty to publish exceeds stock";
+                        }
+
+                        if (string.IsNullOrEmpty(listingItem.Item.GTIN))
+                        {
+                            entry.Message = "UPC or EAN required";
+                        }
+
+                        if (listingItem.Item.Department == null)
+                        {
+                            entry.Message = "department classification required";
+                        }
+                    }
+                }
+            }
+
+            //if (this.Entries.All(p => p.Status.Equals("completed") || p.Status.Equals("error")))
+            //{
+            //    this.CanPublish = false;
+            //}
+        }
+
+        public ICollectionView Entries { get; set; }
 
         public bool CanPublish { get; set; }
 
@@ -88,9 +129,9 @@ namespace WorkbookPublisher
         {
             this.CanPublish = false;
 
-            foreach (AmznEntry entry in this.Entries.Where(p => p.Completed == false))
+            foreach (AmznEntry entry in this.Entries.OfType<AmznEntry>().Where(p => p.Completed == false))
             {
-                AmznListingItem listingItem = _dataContext.AmznListingItems.SingleOrDefault(p => p.IsActive && p.MarketplaceID == _marketplace.ID &&  p.Item.ItemLookupCode.Equals(entry.Sku));
+                AmznListingItem listingItem = _dataContext.AmznListingItems.SingleOrDefault(p => p.IsActive && p.MarketplaceID == _marketplace.ID && p.Item.ItemLookupCode.Equals(entry.Sku));
 
                 if (listingItem == null)
                 {
@@ -99,7 +140,7 @@ namespace WorkbookPublisher
                 }
 
                 listingItem.Quantity = entry.Q;
-                listingItem.Price = entry.P;    
+                listingItem.Price = entry.P;
                 listingItem.Condition = entry.Condition;
                 listingItem.Title = entry.Title;
 
@@ -184,45 +225,7 @@ namespace WorkbookPublisher
             }
         }
 
-        private void UpdateEntries()
-        {
-            using (berkeleyEntities dataContext = new berkeleyEntities())
-            {
-                foreach (AmznEntry entry in this.Entries)
-                {
-                    AmznListingItem listingItem = _dataContext.AmznListingItems.SingleOrDefault(p => p.IsActive && p.MarketplaceID == _marketplace.ID && p.Item.ItemLookupCode.Equals(entry.Sku));
-
-                    if (listingItem != null && listingItem.Quantity == entry.Q)
-                    {
-                        entry.Completed = true;
-                    }
-                    else
-                    {
-                        entry.Completed = false;
-
-                        if (entry.Q > listingItem.Item.Quantity)
-                        {
-                            entry.Message = "qty to publish exceeds stock";
-                        }
-
-                        if (string.IsNullOrEmpty(listingItem.Item.GTIN))
-                        {
-                            entry.Message = "UPC or EAN required";
-                        }
-
-                        if (listingItem.Item.Department == null)
-                        {
-                            entry.Message = "department classification required";
-                        }
-                    }
-                }
-            }
-
-            if (this.Entries.All(p => p.Status.Equals("completed") || p.Status.Equals("error")))
-            {
-                this.CanPublish = false;
-            }
-        }
+        
 
     }
 

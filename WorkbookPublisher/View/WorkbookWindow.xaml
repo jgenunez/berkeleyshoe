@@ -28,31 +28,37 @@
             </TabControl.ItemTemplate>
             <TabControl.ContentTemplate>
                 <DataTemplate>
-                    <ScrollViewer HorizontalScrollBarVisibility="Auto">
-                        <StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <Button Name="btnPublish" IsEnabled="{Binding CanPublish}" Margin="10" Padding="5" VerticalAlignment="Center" Command="{Binding Publish}">Publish</Button>
-                                <Button Name="btnRepublish" IsEnabled="{Binding CanFixErrors}" Margin="10" Padding="5" VerticalAlignment="Center" Command="{Binding FixErrors}">Fix Errors</Button>
-                                <TextBlock Margin="10" Text="{Binding Progress}"/>
-                            </StackPanel>
-                            <ListView Name="lvEntries" ItemsSource="{Binding Entries}">
-                                <ListView.ItemContainerStyle>
-                                    <Style TargetType="ListViewItem">
-                                        <Setter Property="HorizontalContentAlignment" Value="Center" />
-                                    </Style>
-                                </ListView.ItemContainerStyle>
-                                <ListView.View>
-                                    <GridView>
-                                        <GridViewColumn Header="Row" DisplayMemberBinding="{Binding Path=RowIndex}" Width="auto"/>
-                                        <GridViewColumn Header="Brand" DisplayMemberBinding="{Binding Path=Brand}" Width="auto"/>
-                                        <GridViewColumn Header="Sku" DisplayMemberBinding="{Binding Path=Sku}" Width="auto"/>
-                                        <GridViewColumn Header="Status" DisplayMemberBinding="{Binding Path=Status}" Width="auto"/>
-                                        <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Path=Message}" Width="auto"/>
-                                    </GridView>
-                                </ListView.View>         
-                            </ListView>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal" Grid.Row="0">
+                            <Button Name="btnReadEntries" IsEnabled="{Binding CanRead}" Margin="10" Padding="5" VerticalAlignment="Center" Command="{Binding Read}">Read</Button>
+                            <Button Name="btnPublish" IsEnabled="{Binding CanPublish}" Margin="10" Padding="5" VerticalAlignment="Center" Command="{Binding Publish}">Publish</Button>
+                            <Button Name="btnRepublish" IsEnabled="{Binding CanFixErrors}" Margin="10" Padding="5" VerticalAlignment="Center" Command="{Binding FixErrors}">Fix Errors</Button>
+                            <TextBlock Margin="10" Text="{Binding Progress}"/>
                         </StackPanel>
-                    </ScrollViewer>
+
+                        <ListView Grid.Row="1" Name="lvEntries" ItemsSource="{Binding Entries}" ScrollViewer.CanContentScroll="True"  ScrollViewer.VerticalScrollBarVisibility="Visible">
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Row" DisplayMemberBinding="{Binding Path=RowIndex}" Width="auto"/>
+                                    <GridViewColumn Header="Brand" DisplayMemberBinding="{Binding Path=Brand}" Width="auto"/>
+                                    <GridViewColumn Header="Sku" DisplayMemberBinding="{Binding Path=Sku}" Width="auto"/>
+                                    <GridViewColumn Header="Format" DisplayMemberBinding="{Binding Path=Format}" Width="auto"/>
+                                    <GridViewColumn Header="Status" DisplayMemberBinding="{Binding Path=Status}" Width="auto"/>
+                                    <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Path=Message}" Width="auto"/>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+
+                    </Grid>
                 </DataTemplate>
             </TabControl.ContentTemplate>
         </TabControl>

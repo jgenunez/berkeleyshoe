@@ -9,6 +9,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 
 namespace WorkbookPublisher
@@ -17,9 +19,11 @@ namespace WorkbookPublisher
 
     public class EbayPublisherViewModel
     {
-        private RelayCommand _publish;
+        private RelayCommand _publishCommand;
+        private RelayCommand _readEntriesCommand;
 
         private PictureSetRepository _picSetRepository = new PictureSetRepository();
+        private ExcelWorkbook _workbook;
         private berkeleyEntities _dataContext = new berkeleyEntities();
         private ProductFactory _productFactory;
         private EbayMarketplace _marketplace;
@@ -27,21 +31,20 @@ namespace WorkbookPublisher
 
         private Dictionary<EbayListing, List<EbayEntry>> _targetListings = new Dictionary<EbayListing, List<EbayEntry>>();
 
-        public EbayPublisherViewModel(int marketplaceID, IEnumerable<EbayEntry> entries)
+        public EbayPublisherViewModel(ExcelWorkbook workbook, int marketplaceID)
         {
-            this.Entries = new ObservableCollection<EbayEntry>(entries);
-            this.CanPublish = true;
+            this.CanPublish = false;
             this.CanFixErrors = false;
+            this.CanRead = true;
 
             _marketplace = _dataContext.EbayMarketplaces.Single(p => p.ID == marketplaceID);
+            _workbook = workbook;
             _productFactory = new ProductFactory(_dataContext);
             _publisher = new Publisher(_dataContext, _marketplace);
             _publisher.Result += Publisher_Result;
-
-            UpdateEntries();
         }
 
-        public ObservableCollection<EbayEntry> Entries { get; set; }
+        public ICollectionView Entries { get; set; }
 
         public string Header 
         {
@@ -52,9 +55,19 @@ namespace WorkbookPublisher
         {
             get
             {
-                int completed = this.Entries.Where(p => p.Status.Equals("completed")).Count();
+                if (this.Entries != null)
+                {
+                    var entries = this.Entries.SourceCollection.OfType<EbayEntry>();
 
-                return completed.ToString() + " / " + this.Entries.Count;
+                    int completed = entries.Where(p => p.Status.Equals("completed")).Count();
+
+                    return completed.ToString() + " / " + entries.Count();
+                }
+                else
+                {
+                    return string.Empty;
+                }
+
             }
         }
 
@@ -62,30 +75,136 @@ namespace WorkbookPublisher
 
         public bool CanFixErrors { get; set; }
 
+        public bool CanRead { get; set; }
+
         public ICommand Publish 
         {
             get
             {
-                if (_publish == null)
+                if (_publishCommand == null)
                 {
-                    _publish = new RelayCommand(PublishAsync);
+                    _publishCommand = new RelayCommand(PublishAsync);
                 }
 
-                return _publish;
+                return _publishCommand;
             }
+        }
+
+        public ICommand Read 
+        {
+            get 
+            {
+                if (_readEntriesCommand == null)
+                {
+                    _readEntriesCommand = new RelayCommand(ReadEntries);
+                }
+
+                return _readEntriesCommand;
+            }
+        }
+
+        private async void ReadEntries()
+        {
+            this.CanRead = false;
+
+            var entries = _workbook.ReadEbayEntries(_marketplace.Code);
+
+            if (entries.Count() > 0)
+            {
+                await Task.Run(() => UpdateEntries(entries));
+            }
+            else
+            {
+                MessageBox.Show("no entries for " + _marketplace.Code);
+            }
+
+            ICollectionView view = CollectionViewSource.GetDefaultView(new ObservableCollection<EbayEntry>(entries));
+            view.Filter = p => ((EbayEntry)p).Status.Equals("error") ;
+
+            this.Entries = view;
+
+            this.CanRead = true;
+            this.CanPublish = true;
         }
 
         private async void PublishAsync()
         {
             this.CanPublish = false;
 
-            var pendingEntries = this.Entries.Where(p => p.Status.Equals("waiting"));
+            var pendingEntries = this.Entries.OfType<EbayEntry>().Where(p => p.Status.Equals("waiting"));
 
             HandleFixedPriceEntries(pendingEntries.Where(p => !p.IsAuction()));
 
             HandleAuctionEntries(pendingEntries.Where(p => p.IsAuction()));
 
-            await Task.Run( () => _publisher.Publish());
+            await Task.Run(() => _publisher.Publish());
+        }
+
+        private void UpdateEntries(IEnumerable<EbayEntry> entries)
+        {
+            foreach (EbayEntry entry in entries)
+            {
+                Item item = _dataContext.Items.Include("EbayListingItems.OrderItems.Order").Include("AmznListingItems.OrderItems.Order")
+                    .SingleOrDefault(p => p.ItemLookupCode.Equals(entry.Sku));
+
+                entry.Brand = item.SubDescription1;
+                entry.ClassName = item.ClassName;
+
+                if (item == null)
+                {
+                    entry.Message = "sku not found";
+                    continue;
+                }
+
+                string format = GetFormat(entry.Format);
+
+                if (format == null)
+                {
+                    entry.Message = "invalid format";
+                    continue;
+                }
+
+                var listingItems = item.EbayListingItems.Where(p =>
+                    p.Listing.MarketplaceID == _marketplace.ID &&
+                    p.Listing.Status.Equals(Publisher.STATUS_ACTIVE) &&
+                    p.Listing.Format.Equals(format));
+
+
+                if (listingItems.Count() == 1)
+                {
+                    EbayListingItem listingItem = listingItems.First();
+
+                    if (listingItem.Quantity == entry.Q)
+                    {
+                        entry.Completed = true;
+                    }
+                }
+                else if (listingItems.Count() > 1)
+                {
+                    entry.Message = "duplicate";
+                }
+
+                if (entry.Status.Equals("waiting"))
+                {
+                    if (format.Equals(Publisher.FORMAT_AUCTION) && entry.Q > 1)
+                    {
+                        entry.Message = "auction max qty is 1";
+                    }
+                    if (entry.Q > item.QtyAvailable)
+                    {
+                        entry.Message = "qty to publish exceeds available";
+                    }
+                    if (item.Department == null)
+                    {
+                        entry.Message = "department classification required";
+                    }
+                    if (entry.Title.Count() > 80)
+                    {
+                        entry.Message = "title max characters is 80";
+                    }
+                }
+
+            }
         }
 
         private void HandleAuctionEntries(IEnumerable<EbayEntry> entries)
@@ -381,7 +500,7 @@ namespace WorkbookPublisher
                 case "A7" :
                     return Publisher.FORMAT_AUCTION;
                 default :
-                    return string.Empty;
+                    return null;
             }
         }
 
@@ -407,82 +526,7 @@ namespace WorkbookPublisher
             }
         }
 
-        private void UpdateEntries()
-        {
-            foreach (EbayEntry entry in this.Entries)
-            {
-                Item item = _dataContext.Items.SingleOrDefault(p => p.ItemLookupCode.Equals(entry.Sku));
-                entry.Brand = item.SubDescription1;
-                entry.ClassName = item.ClassName;
-
-                if (item == null)
-                {
-                    entry.Message = "sku not found";
-                    continue;
-                }
-
-                string format = GetFormat(entry.Format);
-
-                if (format.Equals(Publisher.FORMAT_FIXEDPRICE))
-                {
-                    var listingItems = item.EbayListingItems.Where(p =>
-                        p.Listing.MarketplaceID == _marketplace.ID &&
-                        p.Listing.Status.Equals("Active") &&
-                        p.Listing.Format.Equals(format)
-                        );
-
-
-                    if (listingItems.Count() == 1 && entry.Q == listingItems.First().Quantity)
-                    {
-                        entry.Completed = true;
-                    }
-
-                }
-                else if (format.Equals(Publisher.FORMAT_AUCTION))
-                {
-                    double days = double.Parse(GetDuration(entry.Format).Split(new Char[1]{'_'})[1]);
-                    DateTime endDate = entry.StartDate.AddDays(days);
-
-                    var listingItems = item.EbayListingItems.Where(p =>
-                        p.Listing.MarketplaceID == _marketplace.ID &&
-                        p.Listing.Status.Equals("Active") &&
-                        (!(entry.StartDate > p.Listing.EndTime) && !(endDate < p.Listing.StartTime)) &&
-                        p.Listing.Format.Equals(format)
-                        );
-
-                    if (listingItems.Count() > 0)
-                    {
-                        entry.Completed = true;
-                    }
-                }
-                
-                if (entry.Status.Equals("waiting"))
-                {
-                    if (format.Equals(Publisher.FORMAT_AUCTION) && entry.Q > 1)
-                    {
-                        entry.Message = "auction max qty is 1";
-                    }
-                    if (entry.Q > item.Quantity)
-                    {
-                        entry.Message = "qty to publish exceeds on-hand";
-                    }
-                    if (item.Department == null)
-                    {
-                        entry.Message = "department classification required";
-                    }
-                    if (entry.Title.Count() > 80)
-                    {
-                        entry.Message = "title max characters is 80";
-                    }
-                }
-
-            }
-
-            if (this.Entries.All(p => p.Status.Equals("completed") || p.Status.Equals("error")))
-            {
-                this.CanPublish = false;
-            }
-        }
+        
     }
 
     public class EbayEntry : INotifyPropertyChanged
@@ -495,6 +539,8 @@ namespace WorkbookPublisher
             this.Title = string.Empty;
             this.StartDate = DateTime.UtcNow;
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public uint RowIndex { get; set; }
         public string Brand { get; set; }
@@ -574,7 +620,7 @@ namespace WorkbookPublisher
         }
 
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        
 
     }
 }
