@@ -34,6 +34,48 @@ namespace WorkbookPublisher
 
         public string Path { get; set; }
 
+        public void PersistEntries(string code, List<EbayEntry> entries)
+        {
+            using (SpreadsheetDocument document = SpreadsheetDocument.Open(this.Path, true))
+            {
+                _stringTablePart = document.WorkbookPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault();
+
+                Sheet sheet = document.WorkbookPart.Workbook.Sheets.Descendants<Sheet>().SingleOrDefault(p => p.Name.Value.Equals(code));
+
+                if (sheet == null)
+                {
+                    sheet = document.WorkbookPart.Workbook.Sheets.AppendChild<Sheet>(new Sheet() { Name = code });
+                    _workSheetPart = document.WorkbookPart.AddNewPart<WorksheetPart>(sheet.Id);
+                }
+                else
+                {
+                    _workSheetPart = document.WorkbookPart.GetPartById(sheet.Id) as WorksheetPart;
+                }
+
+                RegisterColumns(typeof(EbayEntry));
+
+                SheetData sheetData = new SheetData();
+
+                foreach (EbayEntry entry in entries.OrderBy(p => p.RowIndex))
+                {
+                    Row row = new Row();
+
+                    row.RowIndex = new UInt32Value(entry.RowIndex);
+
+                    foreach (string colRef in _colRefsToHeaders.Keys.OrderBy(p => p))
+                    {
+                        row.Append(CreateCell(entry, colRef));
+                    }
+
+                    sheetData.Append(row);
+                }
+
+                _workSheetPart.Worksheet = new Worksheet(sheetData);
+
+                document.Close();
+            }
+        }
+
         public List<EbayEntry> ReadEbayEntries(string code)
         {
             List<EbayEntry> entries = new List<EbayEntry>();
@@ -129,6 +171,51 @@ namespace WorkbookPublisher
                 }
             }
             return entry;
+        }
+
+        private Cell CreateCell(EbayEntry entry, string colRef)
+        {
+            Cell cell = new Cell();
+
+            cell.CellReference = new StringValue(colRef + entry.RowIndex.ToString());
+
+            if (_colRefsToProp.ContainsKey(colRef))
+            {
+                PropertyInfo prop = _colRefsToProp[colRef];
+                object value = prop.GetValue(entry, null);
+
+                if (value != null)
+                {
+                    switch (prop.PropertyType.Name)
+                    {
+                        case "String":
+                            cell.CellValue = new CellValue(InsertSharedString(value.ToString()).ToString());
+                            cell.DataType = CellValues.SharedString; break;
+                        case "Int32":
+                        case "Decimal":
+                            cell.CellValue = new CellValue(value.ToString());
+                            cell.DataType = CellValues.Number; break;
+                        case "DateTime":
+                            cell.CellValue = new CellValue(value.ToString());
+                            cell.DataType = CellValues.Date; break;
+                        default:
+                            cell.CellValue = new CellValue(InsertSharedString(value.ToString()).ToString());
+                            cell.DataType = CellValues.SharedString; break; ;
+                    }
+                }
+                else
+                {
+                    cell.CellValue = new CellValue("");
+                    cell.DataType = CellValues.String;
+                }
+            }
+            else
+            {
+                cell.CellValue = new CellValue("");
+                cell.DataType = CellValues.String;
+            }
+
+            return cell;
         }
 
         private void RegisterColumns(Type entryType)

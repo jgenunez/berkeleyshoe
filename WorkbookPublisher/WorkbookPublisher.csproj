@@ -72,6 +72,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\EbayPublisherViewModel.cs" />
     <Compile Include="ExcelWorkbook.cs" />
     <Compile Include="View\RepublishDataWindow.xaml.cs">

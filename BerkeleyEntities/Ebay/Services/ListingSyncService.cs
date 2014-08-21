@@ -27,30 +27,38 @@ namespace EbayServices.Services
 
         public List<string> MarginalSync()
         {
-            DateTime syncTime = DateTime.UtcNow.AddMinutes(-3);
-
-            if (_marketplace.ListingSyncTime.HasValue && _marketplace.ListingSyncTime.Value > syncTime.AddDays(-3))
+            try
             {
-                DateTime from = _marketplace.ListingSyncTime.Value.AddMinutes(-5);
+                DateTime syncTime = DateTime.UtcNow.AddMinutes(-3);
 
-                SyncListingsByCreatedTime(from, syncTime);
-                SyncListingsByModifiedTime(from, syncTime);
+                if (_marketplace.ListingSyncTime.HasValue && _marketplace.ListingSyncTime.Value > syncTime.AddDays(-3))
+                {
+                    DateTime from = _marketplace.ListingSyncTime.Value.AddMinutes(-5);
+
+                    SyncListingsByCreatedTime(from, syncTime);
+                    SyncListingsByModifiedTime(from, syncTime);
+                }
+                else
+                {
+                    DateTime from = syncTime.AddDays(-40);
+                    DateTime to = syncTime.AddDays(32);
+
+                    SyncListingsByEndTime(from, to);
+                }
+
+                _marketplace.ListingSyncTime = syncTime;
+
             }
-            else
+            catch (Exception e)
             {
-                DateTime from = syncTime.AddDays(-40);
-                DateTime to = syncTime.AddDays(32);
-
-                SyncListingsByEndTime(from, to);
+                _logger.Error(e.Message);
             }
 
             var added = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added)
-                .Select(p => p.Entity).OfType<EbayListingItem>().Select(p => p.Item.ItemLookupCode);
+                .Select(p => p.Entity).OfType<EbayListingItem>().Select(p => p.Item.ItemLookupCode).ToList();
 
             var modified = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Modified)
-                .Select(p => p.Entity).OfType<EbayListingItem>().Select(p => p.Item.ItemLookupCode);
-
-            _marketplace.ListingSyncTime = syncTime;
+                .Select(p => p.Entity).OfType<EbayListingItem>().Select(p => p.Item.ItemLookupCode).ToList();
 
             _dataContext.SaveChanges();
 
@@ -70,23 +78,9 @@ namespace EbayServices.Services
 
                 GetItemCall call = new GetItemCall(_marketplace.GetApiContext());
 
-                try
-                {
-                    GetItemResponseType response = call.ExecuteRequest(request) as GetItemResponseType;
-                    listingDtos.Add(response.Item);
-                }
-                catch (ApiException e)
-                {
-                    _logger.Error(e.Message);
+                GetItemResponseType response = call.ExecuteRequest(request) as GetItemResponseType;
 
-                    var errors = e.Errors.ToArray();
-
-                    if (errors.Any(p => p.ErrorCode.Equals("17")))
-                    {
-                        EbayListing listing = _dataContext.EbayListings.Single(p => p.Code.Equals(listingID));
-                        listing.Status = "Deleted";
-                    }
-                }
+                listingDtos.Add(response.Item);
             }
 
             ProcessListingData(listingDtos, syncTime);
@@ -101,17 +95,7 @@ namespace EbayServices.Services
             request.StartTimeFrom = from;
             request.StartTimeTo = to;
 
-
-            try
-            {
-                ProcessListingData(ExecuteGetSellerList(request), to);
-            }
-            catch (Exception e)
-            {
-
-                _logger.Error(e.Message);
-            }
-            
+            ProcessListingData(ExecuteGetSellerList(request), to);
         }
 
         private void SyncListingsByEndTime(DateTime from, DateTime to)
@@ -123,16 +107,7 @@ namespace EbayServices.Services
             request.EndTimeFrom = from;
             request.EndTimeTo = to;
 
-
-            try
-            {
-                ProcessListingData(ExecuteGetSellerList(request), to);
-            }
-            catch (Exception e)
-            {
-                _logger.Error(e.Message);
-            }
-            
+            ProcessListingData(ExecuteGetSellerList(request), to);         
         }
 
         private void SyncListingsByModifiedTime(DateTime from, DateTime to)
@@ -159,17 +134,8 @@ namespace EbayServices.Services
             GetSellerEventsCall call = new GetSellerEventsCall(_marketplace.GetApiContext());
             call.ApiCallBase.Timeout = 120000;
 
-
-            try
-            {
-                GetSellerEventsResponseType response = call.ExecuteRequest(request) as GetSellerEventsResponseType;
-                ProcessListingData(response.ItemArray, to);
-            }
-            catch (Exception e)
-            {
-                _logger.Error(e.Message);
-            }
-
+            GetSellerEventsResponseType response = call.ExecuteRequest(request) as GetSellerEventsResponseType;
+            ProcessListingData(response.ItemArray, to);
         }
 
         private ItemTypeCollection ExecuteGetSellerList(GetSellerListRequestType request)
