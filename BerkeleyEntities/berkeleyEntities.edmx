@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="berkeleyModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2005" Alias="Self" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="berkeleyModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2005" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Alias">
           <Key>
             <PropertyRef Name="ID" />
@@ -928,47 +928,47 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="berkeleyModelStoreContainer">
-          <EntitySet Name="Alias" EntityType="Self.Alias" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="AmznListingItem" EntityType="Self.AmznListingItem" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="AmznMarketplace" EntityType="Self.AmznMarketplace" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="AmznOrder" EntityType="Self.AmznOrder" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="AmznOrderItem" EntityType="Self.AmznOrderItem" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="Bsi_LocationLog" EntityType="Self.Bsi_LocationLog" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="bsi_posting" EntityType="Self.bsi_posting" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="bsi_posts" EntityType="Self.bsi_posts" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="bsi_quantities" EntityType="Self.bsi_quantities" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="bsi_quantities_message" EntityType="Self.bsi_quantities_message" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="Customer" EntityType="Self.Customer" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="Department" EntityType="Self.Department" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="DepartmentDivision" EntityType="Self.DepartmentDivision" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="Division" EntityType="Self.Division" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="EbayListing" EntityType="Self.EbayListing" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="EbayListingItem" EntityType="Self.EbayListingItem" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="EbayMarketplace" EntityType="Self.EbayMarketplace" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="EbayOrder" EntityType="Self.EbayOrder" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="EbayOrderItem" EntityType="Self.EbayOrderItem" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="EbayPictureServiceUrl" EntityType="Self.EbayPictureServiceUrl" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="EbayPictureUrlRelation" EntityType="Self.EbayPictureUrlRelation" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="InventoryEntry" EntityType="Self.InventoryEntry" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="InventoryTransferLog" EntityType="Self.InventoryTransferLog" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="Item" EntityType="Self.Item" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="ItemClass" EntityType="Self.ItemClass" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="ItemClassComponent" EntityType="Self.ItemClassComponent" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="MatrixAttributeDisplayOrder" EntityType="Self.MatrixAttributeDisplayOrder" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="PhysicalInventory" EntityType="Self.PhysicalInventory" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="PhysicalInventoryEntry" EntityType="Self.PhysicalInventoryEntry" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="PurchaseOrder" EntityType="Self.PurchaseOrder" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="PurchaseOrderEntry" EntityType="Self.PurchaseOrderEntry" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="Supplier" EntityType="Self.Supplier" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="SupplierList" EntityType="Self.SupplierList" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="SyncListing" EntityType="Self.SyncListing" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="SyncOrder" EntityType="Self.SyncOrder" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="SyncOrderItem" EntityType="Self.SyncOrderItem" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="Transaction" EntityType="Self.Transaction" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="TransactionEntry" EntityType="Self.TransactionEntry" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="TransactionHold" EntityType="Self.TransactionHold" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="TransactionHoldEntry" EntityType="Self.TransactionHoldEntry" Schema="dbo" store:Type="Tables" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="Alias" EntityType="Self.Alias" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AmznListingItem" EntityType="Self.AmznListingItem" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AmznMarketplace" EntityType="Self.AmznMarketplace" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AmznOrder" EntityType="Self.AmznOrder" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AmznOrderItem" EntityType="Self.AmznOrderItem" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Bsi_LocationLog" EntityType="Self.Bsi_LocationLog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="bsi_posting" EntityType="Self.bsi_posting" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="bsi_posts" EntityType="Self.bsi_posts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="bsi_quantities" EntityType="Self.bsi_quantities" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="bsi_quantities_message" EntityType="Self.bsi_quantities_message" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Customer" EntityType="Self.Customer" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Department" EntityType="Self.Department" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DepartmentDivision" EntityType="Self.DepartmentDivision" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Division" EntityType="Self.Division" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EbayListing" EntityType="Self.EbayListing" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EbayListingItem" EntityType="Self.EbayListingItem" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EbayMarketplace" EntityType="Self.EbayMarketplace" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EbayOrder" EntityType="Self.EbayOrder" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EbayOrderItem" EntityType="Self.EbayOrderItem" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EbayPictureServiceUrl" EntityType="Self.EbayPictureServiceUrl" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EbayPictureUrlRelation" EntityType="Self.EbayPictureUrlRelation" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="InventoryEntry" EntityType="Self.InventoryEntry" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="InventoryTransferLog" EntityType="Self.InventoryTransferLog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Item" EntityType="Self.Item" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ItemClass" EntityType="Self.ItemClass" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ItemClassComponent" EntityType="Self.ItemClassComponent" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MatrixAttributeDisplayOrder" EntityType="Self.MatrixAttributeDisplayOrder" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PhysicalInventory" EntityType="Self.PhysicalInventory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PhysicalInventoryEntry" EntityType="Self.PhysicalInventoryEntry" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PurchaseOrder" EntityType="Self.PurchaseOrder" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PurchaseOrderEntry" EntityType="Self.PurchaseOrderEntry" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Supplier" EntityType="Self.Supplier" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SupplierList" EntityType="Self.SupplierList" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SyncListing" EntityType="Self.SyncListing" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SyncOrder" EntityType="Self.SyncOrder" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SyncOrderItem" EntityType="Self.SyncOrderItem" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Transaction" EntityType="Self.Transaction" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TransactionEntry" EntityType="Self.TransactionEntry" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TransactionHold" EntityType="Self.TransactionHold" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TransactionHoldEntry" EntityType="Self.TransactionHoldEntry" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_EbayOrderItem_EbayOrder" Association="Self.FK_EbayOrderItem_EbayOrder">
             <End Role="EbayOrder" EntitySet="EbayOrder" />
             <End Role="EbayOrderItem" EntitySet="EbayOrderItem" />

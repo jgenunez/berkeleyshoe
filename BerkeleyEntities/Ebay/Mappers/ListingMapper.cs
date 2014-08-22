@@ -12,7 +12,7 @@ namespace EbayServices.Mappers
     public class ListingMapper
     {
         private PictureSetRepository _pictureSetRepository = new PictureSetRepository();
-        private ProductDataFactory _productDataFactory;
+        private ProductMapperFactory _productMapperFactory;
         private berkeleyEntities _dataContext;
         private EbayMarketplace _marketplace;
         
@@ -21,7 +21,7 @@ namespace EbayServices.Mappers
         {
             _dataContext = dataContext;
             _marketplace = marketplace;
-            _productDataFactory = new ProductDataFactory(_dataContext);
+            _productMapperFactory = new ProductMapperFactory();
         }
 
 
@@ -128,10 +128,11 @@ namespace EbayServices.Mappers
 
             if (!(bool)listing.IsVariation)
             {
-                ProductData productData = _productDataFactory.GetProductData(listing.Sku);
-                listingDto.PrimaryCategory = new CategoryType() { CategoryID = productData.CategoryID };
+                ProductMapper mapper = _productMapperFactory.GetProductData(listing.ListingItems.First().Item);
 
-                var itemSpecifics = productData.GetItemSpecifics().Concat(productData.GetVariationSpecifics()).ToArray();
+                listingDto.PrimaryCategory = new CategoryType() { CategoryID = mapper.CategoryID };
+
+                var itemSpecifics = mapper.GetItemSpecifics().Concat(mapper.GetVariationSpecifics()).ToArray();
                 listingDto.ItemSpecifics = new NameValueListTypeCollection(itemSpecifics);
 
                 var urls = listing.Relations.Select(p => p.PictureServiceUrl).Select(p => p.Url);
@@ -151,9 +152,9 @@ namespace EbayServices.Mappers
             }
             else
             {
-                ProductMatrixData productMatrixData = _productDataFactory.GetProductMatrixData(listingDto.SKU, listing.ListingItems.Select(p => p.Item.ItemLookupCode));
-                listingDto.PrimaryCategory = new CategoryType() {  CategoryID = productMatrixData.CategoryID };
-                listingDto.ItemSpecifics = new NameValueListTypeCollection(productMatrixData.GetItemSpecifics().ToArray());
+                ProductMatrixMapper matrixMapper = _productMapperFactory.GetProductMatrixData(listingDto.SKU, listing.ListingItems.Select(p => p.Item));
+                listingDto.PrimaryCategory = new CategoryType() {  CategoryID = matrixMapper.CategoryID };
+                listingDto.ItemSpecifics = new NameValueListTypeCollection(matrixMapper.GetItemSpecifics().ToArray());
                 listingDto.Variations = new VariationsType();
                 listingDto.Variations.Variation = new VariationTypeCollection();
 
@@ -165,12 +166,12 @@ namespace EbayServices.Mappers
                     variationDto.Quantity = listingItem.Quantity;
                     variationDto.StartPrice = new AmountType() {  currencyID = CurrencyCodeType.USD, Value = Convert.ToDouble(listingItem.Price) };
 
-                    ProductData productData = _productDataFactory.GetProductData(listingItem.Item.ItemLookupCode);
+                    ProductMapper productData = _productMapperFactory.GetProductData(listingItem.Item);
                     variationDto.VariationSpecifics = new NameValueListTypeCollection(productData.GetVariationSpecifics().ToArray());
                     listingDto.Variations.Variation.Add(variationDto);
                 }
 
-                var sets = productMatrixData.GetVariationSpecificSets();
+                var sets = matrixMapper.GetVariationSpecificSets();
                 listingDto.Variations.VariationSpecificsSet = new NameValueListTypeCollection(sets.ToArray());
 
                 var allUrls = listing.Relations.Select(p => p.PictureServiceUrl);
@@ -180,7 +181,7 @@ namespace EbayServices.Mappers
 
                 if (allUrls.Any(p => p.LocalName.Contains("_")))
                 {
-                    listingDto.Variations.Pictures = productMatrixData
+                    listingDto.Variations.Pictures = matrixMapper
                         .GetVariationPictures(allUrls.Where(p => p.LocalName.Contains("_")));
                 }
 

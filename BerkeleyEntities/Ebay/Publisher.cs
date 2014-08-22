@@ -78,8 +78,9 @@ namespace BerkeleyEntities.Ebay
                     Revert(listing);
                     this.Result(new ResultArgs() { Listing = listing, Message = e.Message, IsError = true });
                 }
-            } 
+            }
 
+            _dataContext.SaveChanges();
         }
 
         public void Revert(EbayListing listing)

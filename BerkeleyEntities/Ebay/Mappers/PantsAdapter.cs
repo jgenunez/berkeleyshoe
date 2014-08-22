@@ -7,7 +7,7 @@ using BerkeleyEntities;
 
 namespace EbayServices.Mappers
 {
-    public class PantsAdapter : ProductData
+    public class PantsAdapter : ProductMapper
     {
         public PantsAdapter(Item item)
             : base(item)

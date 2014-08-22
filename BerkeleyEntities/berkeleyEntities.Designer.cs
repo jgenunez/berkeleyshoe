@@ -1138,7 +1138,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -1157,7 +1157,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -1182,7 +1182,7 @@ namespace BerkeleyEntities
             {
                 OnItemIDChanging(value);
                 ReportPropertyChanging("ItemID");
-                _ItemID = StructuralObject.SetValidValue(value);
+                _ItemID = StructuralObject.SetValidValue(value, "ItemID");
                 ReportPropertyChanged("ItemID");
                 OnItemIDChanged();
             }
@@ -1206,7 +1206,7 @@ namespace BerkeleyEntities
             {
                 OnAlias1Changing(value);
                 ReportPropertyChanging("Alias1");
-                _Alias1 = StructuralObject.SetValidValue(value, false);
+                _Alias1 = StructuralObject.SetValidValue(value, false, "Alias1");
                 ReportPropertyChanged("Alias1");
                 OnAlias1Changed();
             }
@@ -1230,7 +1230,7 @@ namespace BerkeleyEntities
             {
                 OnDBTimeStampChanging(value);
                 ReportPropertyChanging("DBTimeStamp");
-                _DBTimeStamp = StructuralObject.SetValidValue(value, true);
+                _DBTimeStamp = StructuralObject.SetValidValue(value, true, "DBTimeStamp");
                 ReportPropertyChanged("DBTimeStamp");
                 OnDBTimeStampChanged();
             }
@@ -1241,7 +1241,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -1329,7 +1328,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -1348,7 +1347,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -1373,7 +1372,7 @@ namespace BerkeleyEntities
             {
                 OnItemIDChanging(value);
                 ReportPropertyChanging("ItemID");
-                _ItemID = StructuralObject.SetValidValue(value);
+                _ItemID = StructuralObject.SetValidValue(value, "ItemID");
                 ReportPropertyChanged("ItemID");
                 OnItemIDChanged();
             }
@@ -1397,7 +1396,7 @@ namespace BerkeleyEntities
             {
                 OnQuantityChanging(value);
                 ReportPropertyChanging("Quantity");
-                _Quantity = StructuralObject.SetValidValue(value);
+                _Quantity = StructuralObject.SetValidValue(value, "Quantity");
                 ReportPropertyChanged("Quantity");
                 OnQuantityChanged();
             }
@@ -1421,7 +1420,7 @@ namespace BerkeleyEntities
             {
                 OnPriceChanging(value);
                 ReportPropertyChanging("Price");
-                _Price = StructuralObject.SetValidValue(value);
+                _Price = StructuralObject.SetValidValue(value, "Price");
                 ReportPropertyChanged("Price");
                 OnPriceChanged();
             }
@@ -1445,7 +1444,7 @@ namespace BerkeleyEntities
             {
                 OnTitleChanging(value);
                 ReportPropertyChanging("Title");
-                _Title = StructuralObject.SetValidValue(value, false);
+                _Title = StructuralObject.SetValidValue(value, false, "Title");
                 ReportPropertyChanged("Title");
                 OnTitleChanged();
             }
@@ -1469,7 +1468,7 @@ namespace BerkeleyEntities
             {
                 OnOpenDateChanging(value);
                 ReportPropertyChanging("OpenDate");
-                _OpenDate = StructuralObject.SetValidValue(value);
+                _OpenDate = StructuralObject.SetValidValue(value, "OpenDate");
                 ReportPropertyChanged("OpenDate");
                 OnOpenDateChanged();
             }
@@ -1493,7 +1492,7 @@ namespace BerkeleyEntities
             {
                 OnConditionChanging(value);
                 ReportPropertyChanging("Condition");
-                _Condition = StructuralObject.SetValidValue(value, false);
+                _Condition = StructuralObject.SetValidValue(value, false, "Condition");
                 ReportPropertyChanged("Condition");
                 OnConditionChanged();
             }
@@ -1517,7 +1516,7 @@ namespace BerkeleyEntities
             {
                 OnASINChanging(value);
                 ReportPropertyChanging("ASIN");
-                _ASIN = StructuralObject.SetValidValue(value, false);
+                _ASIN = StructuralObject.SetValidValue(value, false, "ASIN");
                 ReportPropertyChanged("ASIN");
                 OnASINChanged();
             }
@@ -1541,7 +1540,7 @@ namespace BerkeleyEntities
             {
                 OnIsActiveChanging(value);
                 ReportPropertyChanging("IsActive");
-                _IsActive = StructuralObject.SetValidValue(value);
+                _IsActive = StructuralObject.SetValidValue(value, "IsActive");
                 ReportPropertyChanged("IsActive");
                 OnIsActiveChanged();
             }
@@ -1565,7 +1564,7 @@ namespace BerkeleyEntities
             {
                 OnLastSyncTimeChanging(value);
                 ReportPropertyChanging("LastSyncTime");
-                _LastSyncTime = StructuralObject.SetValidValue(value);
+                _LastSyncTime = StructuralObject.SetValidValue(value, "LastSyncTime");
                 ReportPropertyChanged("LastSyncTime");
                 OnLastSyncTimeChanged();
             }
@@ -1589,7 +1588,7 @@ namespace BerkeleyEntities
             {
                 OnMarketplaceIDChanging(value);
                 ReportPropertyChanging("MarketplaceID");
-                _MarketplaceID = StructuralObject.SetValidValue(value);
+                _MarketplaceID = StructuralObject.SetValidValue(value, "MarketplaceID");
                 ReportPropertyChanged("MarketplaceID");
                 OnMarketplaceIDChanged();
             }
@@ -1600,7 +1599,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -1703,7 +1701,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-
     }
     
     /// <summary>
@@ -1743,7 +1740,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -1762,7 +1759,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -1787,7 +1784,7 @@ namespace BerkeleyEntities
             {
                 OnNameChanging(value);
                 ReportPropertyChanging("Name");
-                _Name = StructuralObject.SetValidValue(value, false);
+                _Name = StructuralObject.SetValidValue(value, false, "Name");
                 ReportPropertyChanged("Name");
                 OnNameChanged();
             }
@@ -1811,7 +1808,7 @@ namespace BerkeleyEntities
             {
                 OnAccessKeyIdChanging(value);
                 ReportPropertyChanging("AccessKeyId");
-                _AccessKeyId = StructuralObject.SetValidValue(value, false);
+                _AccessKeyId = StructuralObject.SetValidValue(value, false, "AccessKeyId");
                 ReportPropertyChanged("AccessKeyId");
                 OnAccessKeyIdChanged();
             }
@@ -1835,7 +1832,7 @@ namespace BerkeleyEntities
             {
                 OnSecretAccessKeyChanging(value);
                 ReportPropertyChanging("SecretAccessKey");
-                _SecretAccessKey = StructuralObject.SetValidValue(value, false);
+                _SecretAccessKey = StructuralObject.SetValidValue(value, false, "SecretAccessKey");
                 ReportPropertyChanged("SecretAccessKey");
                 OnSecretAccessKeyChanged();
             }
@@ -1859,7 +1856,7 @@ namespace BerkeleyEntities
             {
                 OnMerchantIdChanging(value);
                 ReportPropertyChanging("MerchantId");
-                _MerchantId = StructuralObject.SetValidValue(value, false);
+                _MerchantId = StructuralObject.SetValidValue(value, false, "MerchantId");
                 ReportPropertyChanged("MerchantId");
                 OnMerchantIdChanged();
             }
@@ -1883,7 +1880,7 @@ namespace BerkeleyEntities
             {
                 OnMarketplaceIdChanging(value);
                 ReportPropertyChanging("MarketplaceId");
-                _MarketplaceId = StructuralObject.SetValidValue(value, false);
+                _MarketplaceId = StructuralObject.SetValidValue(value, false, "MarketplaceId");
                 ReportPropertyChanged("MarketplaceId");
                 OnMarketplaceIdChanged();
             }
@@ -1907,7 +1904,7 @@ namespace BerkeleyEntities
             {
                 OnOrderSyncTimeChanging(value);
                 ReportPropertyChanging("OrderSyncTime");
-                _OrderSyncTime = StructuralObject.SetValidValue(value);
+                _OrderSyncTime = StructuralObject.SetValidValue(value, "OrderSyncTime");
                 ReportPropertyChanged("OrderSyncTime");
                 OnOrderSyncTimeChanged();
             }
@@ -1931,7 +1928,7 @@ namespace BerkeleyEntities
             {
                 OnListingSyncTimeChanging(value);
                 ReportPropertyChanging("ListingSyncTime");
-                _ListingSyncTime = StructuralObject.SetValidValue(value);
+                _ListingSyncTime = StructuralObject.SetValidValue(value, "ListingSyncTime");
                 ReportPropertyChanged("ListingSyncTime");
                 OnListingSyncTimeChanged();
             }
@@ -1955,7 +1952,7 @@ namespace BerkeleyEntities
             {
                 OnCodeChanging(value);
                 ReportPropertyChanging("Code");
-                _Code = StructuralObject.SetValidValue(value, false);
+                _Code = StructuralObject.SetValidValue(value, false, "Code");
                 ReportPropertyChanged("Code");
                 OnCodeChanged();
             }
@@ -1979,7 +1976,7 @@ namespace BerkeleyEntities
             {
                 OnRootDirChanging(value);
                 ReportPropertyChanging("RootDir");
-                _RootDir = StructuralObject.SetValidValue(value, false);
+                _RootDir = StructuralObject.SetValidValue(value, false, "RootDir");
                 ReportPropertyChanged("RootDir");
                 OnRootDirChanged();
             }
@@ -1990,7 +1987,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -2060,7 +2056,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -2079,7 +2075,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -2104,7 +2100,7 @@ namespace BerkeleyEntities
             {
                 OnCodeChanging(value);
                 ReportPropertyChanging("Code");
-                _Code = StructuralObject.SetValidValue(value, false);
+                _Code = StructuralObject.SetValidValue(value, false, "Code");
                 ReportPropertyChanged("Code");
                 OnCodeChanged();
             }
@@ -2128,7 +2124,7 @@ namespace BerkeleyEntities
             {
                 OnStatusChanging(value);
                 ReportPropertyChanging("Status");
-                _Status = StructuralObject.SetValidValue(value, false);
+                _Status = StructuralObject.SetValidValue(value, false, "Status");
                 ReportPropertyChanged("Status");
                 OnStatusChanged();
             }
@@ -2152,7 +2148,7 @@ namespace BerkeleyEntities
             {
                 OnLastUpdatedDateChanging(value);
                 ReportPropertyChanging("LastUpdatedDate");
-                _LastUpdatedDate = StructuralObject.SetValidValue(value);
+                _LastUpdatedDate = StructuralObject.SetValidValue(value, "LastUpdatedDate");
                 ReportPropertyChanged("LastUpdatedDate");
                 OnLastUpdatedDateChanged();
             }
@@ -2176,7 +2172,7 @@ namespace BerkeleyEntities
             {
                 OnPurchaseDateChanging(value);
                 ReportPropertyChanging("PurchaseDate");
-                _PurchaseDate = StructuralObject.SetValidValue(value);
+                _PurchaseDate = StructuralObject.SetValidValue(value, "PurchaseDate");
                 ReportPropertyChanged("PurchaseDate");
                 OnPurchaseDateChanged();
             }
@@ -2200,7 +2196,7 @@ namespace BerkeleyEntities
             {
                 OnPaymentMethodChanging(value);
                 ReportPropertyChanging("PaymentMethod");
-                _PaymentMethod = StructuralObject.SetValidValue(value, false);
+                _PaymentMethod = StructuralObject.SetValidValue(value, false, "PaymentMethod");
                 ReportPropertyChanged("PaymentMethod");
                 OnPaymentMethodChanged();
             }
@@ -2224,7 +2220,7 @@ namespace BerkeleyEntities
             {
                 OnBuyerNameChanging(value);
                 ReportPropertyChanging("BuyerName");
-                _BuyerName = StructuralObject.SetValidValue(value, true);
+                _BuyerName = StructuralObject.SetValidValue(value, true, "BuyerName");
                 ReportPropertyChanged("BuyerName");
                 OnBuyerNameChanged();
             }
@@ -2248,7 +2244,7 @@ namespace BerkeleyEntities
             {
                 OnShipServiceLevelChanging(value);
                 ReportPropertyChanging("ShipServiceLevel");
-                _ShipServiceLevel = StructuralObject.SetValidValue(value, false);
+                _ShipServiceLevel = StructuralObject.SetValidValue(value, false, "ShipServiceLevel");
                 ReportPropertyChanged("ShipServiceLevel");
                 OnShipServiceLevelChanged();
             }
@@ -2272,7 +2268,7 @@ namespace BerkeleyEntities
             {
                 OnAddressLine1Changing(value);
                 ReportPropertyChanging("AddressLine1");
-                _AddressLine1 = StructuralObject.SetValidValue(value, true);
+                _AddressLine1 = StructuralObject.SetValidValue(value, true, "AddressLine1");
                 ReportPropertyChanged("AddressLine1");
                 OnAddressLine1Changed();
             }
@@ -2296,7 +2292,7 @@ namespace BerkeleyEntities
             {
                 OnAddressLine2Changing(value);
                 ReportPropertyChanging("AddressLine2");
-                _AddressLine2 = StructuralObject.SetValidValue(value, true);
+                _AddressLine2 = StructuralObject.SetValidValue(value, true, "AddressLine2");
                 ReportPropertyChanged("AddressLine2");
                 OnAddressLine2Changed();
             }
@@ -2320,7 +2316,7 @@ namespace BerkeleyEntities
             {
                 OnAddressLine3Changing(value);
                 ReportPropertyChanging("AddressLine3");
-                _AddressLine3 = StructuralObject.SetValidValue(value, true);
+                _AddressLine3 = StructuralObject.SetValidValue(value, true, "AddressLine3");
                 ReportPropertyChanged("AddressLine3");
                 OnAddressLine3Changed();
             }
@@ -2344,7 +2340,7 @@ namespace BerkeleyEntities
             {
                 OnCityChanging(value);
                 ReportPropertyChanging("City");
-                _City = StructuralObject.SetValidValue(value, true);
+                _City = StructuralObject.SetValidValue(value, true, "City");
                 ReportPropertyChanged("City");
                 OnCityChanged();
             }
@@ -2368,7 +2364,7 @@ namespace BerkeleyEntities
             {
                 OnCountryCodeChanging(value);
                 ReportPropertyChanging("CountryCode");
-                _CountryCode = StructuralObject.SetValidValue(value, true);
+                _CountryCode = StructuralObject.SetValidValue(value, true, "CountryCode");
                 ReportPropertyChanged("CountryCode");
                 OnCountryCodeChanged();
             }
@@ -2392,7 +2388,7 @@ namespace BerkeleyEntities
             {
                 OnCountyChanging(value);
                 ReportPropertyChanging("County");
-                _County = StructuralObject.SetValidValue(value, true);
+                _County = StructuralObject.SetValidValue(value, true, "County");
                 ReportPropertyChanged("County");
                 OnCountyChanged();
             }
@@ -2416,7 +2412,7 @@ namespace BerkeleyEntities
             {
                 OnDistrictChanging(value);
                 ReportPropertyChanging("District");
-                _District = StructuralObject.SetValidValue(value, true);
+                _District = StructuralObject.SetValidValue(value, true, "District");
                 ReportPropertyChanged("District");
                 OnDistrictChanged();
             }
@@ -2440,7 +2436,7 @@ namespace BerkeleyEntities
             {
                 OnStateOrRegionChanging(value);
                 ReportPropertyChanging("StateOrRegion");
-                _StateOrRegion = StructuralObject.SetValidValue(value, true);
+                _StateOrRegion = StructuralObject.SetValidValue(value, true, "StateOrRegion");
                 ReportPropertyChanged("StateOrRegion");
                 OnStateOrRegionChanged();
             }
@@ -2464,7 +2460,7 @@ namespace BerkeleyEntities
             {
                 OnPostalCodeChanging(value);
                 ReportPropertyChanging("PostalCode");
-                _PostalCode = StructuralObject.SetValidValue(value, true);
+                _PostalCode = StructuralObject.SetValidValue(value, true, "PostalCode");
                 ReportPropertyChanged("PostalCode");
                 OnPostalCodeChanged();
             }
@@ -2488,7 +2484,7 @@ namespace BerkeleyEntities
             {
                 OnPhoneChanging(value);
                 ReportPropertyChanging("Phone");
-                _Phone = StructuralObject.SetValidValue(value, true);
+                _Phone = StructuralObject.SetValidValue(value, true, "Phone");
                 ReportPropertyChanged("Phone");
                 OnPhoneChanged();
             }
@@ -2512,7 +2508,7 @@ namespace BerkeleyEntities
             {
                 OnLastSyncTimeChanging(value);
                 ReportPropertyChanging("LastSyncTime");
-                _LastSyncTime = StructuralObject.SetValidValue(value);
+                _LastSyncTime = StructuralObject.SetValidValue(value, "LastSyncTime");
                 ReportPropertyChanged("LastSyncTime");
                 OnLastSyncTimeChanged();
             }
@@ -2536,7 +2532,7 @@ namespace BerkeleyEntities
             {
                 OnTotalChanging(value);
                 ReportPropertyChanging("Total");
-                _Total = StructuralObject.SetValidValue(value);
+                _Total = StructuralObject.SetValidValue(value, "Total");
                 ReportPropertyChanged("Total");
                 OnTotalChanged();
             }
@@ -2560,7 +2556,7 @@ namespace BerkeleyEntities
             {
                 OnMarketplaceIDChanging(value);
                 ReportPropertyChanging("MarketplaceID");
-                _MarketplaceID = StructuralObject.SetValidValue(value);
+                _MarketplaceID = StructuralObject.SetValidValue(value, "MarketplaceID");
                 ReportPropertyChanged("MarketplaceID");
                 OnMarketplaceIDChanged();
             }
@@ -2571,7 +2567,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -2641,7 +2636,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -2660,7 +2655,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -2685,7 +2680,7 @@ namespace BerkeleyEntities
             {
                 OnOrderIDChanging(value);
                 ReportPropertyChanging("OrderID");
-                _OrderID = StructuralObject.SetValidValue(value);
+                _OrderID = StructuralObject.SetValidValue(value, "OrderID");
                 ReportPropertyChanged("OrderID");
                 OnOrderIDChanged();
             }
@@ -2709,7 +2704,7 @@ namespace BerkeleyEntities
             {
                 OnQuantityOrderedChanging(value);
                 ReportPropertyChanging("QuantityOrdered");
-                _QuantityOrdered = StructuralObject.SetValidValue(value);
+                _QuantityOrdered = StructuralObject.SetValidValue(value, "QuantityOrdered");
                 ReportPropertyChanged("QuantityOrdered");
                 OnQuantityOrderedChanged();
             }
@@ -2733,7 +2728,7 @@ namespace BerkeleyEntities
             {
                 OnQuantityShippedChanging(value);
                 ReportPropertyChanging("QuantityShipped");
-                _QuantityShipped = StructuralObject.SetValidValue(value);
+                _QuantityShipped = StructuralObject.SetValidValue(value, "QuantityShipped");
                 ReportPropertyChanged("QuantityShipped");
                 OnQuantityShippedChanged();
             }
@@ -2757,7 +2752,7 @@ namespace BerkeleyEntities
             {
                 OnItemPriceChanging(value);
                 ReportPropertyChanging("ItemPrice");
-                _ItemPrice = StructuralObject.SetValidValue(value);
+                _ItemPrice = StructuralObject.SetValidValue(value, "ItemPrice");
                 ReportPropertyChanged("ItemPrice");
                 OnItemPriceChanged();
             }
@@ -2781,7 +2776,7 @@ namespace BerkeleyEntities
             {
                 OnShippingPriceChanging(value);
                 ReportPropertyChanging("ShippingPrice");
-                _ShippingPrice = StructuralObject.SetValidValue(value);
+                _ShippingPrice = StructuralObject.SetValidValue(value, "ShippingPrice");
                 ReportPropertyChanged("ShippingPrice");
                 OnShippingPriceChanged();
             }
@@ -2805,7 +2800,7 @@ namespace BerkeleyEntities
             {
                 OnPromotionDiscountChanging(value);
                 ReportPropertyChanging("PromotionDiscount");
-                _PromotionDiscount = StructuralObject.SetValidValue(value);
+                _PromotionDiscount = StructuralObject.SetValidValue(value, "PromotionDiscount");
                 ReportPropertyChanged("PromotionDiscount");
                 OnPromotionDiscountChanged();
             }
@@ -2829,7 +2824,7 @@ namespace BerkeleyEntities
             {
                 OnShippingDiscountChanging(value);
                 ReportPropertyChanging("ShippingDiscount");
-                _ShippingDiscount = StructuralObject.SetValidValue(value);
+                _ShippingDiscount = StructuralObject.SetValidValue(value, "ShippingDiscount");
                 ReportPropertyChanged("ShippingDiscount");
                 OnShippingDiscountChanged();
             }
@@ -2853,7 +2848,7 @@ namespace BerkeleyEntities
             {
                 OnListingItemIDChanging(value);
                 ReportPropertyChanging("ListingItemID");
-                _ListingItemID = StructuralObject.SetValidValue(value);
+                _ListingItemID = StructuralObject.SetValidValue(value, "ListingItemID");
                 ReportPropertyChanged("ListingItemID");
                 OnListingItemIDChanged();
             }
@@ -2877,7 +2872,7 @@ namespace BerkeleyEntities
             {
                 OnCodeChanging(value);
                 ReportPropertyChanging("Code");
-                _Code = StructuralObject.SetValidValue(value, false);
+                _Code = StructuralObject.SetValidValue(value, false, "Code");
                 ReportPropertyChanged("Code");
                 OnCodeChanged();
             }
@@ -2888,7 +2883,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -3006,7 +3000,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -3025,7 +3019,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -3050,7 +3044,7 @@ namespace BerkeleyEntities
             {
                 OnItemIDChanging(value);
                 ReportPropertyChanging("ItemID");
-                _ItemID = StructuralObject.SetValidValue(value);
+                _ItemID = StructuralObject.SetValidValue(value, "ItemID");
                 ReportPropertyChanged("ItemID");
                 OnItemIDChanged();
             }
@@ -3074,7 +3068,7 @@ namespace BerkeleyEntities
             {
                 OnQuantityChanging(value);
                 ReportPropertyChanging("Quantity");
-                _Quantity = StructuralObject.SetValidValue(value);
+                _Quantity = StructuralObject.SetValidValue(value, "Quantity");
                 ReportPropertyChanged("Quantity");
                 OnQuantityChanged();
             }
@@ -3098,7 +3092,7 @@ namespace BerkeleyEntities
             {
                 OnBeforeChangeChanging(value);
                 ReportPropertyChanging("BeforeChange");
-                _BeforeChange = StructuralObject.SetValidValue(value, false);
+                _BeforeChange = StructuralObject.SetValidValue(value, false, "BeforeChange");
                 ReportPropertyChanged("BeforeChange");
                 OnBeforeChangeChanged();
             }
@@ -3122,7 +3116,7 @@ namespace BerkeleyEntities
             {
                 OnLocationChanging(value);
                 ReportPropertyChanging("Location");
-                _Location = StructuralObject.SetValidValue(value, false);
+                _Location = StructuralObject.SetValidValue(value, false, "Location");
                 ReportPropertyChanged("Location");
                 OnLocationChanged();
             }
@@ -3146,7 +3140,7 @@ namespace BerkeleyEntities
             {
                 OnUserChanging(value);
                 ReportPropertyChanging("User");
-                _User = StructuralObject.SetValidValue(value, false);
+                _User = StructuralObject.SetValidValue(value, false, "User");
                 ReportPropertyChanged("User");
                 OnUserChanged();
             }
@@ -3170,7 +3164,7 @@ namespace BerkeleyEntities
             {
                 OnUpdateDateChanging(value);
                 ReportPropertyChanging("UpdateDate");
-                _UpdateDate = StructuralObject.SetValidValue(value);
+                _UpdateDate = StructuralObject.SetValidValue(value, "UpdateDate");
                 ReportPropertyChanged("UpdateDate");
                 OnUpdateDateChanged();
             }
@@ -3181,7 +3175,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -3299,7 +3292,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -3318,7 +3311,7 @@ namespace BerkeleyEntities
                 {
                     OnidChanging(value);
                     ReportPropertyChanging("id");
-                    _id = StructuralObject.SetValidValue(value);
+                    _id = StructuralObject.SetValidValue(value, "id");
                     ReportPropertyChanged("id");
                     OnidChanged();
                 }
@@ -3343,7 +3336,7 @@ namespace BerkeleyEntities
             {
                 OnstatusChanging(value);
                 ReportPropertyChanging("status");
-                _status = StructuralObject.SetValidValue(value);
+                _status = StructuralObject.SetValidValue(value, "status");
                 ReportPropertyChanged("status");
                 OnstatusChanged();
             }
@@ -3367,7 +3360,7 @@ namespace BerkeleyEntities
             {
                 OnskuChanging(value);
                 ReportPropertyChanging("sku");
-                _sku = StructuralObject.SetValidValue(value, false);
+                _sku = StructuralObject.SetValidValue(value, false, "sku");
                 ReportPropertyChanged("sku");
                 OnskuChanged();
             }
@@ -3391,7 +3384,7 @@ namespace BerkeleyEntities
             {
                 OncreationDateChanging(value);
                 ReportPropertyChanging("creationDate");
-                _creationDate = StructuralObject.SetValidValue(value);
+                _creationDate = StructuralObject.SetValidValue(value, "creationDate");
                 ReportPropertyChanged("creationDate");
                 OncreationDateChanged();
             }
@@ -3415,7 +3408,7 @@ namespace BerkeleyEntities
             {
                 OnpicturesChanging(value);
                 ReportPropertyChanging("pictures");
-                _pictures = StructuralObject.SetValidValue(value, false);
+                _pictures = StructuralObject.SetValidValue(value, false, "pictures");
                 ReportPropertyChanged("pictures");
                 OnpicturesChanged();
             }
@@ -3439,7 +3432,7 @@ namespace BerkeleyEntities
             {
                 OngenderChanging(value);
                 ReportPropertyChanging("gender");
-                _gender = StructuralObject.SetValidValue(value, false);
+                _gender = StructuralObject.SetValidValue(value, false, "gender");
                 ReportPropertyChanged("gender");
                 OngenderChanged();
             }
@@ -3463,7 +3456,7 @@ namespace BerkeleyEntities
             {
                 OnbrandChanging(value);
                 ReportPropertyChanging("brand");
-                _brand = StructuralObject.SetValidValue(value, false);
+                _brand = StructuralObject.SetValidValue(value, false, "brand");
                 ReportPropertyChanged("brand");
                 OnbrandChanged();
             }
@@ -3487,7 +3480,7 @@ namespace BerkeleyEntities
             {
                 OnsizeChanging(value);
                 ReportPropertyChanging("size");
-                _size = StructuralObject.SetValidValue(value, false);
+                _size = StructuralObject.SetValidValue(value, false, "size");
                 ReportPropertyChanged("size");
                 OnsizeChanged();
             }
@@ -3511,7 +3504,7 @@ namespace BerkeleyEntities
             {
                 OnwidthChanging(value);
                 ReportPropertyChanging("width");
-                _width = StructuralObject.SetValidValue(value, false);
+                _width = StructuralObject.SetValidValue(value, false, "width");
                 ReportPropertyChanged("width");
                 OnwidthChanged();
             }
@@ -3535,7 +3528,7 @@ namespace BerkeleyEntities
             {
                 OnconditionChanging(value);
                 ReportPropertyChanging("condition");
-                _condition = StructuralObject.SetValidValue(value, false);
+                _condition = StructuralObject.SetValidValue(value, false, "condition");
                 ReportPropertyChanged("condition");
                 OnconditionChanged();
             }
@@ -3559,7 +3552,7 @@ namespace BerkeleyEntities
             {
                 OncategoryChanging(value);
                 ReportPropertyChanging("category");
-                _category = StructuralObject.SetValidValue(value, false);
+                _category = StructuralObject.SetValidValue(value, false, "category");
                 ReportPropertyChanged("category");
                 OncategoryChanged();
             }
@@ -3583,7 +3576,7 @@ namespace BerkeleyEntities
             {
                 OnstyleChanging(value);
                 ReportPropertyChanging("style");
-                _style = StructuralObject.SetValidValue(value, false);
+                _style = StructuralObject.SetValidValue(value, false, "style");
                 ReportPropertyChanged("style");
                 OnstyleChanged();
             }
@@ -3607,7 +3600,7 @@ namespace BerkeleyEntities
             {
                 OnfullDescriptionChanging(value);
                 ReportPropertyChanging("fullDescription");
-                _fullDescription = StructuralObject.SetValidValue(value, false);
+                _fullDescription = StructuralObject.SetValidValue(value, false, "fullDescription");
                 ReportPropertyChanged("fullDescription");
                 OnfullDescriptionChanged();
             }
@@ -3631,7 +3624,7 @@ namespace BerkeleyEntities
             {
                 OnkeywordsChanging(value);
                 ReportPropertyChanging("keywords");
-                _keywords = StructuralObject.SetValidValue(value, false);
+                _keywords = StructuralObject.SetValidValue(value, false, "keywords");
                 ReportPropertyChanged("keywords");
                 OnkeywordsChanged();
             }
@@ -3655,7 +3648,7 @@ namespace BerkeleyEntities
             {
                 OnmaterialChanging(value);
                 ReportPropertyChanging("material");
-                _material = StructuralObject.SetValidValue(value, false);
+                _material = StructuralObject.SetValidValue(value, false, "material");
                 ReportPropertyChanged("material");
                 OnmaterialChanged();
             }
@@ -3679,7 +3672,7 @@ namespace BerkeleyEntities
             {
                 OncolorChanging(value);
                 ReportPropertyChanging("color");
-                _color = StructuralObject.SetValidValue(value, false);
+                _color = StructuralObject.SetValidValue(value, false, "color");
                 ReportPropertyChanged("color");
                 OncolorChanged();
             }
@@ -3703,7 +3696,7 @@ namespace BerkeleyEntities
             {
                 OnshadeChanging(value);
                 ReportPropertyChanging("shade");
-                _shade = StructuralObject.SetValidValue(value, false);
+                _shade = StructuralObject.SetValidValue(value, false, "shade");
                 ReportPropertyChanged("shade");
                 OnshadeChanged();
             }
@@ -3727,7 +3720,7 @@ namespace BerkeleyEntities
             {
                 OnheelHeightChanging(value);
                 ReportPropertyChanging("heelHeight");
-                _heelHeight = StructuralObject.SetValidValue(value, false);
+                _heelHeight = StructuralObject.SetValidValue(value, false, "heelHeight");
                 ReportPropertyChanged("heelHeight");
                 OnheelHeightChanged();
             }
@@ -3751,7 +3744,7 @@ namespace BerkeleyEntities
             {
                 OntitleChanging(value);
                 ReportPropertyChanging("title");
-                _title = StructuralObject.SetValidValue(value, false);
+                _title = StructuralObject.SetValidValue(value, false, "title");
                 ReportPropertyChanged("title");
                 OntitleChanged();
             }
@@ -3775,7 +3768,7 @@ namespace BerkeleyEntities
             {
                 OnmarketplacesChanging(value);
                 ReportPropertyChanging("marketplaces");
-                _marketplaces = StructuralObject.SetValidValue(value);
+                _marketplaces = StructuralObject.SetValidValue(value, "marketplaces");
                 ReportPropertyChanged("marketplaces");
                 OnmarketplacesChanged();
             }
@@ -3799,7 +3792,7 @@ namespace BerkeleyEntities
             {
                 OnvariationTypeChanging(value);
                 ReportPropertyChanging("variationType");
-                _variationType = StructuralObject.SetValidValue(value);
+                _variationType = StructuralObject.SetValidValue(value, "variationType");
                 ReportPropertyChanged("variationType");
                 OnvariationTypeChanged();
             }
@@ -3823,7 +3816,7 @@ namespace BerkeleyEntities
             {
                 OnvariationDimensionsChanging(value);
                 ReportPropertyChanging("variationDimensions");
-                _variationDimensions = StructuralObject.SetValidValue(value, false);
+                _variationDimensions = StructuralObject.SetValidValue(value, false, "variationDimensions");
                 ReportPropertyChanged("variationDimensions");
                 OnvariationDimensionsChanged();
             }
@@ -3847,7 +3840,7 @@ namespace BerkeleyEntities
             {
                 OnapparelClosureTypeChanging(value);
                 ReportPropertyChanging("apparelClosureType");
-                _apparelClosureType = StructuralObject.SetValidValue(value, false);
+                _apparelClosureType = StructuralObject.SetValidValue(value, false, "apparelClosureType");
                 ReportPropertyChanged("apparelClosureType");
                 OnapparelClosureTypeChanged();
             }
@@ -3871,7 +3864,7 @@ namespace BerkeleyEntities
             {
                 OnocassionLifestyleChanging(value);
                 ReportPropertyChanging("ocassionLifestyle");
-                _ocassionLifestyle = StructuralObject.SetValidValue(value, false);
+                _ocassionLifestyle = StructuralObject.SetValidValue(value, false, "ocassionLifestyle");
                 ReportPropertyChanged("ocassionLifestyle");
                 OnocassionLifestyleChanged();
             }
@@ -3895,7 +3888,7 @@ namespace BerkeleyEntities
             {
                 OnstyleKeywordsChanging(value);
                 ReportPropertyChanging("styleKeywords");
-                _styleKeywords = StructuralObject.SetValidValue(value, false);
+                _styleKeywords = StructuralObject.SetValidValue(value, false, "styleKeywords");
                 ReportPropertyChanged("styleKeywords");
                 OnstyleKeywordsChanged();
             }
@@ -3919,7 +3912,7 @@ namespace BerkeleyEntities
             {
                 OnpatternStyleChanging(value);
                 ReportPropertyChanging("patternStyle");
-                _patternStyle = StructuralObject.SetValidValue(value, false);
+                _patternStyle = StructuralObject.SetValidValue(value, false, "patternStyle");
                 ReportPropertyChanged("patternStyle");
                 OnpatternStyleChanged();
             }
@@ -3943,7 +3936,7 @@ namespace BerkeleyEntities
             {
                 OnListPriceChanging(value);
                 ReportPropertyChanging("ListPrice");
-                _ListPrice = StructuralObject.SetValidValue(value, true);
+                _ListPrice = StructuralObject.SetValidValue(value, true, "ListPrice");
                 ReportPropertyChanged("ListPrice");
                 OnListPriceChanged();
             }
@@ -3954,7 +3947,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -4036,7 +4028,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -4055,7 +4047,7 @@ namespace BerkeleyEntities
                 {
                     OnidChanging(value);
                     ReportPropertyChanging("id");
-                    _id = StructuralObject.SetValidValue(value);
+                    _id = StructuralObject.SetValidValue(value, "id");
                     ReportPropertyChanged("id");
                     OnidChanged();
                 }
@@ -4080,7 +4072,7 @@ namespace BerkeleyEntities
             {
                 OnpostingIDChanging(value);
                 ReportPropertyChanging("postingID");
-                _postingID = StructuralObject.SetValidValue(value);
+                _postingID = StructuralObject.SetValidValue(value, "postingID");
                 ReportPropertyChanged("postingID");
                 OnpostingIDChanged();
             }
@@ -4104,7 +4096,7 @@ namespace BerkeleyEntities
             {
                 OnmarketplaceChanging(value);
                 ReportPropertyChanging("marketplace");
-                _marketplace = StructuralObject.SetValidValue(value);
+                _marketplace = StructuralObject.SetValidValue(value, "marketplace");
                 ReportPropertyChanged("marketplace");
                 OnmarketplaceChanged();
             }
@@ -4128,7 +4120,7 @@ namespace BerkeleyEntities
             {
                 OnmarkerplaceItemIDChanging(value);
                 ReportPropertyChanging("markerplaceItemID");
-                _markerplaceItemID = StructuralObject.SetValidValue(value, false);
+                _markerplaceItemID = StructuralObject.SetValidValue(value, false, "markerplaceItemID");
                 ReportPropertyChanged("markerplaceItemID");
                 OnmarkerplaceItemIDChanged();
             }
@@ -4152,7 +4144,7 @@ namespace BerkeleyEntities
             {
                 OnstatusChanging(value);
                 ReportPropertyChanging("status");
-                _status = StructuralObject.SetValidValue(value);
+                _status = StructuralObject.SetValidValue(value, "status");
                 ReportPropertyChanged("status");
                 OnstatusChanged();
             }
@@ -4176,7 +4168,7 @@ namespace BerkeleyEntities
             {
                 OnskuChanging(value);
                 ReportPropertyChanging("sku");
-                _sku = StructuralObject.SetValidValue(value, false);
+                _sku = StructuralObject.SetValidValue(value, false, "sku");
                 ReportPropertyChanged("sku");
                 OnskuChanged();
             }
@@ -4200,7 +4192,7 @@ namespace BerkeleyEntities
             {
                 OntitleChanging(value);
                 ReportPropertyChanging("title");
-                _title = StructuralObject.SetValidValue(value, false);
+                _title = StructuralObject.SetValidValue(value, false, "title");
                 ReportPropertyChanged("title");
                 OntitleChanged();
             }
@@ -4224,7 +4216,7 @@ namespace BerkeleyEntities
             {
                 OnpriceChanging(value);
                 ReportPropertyChanging("price");
-                _price = StructuralObject.SetValidValue(value, false);
+                _price = StructuralObject.SetValidValue(value, false, "price");
                 ReportPropertyChanged("price");
                 OnpriceChanged();
             }
@@ -4248,7 +4240,7 @@ namespace BerkeleyEntities
             {
                 OnstartDateChanging(value);
                 ReportPropertyChanging("startDate");
-                _startDate = StructuralObject.SetValidValue(value);
+                _startDate = StructuralObject.SetValidValue(value, "startDate");
                 ReportPropertyChanged("startDate");
                 OnstartDateChanged();
             }
@@ -4272,7 +4264,7 @@ namespace BerkeleyEntities
             {
                 OnendDateChanging(value);
                 ReportPropertyChanging("endDate");
-                _endDate = StructuralObject.SetValidValue(value);
+                _endDate = StructuralObject.SetValidValue(value, "endDate");
                 ReportPropertyChanged("endDate");
                 OnendDateChanged();
             }
@@ -4296,7 +4288,7 @@ namespace BerkeleyEntities
             {
                 OnsellingFormatChanging(value);
                 ReportPropertyChanging("sellingFormat");
-                _sellingFormat = StructuralObject.SetValidValue(value, true);
+                _sellingFormat = StructuralObject.SetValidValue(value, true, "sellingFormat");
                 ReportPropertyChanged("sellingFormat");
                 OnsellingFormatChanged();
             }
@@ -4320,7 +4312,7 @@ namespace BerkeleyEntities
             {
                 OnerrorMessageChanging(value);
                 ReportPropertyChanging("errorMessage");
-                _errorMessage = StructuralObject.SetValidValue(value, true);
+                _errorMessage = StructuralObject.SetValidValue(value, true, "errorMessage");
                 ReportPropertyChanged("errorMessage");
                 OnerrorMessageChanged();
             }
@@ -4344,7 +4336,7 @@ namespace BerkeleyEntities
             {
                 OnorderIdChanging(value);
                 ReportPropertyChanging("orderId");
-                _orderId = StructuralObject.SetValidValue(value, false);
+                _orderId = StructuralObject.SetValidValue(value, false, "orderId");
                 ReportPropertyChanged("orderId");
                 OnorderIdChanged();
             }
@@ -4368,7 +4360,7 @@ namespace BerkeleyEntities
             {
                 OnproductFeedIdChanging(value);
                 ReportPropertyChanging("productFeedId");
-                _productFeedId = StructuralObject.SetValidValue(value, false);
+                _productFeedId = StructuralObject.SetValidValue(value, false, "productFeedId");
                 ReportPropertyChanged("productFeedId");
                 OnproductFeedIdChanged();
             }
@@ -4392,7 +4384,7 @@ namespace BerkeleyEntities
             {
                 OninventoryFeedIdChanging(value);
                 ReportPropertyChanging("inventoryFeedId");
-                _inventoryFeedId = StructuralObject.SetValidValue(value, false);
+                _inventoryFeedId = StructuralObject.SetValidValue(value, false, "inventoryFeedId");
                 ReportPropertyChanged("inventoryFeedId");
                 OninventoryFeedIdChanged();
             }
@@ -4416,7 +4408,7 @@ namespace BerkeleyEntities
             {
                 OnpriceFeedIdChanging(value);
                 ReportPropertyChanging("priceFeedId");
-                _priceFeedId = StructuralObject.SetValidValue(value, false);
+                _priceFeedId = StructuralObject.SetValidValue(value, false, "priceFeedId");
                 ReportPropertyChanged("priceFeedId");
                 OnpriceFeedIdChanged();
             }
@@ -4440,7 +4432,7 @@ namespace BerkeleyEntities
             {
                 OnrelationshipFeedIdChanging(value);
                 ReportPropertyChanging("relationshipFeedId");
-                _relationshipFeedId = StructuralObject.SetValidValue(value, false);
+                _relationshipFeedId = StructuralObject.SetValidValue(value, false, "relationshipFeedId");
                 ReportPropertyChanged("relationshipFeedId");
                 OnrelationshipFeedIdChanged();
             }
@@ -4464,7 +4456,7 @@ namespace BerkeleyEntities
             {
                 OnimageFeedIdChanging(value);
                 ReportPropertyChanging("imageFeedId");
-                _imageFeedId = StructuralObject.SetValidValue(value, false);
+                _imageFeedId = StructuralObject.SetValidValue(value, false, "imageFeedId");
                 ReportPropertyChanged("imageFeedId");
                 OnimageFeedIdChanged();
             }
@@ -4488,7 +4480,7 @@ namespace BerkeleyEntities
             {
                 OnpurchaseOrderChanging(value);
                 ReportPropertyChanging("purchaseOrder");
-                _purchaseOrder = StructuralObject.SetValidValue(value, true);
+                _purchaseOrder = StructuralObject.SetValidValue(value, true, "purchaseOrder");
                 ReportPropertyChanged("purchaseOrder");
                 OnpurchaseOrderChanged();
             }
@@ -4512,7 +4504,7 @@ namespace BerkeleyEntities
             {
                 OnlistUserChanging(value);
                 ReportPropertyChanging("listUser");
-                _listUser = StructuralObject.SetValidValue(value, true);
+                _listUser = StructuralObject.SetValidValue(value, true, "listUser");
                 ReportPropertyChanged("listUser");
                 OnlistUserChanged();
             }
@@ -4523,7 +4515,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -4631,7 +4622,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -4650,7 +4641,7 @@ namespace BerkeleyEntities
                 {
                     OnidChanging(value);
                     ReportPropertyChanging("id");
-                    _id = StructuralObject.SetValidValue(value);
+                    _id = StructuralObject.SetValidValue(value, "id");
                     ReportPropertyChanged("id");
                     OnidChanged();
                 }
@@ -4675,7 +4666,7 @@ namespace BerkeleyEntities
             {
                 OnpostIdChanging(value);
                 ReportPropertyChanging("postId");
-                _postId = StructuralObject.SetValidValue(value);
+                _postId = StructuralObject.SetValidValue(value, "postId");
                 ReportPropertyChanged("postId");
                 OnpostIdChanged();
             }
@@ -4699,7 +4690,7 @@ namespace BerkeleyEntities
             {
                 OnitemIdChanging(value);
                 ReportPropertyChanging("itemId");
-                _itemId = StructuralObject.SetValidValue(value);
+                _itemId = StructuralObject.SetValidValue(value, "itemId");
                 ReportPropertyChanged("itemId");
                 OnitemIdChanged();
             }
@@ -4723,7 +4714,7 @@ namespace BerkeleyEntities
             {
                 OnitemLookupCodeChanging(value);
                 ReportPropertyChanging("itemLookupCode");
-                _itemLookupCode = StructuralObject.SetValidValue(value, false);
+                _itemLookupCode = StructuralObject.SetValidValue(value, false, "itemLookupCode");
                 ReportPropertyChanged("itemLookupCode");
                 OnitemLookupCodeChanged();
             }
@@ -4747,7 +4738,7 @@ namespace BerkeleyEntities
             {
                 OntitleChanging(value);
                 ReportPropertyChanging("title");
-                _title = StructuralObject.SetValidValue(value, false);
+                _title = StructuralObject.SetValidValue(value, false, "title");
                 ReportPropertyChanged("title");
                 OntitleChanged();
             }
@@ -4771,7 +4762,7 @@ namespace BerkeleyEntities
             {
                 OnsizeChanging(value);
                 ReportPropertyChanging("size");
-                _size = StructuralObject.SetValidValue(value, false);
+                _size = StructuralObject.SetValidValue(value, false, "size");
                 ReportPropertyChanged("size");
                 OnsizeChanged();
             }
@@ -4795,7 +4786,7 @@ namespace BerkeleyEntities
             {
                 OnwidthChanging(value);
                 ReportPropertyChanging("width");
-                _width = StructuralObject.SetValidValue(value, false);
+                _width = StructuralObject.SetValidValue(value, false, "width");
                 ReportPropertyChanged("width");
                 OnwidthChanged();
             }
@@ -4819,7 +4810,7 @@ namespace BerkeleyEntities
             {
                 OncolorChanging(value);
                 ReportPropertyChanging("color");
-                _color = StructuralObject.SetValidValue(value, false);
+                _color = StructuralObject.SetValidValue(value, false, "color");
                 ReportPropertyChanged("color");
                 OncolorChanged();
             }
@@ -4843,7 +4834,7 @@ namespace BerkeleyEntities
             {
                 OnquantityChanging(value);
                 ReportPropertyChanging("quantity");
-                _quantity = StructuralObject.SetValidValue(value);
+                _quantity = StructuralObject.SetValidValue(value, "quantity");
                 ReportPropertyChanged("quantity");
                 OnquantityChanged();
             }
@@ -4867,7 +4858,7 @@ namespace BerkeleyEntities
             {
                 OnpriceChanging(value);
                 ReportPropertyChanging("price");
-                _price = StructuralObject.SetValidValue(value);
+                _price = StructuralObject.SetValidValue(value, "price");
                 ReportPropertyChanged("price");
                 OnpriceChanged();
             }
@@ -4891,7 +4882,7 @@ namespace BerkeleyEntities
             {
                 OnpurchaseOrderChanging(value);
                 ReportPropertyChanging("purchaseOrder");
-                _purchaseOrder = StructuralObject.SetValidValue(value, true);
+                _purchaseOrder = StructuralObject.SetValidValue(value, true, "purchaseOrder");
                 ReportPropertyChanged("purchaseOrder");
                 OnpurchaseOrderChanged();
             }
@@ -4915,7 +4906,7 @@ namespace BerkeleyEntities
             {
                 OnlistUserChanging(value);
                 ReportPropertyChanging("listUser");
-                _listUser = StructuralObject.SetValidValue(value, true);
+                _listUser = StructuralObject.SetValidValue(value, true, "listUser");
                 ReportPropertyChanged("listUser");
                 OnlistUserChanged();
             }
@@ -4926,7 +4917,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -5060,7 +5050,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -5079,7 +5069,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -5104,7 +5094,7 @@ namespace BerkeleyEntities
             {
                 OnpostDetailIdChanging(value);
                 ReportPropertyChanging("postDetailId");
-                _postDetailId = StructuralObject.SetValidValue(value);
+                _postDetailId = StructuralObject.SetValidValue(value, "postDetailId");
                 ReportPropertyChanged("postDetailId");
                 OnpostDetailIdChanged();
             }
@@ -5128,7 +5118,7 @@ namespace BerkeleyEntities
             {
                 OnmessageNumberChanging(value);
                 ReportPropertyChanging("messageNumber");
-                _messageNumber = StructuralObject.SetValidValue(value, false);
+                _messageNumber = StructuralObject.SetValidValue(value, false, "messageNumber");
                 ReportPropertyChanged("messageNumber");
                 OnmessageNumberChanged();
             }
@@ -5152,7 +5142,7 @@ namespace BerkeleyEntities
             {
                 OnerrorMessageChanging(value);
                 ReportPropertyChanging("errorMessage");
-                _errorMessage = StructuralObject.SetValidValue(value, true);
+                _errorMessage = StructuralObject.SetValidValue(value, true, "errorMessage");
                 ReportPropertyChanged("errorMessage");
                 OnerrorMessageChanged();
             }
@@ -5176,7 +5166,7 @@ namespace BerkeleyEntities
             {
                 OnconfirmedChanging(value);
                 ReportPropertyChanging("confirmed");
-                _confirmed = StructuralObject.SetValidValue(value);
+                _confirmed = StructuralObject.SetValidValue(value, "confirmed");
                 ReportPropertyChanged("confirmed");
                 OnconfirmedChanged();
             }
@@ -5200,7 +5190,7 @@ namespace BerkeleyEntities
             {
                 OnsubmissionIdChanging(value);
                 ReportPropertyChanging("submissionId");
-                _submissionId = StructuralObject.SetValidValue(value, true);
+                _submissionId = StructuralObject.SetValidValue(value, true, "submissionId");
                 ReportPropertyChanged("submissionId");
                 OnsubmissionIdChanged();
             }
@@ -5224,7 +5214,7 @@ namespace BerkeleyEntities
             {
                 OnsubmissionTypeChanging(value);
                 ReportPropertyChanging("submissionType");
-                _submissionType = StructuralObject.SetValidValue(value, true);
+                _submissionType = StructuralObject.SetValidValue(value, true, "submissionType");
                 ReportPropertyChanged("submissionType");
                 OnsubmissionTypeChanged();
             }
@@ -5248,7 +5238,7 @@ namespace BerkeleyEntities
             {
                 OnsubmmitedDateChanging(value);
                 ReportPropertyChanging("submmitedDate");
-                _submmitedDate = StructuralObject.SetValidValue(value);
+                _submmitedDate = StructuralObject.SetValidValue(value, "submmitedDate");
                 ReportPropertyChanged("submmitedDate");
                 OnsubmmitedDateChanged();
             }
@@ -5272,7 +5262,7 @@ namespace BerkeleyEntities
             {
                 OncheckedChanging(value);
                 ReportPropertyChanging("checked");
-                _checked = StructuralObject.SetValidValue(value);
+                _checked = StructuralObject.SetValidValue(value, "checked");
                 ReportPropertyChanged("checked");
                 OncheckedChanged();
             }
@@ -5283,7 +5273,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -5359,7 +5348,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -5376,7 +5365,7 @@ namespace BerkeleyEntities
             {
                 OnHQIDChanging(value);
                 ReportPropertyChanging("HQID");
-                _HQID = StructuralObject.SetValidValue(value);
+                _HQID = StructuralObject.SetValidValue(value, "HQID");
                 ReportPropertyChanged("HQID");
                 OnHQIDChanged();
             }
@@ -5402,7 +5391,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -5427,7 +5416,7 @@ namespace BerkeleyEntities
             {
                 OnDepartmentIDChanging(value);
                 ReportPropertyChanging("DepartmentID");
-                _DepartmentID = StructuralObject.SetValidValue(value);
+                _DepartmentID = StructuralObject.SetValidValue(value, "DepartmentID");
                 ReportPropertyChanged("DepartmentID");
                 OnDepartmentIDChanged();
             }
@@ -5451,7 +5440,7 @@ namespace BerkeleyEntities
             {
                 OnNameChanging(value);
                 ReportPropertyChanging("Name");
-                _Name = StructuralObject.SetValidValue(value, false);
+                _Name = StructuralObject.SetValidValue(value, false, "Name");
                 ReportPropertyChanged("Name");
                 OnNameChanged();
             }
@@ -5475,7 +5464,7 @@ namespace BerkeleyEntities
             {
                 OnCodeChanging(value);
                 ReportPropertyChanging("Code");
-                _Code = StructuralObject.SetValidValue(value, false);
+                _Code = StructuralObject.SetValidValue(value, false, "Code");
                 ReportPropertyChanged("Code");
                 OnCodeChanged();
             }
@@ -5499,7 +5488,7 @@ namespace BerkeleyEntities
             {
                 OnDBTimeStampChanging(value);
                 ReportPropertyChanging("DBTimeStamp");
-                _DBTimeStamp = StructuralObject.SetValidValue(value, true);
+                _DBTimeStamp = StructuralObject.SetValidValue(value, true, "DBTimeStamp");
                 ReportPropertyChanged("DBTimeStamp");
                 OnDBTimeStampChanged();
             }
@@ -5510,7 +5499,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -5724,7 +5712,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -5741,7 +5729,7 @@ namespace BerkeleyEntities
             {
                 OnAccountNumberChanging(value);
                 ReportPropertyChanging("AccountNumber");
-                _AccountNumber = StructuralObject.SetValidValue(value, false);
+                _AccountNumber = StructuralObject.SetValidValue(value, false, "AccountNumber");
                 ReportPropertyChanged("AccountNumber");
                 OnAccountNumberChanged();
             }
@@ -5765,7 +5753,7 @@ namespace BerkeleyEntities
             {
                 OnAccountTypeIDChanging(value);
                 ReportPropertyChanging("AccountTypeID");
-                _AccountTypeID = StructuralObject.SetValidValue(value);
+                _AccountTypeID = StructuralObject.SetValidValue(value, "AccountTypeID");
                 ReportPropertyChanged("AccountTypeID");
                 OnAccountTypeIDChanged();
             }
@@ -5789,7 +5777,7 @@ namespace BerkeleyEntities
             {
                 OnAddress2Changing(value);
                 ReportPropertyChanging("Address2");
-                _Address2 = StructuralObject.SetValidValue(value, false);
+                _Address2 = StructuralObject.SetValidValue(value, false, "Address2");
                 ReportPropertyChanged("Address2");
                 OnAddress2Changed();
             }
@@ -5813,7 +5801,7 @@ namespace BerkeleyEntities
             {
                 OnAssessFinanceChargesChanging(value);
                 ReportPropertyChanging("AssessFinanceCharges");
-                _AssessFinanceCharges = StructuralObject.SetValidValue(value);
+                _AssessFinanceCharges = StructuralObject.SetValidValue(value, "AssessFinanceCharges");
                 ReportPropertyChanged("AssessFinanceCharges");
                 OnAssessFinanceChargesChanged();
             }
@@ -5837,7 +5825,7 @@ namespace BerkeleyEntities
             {
                 OnCompanyChanging(value);
                 ReportPropertyChanging("Company");
-                _Company = StructuralObject.SetValidValue(value, false);
+                _Company = StructuralObject.SetValidValue(value, false, "Company");
                 ReportPropertyChanged("Company");
                 OnCompanyChanged();
             }
@@ -5861,7 +5849,7 @@ namespace BerkeleyEntities
             {
                 OnCountryChanging(value);
                 ReportPropertyChanging("Country");
-                _Country = StructuralObject.SetValidValue(value, false);
+                _Country = StructuralObject.SetValidValue(value, false, "Country");
                 ReportPropertyChanged("Country");
                 OnCountryChanged();
             }
@@ -5885,7 +5873,7 @@ namespace BerkeleyEntities
             {
                 OnCustomDate1Changing(value);
                 ReportPropertyChanging("CustomDate1");
-                _CustomDate1 = StructuralObject.SetValidValue(value);
+                _CustomDate1 = StructuralObject.SetValidValue(value, "CustomDate1");
                 ReportPropertyChanged("CustomDate1");
                 OnCustomDate1Changed();
             }
@@ -5909,7 +5897,7 @@ namespace BerkeleyEntities
             {
                 OnCustomDate2Changing(value);
                 ReportPropertyChanging("CustomDate2");
-                _CustomDate2 = StructuralObject.SetValidValue(value);
+                _CustomDate2 = StructuralObject.SetValidValue(value, "CustomDate2");
                 ReportPropertyChanged("CustomDate2");
                 OnCustomDate2Changed();
             }
@@ -5933,7 +5921,7 @@ namespace BerkeleyEntities
             {
                 OnCustomDate3Changing(value);
                 ReportPropertyChanging("CustomDate3");
-                _CustomDate3 = StructuralObject.SetValidValue(value);
+                _CustomDate3 = StructuralObject.SetValidValue(value, "CustomDate3");
                 ReportPropertyChanged("CustomDate3");
                 OnCustomDate3Changed();
             }
@@ -5957,7 +5945,7 @@ namespace BerkeleyEntities
             {
                 OnCustomDate4Changing(value);
                 ReportPropertyChanging("CustomDate4");
-                _CustomDate4 = StructuralObject.SetValidValue(value);
+                _CustomDate4 = StructuralObject.SetValidValue(value, "CustomDate4");
                 ReportPropertyChanged("CustomDate4");
                 OnCustomDate4Changed();
             }
@@ -5981,7 +5969,7 @@ namespace BerkeleyEntities
             {
                 OnCustomDate5Changing(value);
                 ReportPropertyChanging("CustomDate5");
-                _CustomDate5 = StructuralObject.SetValidValue(value);
+                _CustomDate5 = StructuralObject.SetValidValue(value, "CustomDate5");
                 ReportPropertyChanged("CustomDate5");
                 OnCustomDate5Changed();
             }
@@ -6005,7 +5993,7 @@ namespace BerkeleyEntities
             {
                 OnCustomNumber1Changing(value);
                 ReportPropertyChanging("CustomNumber1");
-                _CustomNumber1 = StructuralObject.SetValidValue(value);
+                _CustomNumber1 = StructuralObject.SetValidValue(value, "CustomNumber1");
                 ReportPropertyChanged("CustomNumber1");
                 OnCustomNumber1Changed();
             }
@@ -6029,7 +6017,7 @@ namespace BerkeleyEntities
             {
                 OnCustomNumber2Changing(value);
                 ReportPropertyChanging("CustomNumber2");
-                _CustomNumber2 = StructuralObject.SetValidValue(value);
+                _CustomNumber2 = StructuralObject.SetValidValue(value, "CustomNumber2");
                 ReportPropertyChanged("CustomNumber2");
                 OnCustomNumber2Changed();
             }
@@ -6053,7 +6041,7 @@ namespace BerkeleyEntities
             {
                 OnCustomNumber3Changing(value);
                 ReportPropertyChanging("CustomNumber3");
-                _CustomNumber3 = StructuralObject.SetValidValue(value);
+                _CustomNumber3 = StructuralObject.SetValidValue(value, "CustomNumber3");
                 ReportPropertyChanged("CustomNumber3");
                 OnCustomNumber3Changed();
             }
@@ -6077,7 +6065,7 @@ namespace BerkeleyEntities
             {
                 OnCustomNumber4Changing(value);
                 ReportPropertyChanging("CustomNumber4");
-                _CustomNumber4 = StructuralObject.SetValidValue(value);
+                _CustomNumber4 = StructuralObject.SetValidValue(value, "CustomNumber4");
                 ReportPropertyChanged("CustomNumber4");
                 OnCustomNumber4Changed();
             }
@@ -6101,7 +6089,7 @@ namespace BerkeleyEntities
             {
                 OnCustomNumber5Changing(value);
                 ReportPropertyChanging("CustomNumber5");
-                _CustomNumber5 = StructuralObject.SetValidValue(value);
+                _CustomNumber5 = StructuralObject.SetValidValue(value, "CustomNumber5");
                 ReportPropertyChanged("CustomNumber5");
                 OnCustomNumber5Changed();
             }
@@ -6125,7 +6113,7 @@ namespace BerkeleyEntities
             {
                 OnCustomText1Changing(value);
                 ReportPropertyChanging("CustomText1");
-                _CustomText1 = StructuralObject.SetValidValue(value, false);
+                _CustomText1 = StructuralObject.SetValidValue(value, false, "CustomText1");
                 ReportPropertyChanged("CustomText1");
                 OnCustomText1Changed();
             }
@@ -6149,7 +6137,7 @@ namespace BerkeleyEntities
             {
                 OnCustomText2Changing(value);
                 ReportPropertyChanging("CustomText2");
-                _CustomText2 = StructuralObject.SetValidValue(value, false);
+                _CustomText2 = StructuralObject.SetValidValue(value, false, "CustomText2");
                 ReportPropertyChanged("CustomText2");
                 OnCustomText2Changed();
             }
@@ -6173,7 +6161,7 @@ namespace BerkeleyEntities
             {
                 OnCustomText3Changing(value);
                 ReportPropertyChanging("CustomText3");
-                _CustomText3 = StructuralObject.SetValidValue(value, false);
+                _CustomText3 = StructuralObject.SetValidValue(value, false, "CustomText3");
                 ReportPropertyChanged("CustomText3");
                 OnCustomText3Changed();
             }
@@ -6197,7 +6185,7 @@ namespace BerkeleyEntities
             {
                 OnCustomText4Changing(value);
                 ReportPropertyChanging("CustomText4");
-                _CustomText4 = StructuralObject.SetValidValue(value, false);
+                _CustomText4 = StructuralObject.SetValidValue(value, false, "CustomText4");
                 ReportPropertyChanged("CustomText4");
                 OnCustomText4Changed();
             }
@@ -6221,7 +6209,7 @@ namespace BerkeleyEntities
             {
                 OnCustomText5Changing(value);
                 ReportPropertyChanging("CustomText5");
-                _CustomText5 = StructuralObject.SetValidValue(value, false);
+                _CustomText5 = StructuralObject.SetValidValue(value, false, "CustomText5");
                 ReportPropertyChanged("CustomText5");
                 OnCustomText5Changed();
             }
@@ -6245,7 +6233,7 @@ namespace BerkeleyEntities
             {
                 OnGlobalCustomerChanging(value);
                 ReportPropertyChanging("GlobalCustomer");
-                _GlobalCustomer = StructuralObject.SetValidValue(value);
+                _GlobalCustomer = StructuralObject.SetValidValue(value, "GlobalCustomer");
                 ReportPropertyChanged("GlobalCustomer");
                 OnGlobalCustomerChanged();
             }
@@ -6269,7 +6257,7 @@ namespace BerkeleyEntities
             {
                 OnHQIDChanging(value);
                 ReportPropertyChanging("HQID");
-                _HQID = StructuralObject.SetValidValue(value);
+                _HQID = StructuralObject.SetValidValue(value, "HQID");
                 ReportPropertyChanged("HQID");
                 OnHQIDChanged();
             }
@@ -6293,7 +6281,7 @@ namespace BerkeleyEntities
             {
                 OnLastStartingDateChanging(value);
                 ReportPropertyChanging("LastStartingDate");
-                _LastStartingDate = StructuralObject.SetValidValue(value);
+                _LastStartingDate = StructuralObject.SetValidValue(value, "LastStartingDate");
                 ReportPropertyChanged("LastStartingDate");
                 OnLastStartingDateChanged();
             }
@@ -6317,7 +6305,7 @@ namespace BerkeleyEntities
             {
                 OnLastClosingDateChanging(value);
                 ReportPropertyChanging("LastClosingDate");
-                _LastClosingDate = StructuralObject.SetValidValue(value);
+                _LastClosingDate = StructuralObject.SetValidValue(value, "LastClosingDate");
                 ReportPropertyChanged("LastClosingDate");
                 OnLastClosingDateChanged();
             }
@@ -6341,7 +6329,7 @@ namespace BerkeleyEntities
             {
                 OnLastUpdatedChanging(value);
                 ReportPropertyChanging("LastUpdated");
-                _LastUpdated = StructuralObject.SetValidValue(value);
+                _LastUpdated = StructuralObject.SetValidValue(value, "LastUpdated");
                 ReportPropertyChanged("LastUpdated");
                 OnLastUpdatedChanged();
             }
@@ -6365,7 +6353,7 @@ namespace BerkeleyEntities
             {
                 OnLimitPurchaseChanging(value);
                 ReportPropertyChanging("LimitPurchase");
-                _LimitPurchase = StructuralObject.SetValidValue(value);
+                _LimitPurchase = StructuralObject.SetValidValue(value, "LimitPurchase");
                 ReportPropertyChanged("LimitPurchase");
                 OnLimitPurchaseChanged();
             }
@@ -6389,7 +6377,7 @@ namespace BerkeleyEntities
             {
                 OnLastClosingBalanceChanging(value);
                 ReportPropertyChanging("LastClosingBalance");
-                _LastClosingBalance = StructuralObject.SetValidValue(value);
+                _LastClosingBalance = StructuralObject.SetValidValue(value, "LastClosingBalance");
                 ReportPropertyChanged("LastClosingBalance");
                 OnLastClosingBalanceChanged();
             }
@@ -6413,7 +6401,7 @@ namespace BerkeleyEntities
             {
                 OnPrimaryShipToIDChanging(value);
                 ReportPropertyChanging("PrimaryShipToID");
-                _PrimaryShipToID = StructuralObject.SetValidValue(value);
+                _PrimaryShipToID = StructuralObject.SetValidValue(value, "PrimaryShipToID");
                 ReportPropertyChanged("PrimaryShipToID");
                 OnPrimaryShipToIDChanged();
             }
@@ -6437,7 +6425,7 @@ namespace BerkeleyEntities
             {
                 OnStateChanging(value);
                 ReportPropertyChanging("State");
-                _State = StructuralObject.SetValidValue(value, false);
+                _State = StructuralObject.SetValidValue(value, false, "State");
                 ReportPropertyChanged("State");
                 OnStateChanged();
             }
@@ -6461,7 +6449,7 @@ namespace BerkeleyEntities
             {
                 OnStoreIDChanging(value);
                 ReportPropertyChanging("StoreID");
-                _StoreID = StructuralObject.SetValidValue(value);
+                _StoreID = StructuralObject.SetValidValue(value, "StoreID");
                 ReportPropertyChanged("StoreID");
                 OnStoreIDChanged();
             }
@@ -6487,7 +6475,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -6512,7 +6500,7 @@ namespace BerkeleyEntities
             {
                 OnLayawayCustomerChanging(value);
                 ReportPropertyChanging("LayawayCustomer");
-                _LayawayCustomer = StructuralObject.SetValidValue(value);
+                _LayawayCustomer = StructuralObject.SetValidValue(value, "LayawayCustomer");
                 ReportPropertyChanged("LayawayCustomer");
                 OnLayawayCustomerChanged();
             }
@@ -6536,7 +6524,7 @@ namespace BerkeleyEntities
             {
                 OnEmployeeChanging(value);
                 ReportPropertyChanging("Employee");
-                _Employee = StructuralObject.SetValidValue(value);
+                _Employee = StructuralObject.SetValidValue(value, "Employee");
                 ReportPropertyChanged("Employee");
                 OnEmployeeChanged();
             }
@@ -6560,7 +6548,7 @@ namespace BerkeleyEntities
             {
                 OnFirstNameChanging(value);
                 ReportPropertyChanging("FirstName");
-                _FirstName = StructuralObject.SetValidValue(value, false);
+                _FirstName = StructuralObject.SetValidValue(value, false, "FirstName");
                 ReportPropertyChanged("FirstName");
                 OnFirstNameChanged();
             }
@@ -6584,7 +6572,7 @@ namespace BerkeleyEntities
             {
                 OnLastNameChanging(value);
                 ReportPropertyChanging("LastName");
-                _LastName = StructuralObject.SetValidValue(value, false);
+                _LastName = StructuralObject.SetValidValue(value, false, "LastName");
                 ReportPropertyChanged("LastName");
                 OnLastNameChanged();
             }
@@ -6608,7 +6596,7 @@ namespace BerkeleyEntities
             {
                 OnAddressChanging(value);
                 ReportPropertyChanging("Address");
-                _Address = StructuralObject.SetValidValue(value, false);
+                _Address = StructuralObject.SetValidValue(value, false, "Address");
                 ReportPropertyChanged("Address");
                 OnAddressChanged();
             }
@@ -6632,7 +6620,7 @@ namespace BerkeleyEntities
             {
                 OnCityChanging(value);
                 ReportPropertyChanging("City");
-                _City = StructuralObject.SetValidValue(value, false);
+                _City = StructuralObject.SetValidValue(value, false, "City");
                 ReportPropertyChanged("City");
                 OnCityChanged();
             }
@@ -6656,7 +6644,7 @@ namespace BerkeleyEntities
             {
                 OnZipChanging(value);
                 ReportPropertyChanging("Zip");
-                _Zip = StructuralObject.SetValidValue(value, false);
+                _Zip = StructuralObject.SetValidValue(value, false, "Zip");
                 ReportPropertyChanged("Zip");
                 OnZipChanged();
             }
@@ -6680,7 +6668,7 @@ namespace BerkeleyEntities
             {
                 OnAccountBalanceChanging(value);
                 ReportPropertyChanging("AccountBalance");
-                _AccountBalance = StructuralObject.SetValidValue(value);
+                _AccountBalance = StructuralObject.SetValidValue(value, "AccountBalance");
                 ReportPropertyChanged("AccountBalance");
                 OnAccountBalanceChanged();
             }
@@ -6704,7 +6692,7 @@ namespace BerkeleyEntities
             {
                 OnCreditLimitChanging(value);
                 ReportPropertyChanging("CreditLimit");
-                _CreditLimit = StructuralObject.SetValidValue(value);
+                _CreditLimit = StructuralObject.SetValidValue(value, "CreditLimit");
                 ReportPropertyChanged("CreditLimit");
                 OnCreditLimitChanged();
             }
@@ -6728,7 +6716,7 @@ namespace BerkeleyEntities
             {
                 OnTotalSalesChanging(value);
                 ReportPropertyChanging("TotalSales");
-                _TotalSales = StructuralObject.SetValidValue(value);
+                _TotalSales = StructuralObject.SetValidValue(value, "TotalSales");
                 ReportPropertyChanged("TotalSales");
                 OnTotalSalesChanged();
             }
@@ -6752,7 +6740,7 @@ namespace BerkeleyEntities
             {
                 OnAccountOpenedChanging(value);
                 ReportPropertyChanging("AccountOpened");
-                _AccountOpened = StructuralObject.SetValidValue(value);
+                _AccountOpened = StructuralObject.SetValidValue(value, "AccountOpened");
                 ReportPropertyChanged("AccountOpened");
                 OnAccountOpenedChanged();
             }
@@ -6776,7 +6764,7 @@ namespace BerkeleyEntities
             {
                 OnLastVisitChanging(value);
                 ReportPropertyChanging("LastVisit");
-                _LastVisit = StructuralObject.SetValidValue(value);
+                _LastVisit = StructuralObject.SetValidValue(value, "LastVisit");
                 ReportPropertyChanged("LastVisit");
                 OnLastVisitChanged();
             }
@@ -6800,7 +6788,7 @@ namespace BerkeleyEntities
             {
                 OnTotalVisitsChanging(value);
                 ReportPropertyChanging("TotalVisits");
-                _TotalVisits = StructuralObject.SetValidValue(value);
+                _TotalVisits = StructuralObject.SetValidValue(value, "TotalVisits");
                 ReportPropertyChanged("TotalVisits");
                 OnTotalVisitsChanged();
             }
@@ -6824,7 +6812,7 @@ namespace BerkeleyEntities
             {
                 OnTotalSavingsChanging(value);
                 ReportPropertyChanging("TotalSavings");
-                _TotalSavings = StructuralObject.SetValidValue(value);
+                _TotalSavings = StructuralObject.SetValidValue(value, "TotalSavings");
                 ReportPropertyChanged("TotalSavings");
                 OnTotalSavingsChanged();
             }
@@ -6848,7 +6836,7 @@ namespace BerkeleyEntities
             {
                 OnCurrentDiscountChanging(value);
                 ReportPropertyChanging("CurrentDiscount");
-                _CurrentDiscount = StructuralObject.SetValidValue(value);
+                _CurrentDiscount = StructuralObject.SetValidValue(value, "CurrentDiscount");
                 ReportPropertyChanged("CurrentDiscount");
                 OnCurrentDiscountChanged();
             }
@@ -6872,7 +6860,7 @@ namespace BerkeleyEntities
             {
                 OnPriceLevelChanging(value);
                 ReportPropertyChanging("PriceLevel");
-                _PriceLevel = StructuralObject.SetValidValue(value);
+                _PriceLevel = StructuralObject.SetValidValue(value, "PriceLevel");
                 ReportPropertyChanged("PriceLevel");
                 OnPriceLevelChanged();
             }
@@ -6896,7 +6884,7 @@ namespace BerkeleyEntities
             {
                 OnTaxExemptChanging(value);
                 ReportPropertyChanging("TaxExempt");
-                _TaxExempt = StructuralObject.SetValidValue(value);
+                _TaxExempt = StructuralObject.SetValidValue(value, "TaxExempt");
                 ReportPropertyChanged("TaxExempt");
                 OnTaxExemptChanged();
             }
@@ -6920,7 +6908,7 @@ namespace BerkeleyEntities
             {
                 OnNotesChanging(value);
                 ReportPropertyChanging("Notes");
-                _Notes = StructuralObject.SetValidValue(value, true);
+                _Notes = StructuralObject.SetValidValue(value, true, "Notes");
                 ReportPropertyChanged("Notes");
                 OnNotesChanged();
             }
@@ -6944,7 +6932,7 @@ namespace BerkeleyEntities
             {
                 OnTitleChanging(value);
                 ReportPropertyChanging("Title");
-                _Title = StructuralObject.SetValidValue(value, false);
+                _Title = StructuralObject.SetValidValue(value, false, "Title");
                 ReportPropertyChanged("Title");
                 OnTitleChanged();
             }
@@ -6968,7 +6956,7 @@ namespace BerkeleyEntities
             {
                 OnEmailAddressChanging(value);
                 ReportPropertyChanging("EmailAddress");
-                _EmailAddress = StructuralObject.SetValidValue(value, false);
+                _EmailAddress = StructuralObject.SetValidValue(value, false, "EmailAddress");
                 ReportPropertyChanged("EmailAddress");
                 OnEmailAddressChanged();
             }
@@ -6992,7 +6980,7 @@ namespace BerkeleyEntities
             {
                 OnDBTimeStampChanging(value);
                 ReportPropertyChanging("DBTimeStamp");
-                _DBTimeStamp = StructuralObject.SetValidValue(value, true);
+                _DBTimeStamp = StructuralObject.SetValidValue(value, true, "DBTimeStamp");
                 ReportPropertyChanged("DBTimeStamp");
                 OnDBTimeStampChanged();
             }
@@ -7016,7 +7004,7 @@ namespace BerkeleyEntities
             {
                 OnTaxNumberChanging(value);
                 ReportPropertyChanging("TaxNumber");
-                _TaxNumber = StructuralObject.SetValidValue(value, false);
+                _TaxNumber = StructuralObject.SetValidValue(value, false, "TaxNumber");
                 ReportPropertyChanged("TaxNumber");
                 OnTaxNumberChanged();
             }
@@ -7040,7 +7028,7 @@ namespace BerkeleyEntities
             {
                 OnPictureNameChanging(value);
                 ReportPropertyChanging("PictureName");
-                _PictureName = StructuralObject.SetValidValue(value, false);
+                _PictureName = StructuralObject.SetValidValue(value, false, "PictureName");
                 ReportPropertyChanged("PictureName");
                 OnPictureNameChanged();
             }
@@ -7064,7 +7052,7 @@ namespace BerkeleyEntities
             {
                 OnDefaultShippingServiceIDChanging(value);
                 ReportPropertyChanging("DefaultShippingServiceID");
-                _DefaultShippingServiceID = StructuralObject.SetValidValue(value);
+                _DefaultShippingServiceID = StructuralObject.SetValidValue(value, "DefaultShippingServiceID");
                 ReportPropertyChanged("DefaultShippingServiceID");
                 OnDefaultShippingServiceIDChanged();
             }
@@ -7088,7 +7076,7 @@ namespace BerkeleyEntities
             {
                 OnPhoneNumberChanging(value);
                 ReportPropertyChanging("PhoneNumber");
-                _PhoneNumber = StructuralObject.SetValidValue(value, false);
+                _PhoneNumber = StructuralObject.SetValidValue(value, false, "PhoneNumber");
                 ReportPropertyChanged("PhoneNumber");
                 OnPhoneNumberChanged();
             }
@@ -7112,7 +7100,7 @@ namespace BerkeleyEntities
             {
                 OnFaxNumberChanging(value);
                 ReportPropertyChanging("FaxNumber");
-                _FaxNumber = StructuralObject.SetValidValue(value, false);
+                _FaxNumber = StructuralObject.SetValidValue(value, false, "FaxNumber");
                 ReportPropertyChanged("FaxNumber");
                 OnFaxNumberChanged();
             }
@@ -7136,7 +7124,7 @@ namespace BerkeleyEntities
             {
                 OnCashierIDChanging(value);
                 ReportPropertyChanging("CashierID");
-                _CashierID = StructuralObject.SetValidValue(value);
+                _CashierID = StructuralObject.SetValidValue(value, "CashierID");
                 ReportPropertyChanged("CashierID");
                 OnCashierIDChanged();
             }
@@ -7160,7 +7148,7 @@ namespace BerkeleyEntities
             {
                 OnSalesRepIDChanging(value);
                 ReportPropertyChanging("SalesRepID");
-                _SalesRepID = StructuralObject.SetValidValue(value);
+                _SalesRepID = StructuralObject.SetValidValue(value, "SalesRepID");
                 ReportPropertyChanged("SalesRepID");
                 OnSalesRepIDChanged();
             }
@@ -7184,7 +7172,7 @@ namespace BerkeleyEntities
             {
                 OnVouchersChanging(value);
                 ReportPropertyChanging("Vouchers");
-                _Vouchers = StructuralObject.SetValidValue(value);
+                _Vouchers = StructuralObject.SetValidValue(value, "Vouchers");
                 ReportPropertyChanged("Vouchers");
                 OnVouchersChanged();
             }
@@ -7195,7 +7183,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -7253,7 +7240,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -7270,7 +7257,7 @@ namespace BerkeleyEntities
             {
                 OnHQIDChanging(value);
                 ReportPropertyChanging("HQID");
-                _HQID = StructuralObject.SetValidValue(value);
+                _HQID = StructuralObject.SetValidValue(value, "HQID");
                 ReportPropertyChanged("HQID");
                 OnHQIDChanged();
             }
@@ -7296,7 +7283,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -7321,7 +7308,7 @@ namespace BerkeleyEntities
             {
                 OnNameChanging(value);
                 ReportPropertyChanging("Name");
-                _Name = StructuralObject.SetValidValue(value, false);
+                _Name = StructuralObject.SetValidValue(value, false, "Name");
                 ReportPropertyChanged("Name");
                 OnNameChanged();
             }
@@ -7345,7 +7332,7 @@ namespace BerkeleyEntities
             {
                 OncodeChanging(value);
                 ReportPropertyChanging("code");
-                _code = StructuralObject.SetValidValue(value, false);
+                _code = StructuralObject.SetValidValue(value, false, "code");
                 ReportPropertyChanged("code");
                 OncodeChanged();
             }
@@ -7369,7 +7356,7 @@ namespace BerkeleyEntities
             {
                 OnDBTimeStampChanging(value);
                 ReportPropertyChanging("DBTimeStamp");
-                _DBTimeStamp = StructuralObject.SetValidValue(value, true);
+                _DBTimeStamp = StructuralObject.SetValidValue(value, true, "DBTimeStamp");
                 ReportPropertyChanged("DBTimeStamp");
                 OnDBTimeStampChanged();
             }
@@ -7380,7 +7367,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -7502,7 +7488,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -7521,7 +7507,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -7546,7 +7532,7 @@ namespace BerkeleyEntities
             {
                 OnDepartmentIDChanging(value);
                 ReportPropertyChanging("DepartmentID");
-                _DepartmentID = StructuralObject.SetValidValue(value);
+                _DepartmentID = StructuralObject.SetValidValue(value, "DepartmentID");
                 ReportPropertyChanged("DepartmentID");
                 OnDepartmentIDChanged();
             }
@@ -7570,7 +7556,7 @@ namespace BerkeleyEntities
             {
                 OnDivisionIDChanging(value);
                 ReportPropertyChanging("DivisionID");
-                _DivisionID = StructuralObject.SetValidValue(value);
+                _DivisionID = StructuralObject.SetValidValue(value, "DivisionID");
                 ReportPropertyChanged("DivisionID");
                 OnDivisionIDChanged();
             }
@@ -7581,7 +7567,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -7691,7 +7676,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -7710,7 +7695,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -7735,7 +7720,7 @@ namespace BerkeleyEntities
             {
                 OnTypeChanging(value);
                 ReportPropertyChanging("Type");
-                _Type = StructuralObject.SetValidValue(value, false);
+                _Type = StructuralObject.SetValidValue(value, false, "Type");
                 ReportPropertyChanged("Type");
                 OnTypeChanged();
             }
@@ -7759,7 +7744,7 @@ namespace BerkeleyEntities
             {
                 OnNameChanging(value);
                 ReportPropertyChanging("Name");
-                _Name = StructuralObject.SetValidValue(value, false);
+                _Name = StructuralObject.SetValidValue(value, false, "Name");
                 ReportPropertyChanged("Name");
                 OnNameChanged();
             }
@@ -7770,7 +7755,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -7844,7 +7828,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -7863,7 +7847,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -7888,7 +7872,7 @@ namespace BerkeleyEntities
             {
                 OnCodeChanging(value);
                 ReportPropertyChanging("Code");
-                _Code = StructuralObject.SetValidValue(value, false);
+                _Code = StructuralObject.SetValidValue(value, false, "Code");
                 ReportPropertyChanged("Code");
                 OnCodeChanged();
             }
@@ -7912,7 +7896,7 @@ namespace BerkeleyEntities
             {
                 OnMarketplaceIDChanging(value);
                 ReportPropertyChanging("MarketplaceID");
-                _MarketplaceID = StructuralObject.SetValidValue(value);
+                _MarketplaceID = StructuralObject.SetValidValue(value, "MarketplaceID");
                 ReportPropertyChanged("MarketplaceID");
                 OnMarketplaceIDChanged();
             }
@@ -7936,7 +7920,7 @@ namespace BerkeleyEntities
             {
                 OnFormatChanging(value);
                 ReportPropertyChanging("Format");
-                _Format = StructuralObject.SetValidValue(value, false);
+                _Format = StructuralObject.SetValidValue(value, false, "Format");
                 ReportPropertyChanged("Format");
                 OnFormatChanged();
             }
@@ -7960,7 +7944,7 @@ namespace BerkeleyEntities
             {
                 OnDurationChanging(value);
                 ReportPropertyChanging("Duration");
-                _Duration = StructuralObject.SetValidValue(value, false);
+                _Duration = StructuralObject.SetValidValue(value, false, "Duration");
                 ReportPropertyChanged("Duration");
                 OnDurationChanged();
             }
@@ -7984,7 +7968,7 @@ namespace BerkeleyEntities
             {
                 OnStartTimeChanging(value);
                 ReportPropertyChanging("StartTime");
-                _StartTime = StructuralObject.SetValidValue(value);
+                _StartTime = StructuralObject.SetValidValue(value, "StartTime");
                 ReportPropertyChanged("StartTime");
                 OnStartTimeChanged();
             }
@@ -8008,7 +7992,7 @@ namespace BerkeleyEntities
             {
                 OnEndTimeChanging(value);
                 ReportPropertyChanging("EndTime");
-                _EndTime = StructuralObject.SetValidValue(value);
+                _EndTime = StructuralObject.SetValidValue(value, "EndTime");
                 ReportPropertyChanged("EndTime");
                 OnEndTimeChanged();
             }
@@ -8032,7 +8016,7 @@ namespace BerkeleyEntities
             {
                 OnTitleChanging(value);
                 ReportPropertyChanging("Title");
-                _Title = StructuralObject.SetValidValue(value, false);
+                _Title = StructuralObject.SetValidValue(value, false, "Title");
                 ReportPropertyChanged("Title");
                 OnTitleChanged();
             }
@@ -8056,7 +8040,7 @@ namespace BerkeleyEntities
             {
                 OnConditionChanging(value);
                 ReportPropertyChanging("Condition");
-                _Condition = StructuralObject.SetValidValue(value, false);
+                _Condition = StructuralObject.SetValidValue(value, false, "Condition");
                 ReportPropertyChanged("Condition");
                 OnConditionChanged();
             }
@@ -8080,7 +8064,7 @@ namespace BerkeleyEntities
             {
                 OnLastSyncTimeChanging(value);
                 ReportPropertyChanging("LastSyncTime");
-                _LastSyncTime = StructuralObject.SetValidValue(value);
+                _LastSyncTime = StructuralObject.SetValidValue(value, "LastSyncTime");
                 ReportPropertyChanged("LastSyncTime");
                 OnLastSyncTimeChanged();
             }
@@ -8104,7 +8088,7 @@ namespace BerkeleyEntities
             {
                 OnStatusChanging(value);
                 ReportPropertyChanging("Status");
-                _Status = StructuralObject.SetValidValue(value, false);
+                _Status = StructuralObject.SetValidValue(value, false, "Status");
                 ReportPropertyChanged("Status");
                 OnStatusChanged();
             }
@@ -8128,7 +8112,7 @@ namespace BerkeleyEntities
             {
                 OnSkuChanging(value);
                 ReportPropertyChanging("Sku");
-                _Sku = StructuralObject.SetValidValue(value, false);
+                _Sku = StructuralObject.SetValidValue(value, false, "Sku");
                 ReportPropertyChanged("Sku");
                 OnSkuChanged();
             }
@@ -8152,7 +8136,7 @@ namespace BerkeleyEntities
             {
                 OnIsVariationChanging(value);
                 ReportPropertyChanging("IsVariation");
-                _IsVariation = StructuralObject.SetValidValue(value);
+                _IsVariation = StructuralObject.SetValidValue(value, "IsVariation");
                 ReportPropertyChanged("IsVariation");
                 OnIsVariationChanged();
             }
@@ -8176,7 +8160,7 @@ namespace BerkeleyEntities
             {
                 OnFullDescriptionChanging(value);
                 ReportPropertyChanging("FullDescription");
-                _FullDescription = StructuralObject.SetValidValue(value, true);
+                _FullDescription = StructuralObject.SetValidValue(value, true, "FullDescription");
                 ReportPropertyChanged("FullDescription");
                 OnFullDescriptionChanged();
             }
@@ -8187,7 +8171,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -8307,7 +8290,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -8326,7 +8309,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -8351,7 +8334,7 @@ namespace BerkeleyEntities
             {
                 OnItemIDChanging(value);
                 ReportPropertyChanging("ItemID");
-                _ItemID = StructuralObject.SetValidValue(value);
+                _ItemID = StructuralObject.SetValidValue(value, "ItemID");
                 ReportPropertyChanged("ItemID");
                 OnItemIDChanged();
             }
@@ -8375,7 +8358,7 @@ namespace BerkeleyEntities
             {
                 OnListingIDChanging(value);
                 ReportPropertyChanging("ListingID");
-                _ListingID = StructuralObject.SetValidValue(value);
+                _ListingID = StructuralObject.SetValidValue(value, "ListingID");
                 ReportPropertyChanged("ListingID");
                 OnListingIDChanged();
             }
@@ -8399,7 +8382,7 @@ namespace BerkeleyEntities
             {
                 OnQuantityChanging(value);
                 ReportPropertyChanging("Quantity");
-                _Quantity = StructuralObject.SetValidValue(value);
+                _Quantity = StructuralObject.SetValidValue(value, "Quantity");
                 ReportPropertyChanged("Quantity");
                 OnQuantityChanged();
             }
@@ -8423,7 +8406,7 @@ namespace BerkeleyEntities
             {
                 OnPriceChanging(value);
                 ReportPropertyChanging("Price");
-                _Price = StructuralObject.SetValidValue(value);
+                _Price = StructuralObject.SetValidValue(value, "Price");
                 ReportPropertyChanged("Price");
                 OnPriceChanged();
             }
@@ -8434,7 +8417,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -8572,7 +8554,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -8591,7 +8573,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -8616,7 +8598,7 @@ namespace BerkeleyEntities
             {
                 OnNameChanging(value);
                 ReportPropertyChanging("Name");
-                _Name = StructuralObject.SetValidValue(value, false);
+                _Name = StructuralObject.SetValidValue(value, false, "Name");
                 ReportPropertyChanged("Name");
                 OnNameChanged();
             }
@@ -8640,7 +8622,7 @@ namespace BerkeleyEntities
             {
                 OnTokenChanging(value);
                 ReportPropertyChanging("Token");
-                _Token = StructuralObject.SetValidValue(value, false);
+                _Token = StructuralObject.SetValidValue(value, false, "Token");
                 ReportPropertyChanged("Token");
                 OnTokenChanged();
             }
@@ -8664,7 +8646,7 @@ namespace BerkeleyEntities
             {
                 OnPayPalAccountChanging(value);
                 ReportPropertyChanging("PayPalAccount");
-                _PayPalAccount = StructuralObject.SetValidValue(value, false);
+                _PayPalAccount = StructuralObject.SetValidValue(value, false, "PayPalAccount");
                 ReportPropertyChanged("PayPalAccount");
                 OnPayPalAccountChanged();
             }
@@ -8688,7 +8670,7 @@ namespace BerkeleyEntities
             {
                 OnListingSyncTimeChanging(value);
                 ReportPropertyChanging("ListingSyncTime");
-                _ListingSyncTime = StructuralObject.SetValidValue(value);
+                _ListingSyncTime = StructuralObject.SetValidValue(value, "ListingSyncTime");
                 ReportPropertyChanged("ListingSyncTime");
                 OnListingSyncTimeChanged();
             }
@@ -8712,7 +8694,7 @@ namespace BerkeleyEntities
             {
                 OnOrdersSyncTimeChanging(value);
                 ReportPropertyChanging("OrdersSyncTime");
-                _OrdersSyncTime = StructuralObject.SetValidValue(value);
+                _OrdersSyncTime = StructuralObject.SetValidValue(value, "OrdersSyncTime");
                 ReportPropertyChanged("OrdersSyncTime");
                 OnOrdersSyncTimeChanged();
             }
@@ -8736,7 +8718,7 @@ namespace BerkeleyEntities
             {
                 OnCodeChanging(value);
                 ReportPropertyChanging("Code");
-                _Code = StructuralObject.SetValidValue(value, false);
+                _Code = StructuralObject.SetValidValue(value, false, "Code");
                 ReportPropertyChanged("Code");
                 OnCodeChanged();
             }
@@ -8760,7 +8742,7 @@ namespace BerkeleyEntities
             {
                 OnRootDirChanging(value);
                 ReportPropertyChanging("RootDir");
-                _RootDir = StructuralObject.SetValidValue(value, false);
+                _RootDir = StructuralObject.SetValidValue(value, false, "RootDir");
                 ReportPropertyChanged("RootDir");
                 OnRootDirChanged();
             }
@@ -8771,7 +8753,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -8869,7 +8850,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -8888,7 +8869,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -8913,7 +8894,7 @@ namespace BerkeleyEntities
             {
                 OnCodeChanging(value);
                 ReportPropertyChanging("Code");
-                _Code = StructuralObject.SetValidValue(value, false);
+                _Code = StructuralObject.SetValidValue(value, false, "Code");
                 ReportPropertyChanged("Code");
                 OnCodeChanged();
             }
@@ -8937,7 +8918,7 @@ namespace BerkeleyEntities
             {
                 OnOrderStatusChanging(value);
                 ReportPropertyChanging("OrderStatus");
-                _OrderStatus = StructuralObject.SetValidValue(value, false);
+                _OrderStatus = StructuralObject.SetValidValue(value, false, "OrderStatus");
                 ReportPropertyChanged("OrderStatus");
                 OnOrderStatusChanged();
             }
@@ -8961,7 +8942,7 @@ namespace BerkeleyEntities
             {
                 OnCreatedTimeChanging(value);
                 ReportPropertyChanging("CreatedTime");
-                _CreatedTime = StructuralObject.SetValidValue(value);
+                _CreatedTime = StructuralObject.SetValidValue(value, "CreatedTime");
                 ReportPropertyChanged("CreatedTime");
                 OnCreatedTimeChanged();
             }
@@ -8985,7 +8966,7 @@ namespace BerkeleyEntities
             {
                 OnCheckoutStatusChanging(value);
                 ReportPropertyChanging("CheckoutStatus");
-                _CheckoutStatus = StructuralObject.SetValidValue(value, false);
+                _CheckoutStatus = StructuralObject.SetValidValue(value, false, "CheckoutStatus");
                 ReportPropertyChanged("CheckoutStatus");
                 OnCheckoutStatusChanged();
             }
@@ -9009,7 +8990,7 @@ namespace BerkeleyEntities
             {
                 OnPaymentMethodChanging(value);
                 ReportPropertyChanging("PaymentMethod");
-                _PaymentMethod = StructuralObject.SetValidValue(value, false);
+                _PaymentMethod = StructuralObject.SetValidValue(value, false, "PaymentMethod");
                 ReportPropertyChanged("PaymentMethod");
                 OnPaymentMethodChanged();
             }
@@ -9033,7 +9014,7 @@ namespace BerkeleyEntities
             {
                 OnIsMultiLegShippingChanging(value);
                 ReportPropertyChanging("IsMultiLegShipping");
-                _IsMultiLegShipping = StructuralObject.SetValidValue(value);
+                _IsMultiLegShipping = StructuralObject.SetValidValue(value, "IsMultiLegShipping");
                 ReportPropertyChanged("IsMultiLegShipping");
                 OnIsMultiLegShippingChanged();
             }
@@ -9057,7 +9038,7 @@ namespace BerkeleyEntities
             {
                 OnPaidTimeChanging(value);
                 ReportPropertyChanging("PaidTime");
-                _PaidTime = StructuralObject.SetValidValue(value);
+                _PaidTime = StructuralObject.SetValidValue(value, "PaidTime");
                 ReportPropertyChanged("PaidTime");
                 OnPaidTimeChanged();
             }
@@ -9081,7 +9062,7 @@ namespace BerkeleyEntities
             {
                 OnShippedTimeChanging(value);
                 ReportPropertyChanging("ShippedTime");
-                _ShippedTime = StructuralObject.SetValidValue(value);
+                _ShippedTime = StructuralObject.SetValidValue(value, "ShippedTime");
                 ReportPropertyChanged("ShippedTime");
                 OnShippedTimeChanged();
             }
@@ -9105,7 +9086,7 @@ namespace BerkeleyEntities
             {
                 OnStreet1Changing(value);
                 ReportPropertyChanging("Street1");
-                _Street1 = StructuralObject.SetValidValue(value, false);
+                _Street1 = StructuralObject.SetValidValue(value, false, "Street1");
                 ReportPropertyChanged("Street1");
                 OnStreet1Changed();
             }
@@ -9129,7 +9110,7 @@ namespace BerkeleyEntities
             {
                 OnStreet2Changing(value);
                 ReportPropertyChanging("Street2");
-                _Street2 = StructuralObject.SetValidValue(value, false);
+                _Street2 = StructuralObject.SetValidValue(value, false, "Street2");
                 ReportPropertyChanged("Street2");
                 OnStreet2Changed();
             }
@@ -9153,7 +9134,7 @@ namespace BerkeleyEntities
             {
                 OnStateOrProvinceChanging(value);
                 ReportPropertyChanging("StateOrProvince");
-                _StateOrProvince = StructuralObject.SetValidValue(value, false);
+                _StateOrProvince = StructuralObject.SetValidValue(value, false, "StateOrProvince");
                 ReportPropertyChanged("StateOrProvince");
                 OnStateOrProvinceChanged();
             }
@@ -9177,7 +9158,7 @@ namespace BerkeleyEntities
             {
                 OnPostalCodeChanging(value);
                 ReportPropertyChanging("PostalCode");
-                _PostalCode = StructuralObject.SetValidValue(value, false);
+                _PostalCode = StructuralObject.SetValidValue(value, false, "PostalCode");
                 ReportPropertyChanged("PostalCode");
                 OnPostalCodeChanged();
             }
@@ -9201,7 +9182,7 @@ namespace BerkeleyEntities
             {
                 OnCountryCodeChanging(value);
                 ReportPropertyChanging("CountryCode");
-                _CountryCode = StructuralObject.SetValidValue(value, false);
+                _CountryCode = StructuralObject.SetValidValue(value, false, "CountryCode");
                 ReportPropertyChanged("CountryCode");
                 OnCountryCodeChanged();
             }
@@ -9225,7 +9206,7 @@ namespace BerkeleyEntities
             {
                 OnCountryNameChanging(value);
                 ReportPropertyChanging("CountryName");
-                _CountryName = StructuralObject.SetValidValue(value, false);
+                _CountryName = StructuralObject.SetValidValue(value, false, "CountryName");
                 ReportPropertyChanged("CountryName");
                 OnCountryNameChanged();
             }
@@ -9249,7 +9230,7 @@ namespace BerkeleyEntities
             {
                 OnUserNameChanging(value);
                 ReportPropertyChanging("UserName");
-                _UserName = StructuralObject.SetValidValue(value, false);
+                _UserName = StructuralObject.SetValidValue(value, false, "UserName");
                 ReportPropertyChanged("UserName");
                 OnUserNameChanged();
             }
@@ -9273,7 +9254,7 @@ namespace BerkeleyEntities
             {
                 OnPhoneChanging(value);
                 ReportPropertyChanging("Phone");
-                _Phone = StructuralObject.SetValidValue(value, false);
+                _Phone = StructuralObject.SetValidValue(value, false, "Phone");
                 ReportPropertyChanged("Phone");
                 OnPhoneChanged();
             }
@@ -9297,7 +9278,7 @@ namespace BerkeleyEntities
             {
                 OnSubtotalChanging(value);
                 ReportPropertyChanging("Subtotal");
-                _Subtotal = StructuralObject.SetValidValue(value);
+                _Subtotal = StructuralObject.SetValidValue(value, "Subtotal");
                 ReportPropertyChanged("Subtotal");
                 OnSubtotalChanged();
             }
@@ -9321,7 +9302,7 @@ namespace BerkeleyEntities
             {
                 OnTotalChanging(value);
                 ReportPropertyChanging("Total");
-                _Total = StructuralObject.SetValidValue(value);
+                _Total = StructuralObject.SetValidValue(value, "Total");
                 ReportPropertyChanged("Total");
                 OnTotalChanged();
             }
@@ -9345,7 +9326,7 @@ namespace BerkeleyEntities
             {
                 OnLastSyncTimeChanging(value);
                 ReportPropertyChanging("LastSyncTime");
-                _LastSyncTime = StructuralObject.SetValidValue(value);
+                _LastSyncTime = StructuralObject.SetValidValue(value, "LastSyncTime");
                 ReportPropertyChanged("LastSyncTime");
                 OnLastSyncTimeChanged();
             }
@@ -9369,7 +9350,7 @@ namespace BerkeleyEntities
             {
                 OnEbayPaymentStatusChanging(value);
                 ReportPropertyChanging("EbayPaymentStatus");
-                _EbayPaymentStatus = StructuralObject.SetValidValue(value, true);
+                _EbayPaymentStatus = StructuralObject.SetValidValue(value, true, "EbayPaymentStatus");
                 ReportPropertyChanged("EbayPaymentStatus");
                 OnEbayPaymentStatusChanged();
             }
@@ -9393,7 +9374,7 @@ namespace BerkeleyEntities
             {
                 OnSalesRecordNumberChanging(value);
                 ReportPropertyChanging("SalesRecordNumber");
-                _SalesRecordNumber = StructuralObject.SetValidValue(value, true);
+                _SalesRecordNumber = StructuralObject.SetValidValue(value, true, "SalesRecordNumber");
                 ReportPropertyChanged("SalesRecordNumber");
                 OnSalesRecordNumberChanged();
             }
@@ -9417,7 +9398,7 @@ namespace BerkeleyEntities
             {
                 OnShippingInsuranceCostChanging(value);
                 ReportPropertyChanging("ShippingInsuranceCost");
-                _ShippingInsuranceCost = StructuralObject.SetValidValue(value);
+                _ShippingInsuranceCost = StructuralObject.SetValidValue(value, "ShippingInsuranceCost");
                 ReportPropertyChanged("ShippingInsuranceCost");
                 OnShippingInsuranceCostChanged();
             }
@@ -9441,7 +9422,7 @@ namespace BerkeleyEntities
             {
                 OnShippingServiceAdditionalCostChanging(value);
                 ReportPropertyChanging("ShippingServiceAdditionalCost");
-                _ShippingServiceAdditionalCost = StructuralObject.SetValidValue(value);
+                _ShippingServiceAdditionalCost = StructuralObject.SetValidValue(value, "ShippingServiceAdditionalCost");
                 ReportPropertyChanged("ShippingServiceAdditionalCost");
                 OnShippingServiceAdditionalCostChanged();
             }
@@ -9465,7 +9446,7 @@ namespace BerkeleyEntities
             {
                 OnShippingServiceCostChanging(value);
                 ReportPropertyChanging("ShippingServiceCost");
-                _ShippingServiceCost = StructuralObject.SetValidValue(value);
+                _ShippingServiceCost = StructuralObject.SetValidValue(value, "ShippingServiceCost");
                 ReportPropertyChanged("ShippingServiceCost");
                 OnShippingServiceCostChanged();
             }
@@ -9489,7 +9470,7 @@ namespace BerkeleyEntities
             {
                 OnShippingSurchargeChanging(value);
                 ReportPropertyChanging("ShippingSurcharge");
-                _ShippingSurcharge = StructuralObject.SetValidValue(value);
+                _ShippingSurcharge = StructuralObject.SetValidValue(value, "ShippingSurcharge");
                 ReportPropertyChanged("ShippingSurcharge");
                 OnShippingSurchargeChanged();
             }
@@ -9513,7 +9494,7 @@ namespace BerkeleyEntities
             {
                 OnAdjustmentAmountChanging(value);
                 ReportPropertyChanging("AdjustmentAmount");
-                _AdjustmentAmount = StructuralObject.SetValidValue(value);
+                _AdjustmentAmount = StructuralObject.SetValidValue(value, "AdjustmentAmount");
                 ReportPropertyChanged("AdjustmentAmount");
                 OnAdjustmentAmountChanged();
             }
@@ -9537,7 +9518,7 @@ namespace BerkeleyEntities
             {
                 OnMarketplaceIDChanging(value);
                 ReportPropertyChanging("MarketplaceID");
-                _MarketplaceID = StructuralObject.SetValidValue(value);
+                _MarketplaceID = StructuralObject.SetValidValue(value, "MarketplaceID");
                 ReportPropertyChanged("MarketplaceID");
                 OnMarketplaceIDChanged();
             }
@@ -9561,7 +9542,7 @@ namespace BerkeleyEntities
             {
                 OnPaidAmountChanging(value);
                 ReportPropertyChanging("PaidAmount");
-                _PaidAmount = StructuralObject.SetValidValue(value);
+                _PaidAmount = StructuralObject.SetValidValue(value, "PaidAmount");
                 ReportPropertyChanged("PaidAmount");
                 OnPaidAmountChanged();
             }
@@ -9585,7 +9566,7 @@ namespace BerkeleyEntities
             {
                 OnShippingServiceChanging(value);
                 ReportPropertyChanging("ShippingService");
-                _ShippingService = StructuralObject.SetValidValue(value, true);
+                _ShippingService = StructuralObject.SetValidValue(value, true, "ShippingService");
                 ReportPropertyChanged("ShippingService");
                 OnShippingServiceChanged();
             }
@@ -9609,7 +9590,7 @@ namespace BerkeleyEntities
             {
                 OnExpeditedServiceChanging(value);
                 ReportPropertyChanging("ExpeditedService");
-                _ExpeditedService = StructuralObject.SetValidValue(value);
+                _ExpeditedService = StructuralObject.SetValidValue(value, "ExpeditedService");
                 ReportPropertyChanged("ExpeditedService");
                 OnExpeditedServiceChanged();
             }
@@ -9633,7 +9614,7 @@ namespace BerkeleyEntities
             {
                 OnBuyerIDChanging(value);
                 ReportPropertyChanging("BuyerID");
-                _BuyerID = StructuralObject.SetValidValue(value, true);
+                _BuyerID = StructuralObject.SetValidValue(value, true, "BuyerID");
                 ReportPropertyChanged("BuyerID");
                 OnBuyerIDChanged();
             }
@@ -9657,7 +9638,7 @@ namespace BerkeleyEntities
             {
                 OnCompanyNameChanging(value);
                 ReportPropertyChanging("CompanyName");
-                _CompanyName = StructuralObject.SetValidValue(value, true);
+                _CompanyName = StructuralObject.SetValidValue(value, true, "CompanyName");
                 ReportPropertyChanged("CompanyName");
                 OnCompanyNameChanged();
             }
@@ -9681,7 +9662,7 @@ namespace BerkeleyEntities
             {
                 OnCityNameChanging(value);
                 ReportPropertyChanging("CityName");
-                _CityName = StructuralObject.SetValidValue(value, true);
+                _CityName = StructuralObject.SetValidValue(value, true, "CityName");
                 ReportPropertyChanged("CityName");
                 OnCityNameChanged();
             }
@@ -9692,7 +9673,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -9760,7 +9740,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -9779,7 +9759,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -9804,7 +9784,7 @@ namespace BerkeleyEntities
             {
                 OnOrderIDChanging(value);
                 ReportPropertyChanging("OrderID");
-                _OrderID = StructuralObject.SetValidValue(value);
+                _OrderID = StructuralObject.SetValidValue(value, "OrderID");
                 ReportPropertyChanged("OrderID");
                 OnOrderIDChanged();
             }
@@ -9828,7 +9808,7 @@ namespace BerkeleyEntities
             {
                 OnCodeChanging(value);
                 ReportPropertyChanging("Code");
-                _Code = StructuralObject.SetValidValue(value, false);
+                _Code = StructuralObject.SetValidValue(value, false, "Code");
                 ReportPropertyChanged("Code");
                 OnCodeChanged();
             }
@@ -9852,7 +9832,7 @@ namespace BerkeleyEntities
             {
                 OnQuantityPurchasedChanging(value);
                 ReportPropertyChanging("QuantityPurchased");
-                _QuantityPurchased = StructuralObject.SetValidValue(value);
+                _QuantityPurchased = StructuralObject.SetValidValue(value, "QuantityPurchased");
                 ReportPropertyChanged("QuantityPurchased");
                 OnQuantityPurchasedChanged();
             }
@@ -9876,7 +9856,7 @@ namespace BerkeleyEntities
             {
                 OnUnpaidItemDisputeStatusChanging(value);
                 ReportPropertyChanging("UnpaidItemDisputeStatus");
-                _UnpaidItemDisputeStatus = StructuralObject.SetValidValue(value, false);
+                _UnpaidItemDisputeStatus = StructuralObject.SetValidValue(value, false, "UnpaidItemDisputeStatus");
                 ReportPropertyChanged("UnpaidItemDisputeStatus");
                 OnUnpaidItemDisputeStatusChanged();
             }
@@ -9900,7 +9880,7 @@ namespace BerkeleyEntities
             {
                 OnUnpaidItemDisputeTypeChanging(value);
                 ReportPropertyChanging("UnpaidItemDisputeType");
-                _UnpaidItemDisputeType = StructuralObject.SetValidValue(value, false);
+                _UnpaidItemDisputeType = StructuralObject.SetValidValue(value, false, "UnpaidItemDisputeType");
                 ReportPropertyChanged("UnpaidItemDisputeType");
                 OnUnpaidItemDisputeTypeChanged();
             }
@@ -9924,7 +9904,7 @@ namespace BerkeleyEntities
             {
                 OnListingItemIDChanging(value);
                 ReportPropertyChanging("ListingItemID");
-                _ListingItemID = StructuralObject.SetValidValue(value);
+                _ListingItemID = StructuralObject.SetValidValue(value, "ListingItemID");
                 ReportPropertyChanged("ListingItemID");
                 OnListingItemIDChanged();
             }
@@ -9948,7 +9928,7 @@ namespace BerkeleyEntities
             {
                 OnCreatedDateChanging(value);
                 ReportPropertyChanging("CreatedDate");
-                _CreatedDate = StructuralObject.SetValidValue(value);
+                _CreatedDate = StructuralObject.SetValidValue(value, "CreatedDate");
                 ReportPropertyChanged("CreatedDate");
                 OnCreatedDateChanged();
             }
@@ -9972,7 +9952,7 @@ namespace BerkeleyEntities
             {
                 OnTransactionPriceChanging(value);
                 ReportPropertyChanging("TransactionPrice");
-                _TransactionPrice = StructuralObject.SetValidValue(value);
+                _TransactionPrice = StructuralObject.SetValidValue(value, "TransactionPrice");
                 ReportPropertyChanged("TransactionPrice");
                 OnTransactionPriceChanged();
             }
@@ -9983,7 +9963,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -10097,7 +10076,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -10116,7 +10095,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -10141,7 +10120,7 @@ namespace BerkeleyEntities
             {
                 OnLocalNameChanging(value);
                 ReportPropertyChanging("LocalName");
-                _LocalName = StructuralObject.SetValidValue(value, false);
+                _LocalName = StructuralObject.SetValidValue(value, false, "LocalName");
                 ReportPropertyChanged("LocalName");
                 OnLocalNameChanged();
             }
@@ -10165,7 +10144,7 @@ namespace BerkeleyEntities
             {
                 OnUrlChanging(value);
                 ReportPropertyChanging("Url");
-                _Url = StructuralObject.SetValidValue(value, false);
+                _Url = StructuralObject.SetValidValue(value, false, "Url");
                 ReportPropertyChanged("Url");
                 OnUrlChanged();
             }
@@ -10189,7 +10168,7 @@ namespace BerkeleyEntities
             {
                 OnTimeUploadedChanging(value);
                 ReportPropertyChanging("TimeUploaded");
-                _TimeUploaded = StructuralObject.SetValidValue(value);
+                _TimeUploaded = StructuralObject.SetValidValue(value, "TimeUploaded");
                 ReportPropertyChanged("TimeUploaded");
                 OnTimeUploadedChanged();
             }
@@ -10213,7 +10192,7 @@ namespace BerkeleyEntities
             {
                 OnPathChanging(value);
                 ReportPropertyChanging("Path");
-                _Path = StructuralObject.SetValidValue(value, false);
+                _Path = StructuralObject.SetValidValue(value, false, "Path");
                 ReportPropertyChanged("Path");
                 OnPathChanged();
             }
@@ -10224,7 +10203,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -10282,7 +10260,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -10301,7 +10279,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -10326,7 +10304,7 @@ namespace BerkeleyEntities
             {
                 OnListingIDChanging(value);
                 ReportPropertyChanging("ListingID");
-                _ListingID = StructuralObject.SetValidValue(value);
+                _ListingID = StructuralObject.SetValidValue(value, "ListingID");
                 ReportPropertyChanged("ListingID");
                 OnListingIDChanged();
             }
@@ -10350,7 +10328,7 @@ namespace BerkeleyEntities
             {
                 OnPictureUrlIDChanging(value);
                 ReportPropertyChanging("PictureUrlID");
-                _PictureUrlID = StructuralObject.SetValidValue(value);
+                _PictureUrlID = StructuralObject.SetValidValue(value, "PictureUrlID");
                 ReportPropertyChanged("PictureUrlID");
                 OnPictureUrlIDChanged();
             }
@@ -10374,7 +10352,7 @@ namespace BerkeleyEntities
             {
                 OnCreatedTimeChanging(value);
                 ReportPropertyChanging("CreatedTime");
-                _CreatedTime = StructuralObject.SetValidValue(value);
+                _CreatedTime = StructuralObject.SetValidValue(value, "CreatedTime");
                 ReportPropertyChanged("CreatedTime");
                 OnCreatedTimeChanged();
             }
@@ -10385,7 +10363,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -10503,7 +10480,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -10522,7 +10499,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -10547,7 +10524,7 @@ namespace BerkeleyEntities
             {
                 OnItemIDChanging(value);
                 ReportPropertyChanging("ItemID");
-                _ItemID = StructuralObject.SetValidValue(value);
+                _ItemID = StructuralObject.SetValidValue(value, "ItemID");
                 ReportPropertyChanged("ItemID");
                 OnItemIDChanged();
             }
@@ -10571,7 +10548,7 @@ namespace BerkeleyEntities
             {
                 OnPhysicalInventoryIDChanging(value);
                 ReportPropertyChanging("PhysicalInventoryID");
-                _PhysicalInventoryID = StructuralObject.SetValidValue(value);
+                _PhysicalInventoryID = StructuralObject.SetValidValue(value, "PhysicalInventoryID");
                 ReportPropertyChanged("PhysicalInventoryID");
                 OnPhysicalInventoryIDChanged();
             }
@@ -10595,7 +10572,7 @@ namespace BerkeleyEntities
             {
                 OnUserChanging(value);
                 ReportPropertyChanging("User");
-                _User = StructuralObject.SetValidValue(value, false);
+                _User = StructuralObject.SetValidValue(value, false, "User");
                 ReportPropertyChanged("User");
                 OnUserChanged();
             }
@@ -10619,7 +10596,7 @@ namespace BerkeleyEntities
             {
                 OnLastModifiedChanging(value);
                 ReportPropertyChanging("LastModified");
-                _LastModified = StructuralObject.SetValidValue(value);
+                _LastModified = StructuralObject.SetValidValue(value, "LastModified");
                 ReportPropertyChanged("LastModified");
                 OnLastModifiedChanged();
             }
@@ -10643,7 +10620,7 @@ namespace BerkeleyEntities
             {
                 OnCountedChanging(value);
                 ReportPropertyChanging("Counted");
-                _Counted = StructuralObject.SetValidValue(value);
+                _Counted = StructuralObject.SetValidValue(value, "Counted");
                 ReportPropertyChanged("Counted");
                 OnCountedChanged();
             }
@@ -10667,7 +10644,7 @@ namespace BerkeleyEntities
             {
                 OnBinChanging(value);
                 ReportPropertyChanging("Bin");
-                _Bin = StructuralObject.SetValidValue(value, false);
+                _Bin = StructuralObject.SetValidValue(value, false, "Bin");
                 ReportPropertyChanged("Bin");
                 OnBinChanged();
             }
@@ -10678,7 +10655,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -10808,7 +10784,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -10827,7 +10803,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -10852,7 +10828,7 @@ namespace BerkeleyEntities
             {
                 OnItemIDChanging(value);
                 ReportPropertyChanging("ItemID");
-                _ItemID = StructuralObject.SetValidValue(value);
+                _ItemID = StructuralObject.SetValidValue(value, "ItemID");
                 ReportPropertyChanged("ItemID");
                 OnItemIDChanged();
             }
@@ -10876,7 +10852,7 @@ namespace BerkeleyEntities
             {
                 OnDetailIDChanging(value);
                 ReportPropertyChanging("DetailID");
-                _DetailID = StructuralObject.SetValidValue(value);
+                _DetailID = StructuralObject.SetValidValue(value, "DetailID");
                 ReportPropertyChanged("DetailID");
                 OnDetailIDChanged();
             }
@@ -10900,7 +10876,7 @@ namespace BerkeleyEntities
             {
                 OnQuantityChanging(value);
                 ReportPropertyChanging("Quantity");
-                _Quantity = StructuralObject.SetValidValue(value);
+                _Quantity = StructuralObject.SetValidValue(value, "Quantity");
                 ReportPropertyChanged("Quantity");
                 OnQuantityChanged();
             }
@@ -10924,7 +10900,7 @@ namespace BerkeleyEntities
             {
                 OnDateTransferredChanging(value);
                 ReportPropertyChanging("DateTransferred");
-                _DateTransferred = StructuralObject.SetValidValue(value);
+                _DateTransferred = StructuralObject.SetValidValue(value, "DateTransferred");
                 ReportPropertyChanged("DateTransferred");
                 OnDateTransferredChanged();
             }
@@ -10948,7 +10924,7 @@ namespace BerkeleyEntities
             {
                 OnStoreIDChanging(value);
                 ReportPropertyChanging("StoreID");
-                _StoreID = StructuralObject.SetValidValue(value);
+                _StoreID = StructuralObject.SetValidValue(value, "StoreID");
                 ReportPropertyChanged("StoreID");
                 OnStoreIDChanged();
             }
@@ -10972,7 +10948,7 @@ namespace BerkeleyEntities
             {
                 OnDBTimeStampChanging(value);
                 ReportPropertyChanging("DBTimeStamp");
-                _DBTimeStamp = StructuralObject.SetValidValue(value, true);
+                _DBTimeStamp = StructuralObject.SetValidValue(value, true, "DBTimeStamp");
                 ReportPropertyChanged("DBTimeStamp");
                 OnDBTimeStampChanged();
             }
@@ -10996,7 +10972,7 @@ namespace BerkeleyEntities
             {
                 OnReferenceIDChanging(value);
                 ReportPropertyChanging("ReferenceID");
-                _ReferenceID = StructuralObject.SetValidValue(value);
+                _ReferenceID = StructuralObject.SetValidValue(value, "ReferenceID");
                 ReportPropertyChanged("ReferenceID");
                 OnReferenceIDChanged();
             }
@@ -11020,7 +10996,7 @@ namespace BerkeleyEntities
             {
                 OnReasonCodeIDChanging(value);
                 ReportPropertyChanging("ReasonCodeID");
-                _ReasonCodeID = StructuralObject.SetValidValue(value);
+                _ReasonCodeID = StructuralObject.SetValidValue(value, "ReasonCodeID");
                 ReportPropertyChanged("ReasonCodeID");
                 OnReasonCodeIDChanged();
             }
@@ -11044,7 +11020,7 @@ namespace BerkeleyEntities
             {
                 OnCashierIDChanging(value);
                 ReportPropertyChanging("CashierID");
-                _CashierID = StructuralObject.SetValidValue(value);
+                _CashierID = StructuralObject.SetValidValue(value, "CashierID");
                 ReportPropertyChanged("CashierID");
                 OnCashierIDChanged();
             }
@@ -11068,7 +11044,7 @@ namespace BerkeleyEntities
             {
                 OnTypeChanging(value);
                 ReportPropertyChanging("Type");
-                _Type = StructuralObject.SetValidValue(value);
+                _Type = StructuralObject.SetValidValue(value, "Type");
                 ReportPropertyChanged("Type");
                 OnTypeChanged();
             }
@@ -11092,7 +11068,7 @@ namespace BerkeleyEntities
             {
                 OnReferenceEntryIDChanging(value);
                 ReportPropertyChanging("ReferenceEntryID");
-                _ReferenceEntryID = StructuralObject.SetValidValue(value);
+                _ReferenceEntryID = StructuralObject.SetValidValue(value, "ReferenceEntryID");
                 ReportPropertyChanged("ReferenceEntryID");
                 OnReferenceEntryIDChanged();
             }
@@ -11116,7 +11092,7 @@ namespace BerkeleyEntities
             {
                 OnCostChanging(value);
                 ReportPropertyChanging("Cost");
-                _Cost = StructuralObject.SetValidValue(value);
+                _Cost = StructuralObject.SetValidValue(value, "Cost");
                 ReportPropertyChanged("Cost");
                 OnCostChanged();
             }
@@ -11140,7 +11116,7 @@ namespace BerkeleyEntities
             {
                 OnBatchNumberChanging(value);
                 ReportPropertyChanging("BatchNumber");
-                _BatchNumber = StructuralObject.SetValidValue(value);
+                _BatchNumber = StructuralObject.SetValidValue(value, "BatchNumber");
                 ReportPropertyChanged("BatchNumber");
                 OnBatchNumberChanged();
             }
@@ -11164,7 +11140,7 @@ namespace BerkeleyEntities
             {
                 OnComputedQuantityChanging(value);
                 ReportPropertyChanging("ComputedQuantity");
-                _ComputedQuantity = StructuralObject.SetValidValue(value);
+                _ComputedQuantity = StructuralObject.SetValidValue(value, "ComputedQuantity");
                 ReportPropertyChanged("ComputedQuantity");
                 OnComputedQuantityChanged();
             }
@@ -11175,7 +11151,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -11381,7 +11356,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -11398,7 +11373,7 @@ namespace BerkeleyEntities
             {
                 OnBinLocationChanging(value);
                 ReportPropertyChanging("BinLocation");
-                _BinLocation = StructuralObject.SetValidValue(value, false);
+                _BinLocation = StructuralObject.SetValidValue(value, false, "BinLocation");
                 ReportPropertyChanged("BinLocation");
                 OnBinLocationChanged();
             }
@@ -11422,7 +11397,7 @@ namespace BerkeleyEntities
             {
                 OnBuydownPriceChanging(value);
                 ReportPropertyChanging("BuydownPrice");
-                _BuydownPrice = StructuralObject.SetValidValue(value);
+                _BuydownPrice = StructuralObject.SetValidValue(value, "BuydownPrice");
                 ReportPropertyChanged("BuydownPrice");
                 OnBuydownPriceChanged();
             }
@@ -11446,7 +11421,7 @@ namespace BerkeleyEntities
             {
                 OnBuydownQuantityChanging(value);
                 ReportPropertyChanging("BuydownQuantity");
-                _BuydownQuantity = StructuralObject.SetValidValue(value);
+                _BuydownQuantity = StructuralObject.SetValidValue(value, "BuydownQuantity");
                 ReportPropertyChanged("BuydownQuantity");
                 OnBuydownQuantityChanged();
             }
@@ -11470,7 +11445,7 @@ namespace BerkeleyEntities
             {
                 OnCommissionAmountChanging(value);
                 ReportPropertyChanging("CommissionAmount");
-                _CommissionAmount = StructuralObject.SetValidValue(value);
+                _CommissionAmount = StructuralObject.SetValidValue(value, "CommissionAmount");
                 ReportPropertyChanged("CommissionAmount");
                 OnCommissionAmountChanged();
             }
@@ -11494,7 +11469,7 @@ namespace BerkeleyEntities
             {
                 OnCommissionMaximumChanging(value);
                 ReportPropertyChanging("CommissionMaximum");
-                _CommissionMaximum = StructuralObject.SetValidValue(value);
+                _CommissionMaximum = StructuralObject.SetValidValue(value, "CommissionMaximum");
                 ReportPropertyChanged("CommissionMaximum");
                 OnCommissionMaximumChanged();
             }
@@ -11518,7 +11493,7 @@ namespace BerkeleyEntities
             {
                 OnCommissionModeChanging(value);
                 ReportPropertyChanging("CommissionMode");
-                _CommissionMode = StructuralObject.SetValidValue(value);
+                _CommissionMode = StructuralObject.SetValidValue(value, "CommissionMode");
                 ReportPropertyChanged("CommissionMode");
                 OnCommissionModeChanged();
             }
@@ -11542,7 +11517,7 @@ namespace BerkeleyEntities
             {
                 OnCommissionPercentProfitChanging(value);
                 ReportPropertyChanging("CommissionPercentProfit");
-                _CommissionPercentProfit = StructuralObject.SetValidValue(value);
+                _CommissionPercentProfit = StructuralObject.SetValidValue(value, "CommissionPercentProfit");
                 ReportPropertyChanged("CommissionPercentProfit");
                 OnCommissionPercentProfitChanged();
             }
@@ -11566,7 +11541,7 @@ namespace BerkeleyEntities
             {
                 OnCommissionPercentSaleChanging(value);
                 ReportPropertyChanging("CommissionPercentSale");
-                _CommissionPercentSale = StructuralObject.SetValidValue(value);
+                _CommissionPercentSale = StructuralObject.SetValidValue(value, "CommissionPercentSale");
                 ReportPropertyChanged("CommissionPercentSale");
                 OnCommissionPercentSaleChanged();
             }
@@ -11590,7 +11565,7 @@ namespace BerkeleyEntities
             {
                 OnDescriptionChanging(value);
                 ReportPropertyChanging("Description");
-                _Description = StructuralObject.SetValidValue(value, false);
+                _Description = StructuralObject.SetValidValue(value, false, "Description");
                 ReportPropertyChanged("Description");
                 OnDescriptionChanged();
             }
@@ -11614,7 +11589,7 @@ namespace BerkeleyEntities
             {
                 OnFoodStampableChanging(value);
                 ReportPropertyChanging("FoodStampable");
-                _FoodStampable = StructuralObject.SetValidValue(value);
+                _FoodStampable = StructuralObject.SetValidValue(value, "FoodStampable");
                 ReportPropertyChanged("FoodStampable");
                 OnFoodStampableChanged();
             }
@@ -11638,7 +11613,7 @@ namespace BerkeleyEntities
             {
                 OnHQIDChanging(value);
                 ReportPropertyChanging("HQID");
-                _HQID = StructuralObject.SetValidValue(value);
+                _HQID = StructuralObject.SetValidValue(value, "HQID");
                 ReportPropertyChanged("HQID");
                 OnHQIDChanged();
             }
@@ -11662,7 +11637,7 @@ namespace BerkeleyEntities
             {
                 OnItemNotDiscountableChanging(value);
                 ReportPropertyChanging("ItemNotDiscountable");
-                _ItemNotDiscountable = StructuralObject.SetValidValue(value);
+                _ItemNotDiscountable = StructuralObject.SetValidValue(value, "ItemNotDiscountable");
                 ReportPropertyChanged("ItemNotDiscountable");
                 OnItemNotDiscountableChanged();
             }
@@ -11686,7 +11661,7 @@ namespace BerkeleyEntities
             {
                 OnLastReceivedChanging(value);
                 ReportPropertyChanging("LastReceived");
-                _LastReceived = StructuralObject.SetValidValue(value);
+                _LastReceived = StructuralObject.SetValidValue(value, "LastReceived");
                 ReportPropertyChanged("LastReceived");
                 OnLastReceivedChanged();
             }
@@ -11710,7 +11685,7 @@ namespace BerkeleyEntities
             {
                 OnLastUpdatedChanging(value);
                 ReportPropertyChanging("LastUpdated");
-                _LastUpdated = StructuralObject.SetValidValue(value);
+                _LastUpdated = StructuralObject.SetValidValue(value, "LastUpdated");
                 ReportPropertyChanged("LastUpdated");
                 OnLastUpdatedChanged();
             }
@@ -11734,7 +11709,7 @@ namespace BerkeleyEntities
             {
                 OnNotesChanging(value);
                 ReportPropertyChanging("Notes");
-                _Notes = StructuralObject.SetValidValue(value, true);
+                _Notes = StructuralObject.SetValidValue(value, true, "Notes");
                 ReportPropertyChanged("Notes");
                 OnNotesChanged();
             }
@@ -11758,7 +11733,7 @@ namespace BerkeleyEntities
             {
                 OnQuantityCommittedChanging(value);
                 ReportPropertyChanging("QuantityCommitted");
-                _QuantityCommitted = StructuralObject.SetValidValue(value);
+                _QuantityCommitted = StructuralObject.SetValidValue(value, "QuantityCommitted");
                 ReportPropertyChanged("QuantityCommitted");
                 OnQuantityCommittedChanged();
             }
@@ -11782,7 +11757,7 @@ namespace BerkeleyEntities
             {
                 OnSerialNumberCountChanging(value);
                 ReportPropertyChanging("SerialNumberCount");
-                _SerialNumberCount = StructuralObject.SetValidValue(value);
+                _SerialNumberCount = StructuralObject.SetValidValue(value, "SerialNumberCount");
                 ReportPropertyChanged("SerialNumberCount");
                 OnSerialNumberCountChanged();
             }
@@ -11806,7 +11781,7 @@ namespace BerkeleyEntities
             {
                 OnTareWeightPercentChanging(value);
                 ReportPropertyChanging("TareWeightPercent");
-                _TareWeightPercent = StructuralObject.SetValidValue(value);
+                _TareWeightPercent = StructuralObject.SetValidValue(value, "TareWeightPercent");
                 ReportPropertyChanged("TareWeightPercent");
                 OnTareWeightPercentChanged();
             }
@@ -11832,7 +11807,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -11857,7 +11832,7 @@ namespace BerkeleyEntities
             {
                 OnItemLookupCodeChanging(value);
                 ReportPropertyChanging("ItemLookupCode");
-                _ItemLookupCode = StructuralObject.SetValidValue(value, false);
+                _ItemLookupCode = StructuralObject.SetValidValue(value, false, "ItemLookupCode");
                 ReportPropertyChanged("ItemLookupCode");
                 OnItemLookupCodeChanged();
             }
@@ -11881,7 +11856,7 @@ namespace BerkeleyEntities
             {
                 OnDepartmentIDChanging(value);
                 ReportPropertyChanging("DepartmentID");
-                _DepartmentID = StructuralObject.SetValidValue(value);
+                _DepartmentID = StructuralObject.SetValidValue(value, "DepartmentID");
                 ReportPropertyChanged("DepartmentID");
                 OnDepartmentIDChanged();
             }
@@ -11905,7 +11880,7 @@ namespace BerkeleyEntities
             {
                 OnCategoryIDChanging(value);
                 ReportPropertyChanging("CategoryID");
-                _CategoryID = StructuralObject.SetValidValue(value);
+                _CategoryID = StructuralObject.SetValidValue(value, "CategoryID");
                 ReportPropertyChanged("CategoryID");
                 OnCategoryIDChanged();
             }
@@ -11929,7 +11904,7 @@ namespace BerkeleyEntities
             {
                 OnMessageIDChanging(value);
                 ReportPropertyChanging("MessageID");
-                _MessageID = StructuralObject.SetValidValue(value);
+                _MessageID = StructuralObject.SetValidValue(value, "MessageID");
                 ReportPropertyChanged("MessageID");
                 OnMessageIDChanged();
             }
@@ -11953,7 +11928,7 @@ namespace BerkeleyEntities
             {
                 OnPriceChanging(value);
                 ReportPropertyChanging("Price");
-                _Price = StructuralObject.SetValidValue(value);
+                _Price = StructuralObject.SetValidValue(value, "Price");
                 ReportPropertyChanged("Price");
                 OnPriceChanged();
             }
@@ -11977,7 +11952,7 @@ namespace BerkeleyEntities
             {
                 OnPriceAChanging(value);
                 ReportPropertyChanging("PriceA");
-                _PriceA = StructuralObject.SetValidValue(value);
+                _PriceA = StructuralObject.SetValidValue(value, "PriceA");
                 ReportPropertyChanged("PriceA");
                 OnPriceAChanged();
             }
@@ -12001,7 +11976,7 @@ namespace BerkeleyEntities
             {
                 OnPriceBChanging(value);
                 ReportPropertyChanging("PriceB");
-                _PriceB = StructuralObject.SetValidValue(value);
+                _PriceB = StructuralObject.SetValidValue(value, "PriceB");
                 ReportPropertyChanged("PriceB");
                 OnPriceBChanged();
             }
@@ -12025,7 +12000,7 @@ namespace BerkeleyEntities
             {
                 OnPriceCChanging(value);
                 ReportPropertyChanging("PriceC");
-                _PriceC = StructuralObject.SetValidValue(value);
+                _PriceC = StructuralObject.SetValidValue(value, "PriceC");
                 ReportPropertyChanged("PriceC");
                 OnPriceCChanged();
             }
@@ -12049,7 +12024,7 @@ namespace BerkeleyEntities
             {
                 OnSalePriceChanging(value);
                 ReportPropertyChanging("SalePrice");
-                _SalePrice = StructuralObject.SetValidValue(value);
+                _SalePrice = StructuralObject.SetValidValue(value, "SalePrice");
                 ReportPropertyChanged("SalePrice");
                 OnSalePriceChanged();
             }
@@ -12073,7 +12048,7 @@ namespace BerkeleyEntities
             {
                 OnSaleStartDateChanging(value);
                 ReportPropertyChanging("SaleStartDate");
-                _SaleStartDate = StructuralObject.SetValidValue(value);
+                _SaleStartDate = StructuralObject.SetValidValue(value, "SaleStartDate");
                 ReportPropertyChanged("SaleStartDate");
                 OnSaleStartDateChanged();
             }
@@ -12097,7 +12072,7 @@ namespace BerkeleyEntities
             {
                 OnSaleEndDateChanging(value);
                 ReportPropertyChanging("SaleEndDate");
-                _SaleEndDate = StructuralObject.SetValidValue(value);
+                _SaleEndDate = StructuralObject.SetValidValue(value, "SaleEndDate");
                 ReportPropertyChanged("SaleEndDate");
                 OnSaleEndDateChanged();
             }
@@ -12121,7 +12096,7 @@ namespace BerkeleyEntities
             {
                 OnQuantityDiscountIDChanging(value);
                 ReportPropertyChanging("QuantityDiscountID");
-                _QuantityDiscountID = StructuralObject.SetValidValue(value);
+                _QuantityDiscountID = StructuralObject.SetValidValue(value, "QuantityDiscountID");
                 ReportPropertyChanged("QuantityDiscountID");
                 OnQuantityDiscountIDChanged();
             }
@@ -12145,7 +12120,7 @@ namespace BerkeleyEntities
             {
                 OnTaxIDChanging(value);
                 ReportPropertyChanging("TaxID");
-                _TaxID = StructuralObject.SetValidValue(value);
+                _TaxID = StructuralObject.SetValidValue(value, "TaxID");
                 ReportPropertyChanged("TaxID");
                 OnTaxIDChanged();
             }
@@ -12169,7 +12144,7 @@ namespace BerkeleyEntities
             {
                 OnItemTypeChanging(value);
                 ReportPropertyChanging("ItemType");
-                _ItemType = StructuralObject.SetValidValue(value);
+                _ItemType = StructuralObject.SetValidValue(value, "ItemType");
                 ReportPropertyChanged("ItemType");
                 OnItemTypeChanged();
             }
@@ -12193,7 +12168,7 @@ namespace BerkeleyEntities
             {
                 OnCostChanging(value);
                 ReportPropertyChanging("Cost");
-                _Cost = StructuralObject.SetValidValue(value);
+                _Cost = StructuralObject.SetValidValue(value, "Cost");
                 ReportPropertyChanged("Cost");
                 OnCostChanged();
             }
@@ -12217,7 +12192,7 @@ namespace BerkeleyEntities
             {
                 OnQuantityChanging(value);
                 ReportPropertyChanging("Quantity");
-                _Quantity = StructuralObject.SetValidValue(value);
+                _Quantity = StructuralObject.SetValidValue(value, "Quantity");
                 ReportPropertyChanged("Quantity");
                 OnQuantityChanged();
             }
@@ -12241,7 +12216,7 @@ namespace BerkeleyEntities
             {
                 OnReorderPointChanging(value);
                 ReportPropertyChanging("ReorderPoint");
-                _ReorderPoint = StructuralObject.SetValidValue(value);
+                _ReorderPoint = StructuralObject.SetValidValue(value, "ReorderPoint");
                 ReportPropertyChanged("ReorderPoint");
                 OnReorderPointChanged();
             }
@@ -12265,7 +12240,7 @@ namespace BerkeleyEntities
             {
                 OnRestockLevelChanging(value);
                 ReportPropertyChanging("RestockLevel");
-                _RestockLevel = StructuralObject.SetValidValue(value);
+                _RestockLevel = StructuralObject.SetValidValue(value, "RestockLevel");
                 ReportPropertyChanged("RestockLevel");
                 OnRestockLevelChanged();
             }
@@ -12289,7 +12264,7 @@ namespace BerkeleyEntities
             {
                 OnTareWeightChanging(value);
                 ReportPropertyChanging("TareWeight");
-                _TareWeight = StructuralObject.SetValidValue(value);
+                _TareWeight = StructuralObject.SetValidValue(value, "TareWeight");
                 ReportPropertyChanged("TareWeight");
                 OnTareWeightChanged();
             }
@@ -12313,7 +12288,7 @@ namespace BerkeleyEntities
             {
                 OnSupplierIDChanging(value);
                 ReportPropertyChanging("SupplierID");
-                _SupplierID = StructuralObject.SetValidValue(value);
+                _SupplierID = StructuralObject.SetValidValue(value, "SupplierID");
                 ReportPropertyChanged("SupplierID");
                 OnSupplierIDChanged();
             }
@@ -12337,7 +12312,7 @@ namespace BerkeleyEntities
             {
                 OnTagAlongItemChanging(value);
                 ReportPropertyChanging("TagAlongItem");
-                _TagAlongItem = StructuralObject.SetValidValue(value);
+                _TagAlongItem = StructuralObject.SetValidValue(value, "TagAlongItem");
                 ReportPropertyChanged("TagAlongItem");
                 OnTagAlongItemChanged();
             }
@@ -12361,7 +12336,7 @@ namespace BerkeleyEntities
             {
                 OnTagAlongQuantityChanging(value);
                 ReportPropertyChanging("TagAlongQuantity");
-                _TagAlongQuantity = StructuralObject.SetValidValue(value);
+                _TagAlongQuantity = StructuralObject.SetValidValue(value, "TagAlongQuantity");
                 ReportPropertyChanged("TagAlongQuantity");
                 OnTagAlongQuantityChanged();
             }
@@ -12385,7 +12360,7 @@ namespace BerkeleyEntities
             {
                 OnParentItemChanging(value);
                 ReportPropertyChanging("ParentItem");
-                _ParentItem = StructuralObject.SetValidValue(value);
+                _ParentItem = StructuralObject.SetValidValue(value, "ParentItem");
                 ReportPropertyChanged("ParentItem");
                 OnParentItemChanged();
             }
@@ -12409,7 +12384,7 @@ namespace BerkeleyEntities
             {
                 OnParentQuantityChanging(value);
                 ReportPropertyChanging("ParentQuantity");
-                _ParentQuantity = StructuralObject.SetValidValue(value);
+                _ParentQuantity = StructuralObject.SetValidValue(value, "ParentQuantity");
                 ReportPropertyChanged("ParentQuantity");
                 OnParentQuantityChanged();
             }
@@ -12433,7 +12408,7 @@ namespace BerkeleyEntities
             {
                 OnBarcodeFormatChanging(value);
                 ReportPropertyChanging("BarcodeFormat");
-                _BarcodeFormat = StructuralObject.SetValidValue(value);
+                _BarcodeFormat = StructuralObject.SetValidValue(value, "BarcodeFormat");
                 ReportPropertyChanged("BarcodeFormat");
                 OnBarcodeFormatChanged();
             }
@@ -12457,7 +12432,7 @@ namespace BerkeleyEntities
             {
                 OnPriceLowerBoundChanging(value);
                 ReportPropertyChanging("PriceLowerBound");
-                _PriceLowerBound = StructuralObject.SetValidValue(value);
+                _PriceLowerBound = StructuralObject.SetValidValue(value, "PriceLowerBound");
                 ReportPropertyChanged("PriceLowerBound");
                 OnPriceLowerBoundChanged();
             }
@@ -12481,7 +12456,7 @@ namespace BerkeleyEntities
             {
                 OnPriceUpperBoundChanging(value);
                 ReportPropertyChanging("PriceUpperBound");
-                _PriceUpperBound = StructuralObject.SetValidValue(value);
+                _PriceUpperBound = StructuralObject.SetValidValue(value, "PriceUpperBound");
                 ReportPropertyChanged("PriceUpperBound");
                 OnPriceUpperBoundChanged();
             }
@@ -12505,7 +12480,7 @@ namespace BerkeleyEntities
             {
                 OnPictureNameChanging(value);
                 ReportPropertyChanging("PictureName");
-                _PictureName = StructuralObject.SetValidValue(value, false);
+                _PictureName = StructuralObject.SetValidValue(value, false, "PictureName");
                 ReportPropertyChanged("PictureName");
                 OnPictureNameChanged();
             }
@@ -12529,7 +12504,7 @@ namespace BerkeleyEntities
             {
                 OnLastSoldChanging(value);
                 ReportPropertyChanging("LastSold");
-                _LastSold = StructuralObject.SetValidValue(value);
+                _LastSold = StructuralObject.SetValidValue(value, "LastSold");
                 ReportPropertyChanged("LastSold");
                 OnLastSoldChanged();
             }
@@ -12553,7 +12528,7 @@ namespace BerkeleyEntities
             {
                 OnExtendedDescriptionChanging(value);
                 ReportPropertyChanging("ExtendedDescription");
-                _ExtendedDescription = StructuralObject.SetValidValue(value, false);
+                _ExtendedDescription = StructuralObject.SetValidValue(value, false, "ExtendedDescription");
                 ReportPropertyChanged("ExtendedDescription");
                 OnExtendedDescriptionChanged();
             }
@@ -12577,7 +12552,7 @@ namespace BerkeleyEntities
             {
                 OnSubDescription1Changing(value);
                 ReportPropertyChanging("SubDescription1");
-                _SubDescription1 = StructuralObject.SetValidValue(value, false);
+                _SubDescription1 = StructuralObject.SetValidValue(value, false, "SubDescription1");
                 ReportPropertyChanged("SubDescription1");
                 OnSubDescription1Changed();
             }
@@ -12601,7 +12576,7 @@ namespace BerkeleyEntities
             {
                 OnSubDescription2Changing(value);
                 ReportPropertyChanging("SubDescription2");
-                _SubDescription2 = StructuralObject.SetValidValue(value, false);
+                _SubDescription2 = StructuralObject.SetValidValue(value, false, "SubDescription2");
                 ReportPropertyChanged("SubDescription2");
                 OnSubDescription2Changed();
             }
@@ -12625,7 +12600,7 @@ namespace BerkeleyEntities
             {
                 OnSubDescription3Changing(value);
                 ReportPropertyChanging("SubDescription3");
-                _SubDescription3 = StructuralObject.SetValidValue(value, false);
+                _SubDescription3 = StructuralObject.SetValidValue(value, false, "SubDescription3");
                 ReportPropertyChanged("SubDescription3");
                 OnSubDescription3Changed();
             }
@@ -12649,7 +12624,7 @@ namespace BerkeleyEntities
             {
                 OnUnitOfMeasureChanging(value);
                 ReportPropertyChanging("UnitOfMeasure");
-                _UnitOfMeasure = StructuralObject.SetValidValue(value, false);
+                _UnitOfMeasure = StructuralObject.SetValidValue(value, false, "UnitOfMeasure");
                 ReportPropertyChanged("UnitOfMeasure");
                 OnUnitOfMeasureChanged();
             }
@@ -12673,7 +12648,7 @@ namespace BerkeleyEntities
             {
                 OnSubCategoryIDChanging(value);
                 ReportPropertyChanging("SubCategoryID");
-                _SubCategoryID = StructuralObject.SetValidValue(value);
+                _SubCategoryID = StructuralObject.SetValidValue(value, "SubCategoryID");
                 ReportPropertyChanged("SubCategoryID");
                 OnSubCategoryIDChanged();
             }
@@ -12697,7 +12672,7 @@ namespace BerkeleyEntities
             {
                 OnQuantityEntryNotAllowedChanging(value);
                 ReportPropertyChanging("QuantityEntryNotAllowed");
-                _QuantityEntryNotAllowed = StructuralObject.SetValidValue(value);
+                _QuantityEntryNotAllowed = StructuralObject.SetValidValue(value, "QuantityEntryNotAllowed");
                 ReportPropertyChanged("QuantityEntryNotAllowed");
                 OnQuantityEntryNotAllowedChanged();
             }
@@ -12721,7 +12696,7 @@ namespace BerkeleyEntities
             {
                 OnPriceMustBeEnteredChanging(value);
                 ReportPropertyChanging("PriceMustBeEntered");
-                _PriceMustBeEntered = StructuralObject.SetValidValue(value);
+                _PriceMustBeEntered = StructuralObject.SetValidValue(value, "PriceMustBeEntered");
                 ReportPropertyChanged("PriceMustBeEntered");
                 OnPriceMustBeEnteredChanged();
             }
@@ -12745,7 +12720,7 @@ namespace BerkeleyEntities
             {
                 OnBlockSalesReasonChanging(value);
                 ReportPropertyChanging("BlockSalesReason");
-                _BlockSalesReason = StructuralObject.SetValidValue(value, false);
+                _BlockSalesReason = StructuralObject.SetValidValue(value, false, "BlockSalesReason");
                 ReportPropertyChanged("BlockSalesReason");
                 OnBlockSalesReasonChanged();
             }
@@ -12769,7 +12744,7 @@ namespace BerkeleyEntities
             {
                 OnBlockSalesAfterDateChanging(value);
                 ReportPropertyChanging("BlockSalesAfterDate");
-                _BlockSalesAfterDate = StructuralObject.SetValidValue(value);
+                _BlockSalesAfterDate = StructuralObject.SetValidValue(value, "BlockSalesAfterDate");
                 ReportPropertyChanged("BlockSalesAfterDate");
                 OnBlockSalesAfterDateChanged();
             }
@@ -12793,7 +12768,7 @@ namespace BerkeleyEntities
             {
                 OnWeightChanging(value);
                 ReportPropertyChanging("Weight");
-                _Weight = StructuralObject.SetValidValue(value);
+                _Weight = StructuralObject.SetValidValue(value, "Weight");
                 ReportPropertyChanged("Weight");
                 OnWeightChanged();
             }
@@ -12817,7 +12792,7 @@ namespace BerkeleyEntities
             {
                 OnTaxableChanging(value);
                 ReportPropertyChanging("Taxable");
-                _Taxable = StructuralObject.SetValidValue(value);
+                _Taxable = StructuralObject.SetValidValue(value, "Taxable");
                 ReportPropertyChanged("Taxable");
                 OnTaxableChanged();
             }
@@ -12841,7 +12816,7 @@ namespace BerkeleyEntities
             {
                 OnDBTimeStampChanging(value);
                 ReportPropertyChanging("DBTimeStamp");
-                _DBTimeStamp = StructuralObject.SetValidValue(value, true);
+                _DBTimeStamp = StructuralObject.SetValidValue(value, true, "DBTimeStamp");
                 ReportPropertyChanged("DBTimeStamp");
                 OnDBTimeStampChanged();
             }
@@ -12865,7 +12840,7 @@ namespace BerkeleyEntities
             {
                 OnBlockSalesBeforeDateChanging(value);
                 ReportPropertyChanging("BlockSalesBeforeDate");
-                _BlockSalesBeforeDate = StructuralObject.SetValidValue(value);
+                _BlockSalesBeforeDate = StructuralObject.SetValidValue(value, "BlockSalesBeforeDate");
                 ReportPropertyChanged("BlockSalesBeforeDate");
                 OnBlockSalesBeforeDateChanged();
             }
@@ -12889,7 +12864,7 @@ namespace BerkeleyEntities
             {
                 OnLastCostChanging(value);
                 ReportPropertyChanging("LastCost");
-                _LastCost = StructuralObject.SetValidValue(value);
+                _LastCost = StructuralObject.SetValidValue(value, "LastCost");
                 ReportPropertyChanged("LastCost");
                 OnLastCostChanged();
             }
@@ -12913,7 +12888,7 @@ namespace BerkeleyEntities
             {
                 OnReplacementCostChanging(value);
                 ReportPropertyChanging("ReplacementCost");
-                _ReplacementCost = StructuralObject.SetValidValue(value);
+                _ReplacementCost = StructuralObject.SetValidValue(value, "ReplacementCost");
                 ReportPropertyChanged("ReplacementCost");
                 OnReplacementCostChanged();
             }
@@ -12937,7 +12912,7 @@ namespace BerkeleyEntities
             {
                 OnWebItemChanging(value);
                 ReportPropertyChanging("WebItem");
-                _WebItem = StructuralObject.SetValidValue(value);
+                _WebItem = StructuralObject.SetValidValue(value, "WebItem");
                 ReportPropertyChanged("WebItem");
                 OnWebItemChanged();
             }
@@ -12961,7 +12936,7 @@ namespace BerkeleyEntities
             {
                 OnBlockSalesTypeChanging(value);
                 ReportPropertyChanging("BlockSalesType");
-                _BlockSalesType = StructuralObject.SetValidValue(value);
+                _BlockSalesType = StructuralObject.SetValidValue(value, "BlockSalesType");
                 ReportPropertyChanged("BlockSalesType");
                 OnBlockSalesTypeChanged();
             }
@@ -12985,7 +12960,7 @@ namespace BerkeleyEntities
             {
                 OnBlockSalesScheduleIDChanging(value);
                 ReportPropertyChanging("BlockSalesScheduleID");
-                _BlockSalesScheduleID = StructuralObject.SetValidValue(value);
+                _BlockSalesScheduleID = StructuralObject.SetValidValue(value, "BlockSalesScheduleID");
                 ReportPropertyChanged("BlockSalesScheduleID");
                 OnBlockSalesScheduleIDChanged();
             }
@@ -13009,7 +12984,7 @@ namespace BerkeleyEntities
             {
                 OnSaleTypeChanging(value);
                 ReportPropertyChanging("SaleType");
-                _SaleType = StructuralObject.SetValidValue(value);
+                _SaleType = StructuralObject.SetValidValue(value, "SaleType");
                 ReportPropertyChanged("SaleType");
                 OnSaleTypeChanged();
             }
@@ -13033,7 +13008,7 @@ namespace BerkeleyEntities
             {
                 OnSaleScheduleIDChanging(value);
                 ReportPropertyChanging("SaleScheduleID");
-                _SaleScheduleID = StructuralObject.SetValidValue(value);
+                _SaleScheduleID = StructuralObject.SetValidValue(value, "SaleScheduleID");
                 ReportPropertyChanged("SaleScheduleID");
                 OnSaleScheduleIDChanged();
             }
@@ -13057,7 +13032,7 @@ namespace BerkeleyEntities
             {
                 OnConsignmentChanging(value);
                 ReportPropertyChanging("Consignment");
-                _Consignment = StructuralObject.SetValidValue(value);
+                _Consignment = StructuralObject.SetValidValue(value, "Consignment");
                 ReportPropertyChanged("Consignment");
                 OnConsignmentChanged();
             }
@@ -13081,7 +13056,7 @@ namespace BerkeleyEntities
             {
                 OnInactiveChanging(value);
                 ReportPropertyChanging("Inactive");
-                _Inactive = StructuralObject.SetValidValue(value);
+                _Inactive = StructuralObject.SetValidValue(value, "Inactive");
                 ReportPropertyChanged("Inactive");
                 OnInactiveChanged();
             }
@@ -13105,7 +13080,7 @@ namespace BerkeleyEntities
             {
                 OnLastCountedChanging(value);
                 ReportPropertyChanging("LastCounted");
-                _LastCounted = StructuralObject.SetValidValue(value);
+                _LastCounted = StructuralObject.SetValidValue(value, "LastCounted");
                 ReportPropertyChanged("LastCounted");
                 OnLastCountedChanged();
             }
@@ -13129,7 +13104,7 @@ namespace BerkeleyEntities
             {
                 OnDoNotOrderChanging(value);
                 ReportPropertyChanging("DoNotOrder");
-                _DoNotOrder = StructuralObject.SetValidValue(value);
+                _DoNotOrder = StructuralObject.SetValidValue(value, "DoNotOrder");
                 ReportPropertyChanged("DoNotOrder");
                 OnDoNotOrderChanged();
             }
@@ -13153,7 +13128,7 @@ namespace BerkeleyEntities
             {
                 OnMSRPChanging(value);
                 ReportPropertyChanging("MSRP");
-                _MSRP = StructuralObject.SetValidValue(value);
+                _MSRP = StructuralObject.SetValidValue(value, "MSRP");
                 ReportPropertyChanged("MSRP");
                 OnMSRPChanged();
             }
@@ -13177,7 +13152,7 @@ namespace BerkeleyEntities
             {
                 OnDateCreatedChanging(value);
                 ReportPropertyChanging("DateCreated");
-                _DateCreated = StructuralObject.SetValidValue(value);
+                _DateCreated = StructuralObject.SetValidValue(value, "DateCreated");
                 ReportPropertyChanged("DateCreated");
                 OnDateCreatedChanged();
             }
@@ -13201,7 +13176,7 @@ namespace BerkeleyEntities
             {
                 OnContentChanging(value);
                 ReportPropertyChanging("Content");
-                _Content = StructuralObject.SetValidValue(value, false);
+                _Content = StructuralObject.SetValidValue(value, false, "Content");
                 ReportPropertyChanged("Content");
                 OnContentChanged();
             }
@@ -13225,7 +13200,7 @@ namespace BerkeleyEntities
             {
                 OnUsuallyShipChanging(value);
                 ReportPropertyChanging("UsuallyShip");
-                _UsuallyShip = StructuralObject.SetValidValue(value, false);
+                _UsuallyShip = StructuralObject.SetValidValue(value, false, "UsuallyShip");
                 ReportPropertyChanged("UsuallyShip");
                 OnUsuallyShipChanged();
             }
@@ -13249,7 +13224,7 @@ namespace BerkeleyEntities
             {
                 OnNumberFormatChanging(value);
                 ReportPropertyChanging("NumberFormat");
-                _NumberFormat = StructuralObject.SetValidValue(value, true);
+                _NumberFormat = StructuralObject.SetValidValue(value, true, "NumberFormat");
                 ReportPropertyChanged("NumberFormat");
                 OnNumberFormatChanged();
             }
@@ -13273,7 +13248,7 @@ namespace BerkeleyEntities
             {
                 OnItemCannotBeRetChanging(value);
                 ReportPropertyChanging("ItemCannotBeRet");
-                _ItemCannotBeRet = StructuralObject.SetValidValue(value);
+                _ItemCannotBeRet = StructuralObject.SetValidValue(value, "ItemCannotBeRet");
                 ReportPropertyChanged("ItemCannotBeRet");
                 OnItemCannotBeRetChanged();
             }
@@ -13297,7 +13272,7 @@ namespace BerkeleyEntities
             {
                 OnItemCannotBeSoldChanging(value);
                 ReportPropertyChanging("ItemCannotBeSold");
-                _ItemCannotBeSold = StructuralObject.SetValidValue(value);
+                _ItemCannotBeSold = StructuralObject.SetValidValue(value, "ItemCannotBeSold");
                 ReportPropertyChanged("ItemCannotBeSold");
                 OnItemCannotBeSoldChanged();
             }
@@ -13321,7 +13296,7 @@ namespace BerkeleyEntities
             {
                 OnIsAutogeneratedChanging(value);
                 ReportPropertyChanging("IsAutogenerated");
-                _IsAutogenerated = StructuralObject.SetValidValue(value);
+                _IsAutogenerated = StructuralObject.SetValidValue(value, "IsAutogenerated");
                 ReportPropertyChanged("IsAutogenerated");
                 OnIsAutogeneratedChanged();
             }
@@ -13345,7 +13320,7 @@ namespace BerkeleyEntities
             {
                 OnIsGlobalvoucherChanging(value);
                 ReportPropertyChanging("IsGlobalvoucher");
-                _IsGlobalvoucher = StructuralObject.SetValidValue(value);
+                _IsGlobalvoucher = StructuralObject.SetValidValue(value, "IsGlobalvoucher");
                 ReportPropertyChanged("IsGlobalvoucher");
                 OnIsGlobalvoucherChanged();
             }
@@ -13369,7 +13344,7 @@ namespace BerkeleyEntities
             {
                 OnDeleteZeroBalanceEntryChanging(value);
                 ReportPropertyChanging("DeleteZeroBalanceEntry");
-                _DeleteZeroBalanceEntry = StructuralObject.SetValidValue(value);
+                _DeleteZeroBalanceEntry = StructuralObject.SetValidValue(value, "DeleteZeroBalanceEntry");
                 ReportPropertyChanged("DeleteZeroBalanceEntry");
                 OnDeleteZeroBalanceEntryChanged();
             }
@@ -13393,7 +13368,7 @@ namespace BerkeleyEntities
             {
                 OnTenderIDChanging(value);
                 ReportPropertyChanging("TenderID");
-                _TenderID = StructuralObject.SetValidValue(value);
+                _TenderID = StructuralObject.SetValidValue(value, "TenderID");
                 ReportPropertyChanged("TenderID");
                 OnTenderIDChanged();
             }
@@ -13404,7 +13379,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -13856,7 +13830,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -13875,7 +13849,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -13900,7 +13874,7 @@ namespace BerkeleyEntities
             {
                 OnDescriptionChanging(value);
                 ReportPropertyChanging("Description");
-                _Description = StructuralObject.SetValidValue(value, false);
+                _Description = StructuralObject.SetValidValue(value, false, "Description");
                 ReportPropertyChanged("Description");
                 OnDescriptionChanged();
             }
@@ -13924,7 +13898,7 @@ namespace BerkeleyEntities
             {
                 OnDimensionsChanging(value);
                 ReportPropertyChanging("Dimensions");
-                _Dimensions = StructuralObject.SetValidValue(value);
+                _Dimensions = StructuralObject.SetValidValue(value, "Dimensions");
                 ReportPropertyChanged("Dimensions");
                 OnDimensionsChanged();
             }
@@ -13948,7 +13922,7 @@ namespace BerkeleyEntities
             {
                 OnTitle1Changing(value);
                 ReportPropertyChanging("Title1");
-                _Title1 = StructuralObject.SetValidValue(value, false);
+                _Title1 = StructuralObject.SetValidValue(value, false, "Title1");
                 ReportPropertyChanged("Title1");
                 OnTitle1Changed();
             }
@@ -13972,7 +13946,7 @@ namespace BerkeleyEntities
             {
                 OnTitle2Changing(value);
                 ReportPropertyChanging("Title2");
-                _Title2 = StructuralObject.SetValidValue(value, false);
+                _Title2 = StructuralObject.SetValidValue(value, false, "Title2");
                 ReportPropertyChanged("Title2");
                 OnTitle2Changed();
             }
@@ -13996,7 +13970,7 @@ namespace BerkeleyEntities
             {
                 OnTitle3Changing(value);
                 ReportPropertyChanging("Title3");
-                _Title3 = StructuralObject.SetValidValue(value, false);
+                _Title3 = StructuralObject.SetValidValue(value, false, "Title3");
                 ReportPropertyChanged("Title3");
                 OnTitle3Changed();
             }
@@ -14020,7 +13994,7 @@ namespace BerkeleyEntities
             {
                 OnClassTypeChanging(value);
                 ReportPropertyChanging("ClassType");
-                _ClassType = StructuralObject.SetValidValue(value);
+                _ClassType = StructuralObject.SetValidValue(value, "ClassType");
                 ReportPropertyChanged("ClassType");
                 OnClassTypeChanged();
             }
@@ -14044,7 +14018,7 @@ namespace BerkeleyEntities
             {
                 OnDBTimeStampChanging(value);
                 ReportPropertyChanging("DBTimeStamp");
-                _DBTimeStamp = StructuralObject.SetValidValue(value, true);
+                _DBTimeStamp = StructuralObject.SetValidValue(value, true, "DBTimeStamp");
                 ReportPropertyChanged("DBTimeStamp");
                 OnDBTimeStampChanged();
             }
@@ -14068,7 +14042,7 @@ namespace BerkeleyEntities
             {
                 OnUseComponentPriceChanging(value);
                 ReportPropertyChanging("UseComponentPrice");
-                _UseComponentPrice = StructuralObject.SetValidValue(value);
+                _UseComponentPrice = StructuralObject.SetValidValue(value, "UseComponentPrice");
                 ReportPropertyChanged("UseComponentPrice");
                 OnUseComponentPriceChanged();
             }
@@ -14092,7 +14066,7 @@ namespace BerkeleyEntities
             {
                 OnHQIDChanging(value);
                 ReportPropertyChanging("HQID");
-                _HQID = StructuralObject.SetValidValue(value);
+                _HQID = StructuralObject.SetValidValue(value, "HQID");
                 ReportPropertyChanged("HQID");
                 OnHQIDChanged();
             }
@@ -14116,7 +14090,7 @@ namespace BerkeleyEntities
             {
                 OnItemLookupCodeChanging(value);
                 ReportPropertyChanging("ItemLookupCode");
-                _ItemLookupCode = StructuralObject.SetValidValue(value, false);
+                _ItemLookupCode = StructuralObject.SetValidValue(value, false, "ItemLookupCode");
                 ReportPropertyChanged("ItemLookupCode");
                 OnItemLookupCodeChanged();
             }
@@ -14140,7 +14114,7 @@ namespace BerkeleyEntities
             {
                 OnNotesChanging(value);
                 ReportPropertyChanging("Notes");
-                _Notes = StructuralObject.SetValidValue(value, true);
+                _Notes = StructuralObject.SetValidValue(value, true, "Notes");
                 ReportPropertyChanged("Notes");
                 OnNotesChanged();
             }
@@ -14164,7 +14138,7 @@ namespace BerkeleyEntities
             {
                 OnDepartmentIDChanging(value);
                 ReportPropertyChanging("DepartmentID");
-                _DepartmentID = StructuralObject.SetValidValue(value);
+                _DepartmentID = StructuralObject.SetValidValue(value, "DepartmentID");
                 ReportPropertyChanged("DepartmentID");
                 OnDepartmentIDChanged();
             }
@@ -14188,7 +14162,7 @@ namespace BerkeleyEntities
             {
                 OnCategoryIDChanging(value);
                 ReportPropertyChanging("CategoryID");
-                _CategoryID = StructuralObject.SetValidValue(value);
+                _CategoryID = StructuralObject.SetValidValue(value, "CategoryID");
                 ReportPropertyChanged("CategoryID");
                 OnCategoryIDChanged();
             }
@@ -14212,7 +14186,7 @@ namespace BerkeleyEntities
             {
                 OnPriceChanging(value);
                 ReportPropertyChanging("Price");
-                _Price = StructuralObject.SetValidValue(value);
+                _Price = StructuralObject.SetValidValue(value, "Price");
                 ReportPropertyChanged("Price");
                 OnPriceChanged();
             }
@@ -14236,7 +14210,7 @@ namespace BerkeleyEntities
             {
                 OnCostChanging(value);
                 ReportPropertyChanging("Cost");
-                _Cost = StructuralObject.SetValidValue(value);
+                _Cost = StructuralObject.SetValidValue(value, "Cost");
                 ReportPropertyChanged("Cost");
                 OnCostChanged();
             }
@@ -14260,7 +14234,7 @@ namespace BerkeleyEntities
             {
                 OnSupplierIDChanging(value);
                 ReportPropertyChanging("SupplierID");
-                _SupplierID = StructuralObject.SetValidValue(value);
+                _SupplierID = StructuralObject.SetValidValue(value, "SupplierID");
                 ReportPropertyChanged("SupplierID");
                 OnSupplierIDChanged();
             }
@@ -14284,7 +14258,7 @@ namespace BerkeleyEntities
             {
                 OnBarcodeFormatChanging(value);
                 ReportPropertyChanging("BarcodeFormat");
-                _BarcodeFormat = StructuralObject.SetValidValue(value);
+                _BarcodeFormat = StructuralObject.SetValidValue(value, "BarcodeFormat");
                 ReportPropertyChanged("BarcodeFormat");
                 OnBarcodeFormatChanged();
             }
@@ -14308,7 +14282,7 @@ namespace BerkeleyEntities
             {
                 OnSubDescription1Changing(value);
                 ReportPropertyChanging("SubDescription1");
-                _SubDescription1 = StructuralObject.SetValidValue(value, false);
+                _SubDescription1 = StructuralObject.SetValidValue(value, false, "SubDescription1");
                 ReportPropertyChanged("SubDescription1");
                 OnSubDescription1Changed();
             }
@@ -14332,7 +14306,7 @@ namespace BerkeleyEntities
             {
                 OnSubDescription2Changing(value);
                 ReportPropertyChanging("SubDescription2");
-                _SubDescription2 = StructuralObject.SetValidValue(value, false);
+                _SubDescription2 = StructuralObject.SetValidValue(value, false, "SubDescription2");
                 ReportPropertyChanged("SubDescription2");
                 OnSubDescription2Changed();
             }
@@ -14356,7 +14330,7 @@ namespace BerkeleyEntities
             {
                 OnSubDescription3Changing(value);
                 ReportPropertyChanging("SubDescription3");
-                _SubDescription3 = StructuralObject.SetValidValue(value, false);
+                _SubDescription3 = StructuralObject.SetValidValue(value, false, "SubDescription3");
                 ReportPropertyChanged("SubDescription3");
                 OnSubDescription3Changed();
             }
@@ -14380,7 +14354,7 @@ namespace BerkeleyEntities
             {
                 OnTaxIDChanging(value);
                 ReportPropertyChanging("TaxID");
-                _TaxID = StructuralObject.SetValidValue(value);
+                _TaxID = StructuralObject.SetValidValue(value, "TaxID");
                 ReportPropertyChanged("TaxID");
                 OnTaxIDChanged();
             }
@@ -14391,7 +14365,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -14595,7 +14568,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -14614,7 +14587,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -14639,7 +14612,7 @@ namespace BerkeleyEntities
             {
                 OnItemClassIDChanging(value);
                 ReportPropertyChanging("ItemClassID");
-                _ItemClassID = StructuralObject.SetValidValue(value);
+                _ItemClassID = StructuralObject.SetValidValue(value, "ItemClassID");
                 ReportPropertyChanged("ItemClassID");
                 OnItemClassIDChanged();
             }
@@ -14663,7 +14636,7 @@ namespace BerkeleyEntities
             {
                 OnItemIDChanging(value);
                 ReportPropertyChanging("ItemID");
-                _ItemID = StructuralObject.SetValidValue(value);
+                _ItemID = StructuralObject.SetValidValue(value, "ItemID");
                 ReportPropertyChanged("ItemID");
                 OnItemIDChanged();
             }
@@ -14687,7 +14660,7 @@ namespace BerkeleyEntities
             {
                 OnQuantityChanging(value);
                 ReportPropertyChanging("Quantity");
-                _Quantity = StructuralObject.SetValidValue(value);
+                _Quantity = StructuralObject.SetValidValue(value, "Quantity");
                 ReportPropertyChanged("Quantity");
                 OnQuantityChanged();
             }
@@ -14711,7 +14684,7 @@ namespace BerkeleyEntities
             {
                 OnDetail1Changing(value);
                 ReportPropertyChanging("Detail1");
-                _Detail1 = StructuralObject.SetValidValue(value, false);
+                _Detail1 = StructuralObject.SetValidValue(value, false, "Detail1");
                 ReportPropertyChanged("Detail1");
                 OnDetail1Changed();
             }
@@ -14735,7 +14708,7 @@ namespace BerkeleyEntities
             {
                 OnDetail2Changing(value);
                 ReportPropertyChanging("Detail2");
-                _Detail2 = StructuralObject.SetValidValue(value, false);
+                _Detail2 = StructuralObject.SetValidValue(value, false, "Detail2");
                 ReportPropertyChanged("Detail2");
                 OnDetail2Changed();
             }
@@ -14759,7 +14732,7 @@ namespace BerkeleyEntities
             {
                 OnDetail3Changing(value);
                 ReportPropertyChanging("Detail3");
-                _Detail3 = StructuralObject.SetValidValue(value, false);
+                _Detail3 = StructuralObject.SetValidValue(value, false, "Detail3");
                 ReportPropertyChanged("Detail3");
                 OnDetail3Changed();
             }
@@ -14783,7 +14756,7 @@ namespace BerkeleyEntities
             {
                 OnLastUpdatedChanging(value);
                 ReportPropertyChanging("LastUpdated");
-                _LastUpdated = StructuralObject.SetValidValue(value);
+                _LastUpdated = StructuralObject.SetValidValue(value, "LastUpdated");
                 ReportPropertyChanged("LastUpdated");
                 OnLastUpdatedChanged();
             }
@@ -14807,7 +14780,7 @@ namespace BerkeleyEntities
             {
                 OnDBTimeStampChanging(value);
                 ReportPropertyChanging("DBTimeStamp");
-                _DBTimeStamp = StructuralObject.SetValidValue(value, true);
+                _DBTimeStamp = StructuralObject.SetValidValue(value, true, "DBTimeStamp");
                 ReportPropertyChanged("DBTimeStamp");
                 OnDBTimeStampChanged();
             }
@@ -14831,7 +14804,7 @@ namespace BerkeleyEntities
             {
                 OnPriceChanging(value);
                 ReportPropertyChanging("Price");
-                _Price = StructuralObject.SetValidValue(value);
+                _Price = StructuralObject.SetValidValue(value, "Price");
                 ReportPropertyChanged("Price");
                 OnPriceChanged();
             }
@@ -14842,7 +14815,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -14960,7 +14932,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -14979,7 +14951,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -15004,7 +14976,7 @@ namespace BerkeleyEntities
             {
                 OnItemClassIDChanging(value);
                 ReportPropertyChanging("ItemClassID");
-                _ItemClassID = StructuralObject.SetValidValue(value);
+                _ItemClassID = StructuralObject.SetValidValue(value, "ItemClassID");
                 ReportPropertyChanged("ItemClassID");
                 OnItemClassIDChanged();
             }
@@ -15028,7 +15000,7 @@ namespace BerkeleyEntities
             {
                 OnDimensionChanging(value);
                 ReportPropertyChanging("Dimension");
-                _Dimension = StructuralObject.SetValidValue(value);
+                _Dimension = StructuralObject.SetValidValue(value, "Dimension");
                 ReportPropertyChanged("Dimension");
                 OnDimensionChanged();
             }
@@ -15052,7 +15024,7 @@ namespace BerkeleyEntities
             {
                 OnAttributeChanging(value);
                 ReportPropertyChanging("Attribute");
-                _Attribute = StructuralObject.SetValidValue(value, false);
+                _Attribute = StructuralObject.SetValidValue(value, false, "Attribute");
                 ReportPropertyChanged("Attribute");
                 OnAttributeChanged();
             }
@@ -15076,7 +15048,7 @@ namespace BerkeleyEntities
             {
                 OnCodeChanging(value);
                 ReportPropertyChanging("Code");
-                _Code = StructuralObject.SetValidValue(value, false);
+                _Code = StructuralObject.SetValidValue(value, false, "Code");
                 ReportPropertyChanged("Code");
                 OnCodeChanged();
             }
@@ -15100,7 +15072,7 @@ namespace BerkeleyEntities
             {
                 OnDisplayOrderChanging(value);
                 ReportPropertyChanging("DisplayOrder");
-                _DisplayOrder = StructuralObject.SetValidValue(value);
+                _DisplayOrder = StructuralObject.SetValidValue(value, "DisplayOrder");
                 ReportPropertyChanged("DisplayOrder");
                 OnDisplayOrderChanged();
             }
@@ -15124,7 +15096,7 @@ namespace BerkeleyEntities
             {
                 OnInactiveChanging(value);
                 ReportPropertyChanging("Inactive");
-                _Inactive = StructuralObject.SetValidValue(value);
+                _Inactive = StructuralObject.SetValidValue(value, "Inactive");
                 ReportPropertyChanged("Inactive");
                 OnInactiveChanged();
             }
@@ -15148,7 +15120,7 @@ namespace BerkeleyEntities
             {
                 OnHQIDChanging(value);
                 ReportPropertyChanging("HQID");
-                _HQID = StructuralObject.SetValidValue(value);
+                _HQID = StructuralObject.SetValidValue(value, "HQID");
                 ReportPropertyChanged("HQID");
                 OnHQIDChanged();
             }
@@ -15159,7 +15131,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -15235,7 +15206,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -15254,7 +15225,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -15279,7 +15250,7 @@ namespace BerkeleyEntities
             {
                 OnStoreIDChanging(value);
                 ReportPropertyChanging("StoreID");
-                _StoreID = StructuralObject.SetValidValue(value);
+                _StoreID = StructuralObject.SetValidValue(value, "StoreID");
                 ReportPropertyChanged("StoreID");
                 OnStoreIDChanged();
             }
@@ -15303,7 +15274,7 @@ namespace BerkeleyEntities
             {
                 OnOpenTimeChanging(value);
                 ReportPropertyChanging("OpenTime");
-                _OpenTime = StructuralObject.SetValidValue(value);
+                _OpenTime = StructuralObject.SetValidValue(value, "OpenTime");
                 ReportPropertyChanged("OpenTime");
                 OnOpenTimeChanged();
             }
@@ -15327,7 +15298,7 @@ namespace BerkeleyEntities
             {
                 OnCloseTimeChanging(value);
                 ReportPropertyChanging("CloseTime");
-                _CloseTime = StructuralObject.SetValidValue(value);
+                _CloseTime = StructuralObject.SetValidValue(value, "CloseTime");
                 ReportPropertyChanged("CloseTime");
                 OnCloseTimeChanged();
             }
@@ -15351,7 +15322,7 @@ namespace BerkeleyEntities
             {
                 OnStatusChanging(value);
                 ReportPropertyChanging("Status");
-                _Status = StructuralObject.SetValidValue(value);
+                _Status = StructuralObject.SetValidValue(value, "Status");
                 ReportPropertyChanged("Status");
                 OnStatusChanged();
             }
@@ -15375,7 +15346,7 @@ namespace BerkeleyEntities
             {
                 OnLastRefreshChanging(value);
                 ReportPropertyChanging("LastRefresh");
-                _LastRefresh = StructuralObject.SetValidValue(value);
+                _LastRefresh = StructuralObject.SetValidValue(value, "LastRefresh");
                 ReportPropertyChanged("LastRefresh");
                 OnLastRefreshChanged();
             }
@@ -15399,7 +15370,7 @@ namespace BerkeleyEntities
             {
                 OnDescriptionChanging(value);
                 ReportPropertyChanging("Description");
-                _Description = StructuralObject.SetValidValue(value, false);
+                _Description = StructuralObject.SetValidValue(value, false, "Description");
                 ReportPropertyChanged("Description");
                 OnDescriptionChanged();
             }
@@ -15423,7 +15394,7 @@ namespace BerkeleyEntities
             {
                 OnCodeChanging(value);
                 ReportPropertyChanging("Code");
-                _Code = StructuralObject.SetValidValue(value, false);
+                _Code = StructuralObject.SetValidValue(value, false, "Code");
                 ReportPropertyChanged("Code");
                 OnCodeChanged();
             }
@@ -15447,7 +15418,7 @@ namespace BerkeleyEntities
             {
                 OnDBTimeStampChanging(value);
                 ReportPropertyChanging("DBTimeStamp");
-                _DBTimeStamp = StructuralObject.SetValidValue(value, true);
+                _DBTimeStamp = StructuralObject.SetValidValue(value, true, "DBTimeStamp");
                 ReportPropertyChanged("DBTimeStamp");
                 OnDBTimeStampChanged();
             }
@@ -15458,7 +15429,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -15564,7 +15534,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -15583,7 +15553,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -15608,7 +15578,7 @@ namespace BerkeleyEntities
             {
                 OnStoreIDChanging(value);
                 ReportPropertyChanging("StoreID");
-                _StoreID = StructuralObject.SetValidValue(value);
+                _StoreID = StructuralObject.SetValidValue(value, "StoreID");
                 ReportPropertyChanged("StoreID");
                 OnStoreIDChanged();
             }
@@ -15632,7 +15602,7 @@ namespace BerkeleyEntities
             {
                 OnPhysicalInventoryIDChanging(value);
                 ReportPropertyChanging("PhysicalInventoryID");
-                _PhysicalInventoryID = StructuralObject.SetValidValue(value);
+                _PhysicalInventoryID = StructuralObject.SetValidValue(value, "PhysicalInventoryID");
                 ReportPropertyChanged("PhysicalInventoryID");
                 OnPhysicalInventoryIDChanged();
             }
@@ -15656,7 +15626,7 @@ namespace BerkeleyEntities
             {
                 OnReasonCodeIDChanging(value);
                 ReportPropertyChanging("ReasonCodeID");
-                _ReasonCodeID = StructuralObject.SetValidValue(value);
+                _ReasonCodeID = StructuralObject.SetValidValue(value, "ReasonCodeID");
                 ReportPropertyChanged("ReasonCodeID");
                 OnReasonCodeIDChanged();
             }
@@ -15680,7 +15650,7 @@ namespace BerkeleyEntities
             {
                 OnCountTimeChanging(value);
                 ReportPropertyChanging("CountTime");
-                _CountTime = StructuralObject.SetValidValue(value);
+                _CountTime = StructuralObject.SetValidValue(value, "CountTime");
                 ReportPropertyChanged("CountTime");
                 OnCountTimeChanged();
             }
@@ -15704,7 +15674,7 @@ namespace BerkeleyEntities
             {
                 OnItemIDChanging(value);
                 ReportPropertyChanging("ItemID");
-                _ItemID = StructuralObject.SetValidValue(value);
+                _ItemID = StructuralObject.SetValidValue(value, "ItemID");
                 ReportPropertyChanged("ItemID");
                 OnItemIDChanged();
             }
@@ -15728,7 +15698,7 @@ namespace BerkeleyEntities
             {
                 OnBinLocationChanging(value);
                 ReportPropertyChanging("BinLocation");
-                _BinLocation = StructuralObject.SetValidValue(value, false);
+                _BinLocation = StructuralObject.SetValidValue(value, false, "BinLocation");
                 ReportPropertyChanged("BinLocation");
                 OnBinLocationChanged();
             }
@@ -15752,7 +15722,7 @@ namespace BerkeleyEntities
             {
                 OnPriceChanging(value);
                 ReportPropertyChanging("Price");
-                _Price = StructuralObject.SetValidValue(value);
+                _Price = StructuralObject.SetValidValue(value, "Price");
                 ReportPropertyChanged("Price");
                 OnPriceChanged();
             }
@@ -15776,7 +15746,7 @@ namespace BerkeleyEntities
             {
                 OnCostChanging(value);
                 ReportPropertyChanging("Cost");
-                _Cost = StructuralObject.SetValidValue(value);
+                _Cost = StructuralObject.SetValidValue(value, "Cost");
                 ReportPropertyChanged("Cost");
                 OnCostChanged();
             }
@@ -15800,7 +15770,7 @@ namespace BerkeleyEntities
             {
                 OnQuantityCountedChanging(value);
                 ReportPropertyChanging("QuantityCounted");
-                _QuantityCounted = StructuralObject.SetValidValue(value);
+                _QuantityCounted = StructuralObject.SetValidValue(value, "QuantityCounted");
                 ReportPropertyChanged("QuantityCounted");
                 OnQuantityCountedChanged();
             }
@@ -15824,7 +15794,7 @@ namespace BerkeleyEntities
             {
                 OnQuantitySoldChanging(value);
                 ReportPropertyChanging("QuantitySold");
-                _QuantitySold = StructuralObject.SetValidValue(value);
+                _QuantitySold = StructuralObject.SetValidValue(value, "QuantitySold");
                 ReportPropertyChanged("QuantitySold");
                 OnQuantitySoldChanged();
             }
@@ -15848,7 +15818,7 @@ namespace BerkeleyEntities
             {
                 OnQuantityReturnedChanging(value);
                 ReportPropertyChanging("QuantityReturned");
-                _QuantityReturned = StructuralObject.SetValidValue(value);
+                _QuantityReturned = StructuralObject.SetValidValue(value, "QuantityReturned");
                 ReportPropertyChanged("QuantityReturned");
                 OnQuantityReturnedChanged();
             }
@@ -15872,7 +15842,7 @@ namespace BerkeleyEntities
             {
                 OnQuantityXferInChanging(value);
                 ReportPropertyChanging("QuantityXferIn");
-                _QuantityXferIn = StructuralObject.SetValidValue(value);
+                _QuantityXferIn = StructuralObject.SetValidValue(value, "QuantityXferIn");
                 ReportPropertyChanged("QuantityXferIn");
                 OnQuantityXferInChanged();
             }
@@ -15896,7 +15866,7 @@ namespace BerkeleyEntities
             {
                 OnQuantityXferOutChanging(value);
                 ReportPropertyChanging("QuantityXferOut");
-                _QuantityXferOut = StructuralObject.SetValidValue(value);
+                _QuantityXferOut = StructuralObject.SetValidValue(value, "QuantityXferOut");
                 ReportPropertyChanged("QuantityXferOut");
                 OnQuantityXferOutChanged();
             }
@@ -15920,7 +15890,7 @@ namespace BerkeleyEntities
             {
                 OnQuantityAdjustedChanging(value);
                 ReportPropertyChanging("QuantityAdjusted");
-                _QuantityAdjusted = StructuralObject.SetValidValue(value);
+                _QuantityAdjusted = StructuralObject.SetValidValue(value, "QuantityAdjusted");
                 ReportPropertyChanged("QuantityAdjusted");
                 OnQuantityAdjustedChanged();
             }
@@ -15944,7 +15914,7 @@ namespace BerkeleyEntities
             {
                 OnQuantityToOfflineChanging(value);
                 ReportPropertyChanging("QuantityToOffline");
-                _QuantityToOffline = StructuralObject.SetValidValue(value);
+                _QuantityToOffline = StructuralObject.SetValidValue(value, "QuantityToOffline");
                 ReportPropertyChanged("QuantityToOffline");
                 OnQuantityToOfflineChanged();
             }
@@ -15968,7 +15938,7 @@ namespace BerkeleyEntities
             {
                 OnQuantityFromOfflineChanging(value);
                 ReportPropertyChanging("QuantityFromOffline");
-                _QuantityFromOffline = StructuralObject.SetValidValue(value);
+                _QuantityFromOffline = StructuralObject.SetValidValue(value, "QuantityFromOffline");
                 ReportPropertyChanged("QuantityFromOffline");
                 OnQuantityFromOfflineChanged();
             }
@@ -15992,7 +15962,7 @@ namespace BerkeleyEntities
             {
                 OnQuantityRefreshedChanging(value);
                 ReportPropertyChanging("QuantityRefreshed");
-                _QuantityRefreshed = StructuralObject.SetValidValue(value);
+                _QuantityRefreshed = StructuralObject.SetValidValue(value, "QuantityRefreshed");
                 ReportPropertyChanged("QuantityRefreshed");
                 OnQuantityRefreshedChanged();
             }
@@ -16016,7 +15986,7 @@ namespace BerkeleyEntities
             {
                 OnDBTimeStampChanging(value);
                 ReportPropertyChanging("DBTimeStamp");
-                _DBTimeStamp = StructuralObject.SetValidValue(value, true);
+                _DBTimeStamp = StructuralObject.SetValidValue(value, true, "DBTimeStamp");
                 ReportPropertyChanged("DBTimeStamp");
                 OnDBTimeStampChanged();
             }
@@ -16027,7 +15997,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -16207,7 +16176,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -16224,7 +16193,7 @@ namespace BerkeleyEntities
             {
                 OnLastUpdatedChanging(value);
                 ReportPropertyChanging("LastUpdated");
-                _LastUpdated = StructuralObject.SetValidValue(value);
+                _LastUpdated = StructuralObject.SetValidValue(value, "LastUpdated");
                 ReportPropertyChanged("LastUpdated");
                 OnLastUpdatedChanged();
             }
@@ -16248,7 +16217,7 @@ namespace BerkeleyEntities
             {
                 OnPOTitleChanging(value);
                 ReportPropertyChanging("POTitle");
-                _POTitle = StructuralObject.SetValidValue(value, false);
+                _POTitle = StructuralObject.SetValidValue(value, false, "POTitle");
                 ReportPropertyChanged("POTitle");
                 OnPOTitleChanged();
             }
@@ -16272,7 +16241,7 @@ namespace BerkeleyEntities
             {
                 OnPOTypeChanging(value);
                 ReportPropertyChanging("POType");
-                _POType = StructuralObject.SetValidValue(value);
+                _POType = StructuralObject.SetValidValue(value, "POType");
                 ReportPropertyChanged("POType");
                 OnPOTypeChanged();
             }
@@ -16296,7 +16265,7 @@ namespace BerkeleyEntities
             {
                 OnStoreIDChanging(value);
                 ReportPropertyChanging("StoreID");
-                _StoreID = StructuralObject.SetValidValue(value);
+                _StoreID = StructuralObject.SetValidValue(value, "StoreID");
                 ReportPropertyChanged("StoreID");
                 OnStoreIDChanged();
             }
@@ -16320,7 +16289,7 @@ namespace BerkeleyEntities
             {
                 OnWorksheetIDChanging(value);
                 ReportPropertyChanging("WorksheetID");
-                _WorksheetID = StructuralObject.SetValidValue(value);
+                _WorksheetID = StructuralObject.SetValidValue(value, "WorksheetID");
                 ReportPropertyChanged("WorksheetID");
                 OnWorksheetIDChanged();
             }
@@ -16346,7 +16315,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -16371,7 +16340,7 @@ namespace BerkeleyEntities
             {
                 OnPONumberChanging(value);
                 ReportPropertyChanging("PONumber");
-                _PONumber = StructuralObject.SetValidValue(value, false);
+                _PONumber = StructuralObject.SetValidValue(value, false, "PONumber");
                 ReportPropertyChanged("PONumber");
                 OnPONumberChanged();
             }
@@ -16395,7 +16364,7 @@ namespace BerkeleyEntities
             {
                 OnStatusChanging(value);
                 ReportPropertyChanging("Status");
-                _Status = StructuralObject.SetValidValue(value);
+                _Status = StructuralObject.SetValidValue(value, "Status");
                 ReportPropertyChanged("Status");
                 OnStatusChanged();
             }
@@ -16419,7 +16388,7 @@ namespace BerkeleyEntities
             {
                 OnDateCreatedChanging(value);
                 ReportPropertyChanging("DateCreated");
-                _DateCreated = StructuralObject.SetValidValue(value);
+                _DateCreated = StructuralObject.SetValidValue(value, "DateCreated");
                 ReportPropertyChanged("DateCreated");
                 OnDateCreatedChanged();
             }
@@ -16443,7 +16412,7 @@ namespace BerkeleyEntities
             {
                 OnToChanging(value);
                 ReportPropertyChanging("To");
-                _To = StructuralObject.SetValidValue(value, false);
+                _To = StructuralObject.SetValidValue(value, false, "To");
                 ReportPropertyChanged("To");
                 OnToChanged();
             }
@@ -16467,7 +16436,7 @@ namespace BerkeleyEntities
             {
                 OnShipToChanging(value);
                 ReportPropertyChanging("ShipTo");
-                _ShipTo = StructuralObject.SetValidValue(value, false);
+                _ShipTo = StructuralObject.SetValidValue(value, false, "ShipTo");
                 ReportPropertyChanged("ShipTo");
                 OnShipToChanged();
             }
@@ -16491,7 +16460,7 @@ namespace BerkeleyEntities
             {
                 OnRequisitionerChanging(value);
                 ReportPropertyChanging("Requisitioner");
-                _Requisitioner = StructuralObject.SetValidValue(value, false);
+                _Requisitioner = StructuralObject.SetValidValue(value, false, "Requisitioner");
                 ReportPropertyChanged("Requisitioner");
                 OnRequisitionerChanged();
             }
@@ -16515,7 +16484,7 @@ namespace BerkeleyEntities
             {
                 OnShipViaChanging(value);
                 ReportPropertyChanging("ShipVia");
-                _ShipVia = StructuralObject.SetValidValue(value, false);
+                _ShipVia = StructuralObject.SetValidValue(value, false, "ShipVia");
                 ReportPropertyChanged("ShipVia");
                 OnShipViaChanged();
             }
@@ -16539,7 +16508,7 @@ namespace BerkeleyEntities
             {
                 OnFOBPointChanging(value);
                 ReportPropertyChanging("FOBPoint");
-                _FOBPoint = StructuralObject.SetValidValue(value, false);
+                _FOBPoint = StructuralObject.SetValidValue(value, false, "FOBPoint");
                 ReportPropertyChanged("FOBPoint");
                 OnFOBPointChanged();
             }
@@ -16563,7 +16532,7 @@ namespace BerkeleyEntities
             {
                 OnTermsChanging(value);
                 ReportPropertyChanging("Terms");
-                _Terms = StructuralObject.SetValidValue(value, false);
+                _Terms = StructuralObject.SetValidValue(value, false, "Terms");
                 ReportPropertyChanged("Terms");
                 OnTermsChanged();
             }
@@ -16587,7 +16556,7 @@ namespace BerkeleyEntities
             {
                 OnTaxRateChanging(value);
                 ReportPropertyChanging("TaxRate");
-                _TaxRate = StructuralObject.SetValidValue(value);
+                _TaxRate = StructuralObject.SetValidValue(value, "TaxRate");
                 ReportPropertyChanged("TaxRate");
                 OnTaxRateChanged();
             }
@@ -16611,7 +16580,7 @@ namespace BerkeleyEntities
             {
                 OnShippingChanging(value);
                 ReportPropertyChanging("Shipping");
-                _Shipping = StructuralObject.SetValidValue(value);
+                _Shipping = StructuralObject.SetValidValue(value, "Shipping");
                 ReportPropertyChanged("Shipping");
                 OnShippingChanged();
             }
@@ -16635,7 +16604,7 @@ namespace BerkeleyEntities
             {
                 OnFreightChanging(value);
                 ReportPropertyChanging("Freight");
-                _Freight = StructuralObject.SetValidValue(value, false);
+                _Freight = StructuralObject.SetValidValue(value, false, "Freight");
                 ReportPropertyChanged("Freight");
                 OnFreightChanged();
             }
@@ -16659,7 +16628,7 @@ namespace BerkeleyEntities
             {
                 OnRequiredDateChanging(value);
                 ReportPropertyChanging("RequiredDate");
-                _RequiredDate = StructuralObject.SetValidValue(value);
+                _RequiredDate = StructuralObject.SetValidValue(value, "RequiredDate");
                 ReportPropertyChanged("RequiredDate");
                 OnRequiredDateChanged();
             }
@@ -16683,7 +16652,7 @@ namespace BerkeleyEntities
             {
                 OnConfirmingToChanging(value);
                 ReportPropertyChanging("ConfirmingTo");
-                _ConfirmingTo = StructuralObject.SetValidValue(value, false);
+                _ConfirmingTo = StructuralObject.SetValidValue(value, false, "ConfirmingTo");
                 ReportPropertyChanged("ConfirmingTo");
                 OnConfirmingToChanged();
             }
@@ -16707,7 +16676,7 @@ namespace BerkeleyEntities
             {
                 OnRemarksChanging(value);
                 ReportPropertyChanging("Remarks");
-                _Remarks = StructuralObject.SetValidValue(value, false);
+                _Remarks = StructuralObject.SetValidValue(value, false, "Remarks");
                 ReportPropertyChanged("Remarks");
                 OnRemarksChanged();
             }
@@ -16731,7 +16700,7 @@ namespace BerkeleyEntities
             {
                 OnSupplierIDChanging(value);
                 ReportPropertyChanging("SupplierID");
-                _SupplierID = StructuralObject.SetValidValue(value);
+                _SupplierID = StructuralObject.SetValidValue(value, "SupplierID");
                 ReportPropertyChanged("SupplierID");
                 OnSupplierIDChanged();
             }
@@ -16755,7 +16724,7 @@ namespace BerkeleyEntities
             {
                 OnDBTimeStampChanging(value);
                 ReportPropertyChanging("DBTimeStamp");
-                _DBTimeStamp = StructuralObject.SetValidValue(value, true);
+                _DBTimeStamp = StructuralObject.SetValidValue(value, true, "DBTimeStamp");
                 ReportPropertyChanged("DBTimeStamp");
                 OnDBTimeStampChanged();
             }
@@ -16779,7 +16748,7 @@ namespace BerkeleyEntities
             {
                 OnOtherStoreIDChanging(value);
                 ReportPropertyChanging("OtherStoreID");
-                _OtherStoreID = StructuralObject.SetValidValue(value);
+                _OtherStoreID = StructuralObject.SetValidValue(value, "OtherStoreID");
                 ReportPropertyChanged("OtherStoreID");
                 OnOtherStoreIDChanged();
             }
@@ -16803,7 +16772,7 @@ namespace BerkeleyEntities
             {
                 OnCurrencyIDChanging(value);
                 ReportPropertyChanging("CurrencyID");
-                _CurrencyID = StructuralObject.SetValidValue(value);
+                _CurrencyID = StructuralObject.SetValidValue(value, "CurrencyID");
                 ReportPropertyChanged("CurrencyID");
                 OnCurrencyIDChanged();
             }
@@ -16827,7 +16796,7 @@ namespace BerkeleyEntities
             {
                 OnExchangeRateChanging(value);
                 ReportPropertyChanging("ExchangeRate");
-                _ExchangeRate = StructuralObject.SetValidValue(value);
+                _ExchangeRate = StructuralObject.SetValidValue(value, "ExchangeRate");
                 ReportPropertyChanged("ExchangeRate");
                 OnExchangeRateChanged();
             }
@@ -16851,7 +16820,7 @@ namespace BerkeleyEntities
             {
                 OnOtherPOIDChanging(value);
                 ReportPropertyChanging("OtherPOID");
-                _OtherPOID = StructuralObject.SetValidValue(value);
+                _OtherPOID = StructuralObject.SetValidValue(value, "OtherPOID");
                 ReportPropertyChanged("OtherPOID");
                 OnOtherPOIDChanged();
             }
@@ -16875,7 +16844,7 @@ namespace BerkeleyEntities
             {
                 OnInventoryLocationChanging(value);
                 ReportPropertyChanging("InventoryLocation");
-                _InventoryLocation = StructuralObject.SetValidValue(value);
+                _InventoryLocation = StructuralObject.SetValidValue(value, "InventoryLocation");
                 ReportPropertyChanged("InventoryLocation");
                 OnInventoryLocationChanged();
             }
@@ -16899,7 +16868,7 @@ namespace BerkeleyEntities
             {
                 OnIsPlacedChanging(value);
                 ReportPropertyChanging("IsPlaced");
-                _IsPlaced = StructuralObject.SetValidValue(value);
+                _IsPlaced = StructuralObject.SetValidValue(value, "IsPlaced");
                 ReportPropertyChanged("IsPlaced");
                 OnIsPlacedChanged();
             }
@@ -16923,7 +16892,7 @@ namespace BerkeleyEntities
             {
                 OnDatePlacedChanging(value);
                 ReportPropertyChanging("DatePlaced");
-                _DatePlaced = StructuralObject.SetValidValue(value);
+                _DatePlaced = StructuralObject.SetValidValue(value, "DatePlaced");
                 ReportPropertyChanged("DatePlaced");
                 OnDatePlacedChanged();
             }
@@ -16947,7 +16916,7 @@ namespace BerkeleyEntities
             {
                 OnBatchNumberChanging(value);
                 ReportPropertyChanging("BatchNumber");
-                _BatchNumber = StructuralObject.SetValidValue(value);
+                _BatchNumber = StructuralObject.SetValidValue(value, "BatchNumber");
                 ReportPropertyChanged("BatchNumber");
                 OnBatchNumberChanged();
             }
@@ -16971,7 +16940,7 @@ namespace BerkeleyEntities
             {
                 OnEstShippingChanging(value);
                 ReportPropertyChanging("EstShipping");
-                _EstShipping = StructuralObject.SetValidValue(value);
+                _EstShipping = StructuralObject.SetValidValue(value, "EstShipping");
                 ReportPropertyChanged("EstShipping");
                 OnEstShippingChanged();
             }
@@ -16995,7 +16964,7 @@ namespace BerkeleyEntities
             {
                 OnCurrentShippingChanging(value);
                 ReportPropertyChanging("CurrentShipping");
-                _CurrentShipping = StructuralObject.SetValidValue(value);
+                _CurrentShipping = StructuralObject.SetValidValue(value, "CurrentShipping");
                 ReportPropertyChanged("CurrentShipping");
                 OnCurrentShippingChanged();
             }
@@ -17019,7 +16988,7 @@ namespace BerkeleyEntities
             {
                 OnEstOtherFeesChanging(value);
                 ReportPropertyChanging("EstOtherFees");
-                _EstOtherFees = StructuralObject.SetValidValue(value);
+                _EstOtherFees = StructuralObject.SetValidValue(value, "EstOtherFees");
                 ReportPropertyChanged("EstOtherFees");
                 OnEstOtherFeesChanged();
             }
@@ -17043,7 +17012,7 @@ namespace BerkeleyEntities
             {
                 OnCurrentOtherFeesChanging(value);
                 ReportPropertyChanging("CurrentOtherFees");
-                _CurrentOtherFees = StructuralObject.SetValidValue(value);
+                _CurrentOtherFees = StructuralObject.SetValidValue(value, "CurrentOtherFees");
                 ReportPropertyChanged("CurrentOtherFees");
                 OnCurrentOtherFeesChanged();
             }
@@ -17067,7 +17036,7 @@ namespace BerkeleyEntities
             {
                 OnOtherFeesChanging(value);
                 ReportPropertyChanging("OtherFees");
-                _OtherFees = StructuralObject.SetValidValue(value);
+                _OtherFees = StructuralObject.SetValidValue(value, "OtherFees");
                 ReportPropertyChanged("OtherFees");
                 OnOtherFeesChanged();
             }
@@ -17091,7 +17060,7 @@ namespace BerkeleyEntities
             {
                 OnCostDistributionMethodChanging(value);
                 ReportPropertyChanging("CostDistributionMethod");
-                _CostDistributionMethod = StructuralObject.SetValidValue(value);
+                _CostDistributionMethod = StructuralObject.SetValidValue(value, "CostDistributionMethod");
                 ReportPropertyChanged("CostDistributionMethod");
                 OnCostDistributionMethodChanged();
             }
@@ -17115,7 +17084,7 @@ namespace BerkeleyEntities
             {
                 OnParentPOIdChanging(value);
                 ReportPropertyChanging("ParentPOId");
-                _ParentPOId = StructuralObject.SetValidValue(value);
+                _ParentPOId = StructuralObject.SetValidValue(value, "ParentPOId");
                 ReportPropertyChanged("ParentPOId");
                 OnParentPOIdChanged();
             }
@@ -17139,7 +17108,7 @@ namespace BerkeleyEntities
             {
                 OnRootPOIdChanging(value);
                 ReportPropertyChanging("RootPOId");
-                _RootPOId = StructuralObject.SetValidValue(value);
+                _RootPOId = StructuralObject.SetValidValue(value, "RootPOId");
                 ReportPropertyChanged("RootPOId");
                 OnRootPOIdChanged();
             }
@@ -17163,7 +17132,7 @@ namespace BerkeleyEntities
             {
                 OnOriginPOIdChanging(value);
                 ReportPropertyChanging("OriginPOId");
-                _OriginPOId = StructuralObject.SetValidValue(value);
+                _OriginPOId = StructuralObject.SetValidValue(value, "OriginPOId");
                 ReportPropertyChanged("OriginPOId");
                 OnOriginPOIdChanged();
             }
@@ -17187,7 +17156,7 @@ namespace BerkeleyEntities
             {
                 OnMasterPOChanging(value);
                 ReportPropertyChanging("MasterPO");
-                _MasterPO = StructuralObject.SetValidValue(value, false);
+                _MasterPO = StructuralObject.SetValidValue(value, false, "MasterPO");
                 ReportPropertyChanged("MasterPO");
                 OnMasterPOChanged();
             }
@@ -17198,7 +17167,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -17278,7 +17246,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -17295,7 +17263,7 @@ namespace BerkeleyEntities
             {
                 OnItemDescriptionChanging(value);
                 ReportPropertyChanging("ItemDescription");
-                _ItemDescription = StructuralObject.SetValidValue(value, false);
+                _ItemDescription = StructuralObject.SetValidValue(value, false, "ItemDescription");
                 ReportPropertyChanged("ItemDescription");
                 OnItemDescriptionChanged();
             }
@@ -17319,7 +17287,7 @@ namespace BerkeleyEntities
             {
                 OnLastUpdatedChanging(value);
                 ReportPropertyChanging("LastUpdated");
-                _LastUpdated = StructuralObject.SetValidValue(value);
+                _LastUpdated = StructuralObject.SetValidValue(value, "LastUpdated");
                 ReportPropertyChanged("LastUpdated");
                 OnLastUpdatedChanged();
             }
@@ -17343,7 +17311,7 @@ namespace BerkeleyEntities
             {
                 OnQuantityReceivedToDateChanging(value);
                 ReportPropertyChanging("QuantityReceivedToDate");
-                _QuantityReceivedToDate = StructuralObject.SetValidValue(value);
+                _QuantityReceivedToDate = StructuralObject.SetValidValue(value, "QuantityReceivedToDate");
                 ReportPropertyChanged("QuantityReceivedToDate");
                 OnQuantityReceivedToDateChanged();
             }
@@ -17367,7 +17335,7 @@ namespace BerkeleyEntities
             {
                 OnStoreIDChanging(value);
                 ReportPropertyChanging("StoreID");
-                _StoreID = StructuralObject.SetValidValue(value);
+                _StoreID = StructuralObject.SetValidValue(value, "StoreID");
                 ReportPropertyChanged("StoreID");
                 OnStoreIDChanged();
             }
@@ -17393,7 +17361,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -17418,7 +17386,7 @@ namespace BerkeleyEntities
             {
                 OnPurchaseOrderIDChanging(value);
                 ReportPropertyChanging("PurchaseOrderID");
-                _PurchaseOrderID = StructuralObject.SetValidValue(value);
+                _PurchaseOrderID = StructuralObject.SetValidValue(value, "PurchaseOrderID");
                 ReportPropertyChanged("PurchaseOrderID");
                 OnPurchaseOrderIDChanged();
             }
@@ -17442,7 +17410,7 @@ namespace BerkeleyEntities
             {
                 OnQuantityOrderedChanging(value);
                 ReportPropertyChanging("QuantityOrdered");
-                _QuantityOrdered = StructuralObject.SetValidValue(value);
+                _QuantityOrdered = StructuralObject.SetValidValue(value, "QuantityOrdered");
                 ReportPropertyChanged("QuantityOrdered");
                 OnQuantityOrderedChanged();
             }
@@ -17466,7 +17434,7 @@ namespace BerkeleyEntities
             {
                 OnQuantityReceivedChanging(value);
                 ReportPropertyChanging("QuantityReceived");
-                _QuantityReceived = StructuralObject.SetValidValue(value);
+                _QuantityReceived = StructuralObject.SetValidValue(value, "QuantityReceived");
                 ReportPropertyChanged("QuantityReceived");
                 OnQuantityReceivedChanged();
             }
@@ -17490,7 +17458,7 @@ namespace BerkeleyEntities
             {
                 OnItemIDChanging(value);
                 ReportPropertyChanging("ItemID");
-                _ItemID = StructuralObject.SetValidValue(value);
+                _ItemID = StructuralObject.SetValidValue(value, "ItemID");
                 ReportPropertyChanged("ItemID");
                 OnItemIDChanged();
             }
@@ -17514,7 +17482,7 @@ namespace BerkeleyEntities
             {
                 OnOrderNumberChanging(value);
                 ReportPropertyChanging("OrderNumber");
-                _OrderNumber = StructuralObject.SetValidValue(value, true);
+                _OrderNumber = StructuralObject.SetValidValue(value, true, "OrderNumber");
                 ReportPropertyChanged("OrderNumber");
                 OnOrderNumberChanged();
             }
@@ -17538,7 +17506,7 @@ namespace BerkeleyEntities
             {
                 OnPriceChanging(value);
                 ReportPropertyChanging("Price");
-                _Price = StructuralObject.SetValidValue(value);
+                _Price = StructuralObject.SetValidValue(value, "Price");
                 ReportPropertyChanged("Price");
                 OnPriceChanged();
             }
@@ -17562,7 +17530,7 @@ namespace BerkeleyEntities
             {
                 OnDBTimeStampChanging(value);
                 ReportPropertyChanging("DBTimeStamp");
-                _DBTimeStamp = StructuralObject.SetValidValue(value, true);
+                _DBTimeStamp = StructuralObject.SetValidValue(value, true, "DBTimeStamp");
                 ReportPropertyChanged("DBTimeStamp");
                 OnDBTimeStampChanged();
             }
@@ -17586,7 +17554,7 @@ namespace BerkeleyEntities
             {
                 OnTaxRateChanging(value);
                 ReportPropertyChanging("TaxRate");
-                _TaxRate = StructuralObject.SetValidValue(value);
+                _TaxRate = StructuralObject.SetValidValue(value, "TaxRate");
                 ReportPropertyChanged("TaxRate");
                 OnTaxRateChanged();
             }
@@ -17610,7 +17578,7 @@ namespace BerkeleyEntities
             {
                 OnInventoryOfflineIDChanging(value);
                 ReportPropertyChanging("InventoryOfflineID");
-                _InventoryOfflineID = StructuralObject.SetValidValue(value);
+                _InventoryOfflineID = StructuralObject.SetValidValue(value, "InventoryOfflineID");
                 ReportPropertyChanged("InventoryOfflineID");
                 OnInventoryOfflineIDChanged();
             }
@@ -17634,7 +17602,7 @@ namespace BerkeleyEntities
             {
                 OnShippingPerItemChanging(value);
                 ReportPropertyChanging("ShippingPerItem");
-                _ShippingPerItem = StructuralObject.SetValidValue(value);
+                _ShippingPerItem = StructuralObject.SetValidValue(value, "ShippingPerItem");
                 ReportPropertyChanged("ShippingPerItem");
                 OnShippingPerItemChanged();
             }
@@ -17658,7 +17626,7 @@ namespace BerkeleyEntities
             {
                 OnOtherFeesPerItemChanging(value);
                 ReportPropertyChanging("OtherFeesPerItem");
-                _OtherFeesPerItem = StructuralObject.SetValidValue(value);
+                _OtherFeesPerItem = StructuralObject.SetValidValue(value, "OtherFeesPerItem");
                 ReportPropertyChanged("OtherFeesPerItem");
                 OnOtherFeesPerItemChanged();
             }
@@ -17682,7 +17650,7 @@ namespace BerkeleyEntities
             {
                 OnLastQuantityReceivedChanging(value);
                 ReportPropertyChanging("LastQuantityReceived");
-                _LastQuantityReceived = StructuralObject.SetValidValue(value);
+                _LastQuantityReceived = StructuralObject.SetValidValue(value, "LastQuantityReceived");
                 ReportPropertyChanged("LastQuantityReceived");
                 OnLastQuantityReceivedChanged();
             }
@@ -17706,7 +17674,7 @@ namespace BerkeleyEntities
             {
                 OnLastReceivedDateChanging(value);
                 ReportPropertyChanging("LastReceivedDate");
-                _LastReceivedDate = StructuralObject.SetValidValue(value);
+                _LastReceivedDate = StructuralObject.SetValidValue(value, "LastReceivedDate");
                 ReportPropertyChanged("LastReceivedDate");
                 OnLastReceivedDateChanged();
             }
@@ -17717,7 +17685,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -17883,7 +17850,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -17900,7 +17867,7 @@ namespace BerkeleyEntities
             {
                 OnCountryChanging(value);
                 ReportPropertyChanging("Country");
-                _Country = StructuralObject.SetValidValue(value, false);
+                _Country = StructuralObject.SetValidValue(value, false, "Country");
                 ReportPropertyChanged("Country");
                 OnCountryChanged();
             }
@@ -17924,7 +17891,7 @@ namespace BerkeleyEntities
             {
                 OnHQIDChanging(value);
                 ReportPropertyChanging("HQID");
-                _HQID = StructuralObject.SetValidValue(value);
+                _HQID = StructuralObject.SetValidValue(value, "HQID");
                 ReportPropertyChanged("HQID");
                 OnHQIDChanged();
             }
@@ -17948,7 +17915,7 @@ namespace BerkeleyEntities
             {
                 OnLastUpdatedChanging(value);
                 ReportPropertyChanging("LastUpdated");
-                _LastUpdated = StructuralObject.SetValidValue(value);
+                _LastUpdated = StructuralObject.SetValidValue(value, "LastUpdated");
                 ReportPropertyChanged("LastUpdated");
                 OnLastUpdatedChanged();
             }
@@ -17972,7 +17939,7 @@ namespace BerkeleyEntities
             {
                 OnStateChanging(value);
                 ReportPropertyChanging("State");
-                _State = StructuralObject.SetValidValue(value, false);
+                _State = StructuralObject.SetValidValue(value, false, "State");
                 ReportPropertyChanged("State");
                 OnStateChanged();
             }
@@ -17998,7 +17965,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -18023,7 +17990,7 @@ namespace BerkeleyEntities
             {
                 OnSupplierNameChanging(value);
                 ReportPropertyChanging("SupplierName");
-                _SupplierName = StructuralObject.SetValidValue(value, false);
+                _SupplierName = StructuralObject.SetValidValue(value, false, "SupplierName");
                 ReportPropertyChanged("SupplierName");
                 OnSupplierNameChanged();
             }
@@ -18047,7 +18014,7 @@ namespace BerkeleyEntities
             {
                 OnContactNameChanging(value);
                 ReportPropertyChanging("ContactName");
-                _ContactName = StructuralObject.SetValidValue(value, false);
+                _ContactName = StructuralObject.SetValidValue(value, false, "ContactName");
                 ReportPropertyChanged("ContactName");
                 OnContactNameChanged();
             }
@@ -18071,7 +18038,7 @@ namespace BerkeleyEntities
             {
                 OnAddress1Changing(value);
                 ReportPropertyChanging("Address1");
-                _Address1 = StructuralObject.SetValidValue(value, false);
+                _Address1 = StructuralObject.SetValidValue(value, false, "Address1");
                 ReportPropertyChanged("Address1");
                 OnAddress1Changed();
             }
@@ -18095,7 +18062,7 @@ namespace BerkeleyEntities
             {
                 OnAddress2Changing(value);
                 ReportPropertyChanging("Address2");
-                _Address2 = StructuralObject.SetValidValue(value, false);
+                _Address2 = StructuralObject.SetValidValue(value, false, "Address2");
                 ReportPropertyChanged("Address2");
                 OnAddress2Changed();
             }
@@ -18119,7 +18086,7 @@ namespace BerkeleyEntities
             {
                 OnCityChanging(value);
                 ReportPropertyChanging("City");
-                _City = StructuralObject.SetValidValue(value, false);
+                _City = StructuralObject.SetValidValue(value, false, "City");
                 ReportPropertyChanged("City");
                 OnCityChanged();
             }
@@ -18143,7 +18110,7 @@ namespace BerkeleyEntities
             {
                 OnZipChanging(value);
                 ReportPropertyChanging("Zip");
-                _Zip = StructuralObject.SetValidValue(value, false);
+                _Zip = StructuralObject.SetValidValue(value, false, "Zip");
                 ReportPropertyChanged("Zip");
                 OnZipChanged();
             }
@@ -18167,7 +18134,7 @@ namespace BerkeleyEntities
             {
                 OnEmailAddressChanging(value);
                 ReportPropertyChanging("EmailAddress");
-                _EmailAddress = StructuralObject.SetValidValue(value, false);
+                _EmailAddress = StructuralObject.SetValidValue(value, false, "EmailAddress");
                 ReportPropertyChanged("EmailAddress");
                 OnEmailAddressChanged();
             }
@@ -18191,7 +18158,7 @@ namespace BerkeleyEntities
             {
                 OnWebPageAddressChanging(value);
                 ReportPropertyChanging("WebPageAddress");
-                _WebPageAddress = StructuralObject.SetValidValue(value, false);
+                _WebPageAddress = StructuralObject.SetValidValue(value, false, "WebPageAddress");
                 ReportPropertyChanged("WebPageAddress");
                 OnWebPageAddressChanged();
             }
@@ -18215,7 +18182,7 @@ namespace BerkeleyEntities
             {
                 OnCodeChanging(value);
                 ReportPropertyChanging("Code");
-                _Code = StructuralObject.SetValidValue(value, false);
+                _Code = StructuralObject.SetValidValue(value, false, "Code");
                 ReportPropertyChanged("Code");
                 OnCodeChanged();
             }
@@ -18239,7 +18206,7 @@ namespace BerkeleyEntities
             {
                 OnDBTimeStampChanging(value);
                 ReportPropertyChanging("DBTimeStamp");
-                _DBTimeStamp = StructuralObject.SetValidValue(value, true);
+                _DBTimeStamp = StructuralObject.SetValidValue(value, true, "DBTimeStamp");
                 ReportPropertyChanged("DBTimeStamp");
                 OnDBTimeStampChanged();
             }
@@ -18263,7 +18230,7 @@ namespace BerkeleyEntities
             {
                 OnAccountNumberChanging(value);
                 ReportPropertyChanging("AccountNumber");
-                _AccountNumber = StructuralObject.SetValidValue(value, false);
+                _AccountNumber = StructuralObject.SetValidValue(value, false, "AccountNumber");
                 ReportPropertyChanged("AccountNumber");
                 OnAccountNumberChanged();
             }
@@ -18287,7 +18254,7 @@ namespace BerkeleyEntities
             {
                 OnTaxNumberChanging(value);
                 ReportPropertyChanging("TaxNumber");
-                _TaxNumber = StructuralObject.SetValidValue(value, false);
+                _TaxNumber = StructuralObject.SetValidValue(value, false, "TaxNumber");
                 ReportPropertyChanged("TaxNumber");
                 OnTaxNumberChanged();
             }
@@ -18311,7 +18278,7 @@ namespace BerkeleyEntities
             {
                 OnCurrencyIDChanging(value);
                 ReportPropertyChanging("CurrencyID");
-                _CurrencyID = StructuralObject.SetValidValue(value);
+                _CurrencyID = StructuralObject.SetValidValue(value, "CurrencyID");
                 ReportPropertyChanged("CurrencyID");
                 OnCurrencyIDChanged();
             }
@@ -18335,7 +18302,7 @@ namespace BerkeleyEntities
             {
                 OnPhoneNumberChanging(value);
                 ReportPropertyChanging("PhoneNumber");
-                _PhoneNumber = StructuralObject.SetValidValue(value, false);
+                _PhoneNumber = StructuralObject.SetValidValue(value, false, "PhoneNumber");
                 ReportPropertyChanged("PhoneNumber");
                 OnPhoneNumberChanged();
             }
@@ -18359,7 +18326,7 @@ namespace BerkeleyEntities
             {
                 OnFaxNumberChanging(value);
                 ReportPropertyChanging("FaxNumber");
-                _FaxNumber = StructuralObject.SetValidValue(value, false);
+                _FaxNumber = StructuralObject.SetValidValue(value, false, "FaxNumber");
                 ReportPropertyChanged("FaxNumber");
                 OnFaxNumberChanged();
             }
@@ -18383,7 +18350,7 @@ namespace BerkeleyEntities
             {
                 OnCustomText1Changing(value);
                 ReportPropertyChanging("CustomText1");
-                _CustomText1 = StructuralObject.SetValidValue(value, false);
+                _CustomText1 = StructuralObject.SetValidValue(value, false, "CustomText1");
                 ReportPropertyChanged("CustomText1");
                 OnCustomText1Changed();
             }
@@ -18407,7 +18374,7 @@ namespace BerkeleyEntities
             {
                 OnCustomText2Changing(value);
                 ReportPropertyChanging("CustomText2");
-                _CustomText2 = StructuralObject.SetValidValue(value, false);
+                _CustomText2 = StructuralObject.SetValidValue(value, false, "CustomText2");
                 ReportPropertyChanged("CustomText2");
                 OnCustomText2Changed();
             }
@@ -18431,7 +18398,7 @@ namespace BerkeleyEntities
             {
                 OnCustomText3Changing(value);
                 ReportPropertyChanging("CustomText3");
-                _CustomText3 = StructuralObject.SetValidValue(value, false);
+                _CustomText3 = StructuralObject.SetValidValue(value, false, "CustomText3");
                 ReportPropertyChanged("CustomText3");
                 OnCustomText3Changed();
             }
@@ -18455,7 +18422,7 @@ namespace BerkeleyEntities
             {
                 OnCustomText4Changing(value);
                 ReportPropertyChanging("CustomText4");
-                _CustomText4 = StructuralObject.SetValidValue(value, false);
+                _CustomText4 = StructuralObject.SetValidValue(value, false, "CustomText4");
                 ReportPropertyChanged("CustomText4");
                 OnCustomText4Changed();
             }
@@ -18479,7 +18446,7 @@ namespace BerkeleyEntities
             {
                 OnCustomText5Changing(value);
                 ReportPropertyChanging("CustomText5");
-                _CustomText5 = StructuralObject.SetValidValue(value, false);
+                _CustomText5 = StructuralObject.SetValidValue(value, false, "CustomText5");
                 ReportPropertyChanged("CustomText5");
                 OnCustomText5Changed();
             }
@@ -18503,7 +18470,7 @@ namespace BerkeleyEntities
             {
                 OnCustomNumber1Changing(value);
                 ReportPropertyChanging("CustomNumber1");
-                _CustomNumber1 = StructuralObject.SetValidValue(value);
+                _CustomNumber1 = StructuralObject.SetValidValue(value, "CustomNumber1");
                 ReportPropertyChanged("CustomNumber1");
                 OnCustomNumber1Changed();
             }
@@ -18527,7 +18494,7 @@ namespace BerkeleyEntities
             {
                 OnCustomNumber2Changing(value);
                 ReportPropertyChanging("CustomNumber2");
-                _CustomNumber2 = StructuralObject.SetValidValue(value);
+                _CustomNumber2 = StructuralObject.SetValidValue(value, "CustomNumber2");
                 ReportPropertyChanged("CustomNumber2");
                 OnCustomNumber2Changed();
             }
@@ -18551,7 +18518,7 @@ namespace BerkeleyEntities
             {
                 OnCustomNumber3Changing(value);
                 ReportPropertyChanging("CustomNumber3");
-                _CustomNumber3 = StructuralObject.SetValidValue(value);
+                _CustomNumber3 = StructuralObject.SetValidValue(value, "CustomNumber3");
                 ReportPropertyChanged("CustomNumber3");
                 OnCustomNumber3Changed();
             }
@@ -18575,7 +18542,7 @@ namespace BerkeleyEntities
             {
                 OnCustomNumber4Changing(value);
                 ReportPropertyChanging("CustomNumber4");
-                _CustomNumber4 = StructuralObject.SetValidValue(value);
+                _CustomNumber4 = StructuralObject.SetValidValue(value, "CustomNumber4");
                 ReportPropertyChanged("CustomNumber4");
                 OnCustomNumber4Changed();
             }
@@ -18599,7 +18566,7 @@ namespace BerkeleyEntities
             {
                 OnCustomNumber5Changing(value);
                 ReportPropertyChanging("CustomNumber5");
-                _CustomNumber5 = StructuralObject.SetValidValue(value);
+                _CustomNumber5 = StructuralObject.SetValidValue(value, "CustomNumber5");
                 ReportPropertyChanged("CustomNumber5");
                 OnCustomNumber5Changed();
             }
@@ -18623,7 +18590,7 @@ namespace BerkeleyEntities
             {
                 OnCustomDate1Changing(value);
                 ReportPropertyChanging("CustomDate1");
-                _CustomDate1 = StructuralObject.SetValidValue(value);
+                _CustomDate1 = StructuralObject.SetValidValue(value, "CustomDate1");
                 ReportPropertyChanged("CustomDate1");
                 OnCustomDate1Changed();
             }
@@ -18647,7 +18614,7 @@ namespace BerkeleyEntities
             {
                 OnCustomDate2Changing(value);
                 ReportPropertyChanging("CustomDate2");
-                _CustomDate2 = StructuralObject.SetValidValue(value);
+                _CustomDate2 = StructuralObject.SetValidValue(value, "CustomDate2");
                 ReportPropertyChanged("CustomDate2");
                 OnCustomDate2Changed();
             }
@@ -18671,7 +18638,7 @@ namespace BerkeleyEntities
             {
                 OnCustomDate3Changing(value);
                 ReportPropertyChanging("CustomDate3");
-                _CustomDate3 = StructuralObject.SetValidValue(value);
+                _CustomDate3 = StructuralObject.SetValidValue(value, "CustomDate3");
                 ReportPropertyChanged("CustomDate3");
                 OnCustomDate3Changed();
             }
@@ -18695,7 +18662,7 @@ namespace BerkeleyEntities
             {
                 OnCustomDate4Changing(value);
                 ReportPropertyChanging("CustomDate4");
-                _CustomDate4 = StructuralObject.SetValidValue(value);
+                _CustomDate4 = StructuralObject.SetValidValue(value, "CustomDate4");
                 ReportPropertyChanged("CustomDate4");
                 OnCustomDate4Changed();
             }
@@ -18719,7 +18686,7 @@ namespace BerkeleyEntities
             {
                 OnCustomDate5Changing(value);
                 ReportPropertyChanging("CustomDate5");
-                _CustomDate5 = StructuralObject.SetValidValue(value);
+                _CustomDate5 = StructuralObject.SetValidValue(value, "CustomDate5");
                 ReportPropertyChanged("CustomDate5");
                 OnCustomDate5Changed();
             }
@@ -18743,7 +18710,7 @@ namespace BerkeleyEntities
             {
                 OnNotesChanging(value);
                 ReportPropertyChanging("Notes");
-                _Notes = StructuralObject.SetValidValue(value, false);
+                _Notes = StructuralObject.SetValidValue(value, false, "Notes");
                 ReportPropertyChanged("Notes");
                 OnNotesChanged();
             }
@@ -18767,7 +18734,7 @@ namespace BerkeleyEntities
             {
                 OnTermsChanging(value);
                 ReportPropertyChanging("Terms");
-                _Terms = StructuralObject.SetValidValue(value, false);
+                _Terms = StructuralObject.SetValidValue(value, false, "Terms");
                 ReportPropertyChanged("Terms");
                 OnTermsChanged();
             }
@@ -18778,7 +18745,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -18866,7 +18832,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -18883,7 +18849,7 @@ namespace BerkeleyEntities
             {
                 OnMinimumOrderChanging(value);
                 ReportPropertyChanging("MinimumOrder");
-                _MinimumOrder = StructuralObject.SetValidValue(value);
+                _MinimumOrder = StructuralObject.SetValidValue(value, "MinimumOrder");
                 ReportPropertyChanged("MinimumOrder");
                 OnMinimumOrderChanged();
             }
@@ -18909,7 +18875,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -18934,7 +18900,7 @@ namespace BerkeleyEntities
             {
                 OnItemIDChanging(value);
                 ReportPropertyChanging("ItemID");
-                _ItemID = StructuralObject.SetValidValue(value);
+                _ItemID = StructuralObject.SetValidValue(value, "ItemID");
                 ReportPropertyChanged("ItemID");
                 OnItemIDChanged();
             }
@@ -18958,7 +18924,7 @@ namespace BerkeleyEntities
             {
                 OnSupplierIDChanging(value);
                 ReportPropertyChanging("SupplierID");
-                _SupplierID = StructuralObject.SetValidValue(value);
+                _SupplierID = StructuralObject.SetValidValue(value, "SupplierID");
                 ReportPropertyChanged("SupplierID");
                 OnSupplierIDChanged();
             }
@@ -18982,7 +18948,7 @@ namespace BerkeleyEntities
             {
                 OnCostChanging(value);
                 ReportPropertyChanging("Cost");
-                _Cost = StructuralObject.SetValidValue(value);
+                _Cost = StructuralObject.SetValidValue(value, "Cost");
                 ReportPropertyChanged("Cost");
                 OnCostChanged();
             }
@@ -19006,7 +18972,7 @@ namespace BerkeleyEntities
             {
                 OnReorderNumberChanging(value);
                 ReportPropertyChanging("ReorderNumber");
-                _ReorderNumber = StructuralObject.SetValidValue(value, false);
+                _ReorderNumber = StructuralObject.SetValidValue(value, false, "ReorderNumber");
                 ReportPropertyChanged("ReorderNumber");
                 OnReorderNumberChanged();
             }
@@ -19030,7 +18996,7 @@ namespace BerkeleyEntities
             {
                 OnMasterPackQuantityChanging(value);
                 ReportPropertyChanging("MasterPackQuantity");
-                _MasterPackQuantity = StructuralObject.SetValidValue(value);
+                _MasterPackQuantity = StructuralObject.SetValidValue(value, "MasterPackQuantity");
                 ReportPropertyChanged("MasterPackQuantity");
                 OnMasterPackQuantityChanged();
             }
@@ -19054,7 +19020,7 @@ namespace BerkeleyEntities
             {
                 OnDBTimeStampChanging(value);
                 ReportPropertyChanging("DBTimeStamp");
-                _DBTimeStamp = StructuralObject.SetValidValue(value, true);
+                _DBTimeStamp = StructuralObject.SetValidValue(value, true, "DBTimeStamp");
                 ReportPropertyChanged("DBTimeStamp");
                 OnDBTimeStampChanged();
             }
@@ -19078,7 +19044,7 @@ namespace BerkeleyEntities
             {
                 OnTaxRateChanging(value);
                 ReportPropertyChanging("TaxRate");
-                _TaxRate = StructuralObject.SetValidValue(value);
+                _TaxRate = StructuralObject.SetValidValue(value, "TaxRate");
                 ReportPropertyChanged("TaxRate");
                 OnTaxRateChanged();
             }
@@ -19089,7 +19055,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -19217,7 +19182,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -19236,7 +19201,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -19261,7 +19226,7 @@ namespace BerkeleyEntities
             {
                 OnItemIDChanging(value);
                 ReportPropertyChanging("ItemID");
-                _ItemID = StructuralObject.SetValidValue(value);
+                _ItemID = StructuralObject.SetValidValue(value, "ItemID");
                 ReportPropertyChanged("ItemID");
                 OnItemIDChanged();
             }
@@ -19285,7 +19250,7 @@ namespace BerkeleyEntities
             {
                 OnCodeChanging(value);
                 ReportPropertyChanging("Code");
-                _Code = StructuralObject.SetValidValue(value, false);
+                _Code = StructuralObject.SetValidValue(value, false, "Code");
                 ReportPropertyChanged("Code");
                 OnCodeChanged();
             }
@@ -19309,7 +19274,7 @@ namespace BerkeleyEntities
             {
                 OnMarketplaceChanging(value);
                 ReportPropertyChanging("Marketplace");
-                _Marketplace = StructuralObject.SetValidValue(value, false);
+                _Marketplace = StructuralObject.SetValidValue(value, false, "Marketplace");
                 ReportPropertyChanged("Marketplace");
                 OnMarketplaceChanged();
             }
@@ -19333,7 +19298,7 @@ namespace BerkeleyEntities
             {
                 OnQuantityChanging(value);
                 ReportPropertyChanging("Quantity");
-                _Quantity = StructuralObject.SetValidValue(value);
+                _Quantity = StructuralObject.SetValidValue(value, "Quantity");
                 ReportPropertyChanged("Quantity");
                 OnQuantityChanged();
             }
@@ -19357,7 +19322,7 @@ namespace BerkeleyEntities
             {
                 OnPriceChanging(value);
                 ReportPropertyChanging("Price");
-                _Price = StructuralObject.SetValidValue(value);
+                _Price = StructuralObject.SetValidValue(value, "Price");
                 ReportPropertyChanged("Price");
                 OnPriceChanged();
             }
@@ -19381,7 +19346,7 @@ namespace BerkeleyEntities
             {
                 OnStartTimeChanging(value);
                 ReportPropertyChanging("StartTime");
-                _StartTime = StructuralObject.SetValidValue(value);
+                _StartTime = StructuralObject.SetValidValue(value, "StartTime");
                 ReportPropertyChanged("StartTime");
                 OnStartTimeChanged();
             }
@@ -19405,7 +19370,7 @@ namespace BerkeleyEntities
             {
                 OnEndTimeChanging(value);
                 ReportPropertyChanging("EndTime");
-                _EndTime = StructuralObject.SetValidValue(value);
+                _EndTime = StructuralObject.SetValidValue(value, "EndTime");
                 ReportPropertyChanged("EndTime");
                 OnEndTimeChanged();
             }
@@ -19429,7 +19394,7 @@ namespace BerkeleyEntities
             {
                 OnFormatChanging(value);
                 ReportPropertyChanging("Format");
-                _Format = StructuralObject.SetValidValue(value, false);
+                _Format = StructuralObject.SetValidValue(value, false, "Format");
                 ReportPropertyChanged("Format");
                 OnFormatChanged();
             }
@@ -19453,7 +19418,7 @@ namespace BerkeleyEntities
             {
                 OnDurationChanging(value);
                 ReportPropertyChanging("Duration");
-                _Duration = StructuralObject.SetValidValue(value, false);
+                _Duration = StructuralObject.SetValidValue(value, false, "Duration");
                 ReportPropertyChanged("Duration");
                 OnDurationChanged();
             }
@@ -19477,7 +19442,7 @@ namespace BerkeleyEntities
             {
                 OnTitleChanging(value);
                 ReportPropertyChanging("Title");
-                _Title = StructuralObject.SetValidValue(value, false);
+                _Title = StructuralObject.SetValidValue(value, false, "Title");
                 ReportPropertyChanged("Title");
                 OnTitleChanged();
             }
@@ -19501,7 +19466,7 @@ namespace BerkeleyEntities
             {
                 OnVariationChanging(value);
                 ReportPropertyChanging("Variation");
-                _Variation = StructuralObject.SetValidValue(value);
+                _Variation = StructuralObject.SetValidValue(value, "Variation");
                 ReportPropertyChanged("Variation");
                 OnVariationChanged();
             }
@@ -19525,7 +19490,7 @@ namespace BerkeleyEntities
             {
                 OnConditionChanging(value);
                 ReportPropertyChanging("Condition");
-                _Condition = StructuralObject.SetValidValue(value, true);
+                _Condition = StructuralObject.SetValidValue(value, true, "Condition");
                 ReportPropertyChanged("Condition");
                 OnConditionChanged();
             }
@@ -19549,7 +19514,7 @@ namespace BerkeleyEntities
             {
                 OnActiveChanging(value);
                 ReportPropertyChanging("Active");
-                _Active = StructuralObject.SetValidValue(value);
+                _Active = StructuralObject.SetValidValue(value, "Active");
                 ReportPropertyChanged("Active");
                 OnActiveChanged();
             }
@@ -19560,7 +19525,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -19658,7 +19622,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -19677,7 +19641,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -19702,7 +19666,7 @@ namespace BerkeleyEntities
             {
                 OnCodeChanging(value);
                 ReportPropertyChanging("Code");
-                _Code = StructuralObject.SetValidValue(value, false);
+                _Code = StructuralObject.SetValidValue(value, false, "Code");
                 ReportPropertyChanged("Code");
                 OnCodeChanged();
             }
@@ -19726,7 +19690,7 @@ namespace BerkeleyEntities
             {
                 OnStatusChanging(value);
                 ReportPropertyChanging("Status");
-                _Status = StructuralObject.SetValidValue(value, false);
+                _Status = StructuralObject.SetValidValue(value, false, "Status");
                 ReportPropertyChanged("Status");
                 OnStatusChanged();
             }
@@ -19750,7 +19714,7 @@ namespace BerkeleyEntities
             {
                 OnMarketplaceChanging(value);
                 ReportPropertyChanging("Marketplace");
-                _Marketplace = StructuralObject.SetValidValue(value, false);
+                _Marketplace = StructuralObject.SetValidValue(value, false, "Marketplace");
                 ReportPropertyChanged("Marketplace");
                 OnMarketplaceChanged();
             }
@@ -19774,7 +19738,7 @@ namespace BerkeleyEntities
             {
                 OnCreatedTimeChanging(value);
                 ReportPropertyChanging("CreatedTime");
-                _CreatedTime = StructuralObject.SetValidValue(value);
+                _CreatedTime = StructuralObject.SetValidValue(value, "CreatedTime");
                 ReportPropertyChanged("CreatedTime");
                 OnCreatedTimeChanged();
             }
@@ -19798,7 +19762,7 @@ namespace BerkeleyEntities
             {
                 OnEmailChanging(value);
                 ReportPropertyChanging("Email");
-                _Email = StructuralObject.SetValidValue(value, true);
+                _Email = StructuralObject.SetValidValue(value, true, "Email");
                 ReportPropertyChanged("Email");
                 OnEmailChanged();
             }
@@ -19809,7 +19773,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -19873,7 +19836,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -19892,7 +19855,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -19917,7 +19880,7 @@ namespace BerkeleyEntities
             {
                 OnSyncOrderIDChanging(value);
                 ReportPropertyChanging("SyncOrderID");
-                _SyncOrderID = StructuralObject.SetValidValue(value);
+                _SyncOrderID = StructuralObject.SetValidValue(value, "SyncOrderID");
                 ReportPropertyChanged("SyncOrderID");
                 OnSyncOrderIDChanged();
             }
@@ -19941,7 +19904,7 @@ namespace BerkeleyEntities
             {
                 OnSyncListingIDChanging(value);
                 ReportPropertyChanging("SyncListingID");
-                _SyncListingID = StructuralObject.SetValidValue(value);
+                _SyncListingID = StructuralObject.SetValidValue(value, "SyncListingID");
                 ReportPropertyChanged("SyncListingID");
                 OnSyncListingIDChanged();
             }
@@ -19965,7 +19928,7 @@ namespace BerkeleyEntities
             {
                 OnCodeChanging(value);
                 ReportPropertyChanging("Code");
-                _Code = StructuralObject.SetValidValue(value, false);
+                _Code = StructuralObject.SetValidValue(value, false, "Code");
                 ReportPropertyChanged("Code");
                 OnCodeChanged();
             }
@@ -19989,7 +19952,7 @@ namespace BerkeleyEntities
             {
                 OnPriceChanging(value);
                 ReportPropertyChanging("Price");
-                _Price = StructuralObject.SetValidValue(value);
+                _Price = StructuralObject.SetValidValue(value, "Price");
                 ReportPropertyChanged("Price");
                 OnPriceChanged();
             }
@@ -20013,7 +19976,7 @@ namespace BerkeleyEntities
             {
                 OnQuantityOrderedChanging(value);
                 ReportPropertyChanging("QuantityOrdered");
-                _QuantityOrdered = StructuralObject.SetValidValue(value);
+                _QuantityOrdered = StructuralObject.SetValidValue(value, "QuantityOrdered");
                 ReportPropertyChanged("QuantityOrdered");
                 OnQuantityOrderedChanged();
             }
@@ -20037,7 +20000,7 @@ namespace BerkeleyEntities
             {
                 OnQuantityShippedChanging(value);
                 ReportPropertyChanging("QuantityShipped");
-                _QuantityShipped = StructuralObject.SetValidValue(value);
+                _QuantityShipped = StructuralObject.SetValidValue(value, "QuantityShipped");
                 ReportPropertyChanged("QuantityShipped");
                 OnQuantityShippedChanged();
             }
@@ -20048,7 +20011,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -20184,7 +20146,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -20201,7 +20163,7 @@ namespace BerkeleyEntities
             {
                 OnShipToIDChanging(value);
                 ReportPropertyChanging("ShipToID");
-                _ShipToID = StructuralObject.SetValidValue(value);
+                _ShipToID = StructuralObject.SetValidValue(value, "ShipToID");
                 ReportPropertyChanged("ShipToID");
                 OnShipToIDChanged();
             }
@@ -20225,7 +20187,7 @@ namespace BerkeleyEntities
             {
                 OnStoreIDChanging(value);
                 ReportPropertyChanging("StoreID");
-                _StoreID = StructuralObject.SetValidValue(value);
+                _StoreID = StructuralObject.SetValidValue(value, "StoreID");
                 ReportPropertyChanged("StoreID");
                 OnStoreIDChanged();
             }
@@ -20251,7 +20213,7 @@ namespace BerkeleyEntities
                 {
                     OnTransactionNumberChanging(value);
                     ReportPropertyChanging("TransactionNumber");
-                    _TransactionNumber = StructuralObject.SetValidValue(value);
+                    _TransactionNumber = StructuralObject.SetValidValue(value, "TransactionNumber");
                     ReportPropertyChanged("TransactionNumber");
                     OnTransactionNumberChanged();
                 }
@@ -20276,7 +20238,7 @@ namespace BerkeleyEntities
             {
                 OnBatchNumberChanging(value);
                 ReportPropertyChanging("BatchNumber");
-                _BatchNumber = StructuralObject.SetValidValue(value);
+                _BatchNumber = StructuralObject.SetValidValue(value, "BatchNumber");
                 ReportPropertyChanged("BatchNumber");
                 OnBatchNumberChanged();
             }
@@ -20300,7 +20262,7 @@ namespace BerkeleyEntities
             {
                 OnTimeChanging(value);
                 ReportPropertyChanging("Time");
-                _Time = StructuralObject.SetValidValue(value);
+                _Time = StructuralObject.SetValidValue(value, "Time");
                 ReportPropertyChanged("Time");
                 OnTimeChanged();
             }
@@ -20324,7 +20286,7 @@ namespace BerkeleyEntities
             {
                 OnCustomerIDChanging(value);
                 ReportPropertyChanging("CustomerID");
-                _CustomerID = StructuralObject.SetValidValue(value);
+                _CustomerID = StructuralObject.SetValidValue(value, "CustomerID");
                 ReportPropertyChanged("CustomerID");
                 OnCustomerIDChanged();
             }
@@ -20348,7 +20310,7 @@ namespace BerkeleyEntities
             {
                 OnCashierIDChanging(value);
                 ReportPropertyChanging("CashierID");
-                _CashierID = StructuralObject.SetValidValue(value);
+                _CashierID = StructuralObject.SetValidValue(value, "CashierID");
                 ReportPropertyChanged("CashierID");
                 OnCashierIDChanged();
             }
@@ -20372,7 +20334,7 @@ namespace BerkeleyEntities
             {
                 OnTotalChanging(value);
                 ReportPropertyChanging("Total");
-                _Total = StructuralObject.SetValidValue(value);
+                _Total = StructuralObject.SetValidValue(value, "Total");
                 ReportPropertyChanged("Total");
                 OnTotalChanged();
             }
@@ -20396,7 +20358,7 @@ namespace BerkeleyEntities
             {
                 OnSalesTaxChanging(value);
                 ReportPropertyChanging("SalesTax");
-                _SalesTax = StructuralObject.SetValidValue(value);
+                _SalesTax = StructuralObject.SetValidValue(value, "SalesTax");
                 ReportPropertyChanged("SalesTax");
                 OnSalesTaxChanged();
             }
@@ -20420,7 +20382,7 @@ namespace BerkeleyEntities
             {
                 OnCommentChanging(value);
                 ReportPropertyChanging("Comment");
-                _Comment = StructuralObject.SetValidValue(value, false);
+                _Comment = StructuralObject.SetValidValue(value, false, "Comment");
                 ReportPropertyChanged("Comment");
                 OnCommentChanged();
             }
@@ -20444,7 +20406,7 @@ namespace BerkeleyEntities
             {
                 OnReferenceNumberChanging(value);
                 ReportPropertyChanging("ReferenceNumber");
-                _ReferenceNumber = StructuralObject.SetValidValue(value, false);
+                _ReferenceNumber = StructuralObject.SetValidValue(value, false, "ReferenceNumber");
                 ReportPropertyChanged("ReferenceNumber");
                 OnReferenceNumberChanged();
             }
@@ -20468,7 +20430,7 @@ namespace BerkeleyEntities
             {
                 OnDBTimeStampChanging(value);
                 ReportPropertyChanging("DBTimeStamp");
-                _DBTimeStamp = StructuralObject.SetValidValue(value, true);
+                _DBTimeStamp = StructuralObject.SetValidValue(value, true, "DBTimeStamp");
                 ReportPropertyChanged("DBTimeStamp");
                 OnDBTimeStampChanged();
             }
@@ -20492,7 +20454,7 @@ namespace BerkeleyEntities
             {
                 OnStatusChanging(value);
                 ReportPropertyChanging("Status");
-                _Status = StructuralObject.SetValidValue(value);
+                _Status = StructuralObject.SetValidValue(value, "Status");
                 ReportPropertyChanged("Status");
                 OnStatusChanged();
             }
@@ -20516,7 +20478,7 @@ namespace BerkeleyEntities
             {
                 OnExchangeIDChanging(value);
                 ReportPropertyChanging("ExchangeID");
-                _ExchangeID = StructuralObject.SetValidValue(value);
+                _ExchangeID = StructuralObject.SetValidValue(value, "ExchangeID");
                 ReportPropertyChanged("ExchangeID");
                 OnExchangeIDChanged();
             }
@@ -20540,7 +20502,7 @@ namespace BerkeleyEntities
             {
                 OnChannelTypeChanging(value);
                 ReportPropertyChanging("ChannelType");
-                _ChannelType = StructuralObject.SetValidValue(value);
+                _ChannelType = StructuralObject.SetValidValue(value, "ChannelType");
                 ReportPropertyChanged("ChannelType");
                 OnChannelTypeChanged();
             }
@@ -20564,7 +20526,7 @@ namespace BerkeleyEntities
             {
                 OnRecallIDChanging(value);
                 ReportPropertyChanging("RecallID");
-                _RecallID = StructuralObject.SetValidValue(value);
+                _RecallID = StructuralObject.SetValidValue(value, "RecallID");
                 ReportPropertyChanged("RecallID");
                 OnRecallIDChanged();
             }
@@ -20588,7 +20550,7 @@ namespace BerkeleyEntities
             {
                 OnRecallTypeChanging(value);
                 ReportPropertyChanging("RecallType");
-                _RecallType = StructuralObject.SetValidValue(value);
+                _RecallType = StructuralObject.SetValidValue(value, "RecallType");
                 ReportPropertyChanged("RecallType");
                 OnRecallTypeChanged();
             }
@@ -20599,7 +20561,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -20731,7 +20692,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -20748,7 +20709,7 @@ namespace BerkeleyEntities
             {
                 OnCommissionChanging(value);
                 ReportPropertyChanging("Commission");
-                _Commission = StructuralObject.SetValidValue(value);
+                _Commission = StructuralObject.SetValidValue(value, "Commission");
                 ReportPropertyChanged("Commission");
                 OnCommissionChanged();
             }
@@ -20772,7 +20733,7 @@ namespace BerkeleyEntities
             {
                 OnCostChanging(value);
                 ReportPropertyChanging("Cost");
-                _Cost = StructuralObject.SetValidValue(value);
+                _Cost = StructuralObject.SetValidValue(value, "Cost");
                 ReportPropertyChanged("Cost");
                 OnCostChanged();
             }
@@ -20796,7 +20757,7 @@ namespace BerkeleyEntities
             {
                 OnFullPriceChanging(value);
                 ReportPropertyChanging("FullPrice");
-                _FullPrice = StructuralObject.SetValidValue(value);
+                _FullPrice = StructuralObject.SetValidValue(value, "FullPrice");
                 ReportPropertyChanged("FullPrice");
                 OnFullPriceChanged();
             }
@@ -20820,7 +20781,7 @@ namespace BerkeleyEntities
             {
                 OnStoreIDChanging(value);
                 ReportPropertyChanging("StoreID");
-                _StoreID = StructuralObject.SetValidValue(value);
+                _StoreID = StructuralObject.SetValidValue(value, "StoreID");
                 ReportPropertyChanged("StoreID");
                 OnStoreIDChanged();
             }
@@ -20846,7 +20807,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -20871,7 +20832,7 @@ namespace BerkeleyEntities
             {
                 OnTransactionNumberChanging(value);
                 ReportPropertyChanging("TransactionNumber");
-                _TransactionNumber = StructuralObject.SetValidValue(value);
+                _TransactionNumber = StructuralObject.SetValidValue(value, "TransactionNumber");
                 ReportPropertyChanged("TransactionNumber");
                 OnTransactionNumberChanged();
             }
@@ -20895,7 +20856,7 @@ namespace BerkeleyEntities
             {
                 OnItemIDChanging(value);
                 ReportPropertyChanging("ItemID");
-                _ItemID = StructuralObject.SetValidValue(value);
+                _ItemID = StructuralObject.SetValidValue(value, "ItemID");
                 ReportPropertyChanged("ItemID");
                 OnItemIDChanged();
             }
@@ -20919,7 +20880,7 @@ namespace BerkeleyEntities
             {
                 OnPriceChanging(value);
                 ReportPropertyChanging("Price");
-                _Price = StructuralObject.SetValidValue(value);
+                _Price = StructuralObject.SetValidValue(value, "Price");
                 ReportPropertyChanged("Price");
                 OnPriceChanged();
             }
@@ -20943,7 +20904,7 @@ namespace BerkeleyEntities
             {
                 OnPriceSourceChanging(value);
                 ReportPropertyChanging("PriceSource");
-                _PriceSource = StructuralObject.SetValidValue(value);
+                _PriceSource = StructuralObject.SetValidValue(value, "PriceSource");
                 ReportPropertyChanged("PriceSource");
                 OnPriceSourceChanged();
             }
@@ -20967,7 +20928,7 @@ namespace BerkeleyEntities
             {
                 OnQuantityChanging(value);
                 ReportPropertyChanging("Quantity");
-                _Quantity = StructuralObject.SetValidValue(value);
+                _Quantity = StructuralObject.SetValidValue(value, "Quantity");
                 ReportPropertyChanged("Quantity");
                 OnQuantityChanged();
             }
@@ -20991,7 +20952,7 @@ namespace BerkeleyEntities
             {
                 OnSalesRepIDChanging(value);
                 ReportPropertyChanging("SalesRepID");
-                _SalesRepID = StructuralObject.SetValidValue(value);
+                _SalesRepID = StructuralObject.SetValidValue(value, "SalesRepID");
                 ReportPropertyChanged("SalesRepID");
                 OnSalesRepIDChanged();
             }
@@ -21015,7 +20976,7 @@ namespace BerkeleyEntities
             {
                 OnTaxableChanging(value);
                 ReportPropertyChanging("Taxable");
-                _Taxable = StructuralObject.SetValidValue(value);
+                _Taxable = StructuralObject.SetValidValue(value, "Taxable");
                 ReportPropertyChanged("Taxable");
                 OnTaxableChanged();
             }
@@ -21039,7 +21000,7 @@ namespace BerkeleyEntities
             {
                 OnDetailIDChanging(value);
                 ReportPropertyChanging("DetailID");
-                _DetailID = StructuralObject.SetValidValue(value);
+                _DetailID = StructuralObject.SetValidValue(value, "DetailID");
                 ReportPropertyChanged("DetailID");
                 OnDetailIDChanged();
             }
@@ -21063,7 +21024,7 @@ namespace BerkeleyEntities
             {
                 OnCommentChanging(value);
                 ReportPropertyChanging("Comment");
-                _Comment = StructuralObject.SetValidValue(value, false);
+                _Comment = StructuralObject.SetValidValue(value, false, "Comment");
                 ReportPropertyChanged("Comment");
                 OnCommentChanged();
             }
@@ -21087,7 +21048,7 @@ namespace BerkeleyEntities
             {
                 OnDBTimeStampChanging(value);
                 ReportPropertyChanging("DBTimeStamp");
-                _DBTimeStamp = StructuralObject.SetValidValue(value, true);
+                _DBTimeStamp = StructuralObject.SetValidValue(value, true, "DBTimeStamp");
                 ReportPropertyChanged("DBTimeStamp");
                 OnDBTimeStampChanged();
             }
@@ -21111,7 +21072,7 @@ namespace BerkeleyEntities
             {
                 OnDiscountReasonCodeIDChanging(value);
                 ReportPropertyChanging("DiscountReasonCodeID");
-                _DiscountReasonCodeID = StructuralObject.SetValidValue(value);
+                _DiscountReasonCodeID = StructuralObject.SetValidValue(value, "DiscountReasonCodeID");
                 ReportPropertyChanged("DiscountReasonCodeID");
                 OnDiscountReasonCodeIDChanged();
             }
@@ -21135,7 +21096,7 @@ namespace BerkeleyEntities
             {
                 OnReturnReasonCodeIDChanging(value);
                 ReportPropertyChanging("ReturnReasonCodeID");
-                _ReturnReasonCodeID = StructuralObject.SetValidValue(value);
+                _ReturnReasonCodeID = StructuralObject.SetValidValue(value, "ReturnReasonCodeID");
                 ReportPropertyChanged("ReturnReasonCodeID");
                 OnReturnReasonCodeIDChanged();
             }
@@ -21159,7 +21120,7 @@ namespace BerkeleyEntities
             {
                 OnTaxChangeReasonCodeIDChanging(value);
                 ReportPropertyChanging("TaxChangeReasonCodeID");
-                _TaxChangeReasonCodeID = StructuralObject.SetValidValue(value);
+                _TaxChangeReasonCodeID = StructuralObject.SetValidValue(value, "TaxChangeReasonCodeID");
                 ReportPropertyChanged("TaxChangeReasonCodeID");
                 OnTaxChangeReasonCodeIDChanged();
             }
@@ -21183,7 +21144,7 @@ namespace BerkeleyEntities
             {
                 OnSalesTaxChanging(value);
                 ReportPropertyChanging("SalesTax");
-                _SalesTax = StructuralObject.SetValidValue(value);
+                _SalesTax = StructuralObject.SetValidValue(value, "SalesTax");
                 ReportPropertyChanged("SalesTax");
                 OnSalesTaxChanged();
             }
@@ -21207,7 +21168,7 @@ namespace BerkeleyEntities
             {
                 OnQuantityDiscountIDChanging(value);
                 ReportPropertyChanging("QuantityDiscountID");
-                _QuantityDiscountID = StructuralObject.SetValidValue(value);
+                _QuantityDiscountID = StructuralObject.SetValidValue(value, "QuantityDiscountID");
                 ReportPropertyChanged("QuantityDiscountID");
                 OnQuantityDiscountIDChanged();
             }
@@ -21231,7 +21192,7 @@ namespace BerkeleyEntities
             {
                 OnItemTypeChanging(value);
                 ReportPropertyChanging("ItemType");
-                _ItemType = StructuralObject.SetValidValue(value);
+                _ItemType = StructuralObject.SetValidValue(value, "ItemType");
                 ReportPropertyChanged("ItemType");
                 OnItemTypeChanged();
             }
@@ -21255,7 +21216,7 @@ namespace BerkeleyEntities
             {
                 OnComputedQuantityChanging(value);
                 ReportPropertyChanging("ComputedQuantity");
-                _ComputedQuantity = StructuralObject.SetValidValue(value);
+                _ComputedQuantity = StructuralObject.SetValidValue(value, "ComputedQuantity");
                 ReportPropertyChanged("ComputedQuantity");
                 OnComputedQuantityChanged();
             }
@@ -21279,7 +21240,7 @@ namespace BerkeleyEntities
             {
                 OnTransactionTimeChanging(value);
                 ReportPropertyChanging("TransactionTime");
-                _TransactionTime = StructuralObject.SetValidValue(value);
+                _TransactionTime = StructuralObject.SetValidValue(value, "TransactionTime");
                 ReportPropertyChanged("TransactionTime");
                 OnTransactionTimeChanged();
             }
@@ -21303,7 +21264,7 @@ namespace BerkeleyEntities
             {
                 OnIsAddMoneyChanging(value);
                 ReportPropertyChanging("IsAddMoney");
-                _IsAddMoney = StructuralObject.SetValidValue(value);
+                _IsAddMoney = StructuralObject.SetValidValue(value, "IsAddMoney");
                 ReportPropertyChanged("IsAddMoney");
                 OnIsAddMoneyChanged();
             }
@@ -21327,7 +21288,7 @@ namespace BerkeleyEntities
             {
                 OnVoucherIDChanging(value);
                 ReportPropertyChanging("VoucherID");
-                _VoucherID = StructuralObject.SetValidValue(value);
+                _VoucherID = StructuralObject.SetValidValue(value, "VoucherID");
                 ReportPropertyChanged("VoucherID");
                 OnVoucherIDChanged();
             }
@@ -21338,7 +21299,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -21510,7 +21470,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -21529,7 +21489,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -21554,7 +21514,7 @@ namespace BerkeleyEntities
             {
                 OnStoreIDChanging(value);
                 ReportPropertyChanging("StoreID");
-                _StoreID = StructuralObject.SetValidValue(value);
+                _StoreID = StructuralObject.SetValidValue(value, "StoreID");
                 ReportPropertyChanged("StoreID");
                 OnStoreIDChanged();
             }
@@ -21578,7 +21538,7 @@ namespace BerkeleyEntities
             {
                 OnTransactionTypeChanging(value);
                 ReportPropertyChanging("TransactionType");
-                _TransactionType = StructuralObject.SetValidValue(value);
+                _TransactionType = StructuralObject.SetValidValue(value, "TransactionType");
                 ReportPropertyChanged("TransactionType");
                 OnTransactionTypeChanged();
             }
@@ -21602,7 +21562,7 @@ namespace BerkeleyEntities
             {
                 OnHoldCommentChanging(value);
                 ReportPropertyChanging("HoldComment");
-                _HoldComment = StructuralObject.SetValidValue(value, false);
+                _HoldComment = StructuralObject.SetValidValue(value, false, "HoldComment");
                 ReportPropertyChanged("HoldComment");
                 OnHoldCommentChanged();
             }
@@ -21626,7 +21586,7 @@ namespace BerkeleyEntities
             {
                 OnRecallIDChanging(value);
                 ReportPropertyChanging("RecallID");
-                _RecallID = StructuralObject.SetValidValue(value);
+                _RecallID = StructuralObject.SetValidValue(value, "RecallID");
                 ReportPropertyChanged("RecallID");
                 OnRecallIDChanged();
             }
@@ -21650,7 +21610,7 @@ namespace BerkeleyEntities
             {
                 OnCommentChanging(value);
                 ReportPropertyChanging("Comment");
-                _Comment = StructuralObject.SetValidValue(value, false);
+                _Comment = StructuralObject.SetValidValue(value, false, "Comment");
                 ReportPropertyChanged("Comment");
                 OnCommentChanged();
             }
@@ -21674,7 +21634,7 @@ namespace BerkeleyEntities
             {
                 OnPriceLevelChanging(value);
                 ReportPropertyChanging("PriceLevel");
-                _PriceLevel = StructuralObject.SetValidValue(value);
+                _PriceLevel = StructuralObject.SetValidValue(value, "PriceLevel");
                 ReportPropertyChanged("PriceLevel");
                 OnPriceLevelChanged();
             }
@@ -21698,7 +21658,7 @@ namespace BerkeleyEntities
             {
                 OnDiscountMethodChanging(value);
                 ReportPropertyChanging("DiscountMethod");
-                _DiscountMethod = StructuralObject.SetValidValue(value);
+                _DiscountMethod = StructuralObject.SetValidValue(value, "DiscountMethod");
                 ReportPropertyChanged("DiscountMethod");
                 OnDiscountMethodChanged();
             }
@@ -21722,7 +21682,7 @@ namespace BerkeleyEntities
             {
                 OnDiscountPercentChanging(value);
                 ReportPropertyChanging("DiscountPercent");
-                _DiscountPercent = StructuralObject.SetValidValue(value);
+                _DiscountPercent = StructuralObject.SetValidValue(value, "DiscountPercent");
                 ReportPropertyChanged("DiscountPercent");
                 OnDiscountPercentChanged();
             }
@@ -21746,7 +21706,7 @@ namespace BerkeleyEntities
             {
                 OnTaxableChanging(value);
                 ReportPropertyChanging("Taxable");
-                _Taxable = StructuralObject.SetValidValue(value);
+                _Taxable = StructuralObject.SetValidValue(value, "Taxable");
                 ReportPropertyChanged("Taxable");
                 OnTaxableChanged();
             }
@@ -21770,7 +21730,7 @@ namespace BerkeleyEntities
             {
                 OnCustomerIDChanging(value);
                 ReportPropertyChanging("CustomerID");
-                _CustomerID = StructuralObject.SetValidValue(value);
+                _CustomerID = StructuralObject.SetValidValue(value, "CustomerID");
                 ReportPropertyChanged("CustomerID");
                 OnCustomerIDChanged();
             }
@@ -21794,7 +21754,7 @@ namespace BerkeleyEntities
             {
                 OnDeltaDepositChanging(value);
                 ReportPropertyChanging("DeltaDeposit");
-                _DeltaDeposit = StructuralObject.SetValidValue(value);
+                _DeltaDeposit = StructuralObject.SetValidValue(value, "DeltaDeposit");
                 ReportPropertyChanged("DeltaDeposit");
                 OnDeltaDepositChanged();
             }
@@ -21818,7 +21778,7 @@ namespace BerkeleyEntities
             {
                 OnDepositOverrideChanging(value);
                 ReportPropertyChanging("DepositOverride");
-                _DepositOverride = StructuralObject.SetValidValue(value);
+                _DepositOverride = StructuralObject.SetValidValue(value, "DepositOverride");
                 ReportPropertyChanged("DepositOverride");
                 OnDepositOverrideChanged();
             }
@@ -21842,7 +21802,7 @@ namespace BerkeleyEntities
             {
                 OnDepositPreviousChanging(value);
                 ReportPropertyChanging("DepositPrevious");
-                _DepositPrevious = StructuralObject.SetValidValue(value);
+                _DepositPrevious = StructuralObject.SetValidValue(value, "DepositPrevious");
                 ReportPropertyChanged("DepositPrevious");
                 OnDepositPreviousChanged();
             }
@@ -21866,7 +21826,7 @@ namespace BerkeleyEntities
             {
                 OnPaymentsPreviousChanging(value);
                 ReportPropertyChanging("PaymentsPrevious");
-                _PaymentsPrevious = StructuralObject.SetValidValue(value);
+                _PaymentsPrevious = StructuralObject.SetValidValue(value, "PaymentsPrevious");
                 ReportPropertyChanged("PaymentsPrevious");
                 OnPaymentsPreviousChanged();
             }
@@ -21890,7 +21850,7 @@ namespace BerkeleyEntities
             {
                 OnTaxPreviousChanging(value);
                 ReportPropertyChanging("TaxPrevious");
-                _TaxPrevious = StructuralObject.SetValidValue(value);
+                _TaxPrevious = StructuralObject.SetValidValue(value, "TaxPrevious");
                 ReportPropertyChanged("TaxPrevious");
                 OnTaxPreviousChanged();
             }
@@ -21914,7 +21874,7 @@ namespace BerkeleyEntities
             {
                 OnSalesRepIDChanging(value);
                 ReportPropertyChanging("SalesRepID");
-                _SalesRepID = StructuralObject.SetValidValue(value);
+                _SalesRepID = StructuralObject.SetValidValue(value, "SalesRepID");
                 ReportPropertyChanged("SalesRepID");
                 OnSalesRepIDChanged();
             }
@@ -21938,7 +21898,7 @@ namespace BerkeleyEntities
             {
                 OnShipToIDChanging(value);
                 ReportPropertyChanging("ShipToID");
-                _ShipToID = StructuralObject.SetValidValue(value);
+                _ShipToID = StructuralObject.SetValidValue(value, "ShipToID");
                 ReportPropertyChanged("ShipToID");
                 OnShipToIDChanged();
             }
@@ -21962,7 +21922,7 @@ namespace BerkeleyEntities
             {
                 OnTransactionTimeChanging(value);
                 ReportPropertyChanging("TransactionTime");
-                _TransactionTime = StructuralObject.SetValidValue(value);
+                _TransactionTime = StructuralObject.SetValidValue(value, "TransactionTime");
                 ReportPropertyChanged("TransactionTime");
                 OnTransactionTimeChanged();
             }
@@ -21986,7 +21946,7 @@ namespace BerkeleyEntities
             {
                 OnExpirationOrDueDateChanging(value);
                 ReportPropertyChanging("ExpirationOrDueDate");
-                _ExpirationOrDueDate = StructuralObject.SetValidValue(value);
+                _ExpirationOrDueDate = StructuralObject.SetValidValue(value, "ExpirationOrDueDate");
                 ReportPropertyChanged("ExpirationOrDueDate");
                 OnExpirationOrDueDateChanged();
             }
@@ -22010,7 +21970,7 @@ namespace BerkeleyEntities
             {
                 OnReturnModeChanging(value);
                 ReportPropertyChanging("ReturnMode");
-                _ReturnMode = StructuralObject.SetValidValue(value);
+                _ReturnMode = StructuralObject.SetValidValue(value, "ReturnMode");
                 ReportPropertyChanged("ReturnMode");
                 OnReturnModeChanged();
             }
@@ -22034,7 +21994,7 @@ namespace BerkeleyEntities
             {
                 OnReferenceNumberChanging(value);
                 ReportPropertyChanging("ReferenceNumber");
-                _ReferenceNumber = StructuralObject.SetValidValue(value, false);
+                _ReferenceNumber = StructuralObject.SetValidValue(value, false, "ReferenceNumber");
                 ReportPropertyChanged("ReferenceNumber");
                 OnReferenceNumberChanged();
             }
@@ -22058,7 +22018,7 @@ namespace BerkeleyEntities
             {
                 OnShippingChargePurchasedChanging(value);
                 ReportPropertyChanging("ShippingChargePurchased");
-                _ShippingChargePurchased = StructuralObject.SetValidValue(value);
+                _ShippingChargePurchased = StructuralObject.SetValidValue(value, "ShippingChargePurchased");
                 ReportPropertyChanged("ShippingChargePurchased");
                 OnShippingChargePurchasedChanged();
             }
@@ -22082,7 +22042,7 @@ namespace BerkeleyEntities
             {
                 OnShippingChargeOverrideChanging(value);
                 ReportPropertyChanging("ShippingChargeOverride");
-                _ShippingChargeOverride = StructuralObject.SetValidValue(value);
+                _ShippingChargeOverride = StructuralObject.SetValidValue(value, "ShippingChargeOverride");
                 ReportPropertyChanged("ShippingChargeOverride");
                 OnShippingChargeOverrideChanged();
             }
@@ -22106,7 +22066,7 @@ namespace BerkeleyEntities
             {
                 OnShippingServiceIDChanging(value);
                 ReportPropertyChanging("ShippingServiceID");
-                _ShippingServiceID = StructuralObject.SetValidValue(value);
+                _ShippingServiceID = StructuralObject.SetValidValue(value, "ShippingServiceID");
                 ReportPropertyChanged("ShippingServiceID");
                 OnShippingServiceIDChanged();
             }
@@ -22130,7 +22090,7 @@ namespace BerkeleyEntities
             {
                 OnShippingTrackingNumberChanging(value);
                 ReportPropertyChanging("ShippingTrackingNumber");
-                _ShippingTrackingNumber = StructuralObject.SetValidValue(value, false);
+                _ShippingTrackingNumber = StructuralObject.SetValidValue(value, false, "ShippingTrackingNumber");
                 ReportPropertyChanged("ShippingTrackingNumber");
                 OnShippingTrackingNumberChanged();
             }
@@ -22154,7 +22114,7 @@ namespace BerkeleyEntities
             {
                 OnShippingNotesChanging(value);
                 ReportPropertyChanging("ShippingNotes");
-                _ShippingNotes = StructuralObject.SetValidValue(value, false);
+                _ShippingNotes = StructuralObject.SetValidValue(value, false, "ShippingNotes");
                 ReportPropertyChanged("ShippingNotes");
                 OnShippingNotesChanged();
             }
@@ -22178,7 +22138,7 @@ namespace BerkeleyEntities
             {
                 OnDBTimeStampChanging(value);
                 ReportPropertyChanging("DBTimeStamp");
-                _DBTimeStamp = StructuralObject.SetValidValue(value, true);
+                _DBTimeStamp = StructuralObject.SetValidValue(value, true, "DBTimeStamp");
                 ReportPropertyChanged("DBTimeStamp");
                 OnDBTimeStampChanged();
             }
@@ -22202,7 +22162,7 @@ namespace BerkeleyEntities
             {
                 OnReasonCodeIDChanging(value);
                 ReportPropertyChanging("ReasonCodeID");
-                _ReasonCodeID = StructuralObject.SetValidValue(value);
+                _ReasonCodeID = StructuralObject.SetValidValue(value, "ReasonCodeID");
                 ReportPropertyChanged("ReasonCodeID");
                 OnReasonCodeIDChanged();
             }
@@ -22226,7 +22186,7 @@ namespace BerkeleyEntities
             {
                 OnExchangeIDChanging(value);
                 ReportPropertyChanging("ExchangeID");
-                _ExchangeID = StructuralObject.SetValidValue(value);
+                _ExchangeID = StructuralObject.SetValidValue(value, "ExchangeID");
                 ReportPropertyChanged("ExchangeID");
                 OnExchangeIDChanged();
             }
@@ -22250,7 +22210,7 @@ namespace BerkeleyEntities
             {
                 OnChannelTypeChanging(value);
                 ReportPropertyChanging("ChannelType");
-                _ChannelType = StructuralObject.SetValidValue(value);
+                _ChannelType = StructuralObject.SetValidValue(value, "ChannelType");
                 ReportPropertyChanged("ChannelType");
                 OnChannelTypeChanged();
             }
@@ -22274,7 +22234,7 @@ namespace BerkeleyEntities
             {
                 OnDefaultDiscountReasonCodeIDChanging(value);
                 ReportPropertyChanging("DefaultDiscountReasonCodeID");
-                _DefaultDiscountReasonCodeID = StructuralObject.SetValidValue(value);
+                _DefaultDiscountReasonCodeID = StructuralObject.SetValidValue(value, "DefaultDiscountReasonCodeID");
                 ReportPropertyChanged("DefaultDiscountReasonCodeID");
                 OnDefaultDiscountReasonCodeIDChanged();
             }
@@ -22298,7 +22258,7 @@ namespace BerkeleyEntities
             {
                 OnDefaultReturnReasonCodeIDChanging(value);
                 ReportPropertyChanging("DefaultReturnReasonCodeID");
-                _DefaultReturnReasonCodeID = StructuralObject.SetValidValue(value);
+                _DefaultReturnReasonCodeID = StructuralObject.SetValidValue(value, "DefaultReturnReasonCodeID");
                 ReportPropertyChanged("DefaultReturnReasonCodeID");
                 OnDefaultReturnReasonCodeIDChanged();
             }
@@ -22322,7 +22282,7 @@ namespace BerkeleyEntities
             {
                 OnDefaultTaxChangeReasonCodeIDChanging(value);
                 ReportPropertyChanging("DefaultTaxChangeReasonCodeID");
-                _DefaultTaxChangeReasonCodeID = StructuralObject.SetValidValue(value);
+                _DefaultTaxChangeReasonCodeID = StructuralObject.SetValidValue(value, "DefaultTaxChangeReasonCodeID");
                 ReportPropertyChanged("DefaultTaxChangeReasonCodeID");
                 OnDefaultTaxChangeReasonCodeIDChanged();
             }
@@ -22346,7 +22306,7 @@ namespace BerkeleyEntities
             {
                 OnBatchNumberChanging(value);
                 ReportPropertyChanging("BatchNumber");
-                _BatchNumber = StructuralObject.SetValidValue(value);
+                _BatchNumber = StructuralObject.SetValidValue(value, "BatchNumber");
                 ReportPropertyChanged("BatchNumber");
                 OnBatchNumberChanged();
             }
@@ -22357,7 +22317,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -22465,7 +22424,7 @@ namespace BerkeleyEntities
 
         #endregion
 
-        #region Primitive Properties
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -22484,7 +22443,7 @@ namespace BerkeleyEntities
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -22509,7 +22468,7 @@ namespace BerkeleyEntities
             {
                 OnEntryKeyChanging(value);
                 ReportPropertyChanging("EntryKey");
-                _EntryKey = StructuralObject.SetValidValue(value, false);
+                _EntryKey = StructuralObject.SetValidValue(value, false, "EntryKey");
                 ReportPropertyChanged("EntryKey");
                 OnEntryKeyChanged();
             }
@@ -22533,7 +22492,7 @@ namespace BerkeleyEntities
             {
                 OnStoreIDChanging(value);
                 ReportPropertyChanging("StoreID");
-                _StoreID = StructuralObject.SetValidValue(value);
+                _StoreID = StructuralObject.SetValidValue(value, "StoreID");
                 ReportPropertyChanged("StoreID");
                 OnStoreIDChanged();
             }
@@ -22557,7 +22516,7 @@ namespace BerkeleyEntities
             {
                 OnTransactionHoldIDChanging(value);
                 ReportPropertyChanging("TransactionHoldID");
-                _TransactionHoldID = StructuralObject.SetValidValue(value);
+                _TransactionHoldID = StructuralObject.SetValidValue(value, "TransactionHoldID");
                 ReportPropertyChanged("TransactionHoldID");
                 OnTransactionHoldIDChanged();
             }
@@ -22581,7 +22540,7 @@ namespace BerkeleyEntities
             {
                 OnRecallIDChanging(value);
                 ReportPropertyChanging("RecallID");
-                _RecallID = StructuralObject.SetValidValue(value);
+                _RecallID = StructuralObject.SetValidValue(value, "RecallID");
                 ReportPropertyChanged("RecallID");
                 OnRecallIDChanged();
             }
@@ -22605,7 +22564,7 @@ namespace BerkeleyEntities
             {
                 OnDescriptionChanging(value);
                 ReportPropertyChanging("Description");
-                _Description = StructuralObject.SetValidValue(value, false);
+                _Description = StructuralObject.SetValidValue(value, false, "Description");
                 ReportPropertyChanged("Description");
                 OnDescriptionChanged();
             }
@@ -22629,7 +22588,7 @@ namespace BerkeleyEntities
             {
                 OnQuantityPurchasedChanging(value);
                 ReportPropertyChanging("QuantityPurchased");
-                _QuantityPurchased = StructuralObject.SetValidValue(value);
+                _QuantityPurchased = StructuralObject.SetValidValue(value, "QuantityPurchased");
                 ReportPropertyChanged("QuantityPurchased");
                 OnQuantityPurchasedChanged();
             }
@@ -22653,7 +22612,7 @@ namespace BerkeleyEntities
             {
                 OnQuantityOnOrderChanging(value);
                 ReportPropertyChanging("QuantityOnOrder");
-                _QuantityOnOrder = StructuralObject.SetValidValue(value);
+                _QuantityOnOrder = StructuralObject.SetValidValue(value, "QuantityOnOrder");
                 ReportPropertyChanged("QuantityOnOrder");
                 OnQuantityOnOrderChanged();
             }
@@ -22677,7 +22636,7 @@ namespace BerkeleyEntities
             {
                 OnQuantityRTDChanging(value);
                 ReportPropertyChanging("QuantityRTD");
-                _QuantityRTD = StructuralObject.SetValidValue(value);
+                _QuantityRTD = StructuralObject.SetValidValue(value, "QuantityRTD");
                 ReportPropertyChanged("QuantityRTD");
                 OnQuantityRTDChanged();
             }
@@ -22701,7 +22660,7 @@ namespace BerkeleyEntities
             {
                 OnQuantityReservedChanging(value);
                 ReportPropertyChanging("QuantityReserved");
-                _QuantityReserved = StructuralObject.SetValidValue(value);
+                _QuantityReserved = StructuralObject.SetValidValue(value, "QuantityReserved");
                 ReportPropertyChanged("QuantityReserved");
                 OnQuantityReservedChanged();
             }
@@ -22725,7 +22684,7 @@ namespace BerkeleyEntities
             {
                 OnPriceChanging(value);
                 ReportPropertyChanging("Price");
-                _Price = StructuralObject.SetValidValue(value);
+                _Price = StructuralObject.SetValidValue(value, "Price");
                 ReportPropertyChanged("Price");
                 OnPriceChanged();
             }
@@ -22749,7 +22708,7 @@ namespace BerkeleyEntities
             {
                 OnFullPriceChanging(value);
                 ReportPropertyChanging("FullPrice");
-                _FullPrice = StructuralObject.SetValidValue(value);
+                _FullPrice = StructuralObject.SetValidValue(value, "FullPrice");
                 ReportPropertyChanged("FullPrice");
                 OnFullPriceChanged();
             }
@@ -22773,7 +22732,7 @@ namespace BerkeleyEntities
             {
                 OnPriceSourceChanging(value);
                 ReportPropertyChanging("PriceSource");
-                _PriceSource = StructuralObject.SetValidValue(value);
+                _PriceSource = StructuralObject.SetValidValue(value, "PriceSource");
                 ReportPropertyChanged("PriceSource");
                 OnPriceSourceChanged();
             }
@@ -22797,7 +22756,7 @@ namespace BerkeleyEntities
             {
                 OnCommentChanging(value);
                 ReportPropertyChanging("Comment");
-                _Comment = StructuralObject.SetValidValue(value, false);
+                _Comment = StructuralObject.SetValidValue(value, false, "Comment");
                 ReportPropertyChanged("Comment");
                 OnCommentChanged();
             }
@@ -22821,7 +22780,7 @@ namespace BerkeleyEntities
             {
                 OnDetailIDChanging(value);
                 ReportPropertyChanging("DetailID");
-                _DetailID = StructuralObject.SetValidValue(value);
+                _DetailID = StructuralObject.SetValidValue(value, "DetailID");
                 ReportPropertyChanged("DetailID");
                 OnDetailIDChanged();
             }
@@ -22845,7 +22804,7 @@ namespace BerkeleyEntities
             {
                 OnTaxableChanging(value);
                 ReportPropertyChanging("Taxable");
-                _Taxable = StructuralObject.SetValidValue(value);
+                _Taxable = StructuralObject.SetValidValue(value, "Taxable");
                 ReportPropertyChanged("Taxable");
                 OnTaxableChanged();
             }
@@ -22869,7 +22828,7 @@ namespace BerkeleyEntities
             {
                 OnItemIDChanging(value);
                 ReportPropertyChanging("ItemID");
-                _ItemID = StructuralObject.SetValidValue(value);
+                _ItemID = StructuralObject.SetValidValue(value, "ItemID");
                 ReportPropertyChanged("ItemID");
                 OnItemIDChanged();
             }
@@ -22893,7 +22852,7 @@ namespace BerkeleyEntities
             {
                 OnSalesRepIDChanging(value);
                 ReportPropertyChanging("SalesRepID");
-                _SalesRepID = StructuralObject.SetValidValue(value);
+                _SalesRepID = StructuralObject.SetValidValue(value, "SalesRepID");
                 ReportPropertyChanged("SalesRepID");
                 OnSalesRepIDChanged();
             }
@@ -22917,7 +22876,7 @@ namespace BerkeleyEntities
             {
                 OnSerialNumber1Changing(value);
                 ReportPropertyChanging("SerialNumber1");
-                _SerialNumber1 = StructuralObject.SetValidValue(value, false);
+                _SerialNumber1 = StructuralObject.SetValidValue(value, false, "SerialNumber1");
                 ReportPropertyChanged("SerialNumber1");
                 OnSerialNumber1Changed();
             }
@@ -22941,7 +22900,7 @@ namespace BerkeleyEntities
             {
                 OnSerialNumber2Changing(value);
                 ReportPropertyChanging("SerialNumber2");
-                _SerialNumber2 = StructuralObject.SetValidValue(value, false);
+                _SerialNumber2 = StructuralObject.SetValidValue(value, false, "SerialNumber2");
                 ReportPropertyChanged("SerialNumber2");
                 OnSerialNumber2Changed();
             }
@@ -22965,7 +22924,7 @@ namespace BerkeleyEntities
             {
                 OnSerialNumber3Changing(value);
                 ReportPropertyChanging("SerialNumber3");
-                _SerialNumber3 = StructuralObject.SetValidValue(value, false);
+                _SerialNumber3 = StructuralObject.SetValidValue(value, false, "SerialNumber3");
                 ReportPropertyChanged("SerialNumber3");
                 OnSerialNumber3Changed();
             }
@@ -22989,7 +22948,7 @@ namespace BerkeleyEntities
             {
                 OnVoucherNumberChanging(value);
                 ReportPropertyChanging("VoucherNumber");
-                _VoucherNumber = StructuralObject.SetValidValue(value, false);
+                _VoucherNumber = StructuralObject.SetValidValue(value, false, "VoucherNumber");
                 ReportPropertyChanged("VoucherNumber");
                 OnVoucherNumberChanged();
             }
@@ -23013,7 +22972,7 @@ namespace BerkeleyEntities
             {
                 OnVoucherExpirationDateChanging(value);
                 ReportPropertyChanging("VoucherExpirationDate");
-                _VoucherExpirationDate = StructuralObject.SetValidValue(value);
+                _VoucherExpirationDate = StructuralObject.SetValidValue(value, "VoucherExpirationDate");
                 ReportPropertyChanged("VoucherExpirationDate");
                 OnVoucherExpirationDateChanged();
             }
@@ -23037,7 +22996,7 @@ namespace BerkeleyEntities
             {
                 OnDBTimeStampChanging(value);
                 ReportPropertyChanging("DBTimeStamp");
-                _DBTimeStamp = StructuralObject.SetValidValue(value, true);
+                _DBTimeStamp = StructuralObject.SetValidValue(value, true, "DBTimeStamp");
                 ReportPropertyChanged("DBTimeStamp");
                 OnDBTimeStampChanged();
             }
@@ -23061,7 +23020,7 @@ namespace BerkeleyEntities
             {
                 OnDiscountReasonCodeIDChanging(value);
                 ReportPropertyChanging("DiscountReasonCodeID");
-                _DiscountReasonCodeID = StructuralObject.SetValidValue(value);
+                _DiscountReasonCodeID = StructuralObject.SetValidValue(value, "DiscountReasonCodeID");
                 ReportPropertyChanged("DiscountReasonCodeID");
                 OnDiscountReasonCodeIDChanged();
             }
@@ -23085,7 +23044,7 @@ namespace BerkeleyEntities
             {
                 OnReturnReasonCodeIDChanging(value);
                 ReportPropertyChanging("ReturnReasonCodeID");
-                _ReturnReasonCodeID = StructuralObject.SetValidValue(value);
+                _ReturnReasonCodeID = StructuralObject.SetValidValue(value, "ReturnReasonCodeID");
                 ReportPropertyChanged("ReturnReasonCodeID");
                 OnReturnReasonCodeIDChanged();
             }
@@ -23109,7 +23068,7 @@ namespace BerkeleyEntities
             {
                 OnTaxChangeReasonCodeIDChanging(value);
                 ReportPropertyChanging("TaxChangeReasonCodeID");
-                _TaxChangeReasonCodeID = StructuralObject.SetValidValue(value);
+                _TaxChangeReasonCodeID = StructuralObject.SetValidValue(value, "TaxChangeReasonCodeID");
                 ReportPropertyChanged("TaxChangeReasonCodeID");
                 OnTaxChangeReasonCodeIDChanged();
             }
@@ -23133,7 +23092,7 @@ namespace BerkeleyEntities
             {
                 OnItemTaxIDChanging(value);
                 ReportPropertyChanging("ItemTaxID");
-                _ItemTaxID = StructuralObject.SetValidValue(value);
+                _ItemTaxID = StructuralObject.SetValidValue(value, "ItemTaxID");
                 ReportPropertyChanged("ItemTaxID");
                 OnItemTaxIDChanged();
             }
@@ -23157,7 +23116,7 @@ namespace BerkeleyEntities
             {
                 OnComponentQuantityReservedChanging(value);
                 ReportPropertyChanging("ComponentQuantityReserved");
-                _ComponentQuantityReserved = StructuralObject.SetValidValue(value);
+                _ComponentQuantityReserved = StructuralObject.SetValidValue(value, "ComponentQuantityReserved");
                 ReportPropertyChanged("ComponentQuantityReserved");
                 OnComponentQuantityReservedChanged();
             }
@@ -23181,7 +23140,7 @@ namespace BerkeleyEntities
             {
                 OnTransactionTimeChanging(value);
                 ReportPropertyChanging("TransactionTime");
-                _TransactionTime = StructuralObject.SetValidValue(value);
+                _TransactionTime = StructuralObject.SetValidValue(value, "TransactionTime");
                 ReportPropertyChanged("TransactionTime");
                 OnTransactionTimeChanged();
             }
@@ -23205,7 +23164,7 @@ namespace BerkeleyEntities
             {
                 OnIsAddMoneyChanging(value);
                 ReportPropertyChanging("IsAddMoney");
-                _IsAddMoney = StructuralObject.SetValidValue(value);
+                _IsAddMoney = StructuralObject.SetValidValue(value, "IsAddMoney");
                 ReportPropertyChanged("IsAddMoney");
                 OnIsAddMoneyChanged();
             }
@@ -23229,7 +23188,7 @@ namespace BerkeleyEntities
             {
                 OnVoucherIDChanging(value);
                 ReportPropertyChanging("VoucherID");
-                _VoucherID = StructuralObject.SetValidValue(value);
+                _VoucherID = StructuralObject.SetValidValue(value, "VoucherID");
                 ReportPropertyChanged("VoucherID");
                 OnVoucherIDChanged();
             }
@@ -23240,7 +23199,6 @@ namespace BerkeleyEntities
 
         #endregion
 
-    
         #region Navigation Properties
     
         /// <summary>
@@ -23325,5 +23283,4 @@ namespace BerkeleyEntities
 
     #endregion
 
-    
 }

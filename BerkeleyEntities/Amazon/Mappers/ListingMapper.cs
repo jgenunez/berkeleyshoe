@@ -10,7 +10,7 @@ namespace AmazonServices.Mappers
 {
     public class ListingMapper
     {
-        private ProductDataFactory _productDataFactory;
+        private ProductMapperFactory _productMapperFactory;
         private berkeleyEntities _dataContext;
         private AmznMarketplace _marketplace;
 
@@ -19,7 +19,7 @@ namespace AmazonServices.Mappers
         {
             _dataContext = dataContext;
             _marketplace = marketplace;
-            _productDataFactory = new ProductDataFactory(_dataContext);
+            _productMapperFactory = new ProductMapperFactory();
         }
 
 
@@ -225,7 +225,7 @@ namespace AmazonServices.Mappers
             {
                 AmznListingItem listingItem = listingItems[i];
 
-                ProductData productData = _productDataFactory.GetProductData(listingItem.Item.ItemLookupCode);
+                ProductData productData = _productMapperFactory.GetProductData(listingItem.Item);
                
                 products.Add(productData.GetProductDto(listingItem.Condition, listingItem.Title));
 
@@ -242,7 +242,7 @@ namespace AmazonServices.Mappers
         {
             AmznListingItem listingItem = listingItems.First();
 
-            ProductData productData = _productDataFactory.GetProductData(listingItem.Item.ItemLookupCode);
+            ProductData productData = _productMapperFactory.GetProductData(listingItem.Item);
 
             return productData.GetRelationshipDto(_marketplace.ID);
         }

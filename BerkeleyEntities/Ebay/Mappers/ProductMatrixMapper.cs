@@ -7,11 +7,11 @@ using BerkeleyEntities;
 
 namespace EbayServices.Mappers
 {
-    public class ProductMatrixData 
+    public class ProductMatrixMapper 
     {
-        private List<ProductData> _products;
+        private List<ProductMapper> _products;
 
-        public ProductMatrixData(List<ProductData> products)
+        public ProductMatrixMapper(List<ProductMapper> products)
         {
             _products = products;
         }

@@ -72,13 +72,14 @@
     <Compile Include="Amazon\Marketplace.cs" />
     <Compile Include="Amazon\Mappers\ListingMapper.cs" />
     <Compile Include="Amazon\Mappers\ProductData.cs" />
-    <Compile Include="Amazon\Mappers\ProductDataFactory.cs" />
+    <Compile Include="Amazon\Mappers\ProductMapperFactory.cs" />
     <Compile Include="Amazon\Mappers\ShoesAdapter.cs" />
     <Compile Include="Amazon\Publisher.cs" />
     <Compile Include="Amazon\Services\GetCompetivePriceService.cs" />
     <Compile Include="Amazon\Services\ListingSyncService.cs" />
     <Compile Include="Amazon\Services\OrderSyncService.cs" />
     <Compile Include="Amazon\Services\OverpublishedService.cs" />
+    <Compile Include="berkeleyEntities.cs" />
     <Compile Include="berkeleyEntities.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -93,9 +94,9 @@
     <Compile Include="Ebay\Listing.cs" />
     <Compile Include="Ebay\Mappers\ListingMapper.cs" />
     <Compile Include="Ebay\Mappers\PantsAdapter.cs" />
-    <Compile Include="Ebay\Mappers\ProductData.cs" />
-    <Compile Include="Ebay\Mappers\ProductDataFactory.cs" />
-    <Compile Include="Ebay\Mappers\ProductMatrixData.cs" />
+    <Compile Include="Ebay\Mappers\ProductMapper.cs" />
+    <Compile Include="Ebay\Mappers\ProductMapperFactory.cs" />
+    <Compile Include="Ebay\Mappers\ProductMatrixMapper.cs" />
     <Compile Include="Ebay\Mappers\ShoesAdapter.cs" />
     <Compile Include="Ebay\Publisher.cs" />
     <Compile Include="Ebay\Services\ListingSyncService.cs" />

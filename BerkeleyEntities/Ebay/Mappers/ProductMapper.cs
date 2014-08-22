@@ -8,11 +8,11 @@ using System.Globalization;
 
 namespace EbayServices
 {
-    public abstract class ProductData
+    public abstract class ProductMapper
     {
         protected Item _item;
 
-        public ProductData(Item item)
+        public ProductMapper(Item item)
         {
             _item = item;
         }

@@ -7,6 +7,6 @@ namespace BerkeleyEntities
 {
     public partial class EbayListing
     {
-        public string ErrorMessage { get; set; }
+
     }
 }

@@ -34,14 +34,14 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <StackPanel Orientation="Horizontal" Grid.Row="0">
-                            <Button Name="btnReadEntries" Margin="10" Padding="10" VerticalAlignment="Center" Command="{Binding Read}">Read</Button>
-                            <Button Name="btnPublish" Margin="10" Padding="10" VerticalAlignment="Center" Command="{Binding Publish}">Publish</Button>
-                            <Button Name="btnRepublish" Margin="10" Padding="10" VerticalAlignment="Center" Command="{Binding FixErrors}">Fix Errors</Button>
+                            <Button Name="btnReadEntries" Margin="10" Padding="10" VerticalAlignment="Center" Command="{Binding ReadCommand}">Read</Button>
+                            <Button Name="btnPublish" Margin="10" Padding="10" VerticalAlignment="Center" Command="{Binding PublishCommand}" CommandParameter="{Binding Entries}">Publish</Button>
+                            <Button Name="btnRepublish" Margin="10" Padding="10" VerticalAlignment="Center" Command="{Binding FixCommand}">Fix Errors</Button>
                             <Border Margin="5" BorderBrush="CadetBlue" BorderThickness="3" CornerRadius="2">
                                 <TextBlock Margin="5" Padding="5" FontSize="12" Text="{Binding Progress}"/>
                             </Border>
                         </StackPanel>
-                        <ListView Grid.Row="1" Name="lvEntries" ItemsSource="{Binding Entries}" ScrollViewer.CanContentScroll="True"  ScrollViewer.VerticalScrollBarVisibility="Visible">
+                        <ListView Grid.Row="1" Name="lvEntries" ItemsSource="{Binding Entries }" ScrollViewer.CanContentScroll="True"  ScrollViewer.VerticalScrollBarVisibility="Visible">
                             <ListView.ItemContainerStyle>
                                 <Style TargetType="ListViewItem">
                                     <Setter Property="HorizontalContentAlignment" Value="Center" />
