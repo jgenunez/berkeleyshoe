@@ -108,7 +108,7 @@
     <Compile Include="Catalog\ItemClass.cs" />
     <Compile Include="Catalog\ItemClassComponent.cs" />
     <Compile Include="Catalog\PictureSet.cs" />
-    <Compile Include="Factory\ProductFactory.cs" />
+    <Compile Include="ProductFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Ebay\Order.cs" />
     <Compile Include="SyncListing.cs" />

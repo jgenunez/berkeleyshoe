@@ -12,15 +12,17 @@ using DocumentFormat.OpenXml.Drawing.Spreadsheet;
 using BerkeleyEntities;
 using System.Collections.ObjectModel;
 using System.Windows.Data;
+using System.ComponentModel;
 
 namespace WorkbookPublisher
 {
     public class ExcelWorkbook
     {
         const string COLUMN_SKU = "SKU";
+        const string COLUMN_FORMAT = "FORMAT";
+        const string COLUMN_MESSAGE = "MESSAGE";
 
         private SharedStringTablePart _stringTablePart;
-        private WorksheetPart _workSheetPart;
 
         private Dictionary<string, string> _colHeadersToRefs = new Dictionary<string, string>();
         private Dictionary<string, string> _colRefsToHeaders = new Dictionary<string, string>();
@@ -34,51 +36,85 @@ namespace WorkbookPublisher
 
         public string Path { get; set; }
 
-        public void PersistEntries(string code, List<EbayEntry> entries)
+        public void CreateErrorSheet(string code, List<Entry> entries)
         {
             using (SpreadsheetDocument document = SpreadsheetDocument.Open(this.Path, true))
             {
                 _stringTablePart = document.WorkbookPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault();
 
-                Sheet sheet = document.WorkbookPart.Workbook.Sheets.Descendants<Sheet>().SingleOrDefault(p => p.Name.Value.Equals(code));
+                string parentName = code.Replace("(errors)", "");
 
-                if (sheet == null)
+                var sheets = document.WorkbookPart.Workbook.Sheets.Elements<Sheet>();
+
+                Sheet parentSheet = sheets.Single(p => p.Name.Value.Equals(parentName));
+
+                WorksheetPart parentWorksheetPart = document.WorkbookPart.GetPartById(parentSheet.Id) as WorksheetPart;
+
+                var newWorksheet = parentWorksheetPart.Worksheet.CloneNode(true) as Worksheet;
+                var newSheetData = newWorksheet.GetFirstChild<SheetData>();
+
+                newSheetData.RemoveAllChildren();
+
+                Row newHeaderRow = parentWorksheetPart.Worksheet.Descendants<Row>().Single(p => p.RowIndex.Value == 1).CloneNode(true) as Row;
+
+                AddMessageHeader(newHeaderRow);
+
+                newSheetData.AppendChild<Row>(newHeaderRow);
+
+                var entryType = entries.First().GetType();
+
+                RegisterColumns(entryType, newHeaderRow);
+
+                uint newRowCount = 2;
+
+                foreach (Row row in GetValidRows(parentWorksheetPart.Worksheet))
                 {
-                    sheet = document.WorkbookPart.Workbook.Sheets.AppendChild<Sheet>(new Sheet() { Name = code });
-                    _workSheetPart = document.WorkbookPart.AddNewPart<WorksheetPart>(sheet.Id);
+                    string sku = GetCellValue(GetCell(row, _colHeadersToRefs[COLUMN_SKU]));
+                    string format = GetCellValue(GetCell(row, _colHeadersToRefs[COLUMN_FORMAT]));
+
+                    Entry entry = entries.SingleOrDefault(p => p.Sku.Equals(sku) && p.Format.Equals(format));
+
+                    if (entry != null)
+                    {
+                        Row newRow = row.CloneNode(true) as Row;
+
+                        newRow.RowIndex.Value = newRowCount;
+
+                        foreach (var cell in newRow.Elements<Cell>())                       
+                        {
+                            cell.CellReference.Value = cell.CellReference.Value.Replace(row.RowIndex.Value.ToString(), newRow.RowIndex.Value.ToString());
+                        }
+
+                        Cell msgCell = GetCell(newRow, _colHeadersToRefs[COLUMN_MESSAGE]);
+                        msgCell.CellValue = new CellValue(InsertSharedString(entry.Message).ToString());
+                        msgCell.DataType = CellValues.SharedString;
+
+                        newSheetData.AppendChild<Row>(newRow);
+
+                        newRowCount++;
+                    }
+                }
+
+                Sheet targetSheet = sheets.SingleOrDefault(p => p.Name.Value.Equals(code));
+
+                if (targetSheet == null)
+                {
+                    WorksheetPart worksheetPart = CreateWorksheet(document.WorkbookPart, code);
+                    worksheetPart.Worksheet = newWorksheet;
                 }
                 else
                 {
-                    _workSheetPart = document.WorkbookPart.GetPartById(sheet.Id) as WorksheetPart;
+                    WorksheetPart worksheetPart = document.WorkbookPart.GetPartById(targetSheet.Id) as WorksheetPart;
+                    worksheetPart.Worksheet = newWorksheet;
                 }
-
-                RegisterColumns(typeof(EbayEntry));
-
-                SheetData sheetData = new SheetData();
-
-                foreach (EbayEntry entry in entries.OrderBy(p => p.RowIndex))
-                {
-                    Row row = new Row();
-
-                    row.RowIndex = new UInt32Value(entry.RowIndex);
-
-                    foreach (string colRef in _colRefsToHeaders.Keys.OrderBy(p => p))
-                    {
-                        row.Append(CreateCell(entry, colRef));
-                    }
-
-                    sheetData.Append(row);
-                }
-
-                _workSheetPart.Worksheet = new Worksheet(sheetData);
 
                 document.Close();
             }
         }
 
-        public List<EbayEntry> ReadEbayEntries(string code)
+        public List<Entry> ReadEntry(Type entryType, string code)
         {
-            List<EbayEntry> entries = new List<EbayEntry>();
+            List<Entry> entries = new List<Entry>();
 
             using (SpreadsheetDocument document = SpreadsheetDocument.Open(this.Path, false))
             {
@@ -88,13 +124,13 @@ namespace WorkbookPublisher
 
                 if (sheet != null)
                 {
-                    _workSheetPart = document.WorkbookPart.GetPartById(sheet.Id) as WorksheetPart;
+                    WorksheetPart worksheetPart = document.WorkbookPart.GetPartById(sheet.Id) as WorksheetPart;
 
-                    RegisterColumns(typeof(EbayEntry));
+                    RegisterColumns(entryType, worksheetPart.Worksheet.Descendants<Row>().Single(p => p.RowIndex.Value == 1));
 
-                    foreach (Row row in GetValidRows())
+                    foreach (Row row in GetValidRows(worksheetPart.Worksheet))
                     {
-                        EbayEntry entry = CreateEntry(row, typeof(EbayEntry)) as EbayEntry;
+                        Entry entry = CreateEntry(row, entryType);
                         entry.RowIndex = row.RowIndex.Value;
                         entries.Add(entry);
                     }
@@ -106,47 +142,36 @@ namespace WorkbookPublisher
             return entries;
         }
 
-        public List<AmznEntry> ReadAmznEntries(string code)
+        private void AddMessageHeader(Row headerRow)
         {
-            List<AmznEntry> entries = new List<AmznEntry>();
-
-            using (SpreadsheetDocument document = SpreadsheetDocument.Open(this.Path, false))
+            if (!headerRow.Elements<Cell>().Any(p => GetCellValue(p).Trim().ToUpper().Equals(COLUMN_MESSAGE)))
             {
-                _stringTablePart = document.WorkbookPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault();
+                Cell msgCell = headerRow.Elements<Cell>().FirstOrDefault(p => string.IsNullOrWhiteSpace(GetCellValue(p)));
 
-                Sheet sheet = document.WorkbookPart.Workbook.Sheets.OfType<Sheet>().SingleOrDefault(p => p.Name.Equals(code)) as Sheet;
-
-                if (sheet != null)
+                if (msgCell == null)
                 {
-                    _workSheetPart = document.WorkbookPart.GetPartById(sheet.Id) as WorksheetPart;
+                    msgCell = new Cell();
+                    msgCell.DataType = CellValues.SharedString;
+                    msgCell.CellReference = new StringValue(GetColLetterFromIndex(headerRow.Elements<Cell>().Count() + 1) + headerRow.RowIndex.Value.ToString());
 
-                    RegisterColumns(typeof(AmznEntry));
-
-                    foreach (Row row in GetValidRows())
-                    {
-                        AmznEntry entry = CreateEntry(row, typeof(AmznEntry)) as AmznEntry;
-                        entry.RowIndex = row.RowIndex.Value;
-                        entries.Add(entry);
-                    } 
+                    headerRow.AppendChild<Cell>(msgCell);
                 }
 
-                document.Close();
+                msgCell.CellValue = new CellValue(InsertSharedString(COLUMN_MESSAGE).ToString());
             }
-
-            return entries;
         }
 
-        private List<Row> GetValidRows()
+        private List<Row> GetValidRows(Worksheet worksheet)
         {
-            return _workSheetPart.Worksheet.Descendants<Cell>().Where(c =>
+            return worksheet.Descendants<Cell>().Where(c =>
                 string.Compare(ParseColRefs(c.CellReference.Value), _colHeadersToRefs[COLUMN_SKU], true) == 0 &&
                 !string.IsNullOrWhiteSpace(GetCellValue(c))
                 ).Select(p => p.Parent).Cast<Row>().Where(p => p.RowIndex != 1).ToList();
         }
 
-        private object CreateEntry(Row row, Type entryType)
+        private Entry CreateEntry(Row row, Type entryType)
         {
-            object entry = Activator.CreateInstance(entryType);
+            Entry entry = Activator.CreateInstance(entryType) as Entry;
 
             foreach (Cell cell in row.OfType<Cell>())
             {
@@ -155,6 +180,12 @@ namespace WorkbookPublisher
                 if (_colRefsToProp.ContainsKey(colRef) && !string.IsNullOrWhiteSpace(cellValue))
                 {
                     PropertyInfo prop = _colRefsToProp[colRef];
+
+                    if (prop.Name.Equals("Message"))                
+                    {
+                        continue;
+                    }
+
                     switch (prop.PropertyType.Name)
                     {
                         case "String":
@@ -218,10 +249,8 @@ namespace WorkbookPublisher
             return cell;
         }
 
-        private void RegisterColumns(Type entryType)
-        {
-            Row headerRow = _workSheetPart.Worksheet.Descendants<Row>().Single(p => p.RowIndex == 1);
-            
+        private void RegisterColumns(Type entryType, Row headerRow)
+        {          
             _colRefsToHeaders.Clear();
             _colHeadersToRefs.Clear();
             _colRefsToProp.Clear();
@@ -251,6 +280,29 @@ namespace WorkbookPublisher
                 }
             }
 
+        }
+
+        private WorksheetPart CreateWorksheet(WorkbookPart workbookPart, string name)
+        {
+            WorksheetPart newWorksheetPart = workbookPart.AddNewPart<WorksheetPart>();
+
+            uint sheetId = 1;
+
+            var sheets = workbookPart.Workbook.Sheets.Elements<Sheet>();
+
+            if (sheets.Count() > 0)
+            {
+                sheetId = sheets.Select(s => s.SheetId.Value).Max() + 1;
+            }
+
+            string relationshipId = workbookPart.GetIdOfPart(newWorksheetPart);
+
+            // Append the new worksheet and associate it with the workbook.
+            Sheet sheet = new Sheet() { Id = relationshipId, SheetId = sheetId, Name = name };
+
+            workbookPart.Workbook.Sheets.Append(sheet);
+
+            return newWorksheetPart;
         }
 
         private int InsertSharedString(string text)
@@ -286,7 +338,7 @@ namespace WorkbookPublisher
                 }
             }
 
-            return null;
+            return string.Empty;
         }
 
         private string ParseColRefs(string cellRef)
@@ -300,8 +352,6 @@ namespace WorkbookPublisher
 
         private Cell GetCell(Row row, string colRef)
         {
-            SheetData sheetData = _workSheetPart.Worksheet.GetFirstChild<SheetData>();
-
             string cellRef = colRef + row.RowIndex.Value.ToString();
 
             // If there is not a cell with the specified column name, insert one.
@@ -315,18 +365,40 @@ namespace WorkbookPublisher
                 Cell refCell = null;
                 foreach (Cell cell in row.Elements<Cell>())
                 {
-                    if (string.Compare(cell.CellReference.Value, cellRef, true) > 0)
+                    
+
+                    if (string.Compare(cell.CellReference.Value, cellRef, true) > 0 && cell.CellReference.Value.Count() == cellRef.Count())
                     {
                         refCell = cell;
+
                         break;
                     }
                 }
 
                 Cell newCell = new Cell() { CellReference = cellRef, StyleIndex = 0 };
+
+                
+
                 row.InsertBefore(newCell, refCell);
 
                 return newCell;
             }
+        }
+
+        public string GetColLetterFromIndex(int columnNumber)
+        {
+            int dividend = columnNumber;
+            string columnName = String.Empty;
+            int modulo;
+
+            while (dividend > 0)
+            {
+                modulo = (dividend - 1) % 26;
+                columnName = Convert.ToChar(65 + modulo).ToString() + columnName;
+                dividend = (int)((dividend - modulo) / 26);
+            }
+
+            return columnName;
         }
 
         //private void InsertImage(long x, long y, long? width, long? height, string imagePath)
@@ -463,6 +535,162 @@ namespace WorkbookPublisher
         //        throw ex; // or do something more interesting if you want
         //    }
         //}
+
+    }
+
+    public abstract class Entry : INotifyPropertyChanged
+    {
+        private bool _completed = false;
+        private List<string> _messages = new List<string>();
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public Entry()
+        {
+            this.Format = string.Empty;
+            this.Title = string.Empty;
+        }
+
+        public uint RowIndex { get; set; }
+        public string Brand { get; set; }
+        public string ClassName { get; set; }
+        public string Sku { get; set; }
+        public string Format { get; set; }
+        public int Q { get; set; }
+        public decimal P { get; set; }
+        public string Title { get; set; }
+        public string Condition { get; set; }
+
+        public bool Completed
+        {
+            get { return _completed; }
+            set
+            {
+                _completed = value;
+
+                if (this.PropertyChanged != null)
+                {
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("Status"));
+                }
+            }
+        }
+        public string Message
+        {
+            get { return string.Join(" | ", _messages); }
+            set
+            {
+                _messages.Add(value);
+
+                if (this.PropertyChanged != null)
+                {
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("Message"));
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("Status"));
+                }
+            }
+        }
+
+        public string Status
+        {
+            get
+            {
+                if (this.Completed)
+                {
+                    return "completed";
+                }
+                else
+                {
+                    if (_messages.Count == 0)
+                    {
+                        return "waiting";
+                    }
+                    else
+                    {
+                        return "error";
+                    }
+                }
+            }
+        }
+    }
+
+    public class EbayEntry : Entry
+    {
+        public EbayEntry()
+        {
+            this.StartDate = DateTime.UtcNow;
+        }
+
+        public DateTime StartDate { get; set; }
+
+        public bool StartDateSpecified { get; set; }
+
+        public string FullDescription { get; set; }
+
+        public bool IsAuction()
+        {
+            if (this.Format.Contains("A"))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public string GetDuration()
+        {
+            switch (this.Format)
+            {
+                case "GTC": return this.Format;
+
+                case "BIN": return "Days_30";
+
+                case "A7": return "Days_7";
+
+                case "A1": return "Days_1";
+
+                case "A3": return "Days_3";
+
+                case "A5": return "Days_5";
+
+                default: return string.Empty;
+            }
+        }
+
+        public string GetFormat()
+        {
+            switch (this.Format)
+            {
+                case "BIN":
+                case "GTC":
+                    return BerkeleyEntities.Ebay.Publisher.FORMAT_FIXEDPRICE;
+                case "A1":
+                case "A3":
+                case "A5":
+                case "A7":
+                    return BerkeleyEntities.Ebay.Publisher.FORMAT_AUCTION;
+                default:
+                    return null;
+            }
+        }
+
+        public string GetConditionID()
+        {
+            switch (this.Condition)
+            {
+                case "NEW": return "1000";
+                case "NWB": return "1500";
+                case "PRE": return "1750";
+                case "NWD": return "3000";
+
+                default: return null;
+            }
+        }
+
+    }
+
+    public class AmznEntry : Entry
+    {
 
     }
 }

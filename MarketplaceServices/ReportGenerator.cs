@@ -120,6 +120,8 @@ namespace MarketplaceManager
                 //        !p.DepartmentName.Equals("MIXED ITEMS & LOTS")).ToList()
                 //        .Where(p => p.Quantity > 0 || p.OnActiveListing > 0);
 
+                dataContext.CommandTimeout = 0;
+
                 var items = dataContext.Items
                     .Include("AmznListingItems.OrderItems.Order")
                     .Include("EbayListingItems.OrderItems.Order")
@@ -132,6 +134,14 @@ namespace MarketplaceManager
 
                 foreach (BerkeleyEntities.Item item in items)
                 {
+                    //if ((item.Quantity == 0 && item.OnActiveListing == 0 && item.OnPendingOrder == 0) ||
+                    //    item.DepartmentName.Equals("APPAREL") ||
+                    //    item.DepartmentName.Equals("ACCESSORIES") ||
+                    //    item.DepartmentName.Equals("MIXED ITEMS & LOTS"))
+                    //{
+                    //    continue;
+                    //}
+
                     ReportProductView product = new ReportProductView(item.ItemLookupCode);
                     product.Brand = item.SubDescription1;
                     product.Cost = item.Cost;

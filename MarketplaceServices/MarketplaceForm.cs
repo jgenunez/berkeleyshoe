@@ -34,6 +34,7 @@ namespace MarketplaceManager
         {
             InitializeComponent();
 
+            btnFixOverpublished.Click += btnFixOverpublished_Click;
         }
 
         private void SyncForm_Load(object sender, EventArgs e)
@@ -107,38 +108,37 @@ namespace MarketplaceManager
             }
         }
 
-        //private void btnFixOverpublished_Click(object sender, EventArgs e)
-        //{
-        //    foreach (DataGridViewRow row in dgvMarketplaces.SelectedRows)
-        //    {
-        //        MarketplaceView view = row.DataBoundItem as MarketplaceView;
+        private void btnFixOverpublished_Click(object sender, EventArgs e)
+        {
+            foreach (DataGridViewRow row in dgvMarketplaces.SelectedRows)
+            {
+                MarketplaceView view = row.DataBoundItem as MarketplaceView;
 
-        //        if (_overPublishedServices.ContainsKey(view.ID))
-        //        {
-        //            MessageBox.Show(view.Name + " order synchronization is running !");
-        //            continue;
-        //        }
+                if (_overPublishedServices.ContainsKey(view.ID))
+                {
+                    MessageBox.Show(view.Name + " order synchronization is running !");
+                    continue;
+                }
 
-        //        BackgroundWorker bw = new BackgroundWorker();
-        //        bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(OverpublishedServiceCompleted);
+                BackgroundWorker bw = new BackgroundWorker();
+                bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(OverpublishedServiceCompleted);
 
-        //        if (view.Host.Equals("Amazon"))
-        //        {
-        //            BerkeleyEntities.Amazon.Services.OverpublishedService service = new BerkeleyEntities.Amazon.Services.OverpublishedService(view.DbID);
-        //            bw.DoWork += (_, args) => { service.BalanceQuantities(); args.Result = view; };
-        //        }
-        //        else
-        //        {
-        //            BerkeleyEntities.Ebay.Services.OverpublishedService service = new BerkeleyEntities.Ebay.Services.OverpublishedService(view.DbID);
-        //            bw.DoWork += (_, args) => { service.BalanceQuantities();  args.Result = view; };
-        //        }
+                if (view.Host.Equals("Amazon"))
+                {
+                    BerkeleyEntities.Amazon.Services.OverpublishedService service = new BerkeleyEntities.Amazon.Services.OverpublishedService(view.DbID);
+                    bw.DoWork += (_, args) => { service.BalanceQuantities(); args.Result = view; };
+                }
+                else
+                {
+                    BerkeleyEntities.Ebay.Services.OverpublishedService service = new BerkeleyEntities.Ebay.Services.OverpublishedService(view.DbID);
+                    bw.DoWork += (_, args) => { service.BalanceQuantities(); args.Result = view; };
+                }
 
-        //        bw.RunWorkerAsync();
-                
+                bw.RunWorkerAsync();
 
-        //        _overPublishedServices.Add(view.ID, bw);
-        //    }
-        //}
+                _overPublishedServices.Add(view.ID, bw);
+            }
+        }
 
         private void btnGenerate_Click(object sender, EventArgs e)
         {
@@ -167,8 +167,17 @@ namespace MarketplaceManager
 
         private void ReportCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            MessageBox.Show("Report generated successfully!");
+            if (e.Error == null)
+            {
+                MessageBox.Show("Report generated successfully!");
+            }
+            else
+            {
+                MessageBox.Show("Error when generating report: " + e.Error.Message);
+            }
+
             btnGenerate.Enabled = true;
+            
         }
 
         private void ListingSyncServiceCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -219,25 +228,25 @@ namespace MarketplaceManager
             dgvMarketplaces.Invalidate();
         }
 
-        //private void OverpublishedServiceCompleted(object sender, RunWorkerCompletedEventArgs e)
-        //{
-        //    if (e.Error == null)
-        //    {
-        //        MarketplaceView view = e.Result as MarketplaceView;
-        //        MessageBox.Show(view.Name + " overpublished service completed !");
-        //    }
-        //    else
-        //    {
-        //        MessageBox.Show(e.Error.Message);
-        //    }
+        private void OverpublishedServiceCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Error == null)
+            {
+                MarketplaceView view = e.Result as MarketplaceView;
+                MessageBox.Show(view.Name + " overpublished service completed !");
+            }
+            else
+            {
+                MessageBox.Show(e.Error.Message);
+            }
 
-        //    var removeList = _overPublishedServices.Where(p => p.Value.IsBusy == false).Select(p => p.Key).ToList();
+            var removeList = _overPublishedServices.Where(p => p.Value.IsBusy == false).Select(p => p.Key).ToList();
 
-        //    foreach (string key in removeList)
-        //    {
-        //        _overPublishedServices.Remove(key);
-        //    }
-        //}
+            foreach (string key in removeList)
+            {
+                _overPublishedServices.Remove(key);
+            }
+        }
 
         private void LoadMarketplaces()
         {

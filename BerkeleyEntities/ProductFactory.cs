@@ -18,21 +18,13 @@ namespace BerkeleyEntities
     {
         protected Item _item;
 
-        public void berkeleyEntities_ObjectMaterialized(object sender, ObjectMaterializedEventArgs e)
-        {
-            if (e.Entity is Item)
-            {
-                GetProductData((Item)e.Entity);
-            }
-        }
-
         public void GetProductData(Item item)
         {
             _item = item;
 
             _item.Attributes = new Dictionary<string, Attribute>();
 
-            string deptCode = _item.Department.code;
+            string deptCode = _item.Department == null ? "NONE" : _item.Department.code;
 
             switch (deptCode)
             {

@@ -32,7 +32,7 @@ namespace AmazonServices
             _marketplace = _dataContext.AmznMarketplaces.Single(p => p.ID.Equals(marketplaceID));
         }
 
-        public List<string> Synchronize()
+        public void Synchronize()
         {
             ReportRequestInfo requestInfo = CheckForExistingRequest(REPORT_LISTINGS);
 
@@ -54,7 +54,7 @@ namespace AmazonServices
 
             _currentSyncTime = requestInfo.SubmittedDate.ToUniversalTime();
 
-            return PersistListings(new Queue<string>(lines));
+            PersistListings(new Queue<string>(lines));
         }
 
         private ReportRequestInfo RequestReport(string reportType)
@@ -126,11 +126,9 @@ namespace AmazonServices
             return reader.ReadToEnd().Split(new Char[1] { '\n' }).Where(p => !string.IsNullOrWhiteSpace(p));
         }
 
-        private List<string> PersistListings(Queue<string> lines)
+        private void PersistListings(Queue<string> lines)
         {
             lines.Dequeue();
-
-            List<string> qtyChanged = new List<string>();
 
             while (lines.Count > 0)
             {
@@ -153,12 +151,6 @@ namespace AmazonServices
                     i++;
                 }
 
-                qtyChanged.AddRange(_dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Modified)
-                    .Where(p => p.GetModifiedProperties().Contains("Quantity")).Select(p => p.Entity).OfType<AmznListingItem>().Select(p => p.Item.ItemLookupCode));
-
-                qtyChanged.AddRange(_dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added)
-                    .Select(p => p.Entity).OfType<AmznListingItem>().Select(p => p.Item.ItemLookupCode));
-
                 _dataContext.SaveChanges();
             }
 
@@ -173,8 +165,6 @@ namespace AmazonServices
             _marketplace.ListingSyncTime = _currentSyncTime;
 
             _dataContext.SaveChanges();
-
-            return qtyChanged;
         }
 
         private void ProccessLine(string line)
@@ -196,23 +186,21 @@ namespace AmazonServices
                 title = title.Substring(0, 200);
             }
 
-            Item item = _dataContext.Items.Single(p => p.ItemLookupCode.Equals(sku));
-
-            AmznListingItem listingItem = item.AmznListingItems.SingleOrDefault(p => p.MarketplaceID.Equals(_marketplace.ID));
+            AmznListingItem listingItem = _dataContext.AmznListingItems.SingleOrDefault(p => p.Sku.Equals(sku) && p.MarketplaceID.Equals(_marketplace.ID));
 
             if (listingItem == null)
             {
                 listingItem = new AmznListingItem();
                 listingItem.MarketplaceID = _marketplace.ID;
-                listingItem.Item = item;
+                listingItem.Item = _dataContext.Items.SingleOrDefault(p => p.ItemLookupCode.Equals(sku));;
+                listingItem.Sku = sku;
             }
-
 
             int qty = int.Parse(quantity);
 
             if (listingItem.LastSyncTime < _currentSyncTime && listingItem.Quantity != qty)
             {
-                listingItem.Quantity = int.Parse(quantity);
+                listingItem.Quantity = qty;
             }
 
             listingItem.Price = decimal.Parse(price);

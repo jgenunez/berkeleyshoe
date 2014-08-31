@@ -10,11 +10,21 @@ namespace BerkeleyEntities
 {
     public partial class berkeleyEntities
     {
-        public ProductFactory _productFactory = new ProductFactory();
+        private ProductFactory _productFactory = new ProductFactory();
+
+        public bool MaterializeAttributes { get; set; }
 
         partial void OnContextCreated()
         {
-            this.ObjectMaterialized += _productFactory.berkeleyEntities_ObjectMaterialized;
+            this.ObjectMaterialized += berkeleyEntities_ObjectMaterialized;
+        }
+
+        private void berkeleyEntities_ObjectMaterialized(object sender, ObjectMaterializedEventArgs e)
+        {
+            if (e.Entity is Item && this.MaterializeAttributes)
+            {
+                _productFactory.GetProductData(e.Entity as Item);
+            }
         }
 
     }

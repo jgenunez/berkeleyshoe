@@ -24,7 +24,7 @@ namespace BerkeleyEntities.Amazon.Services
             _publisher = new Publisher(_dataContext, _marketplace);
         }
 
-        public void BalanceQuantities(IEnumerable<string> skus)
+        public void BalanceQuantities()
         {
             //if (!_marketplace.ListingSyncTime.HasValue || _marketplace.ListingSyncTime.Value < DateTime.UtcNow.AddHours(-1))
             //{
@@ -36,14 +36,17 @@ namespace BerkeleyEntities.Amazon.Services
                 throw new InvalidOperationException(_marketplace.Name + " orders must be synchronized in order to fix overpublished");
             }
 
-            foreach (string sku in skus)
-            {
-                AmznListingItem listingItem = _dataContext.AmznListingItems
-                    .SingleOrDefault(p => p.Item.ItemLookupCode.Equals(sku) && p.MarketplaceID == _marketplace.ID && p.IsActive);
+            var listingItems = _dataContext.AmznListingItems.Where(p => p.MarketplaceID == _marketplace.ID && p.IsActive && p.Quantity > 0);
 
-                if (listingItem != null && listingItem.Quantity > listingItem.Item.QtyAvailable)
+            foreach (AmznListingItem listingItem in listingItems)
+            {
+                if (listingItem.Item != null)
                 {
-                    listingItem.Quantity = listingItem.Item.QtyAvailable;
+                    if(listingItem.Quantity > listingItem.Item.QtyAvailable)
+                    {
+
+                        listingItem.Quantity = listingItem.Item.QtyAvailable;
+                    }
                 }
             }
 

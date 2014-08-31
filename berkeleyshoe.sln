@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmazonPublisher", "AmazonPublisher\AmazonPublisher.csproj", "{AEE31F65-075A-404C-9313-E9DB57BA7960}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "POChecker", "POChecker\POChecker.csproj", "{6BA1809B-DE84-4AD1-B08D-B2ABB8B943B6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MagentoPublisher", "MagentoPublisher\MagentoPublisher.csproj", "{6FC958DC-2EF0-44EE-9BC9-3B7BD06B106C}"
@@ -16,8 +14,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhysicalInventoryUtility", "PhysicalInventoryUtility\PhysicalInventoryUtility.csproj", "{A63C6378-9516-4208-8543-49642F77BAB3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarketplaceManager", "MarketplaceServices\MarketplaceManager.csproj", "{585AA2CF-6189-4163-AD62-284C523FA289}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarketplacePublisher", "MarketplacePublisher\MarketplacePublisher.csproj", "{5E247ADF-D20A-41E3-A47C-C4113B4B1528}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutomaticSyncService", "AutomaticSyncService\AutomaticSyncService.csproj", "{296FB21F-4CBF-491D-8771-4573F56A841C}"
 EndProject
@@ -41,18 +37,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{AEE31F65-075A-404C-9313-E9DB57BA7960}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{AEE31F65-075A-404C-9313-E9DB57BA7960}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{AEE31F65-075A-404C-9313-E9DB57BA7960}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{AEE31F65-075A-404C-9313-E9DB57BA7960}.Debug|Win32.ActiveCfg = Debug|x86
-		{AEE31F65-075A-404C-9313-E9DB57BA7960}.Debug|x86.ActiveCfg = Debug|x86
-		{AEE31F65-075A-404C-9313-E9DB57BA7960}.Debug|x86.Build.0 = Debug|x86
-		{AEE31F65-075A-404C-9313-E9DB57BA7960}.Release|Any CPU.ActiveCfg = Release|x86
-		{AEE31F65-075A-404C-9313-E9DB57BA7960}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{AEE31F65-075A-404C-9313-E9DB57BA7960}.Release|Mixed Platforms.Build.0 = Release|x86
-		{AEE31F65-075A-404C-9313-E9DB57BA7960}.Release|Win32.ActiveCfg = Release|x86
-		{AEE31F65-075A-404C-9313-E9DB57BA7960}.Release|x86.ActiveCfg = Release|x86
-		{AEE31F65-075A-404C-9313-E9DB57BA7960}.Release|x86.Build.0 = Release|x86
 		{6BA1809B-DE84-4AD1-B08D-B2ABB8B943B6}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{6BA1809B-DE84-4AD1-B08D-B2ABB8B943B6}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{6BA1809B-DE84-4AD1-B08D-B2ABB8B943B6}.Debug|Mixed Platforms.Build.0 = Debug|x86
@@ -125,18 +109,6 @@ Global
 		{585AA2CF-6189-4163-AD62-284C523FA289}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{585AA2CF-6189-4163-AD62-284C523FA289}.Release|Win32.ActiveCfg = Release|Any CPU
 		{585AA2CF-6189-4163-AD62-284C523FA289}.Release|x86.ActiveCfg = Release|Any CPU
-		{5E247ADF-D20A-41E3-A47C-C4113B4B1528}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{5E247ADF-D20A-41E3-A47C-C4113B4B1528}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{5E247ADF-D20A-41E3-A47C-C4113B4B1528}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{5E247ADF-D20A-41E3-A47C-C4113B4B1528}.Debug|Win32.ActiveCfg = Debug|x86
-		{5E247ADF-D20A-41E3-A47C-C4113B4B1528}.Debug|x86.ActiveCfg = Debug|x86
-		{5E247ADF-D20A-41E3-A47C-C4113B4B1528}.Debug|x86.Build.0 = Debug|x86
-		{5E247ADF-D20A-41E3-A47C-C4113B4B1528}.Release|Any CPU.ActiveCfg = Release|x86
-		{5E247ADF-D20A-41E3-A47C-C4113B4B1528}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{5E247ADF-D20A-41E3-A47C-C4113B4B1528}.Release|Mixed Platforms.Build.0 = Release|x86
-		{5E247ADF-D20A-41E3-A47C-C4113B4B1528}.Release|Win32.ActiveCfg = Release|x86
-		{5E247ADF-D20A-41E3-A47C-C4113B4B1528}.Release|x86.ActiveCfg = Release|x86
-		{5E247ADF-D20A-41E3-A47C-C4113B4B1528}.Release|x86.Build.0 = Release|x86
 		{296FB21F-4CBF-491D-8771-4573F56A841C}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{296FB21F-4CBF-491D-8771-4573F56A841C}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{296FB21F-4CBF-491D-8771-4573F56A841C}.Debug|Mixed Platforms.Build.0 = Debug|x86

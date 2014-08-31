@@ -227,30 +227,13 @@ namespace EbayServices.Mappers
             return listingDto;
         }
 
-        public EbayListing Map(ItemType listingDto)
+        public void Map(ItemType listingDto, EbayListing listing)
         {
-            EbayListing listing = _dataContext.EbayListings.SingleOrDefault(p => 
-                p.MarketplaceID.Equals(_marketplace.ID) && 
-                p.Code.Equals(listingDto.ItemID));
+            listing.Code = listingDto.ItemID;
 
-            if (listing == null)
-            {
-                listing = new EbayListing();
-                listing.Code = listingDto.ItemID;
-                listing.Format = listingDto.ListingTypeSpecified ? listingDto.ListingType.ToString() : listing.Format;
-                listing.MarketplaceID = _marketplace.ID;
-            }
+            listing.Format = listingDto.ListingTypeSpecified ? listingDto.ListingType.ToString() : listing.Format;
 
-            if (listingDto.Variations == null)
-            {
-                listing.IsVariation = false;
-                MapListingItem(listing, listingDto);
-            }
-            else
-            {
-                listing.IsVariation = true;
-                MapListingItem(listing, listingDto.Variations);
-            }
+            listing.Marketplace = _marketplace;
 
             listing.Duration = listingDto.ListingDuration != null ? listingDto.ListingDuration : listing.Duration;
 
@@ -267,7 +250,16 @@ namespace EbayServices.Mappers
             listing.Status = listingDto.SellingStatus != null && listingDto.SellingStatus.ListingStatusSpecified ?
                 listingDto.SellingStatus.ListingStatus.ToString() : listing.Status;
 
-            return listing;
+            if (listingDto.Variations == null)
+            {
+                listing.IsVariation = false;
+                MapListingItem(listing, listingDto);
+            }
+            else
+            {
+                listing.IsVariation = true;
+                MapListingItem(listing, listingDto.Variations);
+            }
         }
 
         private void MapListingItem(EbayListing listing, ItemType listingDto)
@@ -288,17 +280,23 @@ namespace EbayServices.Mappers
         private void MapListingItem(EbayListing listing, VariationsType variationDtos)
         {
             var currentSkus = variationDtos.Variation.ToArray().Select(p => p.SKU);
-            var droppedListingItems = listing.ListingItems.Where(p => !currentSkus.Any(s => s.Equals(p.Item.ItemLookupCode)));
-            foreach (EbayListingItem listingItem in droppedListingItems)
+
+            foreach (var listingItem in listing.ListingItems)
             {
-                listingItem.Quantity = 0;
+                if (!currentSkus.Any(p => p.Equals(listingItem.Sku)))
+                {
+                    listingItem.Quantity = 0;
+                }
             }
 
             foreach (VariationType variationDto in variationDtos.Variation)
             {
                 string sku = variationDto.SKU.ToUpper().Trim();
+
                 EbayListingItem listingItem = FindListingItem(listing, sku);
+
                 listingItem.Price = variationDto.StartPrice != null ? Convert.ToDecimal(variationDto.StartPrice.Value) : listingItem.Price;
+
                 listingItem.Quantity =
                     variationDto.QuantitySpecified &&
                     variationDto.SellingStatus != null &&
@@ -309,13 +307,13 @@ namespace EbayServices.Mappers
 
         private EbayListingItem FindListingItem(EbayListing listing, string sku)
         {
-            EbayListingItem listingItem = listing.ListingItems.SingleOrDefault(p => p.Item.ItemLookupCode.Equals(sku));
+            EbayListingItem listingItem = listing.ListingItems.SingleOrDefault(p => p.Sku.Equals(sku));
 
             if (listingItem == null)
             {
-                Item item = _dataContext.Items.Single(p => p.ItemLookupCode.Equals(sku));
+                Item item = _dataContext.Items.SingleOrDefault(p => p.ItemLookupCode.Equals(sku));
 
-                listingItem = new EbayListingItem() { Item = item, Listing = listing };
+                listingItem = new EbayListingItem() { Item = item, Listing = listing, Sku = sku };
             }
 
             return listingItem;

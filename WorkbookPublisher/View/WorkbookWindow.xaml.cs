@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using BerkeleyEntities;
+using WorkbookPublisher.ViewModel;
 
 namespace WorkbookPublisher
 {
@@ -54,12 +55,12 @@ namespace WorkbookPublisher
 
                     foreach (var marketplace in dataContext.EbayMarketplaces)
                     {
-                        composite.Add(new EbayPublisherViewModel(workbook, marketplace.ID));
+                        composite.Add(new EbayPublisherViewModel(workbook, marketplace.Code));
                     }
 
                     foreach (var marketplace in dataContext.AmznMarketplaces)
                     {
-                        composite.Add(new AmznPublisherViewModel(workbook, marketplace.ID));
+                        composite.Add(new AmznPublisherViewModel(workbook, marketplace.Code));
                     }
 
                     tcSheets.ItemsSource = composite;

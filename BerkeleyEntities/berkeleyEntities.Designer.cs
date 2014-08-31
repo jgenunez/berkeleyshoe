@@ -51,12 +51,12 @@ using System.Xml.Serialization;
 [assembly: EdmRelationshipAttribute("BerkeleyEntities", "TransactionHoldTransactionHoldEntry", "TransactionHold", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(BerkeleyEntities.TransactionHold), "TransactionHoldEntry", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BerkeleyEntities.TransactionHoldEntry), true)]
 [assembly: EdmRelationshipAttribute("BerkeleyEntities", "Bsi_LocationLogItem", "Bsi_LocationLog", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BerkeleyEntities.Bsi_LocationLog), "Item", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(BerkeleyEntities.Item), true)]
 [assembly: EdmRelationshipAttribute("BerkeleyEntities", "EbayOrderItemEbayOrder", "EbayOrderItem", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BerkeleyEntities.EbayOrderItem), "EbayOrder", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(BerkeleyEntities.EbayOrder), true)]
-[assembly: EdmRelationshipAttribute("BerkeleyEntities", "SyncEbayListingItemItem", "SyncEbayListingItem", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BerkeleyEntities.EbayListingItem), "Item", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(BerkeleyEntities.Item), true)]
+[assembly: EdmRelationshipAttribute("BerkeleyEntities", "EbayListingItemItem", "SyncEbayListingItem", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BerkeleyEntities.EbayListingItem), "Item", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(BerkeleyEntities.Item), true)]
 [assembly: EdmRelationshipAttribute("BerkeleyEntities", "SyncEbayListingSyncEbayListingItem", "SyncEbayListing", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(BerkeleyEntities.EbayListing), "SyncEbayListingItem", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BerkeleyEntities.EbayListingItem), true)]
 [assembly: EdmRelationshipAttribute("BerkeleyEntities", "SyncEbayOrderItemSyncEbayListingItem", "SyncEbayOrderItem", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BerkeleyEntities.EbayOrderItem), "SyncEbayListingItem", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(BerkeleyEntities.EbayListingItem), true)]
 [assembly: EdmRelationshipAttribute("BerkeleyEntities", "SyncAmznOrderSyncAmznOrderItem", "SyncAmznOrder", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(BerkeleyEntities.AmznOrder), "SyncAmznOrderItem", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BerkeleyEntities.AmznOrderItem), true)]
 [assembly: EdmRelationshipAttribute("BerkeleyEntities", "InventoryEntryItem", "InventoryEntry", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BerkeleyEntities.InventoryEntry), "Item", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(BerkeleyEntities.Item), true)]
-[assembly: EdmRelationshipAttribute("BerkeleyEntities", "SyncAmznListingItemItem", "SyncAmznListingItem", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BerkeleyEntities.AmznListingItem), "Item", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(BerkeleyEntities.Item), true)]
+[assembly: EdmRelationshipAttribute("BerkeleyEntities", "AmznListingItemItem", "SyncAmznListingItem", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BerkeleyEntities.AmznListingItem), "Item", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(BerkeleyEntities.Item), true)]
 [assembly: EdmRelationshipAttribute("BerkeleyEntities", "SyncAmznListingItemSyncAmznOrderItem", "SyncAmznListingItem", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(BerkeleyEntities.AmznListingItem), "SyncAmznOrderItem", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BerkeleyEntities.AmznOrderItem), true)]
 [assembly: EdmRelationshipAttribute("BerkeleyEntities", "AmznMarketplaceSyncAmznListingItem", "AmznMarketplace", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(BerkeleyEntities.AmznMarketplace), "SyncAmznListingItem", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BerkeleyEntities.AmznListingItem), true)]
 [assembly: EdmRelationshipAttribute("BerkeleyEntities", "EbayMarketplaceSyncEbayListing", "EbayMarketplace", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(BerkeleyEntities.EbayMarketplace), "SyncEbayListing", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BerkeleyEntities.EbayListing), true)]
@@ -1299,7 +1299,6 @@ namespace BerkeleyEntities
         /// Create a new AmznListingItem object.
         /// </summary>
         /// <param name="id">Initial value of the ID property.</param>
-        /// <param name="itemID">Initial value of the ItemID property.</param>
         /// <param name="quantity">Initial value of the Quantity property.</param>
         /// <param name="price">Initial value of the Price property.</param>
         /// <param name="title">Initial value of the Title property.</param>
@@ -1309,11 +1308,11 @@ namespace BerkeleyEntities
         /// <param name="isActive">Initial value of the IsActive property.</param>
         /// <param name="lastSyncTime">Initial value of the LastSyncTime property.</param>
         /// <param name="marketplaceID">Initial value of the MarketplaceID property.</param>
-        public static AmznListingItem CreateAmznListingItem(global::System.Int32 id, global::System.Int32 itemID, global::System.Int32 quantity, global::System.Decimal price, global::System.String title, global::System.DateTime openDate, global::System.String condition, global::System.String aSIN, global::System.Boolean isActive, global::System.DateTime lastSyncTime, global::System.Int32 marketplaceID)
+        /// <param name="sku">Initial value of the Sku property.</param>
+        public static AmznListingItem CreateAmznListingItem(global::System.Int32 id, global::System.Int32 quantity, global::System.Decimal price, global::System.String title, global::System.DateTime openDate, global::System.String condition, global::System.String aSIN, global::System.Boolean isActive, global::System.DateTime lastSyncTime, global::System.Int32 marketplaceID, global::System.String sku)
         {
             AmznListingItem amznListingItem = new AmznListingItem();
             amznListingItem.ID = id;
-            amznListingItem.ItemID = itemID;
             amznListingItem.Quantity = quantity;
             amznListingItem.Price = price;
             amznListingItem.Title = title;
@@ -1323,6 +1322,7 @@ namespace BerkeleyEntities
             amznListingItem.IsActive = isActive;
             amznListingItem.LastSyncTime = lastSyncTime;
             amznListingItem.MarketplaceID = marketplaceID;
+            amznListingItem.Sku = sku;
             return amznListingItem;
         }
 
@@ -1360,9 +1360,9 @@ namespace BerkeleyEntities
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
-        public global::System.Int32 ItemID
+        public Nullable<global::System.Int32> ItemID
         {
             get
             {
@@ -1377,8 +1377,8 @@ namespace BerkeleyEntities
                 OnItemIDChanged();
             }
         }
-        private global::System.Int32 _ItemID;
-        partial void OnItemIDChanging(global::System.Int32 value);
+        private Nullable<global::System.Int32> _ItemID;
+        partial void OnItemIDChanging(Nullable<global::System.Int32> value);
         partial void OnItemIDChanged();
     
         /// <summary>
@@ -1596,6 +1596,30 @@ namespace BerkeleyEntities
         private global::System.Int32 _MarketplaceID;
         partial void OnMarketplaceIDChanging(global::System.Int32 value);
         partial void OnMarketplaceIDChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String Sku
+        {
+            get
+            {
+                return _Sku;
+            }
+            set
+            {
+                OnSkuChanging(value);
+                ReportPropertyChanging("Sku");
+                _Sku = StructuralObject.SetValidValue(value, false, "Sku");
+                ReportPropertyChanged("Sku");
+                OnSkuChanged();
+            }
+        }
+        private global::System.String _Sku;
+        partial void OnSkuChanging(global::System.String value);
+        partial void OnSkuChanged();
 
         #endregion
 
@@ -1607,16 +1631,16 @@ namespace BerkeleyEntities
         [XmlIgnoreAttribute()]
         [SoapIgnoreAttribute()]
         [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("BerkeleyEntities", "SyncAmznListingItemItem", "Item")]
+        [EdmRelationshipNavigationPropertyAttribute("BerkeleyEntities", "AmznListingItemItem", "Item")]
         public Item Item
         {
             get
             {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Item>("BerkeleyEntities.SyncAmznListingItemItem", "Item").Value;
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Item>("BerkeleyEntities.AmznListingItemItem", "Item").Value;
             }
             set
             {
-                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Item>("BerkeleyEntities.SyncAmznListingItemItem", "Item").Value = value;
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Item>("BerkeleyEntities.AmznListingItemItem", "Item").Value = value;
             }
         }
         /// <summary>
@@ -1628,13 +1652,13 @@ namespace BerkeleyEntities
         {
             get
             {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Item>("BerkeleyEntities.SyncAmznListingItemItem", "Item");
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Item>("BerkeleyEntities.AmznListingItemItem", "Item");
             }
             set
             {
                 if ((value != null))
                 {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<Item>("BerkeleyEntities.SyncAmznListingItemItem", "Item", value);
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<Item>("BerkeleyEntities.AmznListingItemItem", "Item", value);
                 }
             }
         }
@@ -8273,18 +8297,18 @@ namespace BerkeleyEntities
         /// Create a new EbayListingItem object.
         /// </summary>
         /// <param name="id">Initial value of the ID property.</param>
-        /// <param name="itemID">Initial value of the ItemID property.</param>
         /// <param name="listingID">Initial value of the ListingID property.</param>
         /// <param name="quantity">Initial value of the Quantity property.</param>
         /// <param name="price">Initial value of the Price property.</param>
-        public static EbayListingItem CreateEbayListingItem(global::System.Int32 id, global::System.Int32 itemID, global::System.Int32 listingID, global::System.Int32 quantity, global::System.Decimal price)
+        /// <param name="sku">Initial value of the Sku property.</param>
+        public static EbayListingItem CreateEbayListingItem(global::System.Int32 id, global::System.Int32 listingID, global::System.Int32 quantity, global::System.Decimal price, global::System.String sku)
         {
             EbayListingItem ebayListingItem = new EbayListingItem();
             ebayListingItem.ID = id;
-            ebayListingItem.ItemID = itemID;
             ebayListingItem.ListingID = listingID;
             ebayListingItem.Quantity = quantity;
             ebayListingItem.Price = price;
+            ebayListingItem.Sku = sku;
             return ebayListingItem;
         }
 
@@ -8322,9 +8346,9 @@ namespace BerkeleyEntities
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
-        public global::System.Int32 ItemID
+        public Nullable<global::System.Int32> ItemID
         {
             get
             {
@@ -8339,8 +8363,8 @@ namespace BerkeleyEntities
                 OnItemIDChanged();
             }
         }
-        private global::System.Int32 _ItemID;
-        partial void OnItemIDChanging(global::System.Int32 value);
+        private Nullable<global::System.Int32> _ItemID;
+        partial void OnItemIDChanging(Nullable<global::System.Int32> value);
         partial void OnItemIDChanged();
     
         /// <summary>
@@ -8414,6 +8438,30 @@ namespace BerkeleyEntities
         private global::System.Decimal _Price;
         partial void OnPriceChanging(global::System.Decimal value);
         partial void OnPriceChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String Sku
+        {
+            get
+            {
+                return _Sku;
+            }
+            set
+            {
+                OnSkuChanging(value);
+                ReportPropertyChanging("Sku");
+                _Sku = StructuralObject.SetValidValue(value, false, "Sku");
+                ReportPropertyChanged("Sku");
+                OnSkuChanged();
+            }
+        }
+        private global::System.String _Sku;
+        partial void OnSkuChanging(global::System.String value);
+        partial void OnSkuChanged();
 
         #endregion
 
@@ -8425,16 +8473,16 @@ namespace BerkeleyEntities
         [XmlIgnoreAttribute()]
         [SoapIgnoreAttribute()]
         [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("BerkeleyEntities", "SyncEbayListingItemItem", "Item")]
+        [EdmRelationshipNavigationPropertyAttribute("BerkeleyEntities", "EbayListingItemItem", "Item")]
         public Item Item
         {
             get
             {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Item>("BerkeleyEntities.SyncEbayListingItemItem", "Item").Value;
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Item>("BerkeleyEntities.EbayListingItemItem", "Item").Value;
             }
             set
             {
-                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Item>("BerkeleyEntities.SyncEbayListingItemItem", "Item").Value = value;
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Item>("BerkeleyEntities.EbayListingItemItem", "Item").Value = value;
             }
         }
         /// <summary>
@@ -8446,13 +8494,13 @@ namespace BerkeleyEntities
         {
             get
             {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Item>("BerkeleyEntities.SyncEbayListingItemItem", "Item");
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Item>("BerkeleyEntities.EbayListingItemItem", "Item");
             }
             set
             {
                 if ((value != null))
                 {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<Item>("BerkeleyEntities.SyncEbayListingItemItem", "Item", value);
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<Item>("BerkeleyEntities.EbayListingItemItem", "Item", value);
                 }
             }
         }
@@ -13705,18 +13753,18 @@ namespace BerkeleyEntities
         [XmlIgnoreAttribute()]
         [SoapIgnoreAttribute()]
         [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("BerkeleyEntities", "SyncEbayListingItemItem", "SyncEbayListingItem")]
+        [EdmRelationshipNavigationPropertyAttribute("BerkeleyEntities", "EbayListingItemItem", "SyncEbayListingItem")]
         public EntityCollection<EbayListingItem> EbayListingItems
         {
             get
             {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<EbayListingItem>("BerkeleyEntities.SyncEbayListingItemItem", "SyncEbayListingItem");
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<EbayListingItem>("BerkeleyEntities.EbayListingItemItem", "SyncEbayListingItem");
             }
             set
             {
                 if ((value != null))
                 {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<EbayListingItem>("BerkeleyEntities.SyncEbayListingItemItem", "SyncEbayListingItem", value);
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<EbayListingItem>("BerkeleyEntities.EbayListingItemItem", "SyncEbayListingItem", value);
                 }
             }
         }
@@ -13749,18 +13797,18 @@ namespace BerkeleyEntities
         [XmlIgnoreAttribute()]
         [SoapIgnoreAttribute()]
         [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("BerkeleyEntities", "SyncAmznListingItemItem", "SyncAmznListingItem")]
+        [EdmRelationshipNavigationPropertyAttribute("BerkeleyEntities", "AmznListingItemItem", "SyncAmznListingItem")]
         public EntityCollection<AmznListingItem> AmznListingItems
         {
             get
             {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<AmznListingItem>("BerkeleyEntities.SyncAmznListingItemItem", "SyncAmznListingItem");
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<AmznListingItem>("BerkeleyEntities.AmznListingItemItem", "SyncAmznListingItem");
             }
             set
             {
                 if ((value != null))
                 {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<AmznListingItem>("BerkeleyEntities.SyncAmznListingItemItem", "SyncAmznListingItem", value);
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<AmznListingItem>("BerkeleyEntities.AmznListingItemItem", "SyncAmznListingItem", value);
                 }
             }
         }

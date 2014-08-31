@@ -30,7 +30,7 @@ namespace AmazonServices
             _marketplace = _dataContext.AmznMarketplaces.Single(p => p.ID == marketplaceID);
         }
 
-        public List<string> MarginalSync()
+        public void MarginalSync()
         {
             Initilialize();
 
@@ -51,21 +51,12 @@ namespace AmazonServices
                 SyncOrdersByModifiedTime(from, to);
             }
 
-
-            var added = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added)
-                .Select(p => p.Entity).OfType<AmznOrderItem>().Select(p => p.ListingItem.Item.ItemLookupCode);
-
-            var modified = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Modified)
-                .Select(p => p.Entity).OfType<AmznOrderItem>().Select(p => p.ListingItem.Item.ItemLookupCode);
-
             _marketplace.OrderSyncTime = _currentSyncTime;
 
             _dataContext.SaveChanges();
 
             _timer2Sec.Enabled = false;
             _timer1Min.Enabled = false;
-
-            return added.Concat(modified).ToList();
         }
 
         private void Initilialize()

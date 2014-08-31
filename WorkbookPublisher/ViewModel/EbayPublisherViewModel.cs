@@ -13,145 +13,49 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 
-namespace WorkbookPublisher
+namespace WorkbookPublisher.ViewModel
 {
-    enum StatusCode { PENDING, PENDING_CREATION, PENDING_UPDATE, COMPLETED }
 
-    public class EbayPublisherViewModel 
+    public class EbayPublisherViewModel : PublisherViewModel
     {
-        private PublishCommand _publishCommand;
-        private RelayCommand _readEntriesCommand;
-        private RelayCommand _fixErrorsCommand;
 
-        private berkeleyEntities _dataContext = new berkeleyEntities();
-        private ObservableCollection<EbayEntry> _entries = new ObservableCollection<EbayEntry>();
-        private ExcelWorkbook _workbook;
-        private EbayMarketplace _marketplace;
-
-
-        public EbayPublisherViewModel(ExcelWorkbook workbook, int marketplaceID)
+        public EbayPublisherViewModel(ExcelWorkbook workbook, string marketplaceCode) : base(workbook, marketplaceCode)
         {
-            _marketplace = _dataContext.EbayMarketplaces.Single(p => p.ID == marketplaceID);
-            _workbook = workbook;
+            _readEntriesCommand = new EbayReadCommand(_workbook, _marketplaceCode);
+            _publishCommand = new EbayPublishCommand(_marketplaceCode);
+            _fixErrorsCommand = new FixCommand(_workbook, _marketplaceCode);
 
-            this.Entries = CollectionViewSource.GetDefaultView(_entries);
-            this.Entries.Filter = p => ((EbayEntry)p).Status.Equals("error");
+            _readEntriesCommand.ReadCompleted += _publishCommand.ReadCompletedHandler;
+            _publishCommand.PublishCompleted += _fixErrorsCommand.PublishCompletedHandler;
+            _fixErrorsCommand.FixCompleted += _readEntriesCommand.FixCompletedHandler;
         }
 
-        public ICollectionView Entries { get; set; }
+    }
 
-        public string Header 
+    public class EbayReadCommand : ReadCommand
+    {
+        public EbayReadCommand(ExcelWorkbook workbook, string marketplaceCode)
+            : base(workbook, marketplaceCode)
         {
-            get { return _marketplace.Code; }
+ 
         }
 
-        public string Progress
+        public override void UpdateEntries(IEnumerable<Entry> entries)
         {
-            get
-            {
-                if (this.Entries != null)
-                {
-                    var entries = this.Entries.SourceCollection.OfType<EbayEntry>();
+            EbayMarketplace marketplace = _dataContext.EbayMarketplaces.Single(p => p.Code.Equals(_marketplaceCode));
 
-                    string completed = entries.Where(p => p.Status.Equals("completed")).Count().ToString();
-                    string waiting = entries.Where(p => p.Status.Equals("waiting")).Count().ToString();
-                    string errors = entries.Where(p => p.Status.Equals("error")).Count().ToString();
-
-                    return string.Format("{0} Pending\n{1} Completed\n{2} Errors", waiting, completed, errors);
-                }
-                else
-                {
-                    return "0 Pending\n0 Completed\n0 Errors";
-                }
-
-            }
-        }
-
-        public ICommand PublishCommand 
-        {
-            get
-            {
-                if (_publishCommand == null)
-                {
-                    _publishCommand = new PublishCommand(_marketplace.ID);
-                }
-
-                return _publishCommand;
-            }
-        }
-
-        public ICommand ReadCommand 
-        {
-            get 
-            {
-                if (_readEntriesCommand == null)
-                {                  
-                    _readEntriesCommand = new RelayCommand(ReadEntries);
-                }
-
-                return _readEntriesCommand;
-            }
-        }
-
-        public ICommand FixCommand
-        {
-            get
-            {
-                if (_fixErrorsCommand == null)
-                {
-                    _fixErrorsCommand = new RelayCommand(FixErrors);
-                }
-
-                return _fixErrorsCommand;
-            }
-        }
-
-        private async void ReadEntries(object parameter)
-        {
-            _entries.Clear();
-
-            var entries = _workbook.ReadEbayEntries(_marketplace.Code + "(errors)");
-
-            if (entries.Count() == 0)
-            {
-                entries = _workbook.ReadEbayEntries(_marketplace.Code);
-            }
-
-            if (entries.Count() > 0)
-            {
-                await Task.Run(() => UpdateEntries(entries));
-            }
-            else
-            {
-                MessageBox.Show("no entries for " + _marketplace.Code);
-            }
-
-            foreach (var entry in entries)
-            {
-                _entries.Add(entry);
-            }
-        }
-
-        private void FixErrors(object parameter)
-        {
-            _workbook.PersistEntries(_marketplace.Code + "(errors)", this.Entries.OfType<EbayEntry>().ToList());
-
-        }
-
-        private void UpdateEntries(IEnumerable<EbayEntry> entries)
-        {
             foreach (EbayEntry entry in entries)
             {
                 Item item = _dataContext.Items.SingleOrDefault(p => p.ItemLookupCode.Equals(entry.Sku));
-
-                entry.Brand = item.SubDescription1;
-                entry.ClassName = item.ClassName;
 
                 if (item == null)
                 {
                     entry.Message = "sku not found";
                     continue;
                 }
+
+                entry.Brand = item.SubDescription1;
+                entry.ClassName = item.ClassName;
 
                 string format = entry.GetFormat();
 
@@ -162,7 +66,7 @@ namespace WorkbookPublisher
                 }
 
                 var listingItems = item.EbayListingItems.Where(p =>
-                    p.Listing.MarketplaceID == _marketplace.ID &&
+                    p.Listing.MarketplaceID == marketplace.ID &&
                     p.Listing.Status.Equals(Publisher.STATUS_ACTIVE) &&
                     p.Listing.Format.Equals(format));
 
@@ -203,194 +107,57 @@ namespace WorkbookPublisher
 
             }
         }
+
+        public override Type EntryType
+        {
+            get { return typeof(EbayEntry); }
+        }
     }
 
-    public class EbayEntry : INotifyPropertyChanged
-    {
-        private bool _completed = false;
-        private List<string> _messages = new List<string>();
-
-        public EbayEntry()
-        {
-            this.Title = string.Empty;
-            this.StartDate = DateTime.UtcNow;
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public uint RowIndex { get; set; }
-        public string Brand { get; set; }
-        public string ClassName { get; set; }
-        public string Sku { get; set; }
-        public int Q { get; set; }
-        public decimal P { get; set; }
-        public DateTime StartDate { get; set; }
-        public bool StartDateSpecified { get; set; }
-        public string Format { get; set; }
-        public string Title { get; set; }
-        public string Condition { get; set; }
-        public string FullDescription { get; set; }
-
-        public bool Completed
-        {
-            get { return _completed; }
-            set
-            {
-                _completed = value;
-
-                if (this.PropertyChanged != null)
-                {
-                    this.PropertyChanged(this, new PropertyChangedEventArgs("Status"));
-                    this.PropertyChanged(this, new PropertyChangedEventArgs("Progress"));
-                }
-            }
-        }
-        public string Message
-        {
-            get { return string.Join(" | ", _messages); }
-            set
-            {
-                _messages.Add(value);
-
-                if (this.PropertyChanged != null)
-                {
-                    this.PropertyChanged(this, new PropertyChangedEventArgs("Message"));
-                    this.PropertyChanged(this, new PropertyChangedEventArgs("Status"));
-                    this.PropertyChanged(this, new PropertyChangedEventArgs("Progress"));
-                }
-            }
-        }
-
-        public string Status 
-        {
-            get 
-            {
-                if (this.Completed)
-                {
-                    return "completed";
-                }
-                else
-                {
-                    if (string.IsNullOrWhiteSpace(this.Message))
-                    {
-                        return "waiting";
-                    }
-                    else
-                    {
-                        return "error";
-                    }
-                }
-            }
-        }
-
-        public bool IsAuction()
-        {
-            if (this.Format.Contains("A"))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public string GetDuration()
-        {
-            switch (this.Format)
-            {
-                case "GTC": return this.Format;
-
-                case "BIN": return "Days_30";
-
-                case "A7": return "Days_7";
-
-                case "A1": return "Days_1";
-
-                case "A3": return "Days_3";
-
-                case "A5": return "Days_5";
-
-                default: return string.Empty;
-            }
-        }
-
-        public string GetFormat()
-        {
-            switch (this.Format)
-            {
-                case "BIN":
-                case "GTC":
-                    return Publisher.FORMAT_FIXEDPRICE;
-                case "A1":
-                case "A3":
-                case "A5":
-                case "A7":
-                    return Publisher.FORMAT_AUCTION;
-                default:
-                    return null;
-            }
-        }
-
-        public string GetConditionID()
-        {
-            switch (this.Condition)
-            {
-                case "NEW": return "1000";
-                case "NWB": return "1500";
-                case "PRE": return "1750";
-                case "NWD": return "3000";
-
-                default: return null;
-            }
-        }
-
-    }
-
-
-
-    public class PublishCommand : ICommand
+    public class EbayPublishCommand : PublishCommand
     {
         private berkeleyEntities _dataContext = new berkeleyEntities();
         private Dictionary<EbayListing, List<EbayEntry>> _targetListings = new Dictionary<EbayListing, List<EbayEntry>>();
         private PictureSetRepository _picSetRepository = new PictureSetRepository();
         private EbayMarketplace _marketplace;
         private Publisher _publisher;
-        private bool _canExecute = true;
 
-        
-        public event EventHandler CanExecuteChanged;
 
-        public PublishCommand(int marketplaceID)
+        public EbayPublishCommand(string marketplaceCode)
         {
-            _marketplace = _dataContext.EbayMarketplaces.Single(p => p.ID == marketplaceID);
+            _dataContext.MaterializeAttributes = true;
+
+            _marketplace = _dataContext.EbayMarketplaces.Single(p => p.Code.Equals(marketplaceCode));
 
             _publisher = new Publisher(_dataContext, _marketplace);
+
             _publisher.Result += Publisher_Result;
         }
 
-        public bool CanExecute(object parameter)
+        public override async void Publish(IEnumerable<Entry> entries)
         {
-            return _canExecute;
-        }
+            var pendingEntries = entries.Cast<EbayEntry>();
 
-        public void Execute(object parameter)
-        {
-            var pendingEntries = ((ICollectionView)parameter).SourceCollection.OfType<EbayEntry>().Where(p => p.Status.Equals("waiting"));
+            await Task.Run(() => HandleFixedPriceEntries(pendingEntries.Where(p => !p.IsAuction())));
 
-            HandleFixedPriceEntries(pendingEntries.Where(p => !p.IsAuction()));
+            await Task.Run(() => HandleAuctionEntries(pendingEntries.Where(p => p.IsAuction())));
 
-            HandleAuctionEntries(pendingEntries.Where(p => p.IsAuction()));
-
-            Task.Run(() => _publisher.Publish());
+            await Task.Run(() => _publisher.Publish());
+            
         }
 
         private void Publisher_Result(ResultArgs e)
         {
             foreach (EbayEntry entry in _targetListings[e.Listing])
             {
-                entry.Message = e.Message;
-                entry.Completed = !e.IsError;
+                if (e.IsError)
+                {
+                    entry.Message = e.Message;
+                }
+                else
+                {
+                    entry.Completed = true;
+                }
             }
         }
 
@@ -431,6 +198,7 @@ namespace WorkbookPublisher
 
             EbayListingItem listingItem = new EbayListingItem();
             listingItem.Item = _dataContext.Items.Single(p => p.ItemLookupCode.Equals(entry.Sku));
+            listingItem.Sku = entry.Sku;
             listingItem.Listing = listing;
             listingItem.Quantity = entry.Q;
             listingItem.Price = entry.P;
@@ -443,7 +211,7 @@ namespace WorkbookPublisher
             }
             catch (FileNotFoundException e)
             {
-                _dataContext.EbayListings.Detach(listing);
+                _publisher.Revert(listing);
                 entry.Message = e.Message;
             }
         }
@@ -515,6 +283,7 @@ namespace WorkbookPublisher
             listing.IsVariation = false;
 
             EbayListingItem listingItem = new EbayListingItem();
+            listingItem.Sku = entry.Sku;
             listingItem.Item = _dataContext.Items.Single(p => p.ItemLookupCode.Equals(entry.Sku));
             listingItem.Listing = listing;
             listingItem.Quantity = entry.Q;
@@ -585,6 +354,7 @@ namespace WorkbookPublisher
             {
                 EbayListingItem listingItem = new EbayListingItem();
                 listingItem.Item = _dataContext.Items.Single(p => p.ItemLookupCode.Equals(entry.Sku));
+                listingItem.Sku = entry.Sku;
                 listingItem.Listing = listing;
                 listingItem.Quantity = entry.Q;
                 listingItem.Price = entry.P;

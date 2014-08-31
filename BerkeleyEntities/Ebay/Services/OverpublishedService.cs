@@ -25,7 +25,7 @@ namespace BerkeleyEntities.Ebay.Services
             _publisher = new Publisher(_dataContext, _marketplace);
         }
 
-        public void BalanceQuantities(IEnumerable<string> skus)
+        public void BalanceQuantities()
         {
             if (!_marketplace.ListingSyncTime.HasValue || _marketplace.ListingSyncTime.Value < DateTime.UtcNow.AddHours(-1))
             {
@@ -37,21 +37,22 @@ namespace BerkeleyEntities.Ebay.Services
                 throw new InvalidOperationException(_marketplace.Name + " orders must be synchronized in order to fix overpublished");
             }
 
+            var listings = _dataContext.EbayListings.Where(p => p.Status.Equals(Publisher.STATUS_ACTIVE) && p.MarketplaceID == _marketplace.ID);
 
-            foreach (string sku in skus)
+            foreach (EbayListing listing in listings)
             {
-                var listingItems = _dataContext.EbayListingItems
-                    .Where(p => p.Item.ItemLookupCode.Equals(sku) && p.Listing.Status.Equals(Publisher.STATUS_ACTIVE) && p.Listing.MarketplaceID == _marketplace.ID);
-
-                foreach(EbayListingItem listingItem in listingItems)
+                foreach (EbayListingItem listingItem in listing.ListingItems)
                 {
-                    if (listingItem.Quantity > listingItem.Item.QtyAvailable)
+                    if (listingItem.Item != null)
                     {
-                        listingItem.Quantity = listingItem.Item.QtyAvailable;
+                        if (listingItem.Quantity > listingItem.Item.QtyAvailable)
+                        {
+                            listing.Status = listing.Status;
+                            listingItem.Quantity = listingItem.Item.QtyAvailable;
+                        }
                     }
                 }
             }
-
 
             _publisher.Publish();
         }

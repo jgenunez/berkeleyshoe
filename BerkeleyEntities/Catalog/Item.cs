@@ -16,8 +16,6 @@ namespace BerkeleyEntities
 
     public partial class Item
     {
-
-
         public override string ToString()
         {
             return this.ItemLookupCode;
@@ -105,7 +103,7 @@ namespace BerkeleyEntities
             }
         }
 
-        public int OnPendingOrder 
+        public int OnPendingOrder
         {
             get
             {
@@ -579,8 +577,6 @@ namespace BerkeleyEntities
         //    return dimension;
         //}
 
-
-
         private string[] GetAttributes() 
         {
             string[] attributes = null;
@@ -664,10 +660,6 @@ namespace BerkeleyEntities
 
             return this.ID == item.ID;
         }
-
-
-
-
 
         public int DimCount
         {

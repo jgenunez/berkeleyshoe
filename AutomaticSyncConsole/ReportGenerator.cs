@@ -108,7 +108,7 @@ namespace AutomaticSyncConsole
                 OnHand = p.Sum(s => s.OnHand), 
 
                 Unpublished = p.Sum(s => {
-                    int unpublished = s.OnHand + s.OnPO - s.OrgQty - s.OmsQty - s.SavQty - s.StgQty - s.OnPendingOrder - s.OnHold;
+                    int unpublished = s.OnHand - s.OrgQty - s.OmsQty - s.SavQty - s.StgQty - s.OnPendingOrder - s.OnHold;
                     if (unpublished < 0)
                         unpublished = 0;
                     return unpublished;
@@ -249,6 +249,8 @@ namespace AutomaticSyncConsole
                 //        !p.DepartmentName.Equals("ACCESSORIES") &&
                 //        !p.DepartmentName.Equals("MIXED ITEMS & LOTS")).ToList()
                 //        .Where(p => p.Quantity > 0 || p.OnActiveListing > 0);
+
+                dataContext.CommandTimeout = 0;
 
                 var items = dataContext.Items
                     .Include("AmznListingItems.OrderItems.Order")

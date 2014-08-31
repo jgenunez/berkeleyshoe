@@ -44,39 +44,42 @@ namespace BerkeleyEntities.Ebay
             var modified = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Modified).Select(p => p.Entity).OfType<EbayListing>().ToList();
             var created = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added).Select(p => p.Entity).OfType<EbayListing>().ToList();
 
-            foreach (var listing in created)
+            foreach (var listing in created.Concat(modified))
             {
                 try
                 {
-                    PublishListing(listing);
-                    this.Result(new ResultArgs() { Listing = listing, Message = string.Empty, IsError = false });
-                }
-                catch (Exception e)
-                {
-                    Revert(listing);
-                    this.Result(new ResultArgs() { Listing = listing, Message = e.Message, IsError = true });
-                }
-            }
+                    switch (listing.EntityState)
+                    {
+                        case EntityState.Added: PublishListing(listing); break;
 
-            foreach (var listing in modified)
-            {
-                try
-                {
-                    if (listing.ListingItems.All(p => p.Quantity == 0))
-                    {
-                        EndListing(listing);
-                    }
-                    else
-                    {
-                        ReviseListing(listing);
+                        case EntityState.Modified:
+
+                            if (listing.ListingItems.All(p => p.Quantity == 0))
+                            { EndListing(listing); }
+                            else
+                            { ReviseListing(listing); } break;
                     }
 
-                    this.Result(new ResultArgs() { Listing = listing, Message = string.Empty, IsError = false });
+                    if (this.Result != null)
+                    {
+                        this.Result(new ResultArgs() { Listing = listing, Message = string.Empty, IsError = false });
+                    }
                 }
-                catch (Exception e)
+                catch (ApiException e)
                 {
                     Revert(listing);
-                    this.Result(new ResultArgs() { Listing = listing, Message = e.Message, IsError = true });
+
+                    var errors = e.Errors.ToArray();
+
+                    if (errors.Any(p => p.ErrorCode.Equals("518")))
+                    {
+                        throw;
+                    }
+
+                    if (this.Result != null)
+                    {
+                        this.Result(new ResultArgs() { Listing = listing, Message = e.Message, IsError = true });
+                    }
                 }
             }
 
@@ -119,13 +122,7 @@ namespace BerkeleyEntities.Ebay
 
         private void PublishListing(EbayListing listing)
         {
-            var pendingUrls = listing.Relations.Select(p => p.PictureServiceUrl).Where(p => p.Url == null);
-
-            foreach (var urlData in pendingUrls)
-            {
-                urlData.Url = UploadToEPS(urlData.Path);
-                urlData.TimeUploaded = DateTime.UtcNow;
-            }     
+             UploadPictures(listing);
 
             if ((bool)listing.IsVariation)
             {
@@ -180,15 +177,48 @@ namespace BerkeleyEntities.Ebay
             }
         }
 
-        private string UploadToEPS(string path)
+        private void UploadPictures(EbayListing listing)
+        {
+            var pendingUrls = listing.Relations.Select(p => p.PictureServiceUrl).Where(p => p.Url == null);
+
+            foreach (var urlData in pendingUrls)
+            {
+                XmlDocument response = UploadSiteHostedPictures(urlData.Path);
+
+                XmlNodeList list = response.GetElementsByTagName("FullURL", "urn:ebay:apis:eBLBaseComponents");
+
+                if (list[0] != null)
+                {
+                    urlData.Url = list[0].InnerText;
+                    urlData.TimeUploaded = DateTime.UtcNow;
+                }
+                else
+                {
+                    list = response.GetElementsByTagName("Errors");
+                   
+                    ErrorType error = new ErrorType();
+
+                    foreach (XmlNode node in list[0])
+                    {
+                        switch (node.Name)
+                        {
+                            case "ShortMessage": error.ShortMessage = node.InnerText; break;
+                            case "LongMessage": error.LongMessage = node.InnerText; break;
+                            case "ErrorCode": error.ErrorCode = node.InnerText; break;
+                        }
+                    }
+
+                    throw new ApiException(new ErrorTypeCollection(new ErrorType[1]{error}));
+                }
+            }    
+        }
+
+        private XmlDocument UploadSiteHostedPictures(string path)
         {
             string boundary = "MIME_boundary";
             string CRLF = "\r\n";
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.ebay.com/ws/api.dll");
-
-
-            //Add the request headers
             request.Headers.Add("X-EBAY-API-COMPATIBILITY-LEVEL", "515");
             request.Headers.Add("X-EBAY-API-DEV-NAME", "2ec7ed97-e88e-4868-aeb8-9be51f107a46"); //use your devid
             request.Headers.Add("X-EBAY-API-APP-NAME", "Mecalzoc-a8e6-4947-ac5b-49be352cd2f4"); //use your appid
@@ -197,11 +227,8 @@ namespace BerkeleyEntities.Ebay
             request.Headers.Add("X-EBAY-API-DETAIL-LEVEL", "0");
             request.Headers.Add("X-EBAY-API-CALL-NAME", "UploadSiteHostedPictures");
             request.ContentType = "multipart/form-data; boundary=" + boundary;
-
             request.ProtocolVersion = HttpVersion.Version10;
-
             request.ContentType = "multipart/form-data; boundary=" + boundary;
-
             request.Method = "POST";
 
             string payload1 = "--" + boundary + CRLF +
@@ -257,9 +284,9 @@ namespace BerkeleyEntities.Ebay
 
             xmlResponse.LoadXml(output);
 
-            XmlNodeList list = xmlResponse.GetElementsByTagName("FullURL", "urn:ebay:apis:eBLBaseComponents");
+            return xmlResponse;
 
-            return list[0].InnerText;
+           
         }
     }
 

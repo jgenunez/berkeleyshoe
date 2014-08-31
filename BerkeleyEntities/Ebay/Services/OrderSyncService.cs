@@ -25,25 +25,18 @@ namespace EbayServices
         }
 
 
-        public List<string> MarginalSync()
+        public void MarginalSync()
         {
             _currentSyncTime = DateTime.UtcNow.AddMinutes(-3);
-            
+
             DateTime from = _marketplace.OrdersSyncTime.HasValue ? _marketplace.OrdersSyncTime.Value.AddMinutes(-5) : DateTime.UtcNow.AddDays(-29);
 
             SyncOrdersByModifiedTime(from, _currentSyncTime);
 
-            var added = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added)
-                .Select(p => p.Entity).OfType<EbayOrderItem>().Select(p => p.ListingItem.Item.ItemLookupCode);
-
-            var modified = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Modified)
-                .Select(p => p.Entity).OfType<EbayOrderItem>().Select(p => p.ListingItem.Item.ItemLookupCode);
-
             _marketplace.OrdersSyncTime = _currentSyncTime;
 
+           
             _dataContext.SaveChanges();
-
-            return added.Concat(modified).ToList();
         }
 
         private void SyncOrdersByModifiedTime(DateTime from, DateTime to)
@@ -224,11 +217,12 @@ namespace EbayServices
             EbayOrderItem orderItem = new EbayOrderItem();
 
             string sku = orderItemDto.Variation == null ? orderItemDto.Item.SKU : orderItemDto.Variation.SKU;
-            string listingID = orderItemDto.Item.ItemID;
 
-            
+            string listingID = orderItemDto.Item.ItemID;
+       
             EbayListing listing = _dataContext.EbayListings.Single(p => p.MarketplaceID.Equals(_marketplace.ID) && p.Code.Equals(listingID));
-            orderItem.ListingItem = listing.ListingItems.Single(p => p.Item.ItemLookupCode.Equals(sku));
+
+            orderItem.ListingItem = listing.ListingItems.Single(p => p.Sku.Equals(sku));
             orderItem.Order = order;
             orderItem.CreatedDate = orderItemDto.CreatedDate;
             orderItem.Code = orderItemDto.OrderLineItemID;

@@ -161,7 +161,10 @@ namespace BerkeleyEntities.Amazon
                     break;
             }
 
-            this.Result(new ResultArgs() { Envelope = envelope });
+            if (this.Result != null)
+            {
+                this.Result(new ResultArgs() { Envelope = envelope });
+            }
         }
 
         private void SubmitFeed(AmazonEnvelope envelope)

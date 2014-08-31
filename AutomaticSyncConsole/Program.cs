@@ -12,32 +12,32 @@ namespace AutomaticSyncConsole
     class Program
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
-        private static List<BackgroundWorker> _services = new List<BackgroundWorker>();
-
 
         public static void Main(string[] args)
         {
-            if (DateTime.Now.Hour == 5 && DateTime.Now.Minute < 35)
+            try
             {
-                var modified = SyncMarketplaces(true);
-
-                FixOverpublished(modified);
+                if (DateTime.Now.Hour == 5 && DateTime.Now.Minute < 35)
+                {
+                    SyncMarketplaces(true);
+                    FixOverpublished();
+                }
+                else
+                {
+                    SyncMarketplaces(false);
+                    FixOverpublished();
+                }
             }
-            else
+            catch (Exception e)
             {
-                var modified = SyncMarketplaces(false);
-
-                FixOverpublished(modified);
+                _logger.Error(e.ToString());
             }
-
 
             _logger.Info("____________");
         }
 
-        private static List<string> SyncMarketplaces(bool syncAmznListing)
+        private static void SyncMarketplaces(bool syncAmznListing)
         {
-            var syncServices = new List<Task<List<string>>>();
-
             using (berkeleyEntities dataContext = new berkeleyEntities())
             {
                 foreach (AmznMarketplace marketplace in dataContext.AmznMarketplaces)
@@ -48,15 +48,19 @@ namespace AutomaticSyncConsole
                     {
                         AmazonServices.ListingSyncService listingService = new AmazonServices.ListingSyncService(marketplace.ID);
 
-                        Task<List<string>> task = new Task<List<string>>(() => listingService.Synchronize().Concat(orderService.MarginalSync()).ToList());
-                        task.Start();
-                        syncServices.Add(task);
+                        listingService.Synchronize();
+
+                        _logger.Info(marketplace.Name + " listing synchronization completed");
+
+                        orderService.MarginalSync();
+
+                        _logger.Info(marketplace.Name + " order synchronization completed");
                     }
                     else
                     {
-                        Task<List<string>> task = new Task<List<string>>(() => orderService.MarginalSync());
-                        task.Start();
-                        syncServices.Add(task);
+                        orderService.MarginalSync();
+
+                        _logger.Info(marketplace.Name + " order synchronization completed");
                     }
                 }
 
@@ -65,58 +69,40 @@ namespace AutomaticSyncConsole
                     EbayServices.Services.ListingSyncService listingService = new EbayServices.Services.ListingSyncService(marketplace.ID);
                     EbayServices.OrderSyncService orderService = new EbayServices.OrderSyncService(marketplace.ID);
 
-                    Task<List<string>> task = new Task<List<string>>(() => listingService.MarginalSync().Concat(orderService.MarginalSync()).ToList());
-                    task.Start();
-                    syncServices.Add(task);
+                    listingService.MarginalSync();
+
+                    _logger.Info(marketplace.Name + " listing synchronization completed");
+
+                    orderService.MarginalSync();
+
+                    _logger.Info(marketplace.Name + " order synchronization completed");
                 }
             }
-
-            Task.WaitAll(syncServices.ToArray());
-
-            return syncServices.SelectMany(p => p.Result).Distinct().ToList();
         }
 
-        private static void FixOverpublished(List<string> modified)
+        private static void FixOverpublished()
         {
             using (berkeleyEntities dataContext = new berkeleyEntities())
             {
                 foreach (AmznMarketplace marketplace in dataContext.AmznMarketplaces)
                 {
-                    try
-                    {
-                        BerkeleyEntities.Amazon.Services.OverpublishedService service = new BerkeleyEntities.Amazon.Services.OverpublishedService(marketplace.ID);
+                    BerkeleyEntities.Amazon.Services.OverpublishedService service = new BerkeleyEntities.Amazon.Services.OverpublishedService(marketplace.ID);
 
-                        service.BalanceQuantities(modified);
+                    service.BalanceQuantities();
 
-                        _logger.Info(marketplace.Name + " overpublished service completed at " + DateTime.Now.ToString());
-                    }
-                    catch (Exception e)
-                    {
-                        _logger.Error(e.Message);
-                    }
+                    _logger.Info(marketplace.Name + " fixing overpublished completed");
                 }
 
                 foreach (EbayMarketplace marketplace in dataContext.EbayMarketplaces)
                 {
-                    try
-                    {
-                        BerkeleyEntities.Ebay.Services.OverpublishedService service = new BerkeleyEntities.Ebay.Services.OverpublishedService(marketplace.ID);
+                    BerkeleyEntities.Ebay.Services.OverpublishedService service = new BerkeleyEntities.Ebay.Services.OverpublishedService(marketplace.ID);
 
-                        service.BalanceQuantities(modified);
+                    service.BalanceQuantities();
 
-                        _logger.Info(marketplace.Name + " overpublished service completed at " + DateTime.Now.ToString());
-                    }
-                    catch (Exception e)
-                    {
-                        _logger.Error(e.Message);
-                    }
+                    _logger.Info(marketplace.Name + " fixing overpublished completed");
                 }
             }
         }
 
-        private static bool IsOffHours()
-        {
-            return DateTime.Now.Hour >= 19 || DateTime.Now.Hour <= 6;
-        }
     }
 }

@@ -34,9 +34,9 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <StackPanel Orientation="Horizontal" Grid.Row="0">
-                            <Button Name="btnReadEntries" Margin="10" Padding="10" VerticalAlignment="Center" Command="{Binding ReadCommand}">Read</Button>
+                            <Button Name="btnReadEntries" Margin="10" Padding="10" VerticalAlignment="Center" Command="{Binding ReadCommand}" CommandParameter="{Binding Entries}">Load</Button>
                             <Button Name="btnPublish" Margin="10" Padding="10" VerticalAlignment="Center" Command="{Binding PublishCommand}" CommandParameter="{Binding Entries}">Publish</Button>
-                            <Button Name="btnRepublish" Margin="10" Padding="10" VerticalAlignment="Center" Command="{Binding FixCommand}">Fix Errors</Button>
+                            <Button Name="btnRepublish" Margin="10" Padding="10" VerticalAlignment="Center" Command="{Binding FixCommand}" CommandParameter="{Binding Entries}">Fix Errors</Button>
                             <Border Margin="5" BorderBrush="CadetBlue" BorderThickness="3" CornerRadius="2">
                                 <TextBlock Margin="5" Padding="5" FontSize="12" Text="{Binding Progress}"/>
                             </Border>

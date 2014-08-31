@@ -22,68 +22,46 @@ namespace EbayServices.Services
         public ListingSyncService(int marketplaceID)
         {
             _marketplace = _dataContext.EbayMarketplaces.Single(p => p.ID == marketplaceID);
+
             _listingMapper = new ListingMapper(_dataContext, _marketplace);
         }
 
-        public List<string> MarginalSync()
+        public void MarginalSync()
         {
-            try
+            DateTime syncTime = DateTime.UtcNow.AddMinutes(-3);
+
+            if (_marketplace.ListingSyncTime.HasValue && _marketplace.ListingSyncTime.Value > syncTime.AddDays(-2))
             {
-                DateTime syncTime = DateTime.UtcNow.AddMinutes(-3);
+                DateTime from = _marketplace.ListingSyncTime.Value.AddMinutes(-5);
 
-                if (_marketplace.ListingSyncTime.HasValue && _marketplace.ListingSyncTime.Value > syncTime.AddDays(-3))
-                {
-                    DateTime from = _marketplace.ListingSyncTime.Value.AddMinutes(-5);
-
-                    SyncListingsByCreatedTime(from, syncTime);
-                    SyncListingsByModifiedTime(from, syncTime);
-                }
-                else
-                {
-                    DateTime from = syncTime.AddDays(-40);
-                    DateTime to = syncTime.AddDays(32);
-
-                    SyncListingsByEndTime(from, to);
-                }
-
-                _marketplace.ListingSyncTime = syncTime;
-
+                SyncListingsByCreatedTime(from, syncTime);
+                SyncListingsByModifiedTime(from, syncTime);
             }
-            catch (Exception e)
+            else
             {
-                _logger.Error(e.Message);
+                DateTime from = syncTime.AddDays(-40);
+                DateTime to = syncTime.AddDays(32);
+
+                SyncListingsByEndTime(from, to);
             }
 
-            var added = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added)
-                .Select(p => p.Entity).OfType<EbayListingItem>().Select(p => p.Item.ItemLookupCode).ToList();
-
-            var modified = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Modified)
-                .Select(p => p.Entity).OfType<EbayListingItem>().Select(p => p.Item.ItemLookupCode).ToList();
+            _marketplace.ListingSyncTime = syncTime;
 
             _dataContext.SaveChanges();
-
-            return added.Concat(modified).ToList();
         }
 
-        private void SyncListings(StringCollection listings, DateTime syncTime)
+        private ItemType SyncListing(string itemId)
         {
-            ItemTypeCollection listingDtos = new ItemTypeCollection();
+            GetItemRequestType request = new GetItemRequestType();
+            request.ItemID = itemId;
 
-            foreach (string listingID in listings)
-            {
-                GetItemRequestType request = new GetItemRequestType();
-                request.ItemID = listingID;
+            SetOutputSelection(request);
 
-                SetOutputSelection(request);
+            GetItemCall call = new GetItemCall(_marketplace.GetApiContext());
 
-                GetItemCall call = new GetItemCall(_marketplace.GetApiContext());
+            GetItemResponseType response = call.ExecuteRequest(request) as GetItemResponseType;
 
-                GetItemResponseType response = call.ExecuteRequest(request) as GetItemResponseType;
-
-                listingDtos.Add(response.Item);
-            }
-
-            ProcessListingData(listingDtos, syncTime);
+            return response.Item;
         }
 
         private void SyncListingsByCreatedTime(DateTime from, DateTime to)
@@ -184,15 +162,24 @@ namespace EbayServices.Services
         {
             foreach (ItemType listingDto in listingsDtos)
             {
+                EbayListing listing = _dataContext.EbayListings
+                        .SingleOrDefault(p => p.MarketplaceID.Equals(_marketplace.ID) && p.Code.Equals(listingDto.ItemID));
+
+                if (listing == null)
+                {
+                    listing = new EbayListing();
+                }
+
                 try
                 {
-                    EbayListing listing = _listingMapper.Map(listingDto);
-                    listing.LastSyncTime = syncTime;
+                    _listingMapper.Map(listingDto, listing);
                 }
-                catch (Exception e)
+                catch (PropertyConstraintException e)
                 {
-                    _logger.Error(string.Format("Listing ( {1} | {0} ) synchronization failed: {2}", listingDto.ItemID, _marketplace.Code , e.Message));
+                    _listingMapper.Map(SyncListing(listingDto.ItemID), listing);
                 }
+
+                listing.LastSyncTime = syncTime;
             }
 
             _dataContext.SaveChanges();
