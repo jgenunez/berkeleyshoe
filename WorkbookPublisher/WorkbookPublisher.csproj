@@ -74,6 +74,7 @@
     </Compile>
     <Compile Include="ViewModel\EbayPublisherViewModel.cs" />
     <Compile Include="ExcelWorkbook.cs" />
+    <Compile Include="ViewModel\PublisherViewModel.cs" />
     <Compile Include="View\RepublishDataWindow.xaml.cs">
       <DependentUpon>RepublishDataWindow.xaml</DependentUpon>
     </Compile>
