@@ -38,6 +38,9 @@ namespace EbayServices.Mappers
                 case "57974":
                     return new ShoesAdapter(item);
 
+                case "63852" :
+                    return new HandbagAdapter(item);
+
                 case "11483":
                 case "57989":
                     return new PantsAdapter(item);

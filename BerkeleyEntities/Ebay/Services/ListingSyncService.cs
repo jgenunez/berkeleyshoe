@@ -30,20 +30,20 @@ namespace EbayServices.Services
         {
             DateTime syncTime = DateTime.UtcNow.AddMinutes(-3);
 
-            if (_marketplace.ListingSyncTime.HasValue && _marketplace.ListingSyncTime.Value > syncTime.AddDays(-2))
-            {
-                DateTime from = _marketplace.ListingSyncTime.Value.AddMinutes(-5);
+            //if (_marketplace.ListingSyncTime.HasValue && _marketplace.ListingSyncTime.Value > syncTime.AddDays(-2))
+            //{
+            //    DateTime from = _marketplace.ListingSyncTime.Value.AddMinutes(-5);
 
-                SyncListingsByCreatedTime(from, syncTime);
-                SyncListingsByModifiedTime(from, syncTime);
-            }
-            else
-            {
+            //    SyncListingsByCreatedTime(from, syncTime);
+            //    SyncListingsByModifiedTime(from, syncTime);
+            //}
+            //else
+            //{
                 DateTime from = syncTime.AddDays(-40);
                 DateTime to = syncTime.AddDays(32);
 
                 SyncListingsByEndTime(from, to);
-            }
+            //}
 
             _marketplace.ListingSyncTime = syncTime;
 
@@ -108,12 +108,13 @@ namespace EbayServices.Services
             request.ModTimeFrom = from;
             request.ModTimeTo = to;
 
-
             GetSellerEventsCall call = new GetSellerEventsCall(_marketplace.GetApiContext());
+
             call.ApiCallBase.Timeout = 120000;
 
             GetSellerEventsResponseType response = call.ExecuteRequest(request) as GetSellerEventsResponseType;
             ProcessListingData(response.ItemArray, to);
+
         }
 
         private ItemTypeCollection ExecuteGetSellerList(GetSellerListRequestType request)
@@ -162,24 +163,17 @@ namespace EbayServices.Services
         {
             foreach (ItemType listingDto in listingsDtos)
             {
-                EbayListing listing = _dataContext.EbayListings
-                        .SingleOrDefault(p => p.MarketplaceID.Equals(_marketplace.ID) && p.Code.Equals(listingDto.ItemID));
-
-                if (listing == null)
-                {
-                    listing = new EbayListing();
-                }
-
                 try
                 {
-                    _listingMapper.Map(listingDto, listing);
+                    EbayListing listing = _listingMapper.Map(listingDto);
+                    listing.LastSyncTime = syncTime;
                 }
                 catch (PropertyConstraintException e)
                 {
-                    _listingMapper.Map(SyncListing(listingDto.ItemID), listing);
+                    var fullListingDto = SyncListing(listingDto.ItemID);
+                    EbayListing listing = _listingMapper.Map(listingDto);
+                    listing.LastSyncTime = syncTime;
                 }
-
-                listing.LastSyncTime = syncTime;
             }
 
             _dataContext.SaveChanges();

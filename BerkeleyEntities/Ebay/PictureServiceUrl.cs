@@ -9,7 +9,10 @@ namespace BerkeleyEntities
     {
         public bool IsExpired()
         {
-            if (this.Relations.Any(p => p.Listing.Status.Equals("Active") || p.Listing.EndTime > DateTime.UtcNow.AddDays(-30)) || this.TimeUploaded > DateTime.UtcNow.AddHours(-10))
+            var listings = this.Relations.Select(p => p.Listing)
+                .Where(p => p.Status != null && (p.Status.Equals("Active") || p.EndTime > DateTime.UtcNow.AddDays(-30)));
+
+            if (listings.Count() > 0 || this.TimeUploaded > DateTime.UtcNow.AddHours(-10))
             {
                 return false;
             }

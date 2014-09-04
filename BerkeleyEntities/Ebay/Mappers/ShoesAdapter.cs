@@ -118,7 +118,7 @@ namespace EbayServices.Mappers
                 case "UNISEX-ADULT":
                 case "MENS":
                 case "MEN" :
-                    return this.FormatWomenWidth(width);
+                    return this.FormatWidthForMen(width);
 
                 case "WOMENS":
                 case "WOMEN" :
@@ -136,7 +136,7 @@ namespace EbayServices.Mappers
             }
         }
 
-        private string FormatWomenWidth(string width)
+        private string FormatWidthForMen(string width)
         {
             switch (width)
             {

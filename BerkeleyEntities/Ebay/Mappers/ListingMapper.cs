@@ -86,9 +86,9 @@ namespace EbayServices.Mappers
                         ShippingServicePrioritySpecified = true,
                         ShippingServicePriority = 1,
                         ShippingService = ShippingServiceCodeType.UPSGround.ToString(),
-                        ShippingServiceCost = new AmountType() { currencyID = CurrencyCodeType.USD, Value = 6.95 },
+                        ShippingServiceCost = new AmountType() { currencyID = CurrencyCodeType.USD, Value = 7.95 },
                         ShippingServiceAdditionalCost = new AmountType() { currencyID = CurrencyCodeType.USD, Value = 2.50 },
-                        ShippingSurcharge = new AmountType() { currencyID = CurrencyCodeType.USD, Value = 8.50 }},
+                        ShippingSurcharge = new AmountType() { currencyID = CurrencyCodeType.USD, Value = 0 }},
                     new ShippingServiceOptionsType(){
                         ShippingServicePrioritySpecified = true,
                         ShippingServicePriority = 2,
@@ -135,7 +135,7 @@ namespace EbayServices.Mappers
                 var itemSpecifics = mapper.GetItemSpecifics().Concat(mapper.GetVariationSpecifics()).ToArray();
                 listingDto.ItemSpecifics = new NameValueListTypeCollection(itemSpecifics);
 
-                var urls = listing.Relations.Select(p => p.PictureServiceUrl).Select(p => p.Url);
+                var urls = listing.Relations.Select(p => p.PictureServiceUrl).OrderBy(p => p.LocalName).Select(p => p.Url);
                 listingDto.PictureDetails = new PictureDetailsType() { PictureURL = new StringCollection(urls.ToArray()) };
 
                 EbayListingItem listingItem = listing.ListingItems.First();
@@ -177,7 +177,7 @@ namespace EbayServices.Mappers
                 var allUrls = listing.Relations.Select(p => p.PictureServiceUrl);
 
                 listingDto.PictureDetails = new PictureDetailsType();
-                listingDto.PictureDetails.PictureURL = new StringCollection(allUrls.Where(p => !p.LocalName.Contains("_")).Select(p => p.Url).ToArray());
+                listingDto.PictureDetails.PictureURL = new StringCollection(allUrls.Where(p => !p.LocalName.Contains("_")).OrderBy(p => p.LocalName).Select(p => p.Url).ToArray());
 
                 if (allUrls.Any(p => p.LocalName.Contains("_")))
                 {
@@ -227,8 +227,15 @@ namespace EbayServices.Mappers
             return listingDto;
         }
 
-        public void Map(ItemType listingDto, EbayListing listing)
+        public EbayListing Map(ItemType listingDto)
         {
+            EbayListing listing = _dataContext.EbayListings.SingleOrDefault(p => p.MarketplaceID.Equals(_marketplace.ID) && p.Code.Equals(listingDto.ItemID));
+
+            if (listing == null)
+            {
+                listing = new EbayListing();
+            }
+
             listing.Code = listingDto.ItemID;
 
             listing.Format = listingDto.ListingTypeSpecified ? listingDto.ListingType.ToString() : listing.Format;
@@ -260,6 +267,8 @@ namespace EbayServices.Mappers
                 listing.IsVariation = true;
                 MapListingItem(listing, listingDto.Variations);
             }
+
+            return listing;
         }
 
         private void MapListingItem(EbayListing listing, ItemType listingDto)

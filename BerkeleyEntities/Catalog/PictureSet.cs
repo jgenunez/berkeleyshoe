@@ -35,7 +35,7 @@ namespace BerkeleyEntities
 
             foreach (var group in skus.GroupBy(p => p.Split(new Char[1] {'-'})[0]))
             {
-                var targetPaths = GetFileNamesByBrandDir(brandRoot).Where(p => p.Contains(group.Key + ".") || p.Contains(group.Key + "-"));
+                var targetPaths = GetFileNamesByBrandDir(brandRoot).Where(p => p.ToUpper().Trim().Contains(group.Key + ".") || p.ToUpper().Trim().Contains(group.Key + "-"));
 
                 foreach(string path in targetPaths)
                 {

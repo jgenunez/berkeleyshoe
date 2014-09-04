@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -44,7 +45,7 @@ namespace WorkbookPublisher.ViewModel
         {
             EbayMarketplace marketplace = _dataContext.EbayMarketplaces.Single(p => p.Code.Equals(_marketplaceCode));
 
-            foreach (EbayEntry entry in entries)
+            foreach (EbayEntry entry in entries.Where(p => p.Status.Equals("waiting")).ToList())
             {
                 Item item = _dataContext.Items.SingleOrDefault(p => p.ItemLookupCode.Equals(entry.Sku));
 
@@ -103,6 +104,10 @@ namespace WorkbookPublisher.ViewModel
                     {
                         entry.Message = "title max characters is 80";
                     }
+                    if (entry.StartDateSpecified && entry.StartDate < DateTime.UtcNow)
+                    {
+                        entry.Message = "cannot schedule in the past";
+                    }
                 }
 
             }
@@ -116,8 +121,9 @@ namespace WorkbookPublisher.ViewModel
 
     public class EbayPublishCommand : PublishCommand
     {
-        private berkeleyEntities _dataContext = new berkeleyEntities();
+        private string _marketplaceCode;
         private Dictionary<EbayListing, List<EbayEntry>> _targetListings = new Dictionary<EbayListing, List<EbayEntry>>();
+        private berkeleyEntities _dataContext;
         private PictureSetRepository _picSetRepository = new PictureSetRepository();
         private EbayMarketplace _marketplace;
         private Publisher _publisher;
@@ -125,26 +131,43 @@ namespace WorkbookPublisher.ViewModel
 
         public EbayPublishCommand(string marketplaceCode)
         {
-            _dataContext.MaterializeAttributes = true;
-
-            _marketplace = _dataContext.EbayMarketplaces.Single(p => p.Code.Equals(marketplaceCode));
-
-            _publisher = new Publisher(_dataContext, _marketplace);
-
-            _publisher.Result += Publisher_Result;
+            _marketplaceCode = marketplaceCode;
         }
 
-        public override async void Publish(IEnumerable<Entry> entries)
+        public override void Publish(IEnumerable<Entry> entries)
         {
             var pendingEntries = entries.Cast<EbayEntry>();
 
-            await Task.Run(() => HandleFixedPriceEntries(pendingEntries.Where(p => !p.IsAuction())));
+            using (_dataContext = new berkeleyEntities())
+            {
+                _dataContext.MaterializeAttributes = true;
+                _marketplace = _dataContext.EbayMarketplaces.Single(p => p.Code.Equals(_marketplaceCode));
 
-            await Task.Run(() => HandleAuctionEntries(pendingEntries.Where(p => p.IsAuction())));
+                _publisher = new Publisher(_dataContext, _marketplace);
+                _publisher.Result += Publisher_Result;
 
-            await Task.Run(() => _publisher.Publish());
-            
+                HandleFixedPriceEntries(pendingEntries.Where(p => !p.IsAuction()));
+                HandleAuctionEntries(pendingEntries.Where(p => p.IsAuction()));
+
+                _publisher.Publish(); 
+            }
         }
+
+        //public void Publis(IEnumerable<Entry> entries)
+        //{
+        //    var pendingEntries = entries.Cast<EbayEntry>();
+
+        //    var auctions = pendingEntries.Where(p => p.IsAuction());
+
+        //    var fixedPrice = pendingEntries.Where(p => !p.IsAuction());
+
+        //    var entryGroups = pendingEntries.GroupBy(p => p.ClassName);
+
+        //    foreach (var group in entryGroups)
+        //    {
+ 
+        //    }
+        //}
 
         private void Publisher_Result(ResultArgs e)
         {
@@ -385,11 +408,15 @@ namespace WorkbookPublisher.ViewModel
 
             var pics = _picSetRepository.GetPictures(brand, skus.ToList());
 
+            var addedUrls = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added).Select(p => p.Entity).OfType<EbayPictureServiceUrl>();
+
             foreach (PictureInfo picInfo in pics)
             {
+
                 var urls = _dataContext.EbayPictureServiceUrls.Where(p => p.LocalName.Equals(picInfo.Name)).ToList();
 
-                EbayPictureServiceUrl url = urls.SingleOrDefault(p => !p.IsExpired() && picInfo.LastModified < p.TimeUploaded);
+                EbayPictureServiceUrl url = urls.FirstOrDefault(p => !p.IsExpired() && picInfo.LastModified < p.TimeUploaded);
+
 
                 if (url == null)
                 {
@@ -398,7 +425,7 @@ namespace WorkbookPublisher.ViewModel
                     url.Path = picInfo.Path;
                     new EbayPictureUrlRelation() { PictureServiceUrl = url, Listing = listing, CreatedTime = DateTime.UtcNow };
                 }
-                else
+                else if(url.ID != 0)
                 {
                     if (!listing.Relations.Any(p => p.PictureServiceUrl.ID == url.ID))
                     {

@@ -186,18 +186,25 @@ namespace WorkbookPublisher
                         continue;
                     }
 
-                    switch (prop.PropertyType.Name)
+                    try
                     {
-                        case "String":
-                            prop.SetValue(entry, cellValue, null); break;
-                        case "Int32":
-                            prop.SetValue(entry, Convert.ToInt32(cellValue), null); break;
-                        case "Decimal":
-                            prop.SetValue(entry, Convert.ToDecimal(cellValue), null); break;
-                        case "DateTime" :
-                            prop.SetValue(entry, DateTime.FromOADate(Convert.ToDouble(cellValue)).ToUniversalTime(), null); break;
-                        default:
-                            prop.SetValue(entry, cellValue, null); break;
+                        switch (prop.PropertyType.Name)
+                        {
+                            case "String":
+                                prop.SetValue(entry, cellValue, null); break;
+                            case "Int32":
+                                prop.SetValue(entry, Convert.ToInt32(cellValue), null); break;
+                            case "Decimal":
+                                prop.SetValue(entry, Convert.ToDecimal(cellValue), null); break;
+                            case "DateTime":
+                                prop.SetValue(entry, DateTime.FromOADate(Convert.ToDouble(cellValue)).ToUniversalTime(), null); break;
+                            default:
+                                prop.SetValue(entry, cellValue, null); break;
+                        }
+                    }
+                    catch (FormatException e)
+                    {
+                        entry.Message = e.Message;
                     }
                 }
             }
@@ -280,6 +287,8 @@ namespace WorkbookPublisher
                 }
             }
 
+
+            //var missingCols = props.Where(p => !_colRefsToProp.Values.Any(s => s.Equals(p)));
         }
 
         private WorksheetPart CreateWorksheet(WorkbookPart workbookPart, string name)
@@ -614,12 +623,18 @@ namespace WorkbookPublisher
 
     public class EbayEntry : Entry
     {
+        private DateTime _startDate;
+
         public EbayEntry()
         {
-            this.StartDate = DateTime.UtcNow;
+
         }
 
-        public DateTime StartDate { get; set; }
+        public DateTime StartDate
+        {
+            get { return _startDate; }
+            set { StartDateSpecified = true; _startDate = value; }
+        }
 
         public bool StartDateSpecified { get; set; }
 

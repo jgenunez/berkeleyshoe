@@ -153,7 +153,7 @@ namespace WorkbookPublisher.ViewModel
 
         public async override void Publish(IEnumerable<Entry> entries)
         {
-            foreach (AmznEntry entry in entries)
+            foreach (AmznEntry entry in entries.Where(p => p.Status.Equals("waiting")).ToList())
             {
                 AmznListingItem listingItem = _dataContext.AmznListingItems.SingleOrDefault(p => p.IsActive && p.MarketplaceID == _marketplace.ID && p.Item.ItemLookupCode.Equals(entry.Sku));
 

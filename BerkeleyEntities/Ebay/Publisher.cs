@@ -12,6 +12,7 @@ using EbayServices.Mappers;
 using EbayServices.Services;
 using System.Xml;
 using System.Data;
+using System.Threading.Tasks;
 
 namespace BerkeleyEntities.Ebay
 {
@@ -50,15 +51,19 @@ namespace BerkeleyEntities.Ebay
                 {
                     switch (listing.EntityState)
                     {
-                        case EntityState.Added: PublishListing(listing); break;
+                        case EntityState.Added:
+                            PublishListing(listing);
+                            break;
 
                         case EntityState.Modified:
-
                             if (listing.ListingItems.All(p => p.Quantity == 0))
-                            { EndListing(listing); }
+                                EndListing(listing);
                             else
-                            { ReviseListing(listing); } break;
+                                ReviseListing(listing);
+                            break;
                     }
+
+                    PersistListing(listing);
 
                     if (this.Result != null)
                     {
@@ -67,8 +72,6 @@ namespace BerkeleyEntities.Ebay
                 }
                 catch (ApiException e)
                 {
-                    Revert(listing);
-
                     var errors = e.Errors.ToArray();
 
                     if (errors.Any(p => p.ErrorCode.Equals("518")))
@@ -81,9 +84,39 @@ namespace BerkeleyEntities.Ebay
                         this.Result(new ResultArgs() { Listing = listing, Message = e.Message, IsError = true });
                     }
                 }
+                catch (Exception e)
+                {
+                    if (this.Result != null)
+                    {
+                        this.Result(new ResultArgs() { Listing = listing, Message = e.Message, IsError = true });
+                    }
+                }
             }
+        }
 
-            _dataContext.SaveChanges();
+        private void PersistListing(EbayListing listing)
+        {
+            using (berkeleyEntities dataContext = new berkeleyEntities())
+            {
+                var newListing = dataContext.CopyEntity<EbayListing>(listing,true);
+
+                dataContext.EbayListings.AddObject(newListing);
+
+                foreach (var listingItem in listing.ListingItems)
+                {
+                    newListing.ListingItems.Add(dataContext.CopyEntity<EbayListingItem>(listingItem, true));
+                }
+
+                foreach (var relation in listing.Relations)
+                {
+                    var newRelation = dataContext.CopyEntity<EbayPictureUrlRelation>(relation, true);
+
+                    newRelation.Listing = newListing;
+                    newRelation.PictureServiceUrl = dataContext.CopyEntity<EbayPictureServiceUrl>(relation.PictureServiceUrl, true);
+                }
+
+                dataContext.SaveChanges();
+            }
         }
 
         public void Revert(EbayListing listing)
@@ -131,6 +164,7 @@ namespace BerkeleyEntities.Ebay
 
                 AddFixedPriceItemCall call = new AddFixedPriceItemCall(_marketplace.GetApiContext());
                 AddFixedPriceItemResponseType response = call.ExecuteRequest(request) as AddFixedPriceItemResponseType;
+             
                 listing.LastSyncTime = DateTime.UtcNow;
                 listing.Code = response.ItemID;
                 listing.StartTime = response.StartTime;
@@ -150,6 +184,8 @@ namespace BerkeleyEntities.Ebay
                 listing.EndTime = response.EndTime;
                 listing.Status = "Active";
             }
+
+            
         }
 
         private void ReviseListing(EbayListing listing)
@@ -179,41 +215,19 @@ namespace BerkeleyEntities.Ebay
 
         private void UploadPictures(EbayListing listing)
         {
-            var pendingUrls = listing.Relations.Select(p => p.PictureServiceUrl).Where(p => p.Url == null);
+            var pendingUrls = listing.Relations.Select(p => p.PictureServiceUrl).Where(p => p.Url == null).ToList();
+
+            var tasks = new List<Task>();
 
             foreach (var urlData in pendingUrls)
             {
-                XmlDocument response = UploadSiteHostedPictures(urlData.Path);
+                tasks.Add(Task.Run(() => UploadSiteHostedPictures(urlData)));
+            }
 
-                XmlNodeList list = response.GetElementsByTagName("FullURL", "urn:ebay:apis:eBLBaseComponents");
-
-                if (list[0] != null)
-                {
-                    urlData.Url = list[0].InnerText;
-                    urlData.TimeUploaded = DateTime.UtcNow;
-                }
-                else
-                {
-                    list = response.GetElementsByTagName("Errors");
-                   
-                    ErrorType error = new ErrorType();
-
-                    foreach (XmlNode node in list[0])
-                    {
-                        switch (node.Name)
-                        {
-                            case "ShortMessage": error.ShortMessage = node.InnerText; break;
-                            case "LongMessage": error.LongMessage = node.InnerText; break;
-                            case "ErrorCode": error.ErrorCode = node.InnerText; break;
-                        }
-                    }
-
-                    throw new ApiException(new ErrorTypeCollection(new ErrorType[1]{error}));
-                }
-            }    
+            Task.WaitAll(tasks.ToArray());
         }
 
-        private XmlDocument UploadSiteHostedPictures(string path)
+        private void UploadSiteHostedPictures(EbayPictureServiceUrl urlData)
         {
             string boundary = "MIME_boundary";
             string CRLF = "\r\n";
@@ -250,7 +264,7 @@ namespace BerkeleyEntities.Ebay
             byte[] postDataBytes2 = Encoding.ASCII.GetBytes(payload3);
             byte[] image = null;
 
-            using (Stream fileStream = new FileStream(path, FileMode.Open, FileAccess.Read))
+            using (Stream fileStream = new FileStream(urlData.Path, FileMode.Open, FileAccess.Read))
             {
                 fileStream.Seek(0, SeekOrigin.Begin);
 
@@ -284,9 +298,27 @@ namespace BerkeleyEntities.Ebay
 
             xmlResponse.LoadXml(output);
 
-            return xmlResponse;
+            XmlNodeList list = xmlResponse.GetElementsByTagName("FullURL", "urn:ebay:apis:eBLBaseComponents");
 
-           
+            if (list[0] == null)
+            {
+                list = xmlResponse.GetElementsByTagName("Errors");
+                ErrorType error = new ErrorType();
+                foreach (XmlNode node in list[0])
+                {
+                    switch (node.Name)
+                    {
+                        case "ShortMessage": error.ShortMessage = node.InnerText; break;
+                        case "LongMessage": error.LongMessage = node.InnerText; break;
+                        case "ErrorCode": error.ErrorCode = node.InnerText; break;
+                    }
+                }
+
+                throw new ApiException(new ErrorTypeCollection(new ErrorType[1] { error }));
+            }
+
+            urlData.Url = list[0].InnerText;
+            urlData.TimeUploaded = DateTime.UtcNow;
         }
     }
 

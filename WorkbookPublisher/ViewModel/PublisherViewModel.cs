@@ -1,4 +1,5 @@
 ﻿using BerkeleyEntities;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -33,7 +34,7 @@ namespace WorkbookPublisher.ViewModel
 
             this.Entries = CollectionViewSource.GetDefaultView(_entries);
 
-            //this.Entries.Filter = p => ((EbayEntry)p).Status.Equals("error");
+            this.Entries.Filter = p => ((Entry)p).Status.Equals("error");
 
             _entries.CollectionChanged += (e, x) => 
             {
@@ -143,14 +144,16 @@ namespace WorkbookPublisher.ViewModel
 
             try
             {
-                var entries = ((ICollectionView)parameter).OfType<Entry>().ToList();
+                var entries = ((ICollectionView)parameter).SourceCollection.OfType<Entry>();
 
-                if (entries.Count > 0)
+                var errorEntries = entries.Where(p => p.Status.Equals("error")).ToList();
+
+                if (errorEntries.Count > 0)
                 {
-                    _workbook.CreateErrorSheet(_marketplacCode + "(errors)", entries);
+                    _workbook.CreateErrorSheet(_marketplacCode + "(errors)", errorEntries);
                 }
 
-                var sourceEntries = ((ICollectionView)parameter).SourceCollection as ObservableCollection<EbayEntry>;
+                var sourceEntries = ((ICollectionView)parameter).SourceCollection as ObservableCollection<Entry>;
 
                 sourceEntries.Clear();
 
@@ -179,6 +182,8 @@ namespace WorkbookPublisher.ViewModel
 
     public abstract class PublishCommand : ICommand
     {
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
+
         private bool _canExecute = false;
 
         public event EventHandler CanExecuteChanged;
@@ -196,12 +201,12 @@ namespace WorkbookPublisher.ViewModel
 
         public async void Execute(object parameter)
         {
-
             SetCanExecute(false);
 
             var entries = ((ICollectionView)parameter).SourceCollection.OfType<Entry>();
 
             var pendingEntries = entries.Where(p => p.Status.Equals("waiting"));
+
 
             try
             {
@@ -209,11 +214,14 @@ namespace WorkbookPublisher.ViewModel
             }
             catch (Exception e)
             {
-                foreach (var entry in pendingEntries)
+                _logger.Error(e.ToString());
+
+                foreach (Entry entry in pendingEntries)
                 {
                     entry.Message = e.Message;
                 }
             }
+
 
             if (PublishCompleted != null)
             {
@@ -280,10 +288,10 @@ namespace WorkbookPublisher.ViewModel
 
                 result.ForEach(p => entries.Add(p));
 
+                await Task.Run(() => UpdateEntries(entries));
+
                 if (entries.Count != 0)
                 {
-                    await Task.Run(() => UpdateEntries(entries));
-
                     if (ReadCompleted != null)
                     {
                         ReadCompleted(this, new EventArgs());
@@ -293,7 +301,9 @@ namespace WorkbookPublisher.ViewModel
                 }
                 else
                 {
-                    MessageBox.Show("Could not find entries");
+                    MessageBox.Show("No entry found");
+
+                    entries.Clear();
 
                     SetCanExecute(true);
                 }

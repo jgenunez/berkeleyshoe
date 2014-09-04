@@ -97,5 +97,25 @@ namespace WorkbookPublisher
                 form.ShowDialog();
             }
         }
+
+        private void Test2()
+        {
+            using (berkeleyEntities dataContext = new berkeleyEntities())
+            {
+
+
+                var posts1 = bsi_quantities_message.Createbsi_quantities_message(0, 5, "testin1", true);
+
+                dataContext.bsi_quantities_message.AddObject(posts1);
+
+                var posts2 = dataContext.CopyEntity<bsi_quantities_message>(posts1);
+
+                dataContext.bsi_quantities_message.AddObject(posts2);
+
+                dataContext.SaveChanges();
+
+                
+            }
+        }
     }
 }
