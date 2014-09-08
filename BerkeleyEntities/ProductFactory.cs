@@ -258,11 +258,11 @@ namespace BerkeleyEntities
 
                 switch (_item.DimCount)
                 {
-                    case 2:
+                    case 1:
                         _item.Attributes.Add("Size", new Attribute() { Code = skuDetails[1], Value = skuDetails[1] });
                         _item.Attributes.Add("Width", new Attribute() { Code = "M", Value = "M" }); break;
 
-                    case 3 :
+                    case 2 :
                         _item.Attributes.Add("Size", new Attribute() { Code = skuDetails[1], Value = skuDetails[1] });
                         _item.Attributes.Add("Width", new Attribute() { Code = skuDetails[2], Value = skuDetails[2] }); break;
                 }

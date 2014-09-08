@@ -16,125 +16,28 @@ using System.Threading.Tasks;
 
 namespace BerkeleyEntities.Ebay
 {
-    public delegate void PublishingResultHandler(ResultArgs e);
-
     public class Publisher
     {
         public const string FORMAT_FIXEDPRICE = "FixedPriceItem";
         public const string FORMAT_AUCTION = "Chinese";
+
         public const string STATUS_ACTIVE = "Active";
+        public const string STATUS_COMPLETED = "Completed";
+        public const string STATUS_DELETED = "Deleted";
 
         private berkeleyEntities _dataContext;
         private ListingMapper _listingMapper;
         private EbayMarketplace _marketplace;
-        private ListingSyncService _listingSyncService;
 
         public Publisher(berkeleyEntities dataContext,  EbayMarketplace marketplace)
         {
             _marketplace = marketplace;
             _dataContext = dataContext;
 
-            _listingSyncService = new ListingSyncService(marketplace.ID);
             _listingMapper = new ListingMapper(_dataContext, _marketplace);
         }
 
-        public event PublishingResultHandler Result;
-
-        public void Publish()
-        {
-            var modified = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Modified).Select(p => p.Entity).OfType<EbayListing>().ToList();
-            var created = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added).Select(p => p.Entity).OfType<EbayListing>().ToList();
-
-            foreach (var listing in created.Concat(modified))
-            {
-                try
-                {
-                    switch (listing.EntityState)
-                    {
-                        case EntityState.Added:
-                            PublishListing(listing);
-                            break;
-
-                        case EntityState.Modified:
-                            if (listing.ListingItems.All(p => p.Quantity == 0))
-                                EndListing(listing);
-                            else
-                                ReviseListing(listing);
-                            break;
-                    }
-
-                    PersistListing(listing);
-
-                    if (this.Result != null)
-                    {
-                        this.Result(new ResultArgs() { Listing = listing, Message = string.Empty, IsError = false });
-                    }
-                }
-                catch (ApiException e)
-                {
-                    var errors = e.Errors.ToArray();
-
-                    if (errors.Any(p => p.ErrorCode.Equals("518")))
-                    {
-                        throw;
-                    }
-
-                    if (this.Result != null)
-                    {
-                        this.Result(new ResultArgs() { Listing = listing, Message = e.Message, IsError = true });
-                    }
-                }
-                catch (Exception e)
-                {
-                    if (this.Result != null)
-                    {
-                        this.Result(new ResultArgs() { Listing = listing, Message = e.Message, IsError = true });
-                    }
-                }
-            }
-        }
-
-        private void PersistListing(EbayListing listing)
-        {
-            using (berkeleyEntities dataContext = new berkeleyEntities())
-            {
-                var newListing = dataContext.CopyEntity<EbayListing>(listing,true);
-
-                dataContext.EbayListings.AddObject(newListing);
-
-                foreach (var listingItem in listing.ListingItems)
-                {
-                    newListing.ListingItems.Add(dataContext.CopyEntity<EbayListingItem>(listingItem, true));
-                }
-
-                foreach (var relation in listing.Relations)
-                {
-                    var newRelation = dataContext.CopyEntity<EbayPictureUrlRelation>(relation, true);
-
-                    newRelation.Listing = newListing;
-                    newRelation.PictureServiceUrl = dataContext.CopyEntity<EbayPictureServiceUrl>(relation.PictureServiceUrl, true);
-                }
-
-                dataContext.SaveChanges();
-            }
-        }
-
-        public void Revert(EbayListing listing)
-        {
-            foreach (EbayListingItem listingItem in listing.ListingItems.ToList())
-            {
-                _dataContext.EbayListingItems.Detach(listingItem);
-            }
-
-            foreach (EbayPictureUrlRelation relation in listing.Relations.ToList())
-            {
-                _dataContext.EbayPictureUrlRelations.Detach(relation);
-            }
-
-            _dataContext.EbayListings.Detach(listing);
-        }
-
-        private void EndListing(EbayListing listing)
+        public void EndListing(EbayListing listing)
         {
             EndItemRequestType request = new EndItemRequestType();
             request.ItemID = listing.Code;
@@ -144,8 +47,8 @@ namespace BerkeleyEntities.Ebay
             EndItemCall call = new EndItemCall(_marketplace.GetApiContext());
 
             EndItemResponseType response = call.ExecuteRequest(request) as EndItemResponseType;
-        
-            listing.Status = "Completed";
+
+            listing.Status = STATUS_COMPLETED;
 
             if (response.EndTimeSpecified)
             {
@@ -153,10 +56,8 @@ namespace BerkeleyEntities.Ebay
             }
         }
 
-        private void PublishListing(EbayListing listing)
+        public void PublishListing(EbayListing listing)
         {
-             UploadPictures(listing);
-
             if ((bool)listing.IsVariation)
             {
                 AddFixedPriceItemRequestType request = new AddFixedPriceItemRequestType();
@@ -184,11 +85,9 @@ namespace BerkeleyEntities.Ebay
                 listing.EndTime = response.EndTime;
                 listing.Status = "Active";
             }
-
-            
         }
 
-        private void ReviseListing(EbayListing listing)
+        public void ReviseListing(EbayListing listing)
         {
             if ((bool)listing.IsVariation)
             {
@@ -213,18 +112,37 @@ namespace BerkeleyEntities.Ebay
             }
         }
 
-        private void UploadPictures(EbayListing listing)
+        public IEnumerable<EbayPictureServiceUrl> UploadToEPS(IEnumerable<PictureInfo> pics)
         {
-            var pendingUrls = listing.Relations.Select(p => p.PictureServiceUrl).Where(p => p.Url == null).ToList();
+            List<EbayPictureServiceUrl> picUrls = new List<EbayPictureServiceUrl>();
+
+            foreach (PictureInfo picInfo in pics)
+            {
+                var urls = _dataContext.EbayPictureServiceUrls.Where(p => p.LocalName.Equals(picInfo.Name)).ToList();
+
+                EbayPictureServiceUrl url = urls.FirstOrDefault(p => !p.IsExpired() && picInfo.LastModified < p.TimeUploaded);
+
+                if (url == null)
+                {
+                    url = new EbayPictureServiceUrl();
+                    url.LocalName = picInfo.Name;
+                    url.Path = picInfo.Path;
+                    _dataContext.EbayPictureServiceUrls.AddObject(url);
+                }
+
+                picUrls.Add(url);
+            }
 
             var tasks = new List<Task>();
 
-            foreach (var urlData in pendingUrls)
+            foreach (var urlData in picUrls.Where(p => p.Url == null))
             {
                 tasks.Add(Task.Run(() => UploadSiteHostedPictures(urlData)));
             }
 
             Task.WaitAll(tasks.ToArray());
+
+            return picUrls;
         }
 
         private void UploadSiteHostedPictures(EbayPictureServiceUrl urlData)
@@ -320,14 +238,5 @@ namespace BerkeleyEntities.Ebay
             urlData.Url = list[0].InnerText;
             urlData.TimeUploaded = DateTime.UtcNow;
         }
-    }
-
-    public class ResultArgs
-    {
-        public bool IsError { get; set; }
-
-        public string Message {get; set;}
-
-        public EbayListing Listing {get; set;}
     }
 }

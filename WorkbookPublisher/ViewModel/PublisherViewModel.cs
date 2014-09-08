@@ -247,7 +247,6 @@ namespace WorkbookPublisher.ViewModel
 
     public abstract class ReadCommand : ICommand
     {
-        protected berkeleyEntities _dataContext = new berkeleyEntities(); 
         protected string _marketplaceCode;
         private bool _canExecute = true;
         private ExcelWorkbook _workbook;

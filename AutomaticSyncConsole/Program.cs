@@ -6,6 +6,7 @@ using System.ComponentModel;
 using NLog;
 using BerkeleyEntities;
 using System.Threading.Tasks;
+using System.Data;
 
 namespace AutomaticSyncConsole
 {

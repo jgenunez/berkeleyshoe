@@ -560,6 +560,8 @@ namespace WorkbookPublisher
             this.Title = string.Empty;
         }
 
+        public int ListingID { get; set; }
+
         public uint RowIndex { get; set; }
         public string Brand { get; set; }
         public string ClassName { get; set; }

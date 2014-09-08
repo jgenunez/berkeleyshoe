@@ -97,7 +97,11 @@ namespace EbayServices.Mappers
                 case "UNISEX-ADULT":
                 case "MENS" :
                 case "MEN" :
-                    label = "US Shoe Size (Men's)"; break;
+                    int size = int.Parse(_item.Attributes["Size"].Value);
+
+                    if (size > 19) { label = "EU Shoe Size (Men's)"; break; }
+
+                    else { label = "US Shoe Size (Men's)"; break; }
 
                 case "WOMENS" :
                 case "WOMEN" :
@@ -146,8 +150,15 @@ namespace EbayServices.Mappers
                 case "M": return "Medium (D, M)";
                 case "E":
                 case "W": return "Wide (E,W)";
+                case "2E" :
+                case "EE":
                 case "XW":
                 case "WW": return "Extra Wide (EE+)";
+                case "EEE" :
+                case "3E": return "2X Extra Wide (EEE)";
+                case "EEEE" :
+                case "4E": return "3X Extra Wide (EEEE)";
+
                 default: throw new NotImplementedException("width not supported");
             }
         }
@@ -156,6 +167,7 @@ namespace EbayServices.Mappers
         {
             switch (width)
             {
+                case "SS" :
                 case "XN": return "Extra Narrow (AAA+)";
                 case "N": return "Narrow (AA, N)";
                 case "M":

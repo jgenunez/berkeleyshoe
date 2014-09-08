@@ -54,14 +54,6 @@ namespace BerkeleyEntities
             return clone;
         }
 
-        public static IEnumerable<T> WhereInclAdded<T>(this ObjectSet<T> set, Expression<Func<T, bool>> predicate) where T : class
-        {
-            var dbResult = set.Where(predicate);
-
-            var offlineResult = set.Context.ObjectStateManager.GetObjectStateEntries(EntityState.Added).Select(entry => entry.Entity).OfType<T>().Where(predicate.Compile());
-
-            return offlineResult.Union(dbResult);
-        }
     }
 
     

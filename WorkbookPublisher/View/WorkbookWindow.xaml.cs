@@ -102,7 +102,17 @@ namespace WorkbookPublisher
         {
             using (berkeleyEntities dataContext = new berkeleyEntities())
             {
+                var listings = dataContext.EbayListingItems.Where(p => p.Listing == null);
 
+
+                foreach (var listing in listings)
+                {
+                    dataContext.EbayListingItems.DeleteObject(listing);
+                }
+
+
+
+                dataContext.SaveChanges();
 
                 var posts1 = bsi_quantities_message.Createbsi_quantities_message(0, 5, "testin1", true);
 

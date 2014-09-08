@@ -64,7 +64,7 @@ namespace BerkeleyEntities.Amazon
             SubmitFeed(_listingMapper.BuildInventoryData(qtyModified));
             SubmitFeed(_listingMapper.BuildPriceData(priceModified));
 
-            PollSubmissionStatus();
+            WaitForProcessingResult();
 
             SubmitFeed(_listingMapper.BuildInventoryData(_productFeedCompleted));
             SubmitFeed(_listingMapper.BuildPriceData(_productFeedCompleted));
@@ -72,7 +72,7 @@ namespace BerkeleyEntities.Amazon
 
             _productFeedCompleted.Clear();
 
-            PollSubmissionStatus();
+            WaitForProcessingResult();
         }
 
         public void Republish(IEnumerable<AmazonEnvelope> envelopes)
@@ -82,7 +82,7 @@ namespace BerkeleyEntities.Amazon
                 SubmitFeed(envelope);
             }
 
-            PollSubmissionStatus();
+            WaitForProcessingResult();
 
             SubmitFeed(_listingMapper.BuildInventoryData(_productFeedCompleted));
             SubmitFeed(_listingMapper.BuildPriceData(_productFeedCompleted));
@@ -90,12 +90,12 @@ namespace BerkeleyEntities.Amazon
 
             _productFeedCompleted.Clear();
 
-            PollSubmissionStatus();
+            WaitForProcessingResult();
         }
 
         public event PublishingResultHandler Result;
 
-        private void PollSubmissionStatus()
+        private void WaitForProcessingResult()
         {
             while (AnyPendingSubmission)
             {

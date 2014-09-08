@@ -42,41 +42,44 @@ namespace WorkbookPublisher.ViewModel
 
         public override void UpdateEntries(IEnumerable<Entry> entries)
         {
-            AmznMarketplace marketplace = _dataContext.AmznMarketplaces.Single(p => p.Code.Equals(_marketplaceCode));
-
-            foreach (AmznEntry entry in entries)
+            using (berkeleyEntities dataContext = new berkeleyEntities())
             {
-                Item item = _dataContext.Items.SingleOrDefault(p => p.ItemLookupCode.Equals(entry.Sku));
+                AmznMarketplace marketplace = dataContext.AmznMarketplaces.Single(p => p.Code.Equals(_marketplaceCode));
 
-                if (item == null)
+                foreach (AmznEntry entry in entries)
                 {
-                    entry.Message = "sku not found";
-                    continue;
-                }
+                    Item item = dataContext.Items.SingleOrDefault(p => p.ItemLookupCode.Equals(entry.Sku));
 
-                AmznListingItem listingItem = item.AmznListingItems.SingleOrDefault(p => p.IsActive && p.MarketplaceID == marketplace.ID);
-
-                if (listingItem != null && listingItem.Quantity == entry.Q)
-                {
-                    entry.Completed = true;
-                }
-                else
-                {
-                    if (entry.Q > item.QtyAvailable)
+                    if (item == null)
                     {
-                        entry.Message = "out of stock";
+                        entry.Message = "sku not found";
+                        continue;
                     }
 
-                    if (string.IsNullOrEmpty(item.GTIN))
-                    {
-                        entry.Message = "UPC or EAN required";
-                    }
+                    AmznListingItem listingItem = item.AmznListingItems.SingleOrDefault(p => p.IsActive && p.MarketplaceID == marketplace.ID);
 
-                    if (item.Department == null)
+                    if (listingItem != null && listingItem.Quantity == entry.Q)
                     {
-                        entry.Message = "department classification required";
+                        entry.Completed = true;
                     }
-                }
+                    else
+                    {
+                        if (entry.Q > item.QtyAvailable)
+                        {
+                            entry.Message = "out of stock";
+                        }
+
+                        if (string.IsNullOrEmpty(item.GTIN))
+                        {
+                            entry.Message = "UPC or EAN required";
+                        }
+
+                        if (item.Department == null)
+                        {
+                            entry.Message = "department classification required";
+                        }
+                    }
+                } 
             }
         }
 

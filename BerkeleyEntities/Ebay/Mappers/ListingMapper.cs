@@ -6,13 +6,15 @@ using BerkeleyEntities;
 using eBay.Service.Core.Soap;
 using System.Data;
 using System.Text.RegularExpressions;
+using EbayServices.Services;
 
 namespace EbayServices.Mappers
 {
     public class ListingMapper
     {
-        private PictureSetRepository _pictureSetRepository = new PictureSetRepository();
+        //private PictureSetRepository _pictureSetRepository = new PictureSetRepository();
         private ProductMapperFactory _productMapperFactory;
+        private ListingSyncService _listingSyncService;
         private berkeleyEntities _dataContext;
         private EbayMarketplace _marketplace;
         
@@ -23,7 +25,6 @@ namespace EbayServices.Mappers
             _marketplace = marketplace;
             _productMapperFactory = new ProductMapperFactory();
         }
-
 
         public ItemType Map(EbayListing listing)
         {
@@ -202,10 +203,33 @@ namespace EbayServices.Mappers
             listingDto.ConditionID = int.Parse(listing.Condition);
             listingDto.Title = listing.Title;
 
+            bool includeProductData = false;
+
+            foreach(var listingItem in listing.ListingItems)
+            {
+                var entry = _dataContext.ObjectStateManager.GetObjectStateEntry(listingItem);
+
+                if(entry.State.Equals(EntityState.Added) || entry.OriginalValues.GetInt32(entry.OriginalValues.GetOrdinal("Quantity")) == 0 && entry.State.Equals(EntityState.Modified))
+                {
+                    includeProductData = true;
+                    break;
+                }
+            }
+
+          
             if ((bool)listing.IsVariation)
             {
                 listingDto.Variations = new VariationsType();
                 listingDto.Variations.Variation = new VariationTypeCollection();
+
+                if (includeProductData)
+                {
+                    ProductMatrixMapper matrixMapper = _productMapperFactory.GetProductMatrixData(listingDto.SKU, listing.ListingItems.Select(p => p.Item));
+
+                    listingDto.Variations.VariationSpecificsSet = new NameValueListTypeCollection(matrixMapper.GetVariationSpecificSets().ToArray());
+                    listingDto.ItemSpecifics = new NameValueListTypeCollection(matrixMapper.GetItemSpecifics().ToArray());
+                }
+
                 foreach (EbayListingItem listingItem in listing.ListingItems)
                 {
                     VariationType variationDto = new VariationType();
@@ -213,6 +237,14 @@ namespace EbayServices.Mappers
                     variationDto.QuantitySpecified = true;
                     variationDto.Quantity = listingItem.Quantity;
                     variationDto.StartPrice = new AmountType() { currencyID = CurrencyCodeType.USD, Value = Convert.ToDouble(listingItem.Price) };
+
+                    if (includeProductData)
+                    {
+                        ProductMapper productData = _productMapperFactory.GetProductData(listingItem.Item);
+
+                        variationDto.VariationSpecifics = new NameValueListTypeCollection(productData.GetVariationSpecifics().ToArray()); 
+                    }
+
                     listingDto.Variations.Variation.Add(variationDto);
                 }
             }
@@ -227,15 +259,8 @@ namespace EbayServices.Mappers
             return listingDto;
         }
 
-        public EbayListing Map(ItemType listingDto)
+        public void Map(EbayListing listing, ItemType listingDto)
         {
-            EbayListing listing = _dataContext.EbayListings.SingleOrDefault(p => p.MarketplaceID.Equals(_marketplace.ID) && p.Code.Equals(listingDto.ItemID));
-
-            if (listing == null)
-            {
-                listing = new EbayListing();
-            }
-
             listing.Code = listingDto.ItemID;
 
             listing.Format = listingDto.ListingTypeSpecified ? listingDto.ListingType.ToString() : listing.Format;
@@ -267,8 +292,6 @@ namespace EbayServices.Mappers
                 listing.IsVariation = true;
                 MapListingItem(listing, listingDto.Variations);
             }
-
-            return listing;
         }
 
         private void MapListingItem(EbayListing listing, ItemType listingDto)
