@@ -24,7 +24,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>7</ApplicationRevision>
+    <ApplicationRevision>10</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -66,6 +66,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\LIB\OpenXMLSDKv2\lib\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
+    <Reference Include="eBay.Service, Version=3.849.0.0, Culture=neutral, PublicKeyToken=1d9d786a5932eaf0, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\LIB\eBay .NET SDK v849 Release\eBay.Service.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.TeamFoundation.Controls, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <Private>True</Private>
     </Reference>
@@ -96,6 +100,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="View\AmznShoesForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\PostingTemplateEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\RepublishDataWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -112,6 +124,12 @@
     <Compile Include="ViewModel\EbayPublisherViewModel.cs" />
     <Compile Include="ExcelWorkbook.cs" />
     <Compile Include="ViewModel\PublisherViewModel.cs" />
+    <Compile Include="View\AmznShoesForm.xaml.cs">
+      <DependentUpon>AmznShoesForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\PostingTemplateEditor.xaml.cs">
+      <DependentUpon>PostingTemplateEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\RepublishDataWindow.xaml.cs">
       <DependentUpon>RepublishDataWindow.xaml</DependentUpon>
     </Compile>

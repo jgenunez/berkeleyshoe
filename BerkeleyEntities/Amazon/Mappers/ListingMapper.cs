@@ -69,6 +69,7 @@ namespace AmazonServices.Mappers
                         {
                             listingItem = new AmznListingItem();
                             listingItem.Item = dataContext.Items.Single(p => p.ItemLookupCode.Equals(product.SKU));
+                            listingItem.Sku = product.SKU;
                             listingItem.Marketplace = dataContext.AmznMarketplaces.Single(p => p.ID == _marketplace.ID);
                             listingItem.OpenDate = DateTime.UtcNow;
                             listingItem.LastSyncTime = DateTime.UtcNow;

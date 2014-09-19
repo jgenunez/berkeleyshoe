@@ -14,6 +14,7 @@ using System.ComponentModel;
 using System.Windows.Data;
 using System.Collections.ObjectModel;
 using WorkbookPublisher.ViewModel;
+using AmazonServices.Mappers;
 
 namespace WorkbookPublisher.ViewModel
 {
@@ -42,6 +43,8 @@ namespace WorkbookPublisher.ViewModel
 
         public override void UpdateEntries(IEnumerable<Entry> entries)
         {
+            var pendingEntries = entries.Where(p => p.Status.Equals(StatusCode.Pending));
+
             using (berkeleyEntities dataContext = new berkeleyEntities())
             {
                 AmznMarketplace marketplace = dataContext.AmznMarketplaces.Single(p => p.Code.Equals(_marketplaceCode));
@@ -53,30 +56,49 @@ namespace WorkbookPublisher.ViewModel
                     if (item == null)
                     {
                         entry.Message = "sku not found";
+                        entry.Status = StatusCode.Error;
                         continue;
+                    }
+
+                    entry.ClassName = item.ClassName;
+                    entry.Brand = item.SubDescription1;
+
+                    if (item.Notes != null)
+                    {
+                        if (item.Notes.Contains("PRE") || item.Notes.Contains("NWB") || item.Notes.Contains("NWD"))
+                        {
+                            entry.Message = "only new products allowed";
+                            entry.Status = StatusCode.Error;
+                        }
                     }
 
                     AmznListingItem listingItem = item.AmznListingItems.SingleOrDefault(p => p.IsActive && p.MarketplaceID == marketplace.ID);
 
                     if (listingItem != null && listingItem.Quantity == entry.Q)
                     {
-                        entry.Completed = true;
+                        entry.Status = StatusCode.Completed;
                     }
-                    else
+
+                    
+
+                    if(entry.Status.Equals(StatusCode.Pending))
                     {
                         if (entry.Q > item.QtyAvailable)
                         {
                             entry.Message = "out of stock";
+                            entry.Status = StatusCode.Error;
                         }
 
                         if (string.IsNullOrEmpty(item.GTIN))
                         {
                             entry.Message = "UPC or EAN required";
+                            entry.Status = StatusCode.Error;
                         }
 
                         if (item.Department == null)
                         {
                             entry.Message = "department classification required";
+                            entry.Status = StatusCode.Error;
                         }
                     }
                 } 
@@ -91,33 +113,123 @@ namespace WorkbookPublisher.ViewModel
 
     public class AmznPublishCommand : PublishCommand
     {
-        private berkeleyEntities _dataContext = new berkeleyEntities();
-        private Dictionary<AmznListingItem, AmznEntry> _targetListings = new Dictionary<AmznListingItem, AmznEntry>();
-        private List<AmazonEnvelope> _needUserInput = new List<AmazonEnvelope>();
+        private berkeleyEntities _dataContext;
         private AmznMarketplace _marketplace;
         private Publisher _publisher;
 
+        private string _marketplaceCode;
+
+        public List<AmznEntry> _processingEntries = new List<AmznEntry>();
+        private Queue<AmazonEnvelope> _pendingResubmission = new Queue<AmazonEnvelope>();
+
+        
+
         public AmznPublishCommand(string marketplaceCode)
         {
-            _dataContext.MaterializeAttributes = true;
-
-            _marketplace = _dataContext.AmznMarketplaces.Single(p => p.Code.Equals(marketplaceCode));
-
-            _publisher = new Publisher(_dataContext, _marketplace);
-
-            _publisher.Result += Publisher_Result;
+            _marketplaceCode = marketplaceCode;
         }
 
         private void Publisher_Result(ResultArgs e)
+        {
+            switch (e.Envelope.MessageType)
+            {
+                case AmazonEnvelopeMessageType.Product:
+                    HandleProductFeedResult(e.Envelope); break;
+
+                case AmazonEnvelopeMessageType.Price:
+                    HandlePriceFeedResult(e.Envelope); break;
+
+                case AmazonEnvelopeMessageType.Inventory:
+                    HandleInventoryFeedResult(e.Envelope); break;
+
+                case AmazonEnvelopeMessageType.Relationship :
+                    HandleRelationshipFeedResult(e.Envelope); break;
+            }
+        }
+
+        private void HandleRelationshipFeedResult(AmazonEnvelope envelope)
+        {
+            foreach (AmazonEnvelopeMessage msg in envelope.Message)
+            {
+                string sku = ((Relationship)msg.Item).ParentSKU;
+
+                var entries = _processingEntries.Where(p => p.ClassName.Equals(sku));
+
+                if (msg.ProcessingResult != null && msg.ProcessingResult.ResultCode.Equals(ProcessingReportResultResultCode.Error))
+                {
+                    foreach (AmznEntry entry in entries)
+                    {
+                        entry.RelationshipFeedStatus = StatusCode.Error;
+                        entry.Message = msg.ProcessingResult.ResultDescription;
+
+                        entry.UpdateStatus();
+                    }
+                }
+                else
+                {
+                    foreach (AmznEntry entry in entries)
+                    {
+                        entry.RelationshipFeedStatus = StatusCode.Completed;
+
+                        entry.UpdateStatus();
+                    }
+                }
+            }
+        }
+
+        private void HandleInventoryFeedResult(AmazonEnvelope envelope)
+        {
+            foreach (AmazonEnvelopeMessage msg in envelope.Message)
+            {
+                string sku = ((Inventory)msg.Item).SKU;
+
+                AmznEntry entry = _processingEntries.Single(p => p.Sku.Equals(sku));
+
+                if (msg.ProcessingResult != null && msg.ProcessingResult.ResultCode.Equals(ProcessingReportResultResultCode.Error))
+                {
+                    entry.InventoryFeedStatus = StatusCode.Error;
+                    entry.Message = msg.ProcessingResult.ResultDescription;
+                }
+                else
+                {
+                    entry.InventoryFeedStatus = StatusCode.Completed;
+                }
+
+                entry.UpdateStatus();
+            }
+        }
+
+        private void HandlePriceFeedResult(AmazonEnvelope envelope)
+        {
+            foreach (AmazonEnvelopeMessage msg in envelope.Message)
+            {
+                string sku = ((Price)msg.Item).SKU;
+
+                AmznEntry entry = _processingEntries.Single(p => p.Sku.Equals(sku));
+
+                if (msg.ProcessingResult != null && msg.ProcessingResult.ResultCode.Equals(ProcessingReportResultResultCode.Error))
+                {
+                    entry.PriceFeedStatus = StatusCode.Error;
+                    entry.Message = msg.ProcessingResult.ResultDescription;
+                }
+                else
+                {
+                    entry.PriceFeedStatus = StatusCode.Completed;
+                }
+
+                entry.UpdateStatus();
+            }
+        }
+
+        private void HandleProductFeedResult(AmazonEnvelope envelope)
         {
             List<AmazonEnvelopeMessage> newMsgs = new List<AmazonEnvelopeMessage>();
 
             int currentMsg = 1;
 
-            foreach (AmazonEnvelopeMessage msg in e.Envelope.Message)
+            foreach (AmazonEnvelopeMessage msg in envelope.Message)
             {
-                string sku = msg.Item.GetType().GetProperty("SKU").GetValue(msg.Item) as string;
-                AmznEntry entry = _targetListings.Single(p => p.Key.Item.ItemLookupCode.Equals(sku)).Value;
+                bool hasError = false;
 
                 if (msg.ProcessingResult != null && msg.ProcessingResult.ResultCode.Equals(ProcessingReportResultResultCode.Error))
                 {
@@ -132,73 +244,158 @@ namespace WorkbookPublisher.ViewModel
                         });
 
 
-                    entry.Message = msg.ProcessingResult.ResultDescription;
+                    hasError = true;
+
                     currentMsg++;
                 }
-                else
+
+                string sku = ((Product)msg.Item).SKU;
+
+                if (_processingEntries.Any(p => p.Sku.Equals(sku)))
                 {
-                    entry.Completed = true;
+                    AmznEntry entry = _processingEntries.Single(p => p.Sku.Equals(sku));
+
+                    if (hasError)
+                    {
+                        entry.ProductFeedStatus = StatusCode.Error;
+                    }
+                    else
+                    {
+                        entry.ProductFeedStatus = StatusCode.Completed;
+                    }
+
+                    entry.UpdateStatus();
+                }
+                else if (_processingEntries.Any(p => p.ClassName.Equals(sku)))
+                {
+                    var entries = _processingEntries.Where(p => p.ClassName.Equals(sku));
+
+                    foreach (AmznEntry entry in entries)
+                    {
+                        if (hasError)
+                        {
+                            entry.ParentProductFeedStatus = StatusCode.Error;
+                            entry.Message = msg.ProcessingResult.ResultDescription;
+                        }
+                        else
+                        {
+                            entry.ParentProductFeedStatus = StatusCode.Completed;
+                        }
+
+                        entry.UpdateStatus();
+                    }
                 }
             }
-
 
             if (newMsgs.Count > 0)
             {
                 AmazonEnvelope newEnvelope = new AmazonEnvelope();
-                newEnvelope.MessageType = e.Envelope.MessageType;
-                newEnvelope.Header = e.Envelope.Header;
-                newEnvelope.MarketplaceName = e.Envelope.MarketplaceName;
+                newEnvelope.MessageType = envelope.MessageType;
+                newEnvelope.Header = envelope.Header;
+                newEnvelope.MarketplaceName = envelope.MarketplaceName;
                 newEnvelope.Message = newMsgs.ToArray();
 
-                _needUserInput.Add(newEnvelope);
+                _pendingResubmission.Enqueue(newEnvelope);
             }
         }
 
         public async override void Publish(IEnumerable<Entry> entries)
         {
-            foreach (AmznEntry entry in entries.Where(p => p.Status.Equals("waiting")).ToList())
+            using (_dataContext = new berkeleyEntities())
             {
-                AmznListingItem listingItem = _dataContext.AmznListingItems.SingleOrDefault(p => p.IsActive && p.MarketplaceID == _marketplace.ID && p.Item.ItemLookupCode.Equals(entry.Sku));
+                _dataContext.MaterializeAttributes = true;
+                _marketplace = _dataContext.AmznMarketplaces.Single(p => p.Code.Equals(_marketplaceCode));
+                _publisher = new Publisher(_dataContext, _marketplace);
+                _publisher.Result += Publisher_Result;
+
+                await Task.Run(() => PublishEntries(entries));
+
+                while (_pendingResubmission.Count > 0)
+                {
+                    AmazonEnvelope envelope = _pendingResubmission.Dequeue();
+
+                    RepublishDataWindow republishForm = new RepublishDataWindow();
+
+                    republishForm.DataContext = CollectionViewSource.GetDefaultView(envelope.Message);
+
+                    republishForm.ShowDialog();
+
+                    await Task.Run(() => Republish(envelope));
+                } 
+            }
+
+            this.RaisePublishCompleted();
+        }
+
+        private void PublishEntries(IEnumerable<Entry> entries)
+        {
+            foreach (AmznEntry entry in entries)
+            {
+                AmznListingItem listingItem = _dataContext.AmznListingItems.Include("Item")
+                    .SingleOrDefault(p => p.IsActive && p.MarketplaceID == _marketplace.ID && p.Item.ItemLookupCode.Equals(entry.Sku));
 
                 if (listingItem == null)
                 {
                     listingItem = new AmznListingItem();
+
                     listingItem.Item = _dataContext.Items.Single(p => p.ItemLookupCode.Equals(entry.Sku));
+                    listingItem.Title = entry.Title;
+
+                    entry.ProductFeedStatus = StatusCode.Processing;
+                    entry.RelationshipFeedStatus = StatusCode.Processing;
                 }
 
-                listingItem.Quantity = entry.Q;
-                listingItem.Price = entry.P;
-                listingItem.Condition = entry.Condition;
-                listingItem.Title = entry.Title;
-
-                _targetListings.Add(listingItem, entry);
-            }
-
-            await Task.Run(() => _publisher.Publish());
-        }
-
-        private async void FixErrors()
-        {
-            var envelopeGroups = _needUserInput.GroupBy(p => p.MessageType).ToList();
-
-            _needUserInput.Clear();
-
-            foreach (var group in envelopeGroups)
-            {
-                var msgs = group.SelectMany(p => p.Message);
-
-                switch (group.Key)
+                if (listingItem.Quantity != entry.Q)
                 {
-                    case AmazonEnvelopeMessageType.Product:
-                        RepublishDataWindow republishForm = new RepublishDataWindow();
-                        republishForm.DataContext = CollectionViewSource.GetDefaultView(msgs);
-                        republishForm.ShowDialog();
-                        await Task.Run(() => _publisher.Republish(group.ToList()));
-                        break;
+                    listingItem.Quantity = entry.Q;
 
+                    entry.InventoryFeedStatus = StatusCode.Processing;
+                }
+
+                if (listingItem.Price != entry.P)
+                {
+                    listingItem.Price = entry.P;
+
+                    entry.PriceFeedStatus = StatusCode.Processing;
+                }
+
+                entry.UpdateStatus();
+
+                _processingEntries.Add(entry);
+            }
+
+            _publisher.Publish(); 
+
+        }
+
+        public void Republish(AmazonEnvelope envelope)
+        {
+            foreach (var msg in envelope.Message)
+            {
+                string sku = ((Product)msg.Item).SKU;
+
+                if (_processingEntries.Any(p => p.Sku.Equals(sku)))
+                {
+                    AmznEntry entry = _processingEntries.Single(p => p.Sku.Equals(sku));
+                    entry.ProductFeedStatus = StatusCode.Processing;
+                    entry.UpdateStatus();
+                }
+                else if (_processingEntries.Any(p => p.ClassName.Equals(sku)))
+                {
+                    var entries = _processingEntries.Where(p => p.ClassName.Equals(sku));
+
+                    foreach (AmznEntry entry in entries)
+                    {
+                        entry.Status = StatusCode.Processing;
+                        entry.UpdateStatus();
+                    }
                 }
             }
+
+            _publisher.Republish(new List<AmazonEnvelope>() { envelope }); 
+
         }
+
     }
 
 }

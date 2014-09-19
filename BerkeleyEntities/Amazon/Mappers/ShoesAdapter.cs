@@ -87,7 +87,7 @@ namespace AmazonServices
 
         private string GetColorMap()
         {
-            switch (_item.SubDescription1)
+            switch (_item.SubDescription2)
             {
                 case "BEIGES": return "beige";
                 case "BLACKS": return "black";
@@ -110,7 +110,7 @@ namespace AmazonServices
 
         private string GetColor()
         {
-            return _item.Attributes["Color"].Value;
+            return _item.Attributes[AttributeLabel.Color].Value;
         }
 
         private string GetItemType()
@@ -225,14 +225,13 @@ namespace AmazonServices
 
             if (gender.Equals("unisex"))
             {
-                string womenSize = (double.Parse(_item.Attributes["Size"].Value) + 1.5).ToString();
+                string womenSize = (double.Parse(_item.Attributes[AttributeLabel.Size].Value) + 1.5).ToString();
 
-                return _item.Attributes["Size"].Value + " " + FormatWidth(_item.Attributes["Width"].Value, "mens") + "US Men / " + womenSize + " " + FormatWidth(_item.Attributes["Width"].Value, "womens") + " US Women";
+                return _item.Attributes[AttributeLabel.Size].Value + " " + FormatWidth(_item.Attributes[AttributeLabel.Width].Value, "mens") + "US Men / " + womenSize + " " + FormatWidth(_item.Attributes[AttributeLabel.Width].Value, "womens") + " US Women";
             }
-
             else
             {
-                return _item.Attributes["Size"].Value + " " + FormatWidth(_item.Attributes["Width"].Value, gender) + " US";
+                return _item.Attributes[AttributeLabel.Size].Value + " " + FormatWidth(_item.Attributes[AttributeLabel.Width].Value, gender) + " US";
             }
         }
 

@@ -7828,11 +7828,10 @@ namespace BerkeleyEntities
         /// <param name="startTime">Initial value of the StartTime property.</param>
         /// <param name="endTime">Initial value of the EndTime property.</param>
         /// <param name="title">Initial value of the Title property.</param>
-        /// <param name="condition">Initial value of the Condition property.</param>
         /// <param name="lastSyncTime">Initial value of the LastSyncTime property.</param>
         /// <param name="status">Initial value of the Status property.</param>
         /// <param name="sku">Initial value of the Sku property.</param>
-        public static EbayListing CreateEbayListing(global::System.Int32 id, global::System.String code, global::System.Int32 marketplaceID, global::System.String format, global::System.String duration, global::System.DateTime startTime, global::System.DateTime endTime, global::System.String title, global::System.String condition, global::System.DateTime lastSyncTime, global::System.String status, global::System.String sku)
+        public static EbayListing CreateEbayListing(global::System.Int32 id, global::System.String code, global::System.Int32 marketplaceID, global::System.String format, global::System.String duration, global::System.DateTime startTime, global::System.DateTime endTime, global::System.String title, global::System.DateTime lastSyncTime, global::System.String status, global::System.String sku)
         {
             EbayListing ebayListing = new EbayListing();
             ebayListing.ID = id;
@@ -7843,7 +7842,6 @@ namespace BerkeleyEntities
             ebayListing.StartTime = startTime;
             ebayListing.EndTime = endTime;
             ebayListing.Title = title;
-            ebayListing.Condition = condition;
             ebayListing.LastSyncTime = lastSyncTime;
             ebayListing.Status = status;
             ebayListing.Sku = sku;
@@ -8054,30 +8052,6 @@ namespace BerkeleyEntities
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
-        public global::System.String Condition
-        {
-            get
-            {
-                return _Condition;
-            }
-            set
-            {
-                OnConditionChanging(value);
-                ReportPropertyChanging("Condition");
-                _Condition = StructuralObject.SetValidValue(value, false, "Condition");
-                ReportPropertyChanged("Condition");
-                OnConditionChanged();
-            }
-        }
-        private global::System.String _Condition;
-        partial void OnConditionChanging(global::System.String value);
-        partial void OnConditionChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
         public global::System.DateTime LastSyncTime
         {
             get
@@ -8192,6 +8166,30 @@ namespace BerkeleyEntities
         private global::System.String _FullDescription;
         partial void OnFullDescriptionChanging(global::System.String value);
         partial void OnFullDescriptionChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.Decimal> BinPrice
+        {
+            get
+            {
+                return _BinPrice;
+            }
+            set
+            {
+                OnBinPriceChanging(value);
+                ReportPropertyChanging("BinPrice");
+                _BinPrice = StructuralObject.SetValidValue(value, "BinPrice");
+                ReportPropertyChanged("BinPrice");
+                OnBinPriceChanged();
+            }
+        }
+        private Nullable<global::System.Decimal> _BinPrice;
+        partial void OnBinPriceChanging(Nullable<global::System.Decimal> value);
+        partial void OnBinPriceChanged();
 
         #endregion
 
@@ -8462,6 +8460,30 @@ namespace BerkeleyEntities
         private global::System.String _Sku;
         partial void OnSkuChanging(global::System.String value);
         partial void OnSkuChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String Title
+        {
+            get
+            {
+                return _Title;
+            }
+            set
+            {
+                OnTitleChanging(value);
+                ReportPropertyChanging("Title");
+                _Title = StructuralObject.SetValidValue(value, true, "Title");
+                ReportPropertyChanged("Title");
+                OnTitleChanged();
+            }
+        }
+        private global::System.String _Title;
+        partial void OnTitleChanging(global::System.String value);
+        partial void OnTitleChanged();
 
         #endregion
 

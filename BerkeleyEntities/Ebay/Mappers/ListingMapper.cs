@@ -38,6 +38,170 @@ namespace EbayServices.Mappers
             {
                 listingDto = CreateListingDto(listing);
             }
+            return listingDto;
+        }
+
+        private ItemType CreateListingDtoUK(EbayListing listing)
+        {
+            ItemType listingDto = new ItemType();
+
+            listingDto.SKU = listing.Sku;
+            listingDto.ListingTypeSpecified = true;
+            listingDto.ListingType = (ListingTypeCodeType)Enum.Parse(typeof(ListingTypeCodeType), listing.Format);
+            listingDto.ListingDuration = listing.Duration;
+
+            listingDto.Title = listing.Title;
+
+            listingDto.Description = _marketplace.GetTemplate().Replace("<!-- INSERT FULL DESCRIPTION -->", listing.FullDescription);
+
+            listingDto.PayPalEmailAddress = _marketplace.PayPalAccount;
+
+            listingDto.DispatchTimeMaxSpecified = true;
+            listingDto.DispatchTimeMax = 1;
+
+            if (!listing.StartTime.Equals(DateTime.MinValue))
+            {
+                listingDto.ScheduleTimeSpecified = true;
+                listingDto.ScheduleTime = listing.StartTime;
+            }
+
+            listingDto.CountrySpecified = true;
+            listingDto.Country = CountryCodeType.US;
+
+            listingDto.Location = "Near to you";
+
+            listingDto.Currency = CurrencyCodeType.GBP;
+            listingDto.CurrencySpecified = true;
+
+            listingDto.HitCounterSpecified = true;
+            listingDto.HitCounter = HitCounterCodeType.BasicStyle;
+
+            listingDto.PaymentMethods = new BuyerPaymentMethodCodeTypeCollection() { BuyerPaymentMethodCodeType.PayPal };
+
+            listingDto.ShippingDetails = new ShippingDetailsType()
+            {
+                ShippingType = ShippingTypeCodeType.Flat,
+                ShippingServiceOptions = new ShippingServiceOptionsTypeCollection() { 
+                    //new ShippingServiceOptionsType() { 
+                    //    ShippingServicePrioritySpecified = true,
+                    //    ShippingServicePriority = 1,
+                    //    ShippingService = ShippingServiceCodeType.UPSGround.ToString(),
+                    //    ShippingServiceCost = new AmountType() { currencyID = CurrencyCodeType.GBP, Value = 7.95 },
+                    //    ShippingServiceAdditionalCost = new AmountType() { currencyID = CurrencyCodeType.GBP, Value = 2.50 },
+                    //    ShippingSurcharge = new AmountType() { currencyID = CurrencyCodeType.GBP, Value = 0 }},
+                    new ShippingServiceOptionsType(){
+                        ShippingServicePrioritySpecified = true,
+                        ShippingServicePriority = 2,
+                        ShippingService = ShippingServiceCodeType.UK_EconomyShippingFromOutside.ToString(),
+                        ShippingServiceCost = new AmountType() { currencyID = CurrencyCodeType.GBP, Value = 7 },
+                        ShippingServiceAdditionalCost = new AmountType() { currencyID = CurrencyCodeType.GBP, Value = 3 }}}
+                //InternationalShippingServiceOption = new InternationalShippingServiceOptionsTypeCollection() {
+                //    //new InternationalShippingServiceOptionsType(){
+                //    //    ShippingServicePrioritySpecified = true,
+                //    //    ShippingServicePriority = 1,
+                //    //    ShippingService =  ShippingServiceCodeType.USPSPriorityMailInternational.ToString(),
+                //    //    ShippingServiceCost = new AmountType() { currencyID = CurrencyCodeType.GBP, Value = 17.99 } ,
+                //    //    ShippingServiceAdditionalCost = new AmountType() { currencyID = CurrencyCodeType.GBP, Value = 5.00 } ,
+                //    //    ShipToLocation = new StringCollection { CountryCodeType.CA.ToString() }},
+                //    //new InternationalShippingServiceOptionsType(){
+                //    //    ShippingServicePrioritySpecified = true,
+                //    //    ShippingServicePriority = 2,
+                //    //    ShippingService =  ShippingServiceCodeType.USPSPriorityMailInternational.ToString(),
+                //    //    ShippingServiceCost = new AmountType() { currencyID = CurrencyCodeType.GBP, Value = 40.00 } ,
+                //    //    ShippingServiceAdditionalCost = new AmountType() { currencyID = CurrencyCodeType.GBP, Value = 10.00 } ,
+                //    //    ShipToLocation = new StringCollection { ShippingRegionCodeType.Worldwide.ToString() }},
+                //    new InternationalShippingServiceOptionsType(){
+                //        ShippingServicePrioritySpecified = true,
+                //        ShippingServicePriority = 3,
+                //        ShippingService =  ShippingServiceCodeType.UPSWorldWideExpress.ToString(),
+                //        ShippingServiceCost = new AmountType() { currencyID = CurrencyCodeType.GBP, Value = 60.00 } ,
+                //        ShippingServiceAdditionalCost = new AmountType() { currencyID = CurrencyCodeType.GBP, Value = 10.00 } ,
+                //        ShipToLocation = new StringCollection { ShippingRegionCodeType.Worldwide.ToString() }}}
+            };
+
+            listingDto.ReturnPolicy = new ReturnPolicyType()
+            {
+                ReturnsAcceptedOption = "ReturnsAccepted",
+                ReturnsWithinOption = "Days_30",
+                ShippingCostPaidByOption = "Buyer"
+            };
+
+
+            if (!(bool)listing.IsVariation)
+            {
+                ProductMapper mapper = _productMapperFactory.GetProductData(listing.ListingItems.First().Item);
+
+                listingDto.ConditionIDSpecified = true;
+                listingDto.ConditionID = mapper.GetConditionID();
+
+                listingDto.PrimaryCategory = new CategoryType() { CategoryID = mapper.CategoryID };
+
+                var itemSpecifics = mapper.GetItemSpecifics().Concat(mapper.GetVariationSpecifics()).ToArray();
+                listingDto.ItemSpecifics = new NameValueListTypeCollection(itemSpecifics);
+
+                var urls = listing.Relations.Select(p => p.PictureServiceUrl).OrderBy(p => p.LocalName).Select(p => p.Url);
+                listingDto.PictureDetails = new PictureDetailsType() { PictureURL = new StringCollection(urls.ToArray()) };
+
+                EbayListingItem listingItem = listing.ListingItems.First();
+                listingDto.QuantitySpecified = true;
+                listingDto.Quantity = listingItem.Quantity;
+
+                listingDto.StartPrice = new AmountType() { currencyID = CurrencyCodeType.GBP, Value = Convert.ToDouble(listingItem.Price) };
+
+                if (listing.Format.Equals("FixedPriceItem"))
+                {
+                    listingDto.BestOfferEnabled = true;
+                    listingDto.BestOfferEnabledSpecified = true;
+                    listingDto.BestOfferDetails = new BestOfferDetailsType() { BestOfferEnabledSpecified = true, BestOfferEnabled = true };
+                }
+                else
+                {
+                    if (listing.BinPrice != null)
+                    {
+                        listingDto.BuyItNowPrice = new AmountType() { currencyID = CurrencyCodeType.GBP, Value = Convert.ToDouble(listing.BinPrice) };
+                    }
+                }
+            }
+            else
+            {
+                ProductMatrixMapper matrixMapper = _productMapperFactory.GetProductMatrixData(listingDto.SKU, listing.ListingItems.Select(p => p.Item));
+
+                listingDto.ConditionIDSpecified = true;
+                listingDto.ConditionID = matrixMapper.GetConditionID();
+
+                listingDto.PrimaryCategory = new CategoryType() { CategoryID = matrixMapper.CategoryID };
+                listingDto.ItemSpecifics = new NameValueListTypeCollection(matrixMapper.GetItemSpecifics().ToArray());
+                listingDto.Variations = new VariationsType();
+                listingDto.Variations.Variation = new VariationTypeCollection();
+
+                foreach (EbayListingItem listingItem in listing.ListingItems)
+                {
+                    VariationType variationDto = new VariationType();
+                    variationDto.SKU = listingItem.Item.ItemLookupCode;
+                    variationDto.QuantitySpecified = true;
+                    variationDto.Quantity = listingItem.Quantity;
+                    variationDto.StartPrice = new AmountType() { currencyID = CurrencyCodeType.GBP, Value = Convert.ToDouble(listingItem.Price) };
+
+                    ProductMapper productData = _productMapperFactory.GetProductData(listingItem.Item);
+                    variationDto.VariationSpecifics = new NameValueListTypeCollection(productData.GetVariationSpecifics().ToArray());
+                    listingDto.Variations.Variation.Add(variationDto);
+                }
+
+                var sets = matrixMapper.GetVariationSpecificSets();
+                listingDto.Variations.VariationSpecificsSet = new NameValueListTypeCollection(sets.ToArray());
+
+                var allUrls = listing.Relations.Select(p => p.PictureServiceUrl);
+
+                listingDto.PictureDetails = new PictureDetailsType();
+                listingDto.PictureDetails.PictureURL = new StringCollection(allUrls.Where(p => !p.LocalName.Contains("_")).OrderBy(p => p.LocalName).Select(p => p.Url).ToArray());
+
+                if (allUrls.Any(p => p.LocalName.Contains("_")))
+                {
+                    listingDto.Variations.Pictures = matrixMapper
+                        .GetVariationPictures(allUrls.Where(p => p.LocalName.Contains("_")));
+                }
+
+            }
 
             return listingDto;
         }
@@ -50,8 +214,7 @@ namespace EbayServices.Mappers
             listingDto.ListingTypeSpecified = true;
             listingDto.ListingType = (ListingTypeCodeType)Enum.Parse(typeof(ListingTypeCodeType), listing.Format);
             listingDto.ListingDuration = listing.Duration;
-            listingDto.ConditionIDSpecified = true;
-            listingDto.ConditionID = int.Parse(listing.Condition);
+            
             listingDto.Title = listing.Title;
 
             listingDto.Description = _marketplace.GetTemplate().Replace("<!-- INSERT FULL DESCRIPTION -->", listing.FullDescription);
@@ -74,51 +237,14 @@ namespace EbayServices.Mappers
 
             listingDto.Currency = CurrencyCodeType.USD;
             listingDto.CurrencySpecified = true;
-
+            
             listingDto.HitCounterSpecified = true;
-            listingDto.HitCounter = HitCounterCodeType.BasicStyle;
 
+            listingDto.HitCounter = HitCounterCodeType.BasicStyle;
+            
             listingDto.PaymentMethods = new BuyerPaymentMethodCodeTypeCollection() { BuyerPaymentMethodCodeType.PayPal };
 
-            listingDto.ShippingDetails = new ShippingDetailsType(){
-                ShippingType = ShippingTypeCodeType.Flat,
-                ShippingServiceOptions = new ShippingServiceOptionsTypeCollection() { 
-                    new ShippingServiceOptionsType() { 
-                        ShippingServicePrioritySpecified = true,
-                        ShippingServicePriority = 1,
-                        ShippingService = ShippingServiceCodeType.UPSGround.ToString(),
-                        ShippingServiceCost = new AmountType() { currencyID = CurrencyCodeType.USD, Value = 7.95 },
-                        ShippingServiceAdditionalCost = new AmountType() { currencyID = CurrencyCodeType.USD, Value = 2.50 },
-                        ShippingSurcharge = new AmountType() { currencyID = CurrencyCodeType.USD, Value = 0 }},
-                    new ShippingServiceOptionsType(){
-                        ShippingServicePrioritySpecified = true,
-                        ShippingServicePriority = 2,
-                        ShippingService = ShippingServiceCodeType.UPSNextDay.ToString(),
-                        ShippingServiceCost = new AmountType() { currencyID = CurrencyCodeType.USD, Value = 29.95 },
-                        ShippingServiceAdditionalCost = new AmountType() { currencyID = CurrencyCodeType.USD, Value = 10.00 }}},
-                InternationalShippingServiceOption = new InternationalShippingServiceOptionsTypeCollection() {
-                    new InternationalShippingServiceOptionsType(){
-                        ShippingServicePrioritySpecified = true,
-                        ShippingServicePriority = 1,
-                        ShippingService =  ShippingServiceCodeType.USPSPriorityMailInternational.ToString(),
-                        ShippingServiceCost = new AmountType() { currencyID = CurrencyCodeType.USD, Value = 17.99 } ,
-                        ShippingServiceAdditionalCost = new AmountType() { currencyID = CurrencyCodeType.USD, Value = 5.00 } ,
-                        ShipToLocation = new StringCollection { CountryCodeType.CA.ToString() }},
-                    new InternationalShippingServiceOptionsType(){
-                        ShippingServicePrioritySpecified = true,
-                        ShippingServicePriority = 2,
-                        ShippingService =  ShippingServiceCodeType.USPSPriorityMailInternational.ToString(),
-                        ShippingServiceCost = new AmountType() { currencyID = CurrencyCodeType.USD, Value = 40.00 } ,
-                        ShippingServiceAdditionalCost = new AmountType() { currencyID = CurrencyCodeType.USD, Value = 10.00 } ,
-                        ShipToLocation = new StringCollection { ShippingRegionCodeType.Worldwide.ToString() }},
-                    new InternationalShippingServiceOptionsType(){
-                        ShippingServicePrioritySpecified = true,
-                        ShippingServicePriority = 3,
-                        ShippingService =  ShippingServiceCodeType.UPSWorldWideExpress.ToString(),
-                        ShippingServiceCost = new AmountType() { currencyID = CurrencyCodeType.USD, Value = 60.00 } ,
-                        ShippingServiceAdditionalCost = new AmountType() { currencyID = CurrencyCodeType.USD, Value = 10.00 } ,
-                        ShipToLocation = new StringCollection { ShippingRegionCodeType.Worldwide.ToString() }}}
-            };
+            listingDto.ShippingDetails = GetShippingDetails();
             
             listingDto.ReturnPolicy = new ReturnPolicyType() 
             { 
@@ -127,9 +253,13 @@ namespace EbayServices.Mappers
                 ShippingCostPaidByOption = "Buyer" 
             };
 
+
             if (!(bool)listing.IsVariation)
             {
                 ProductMapper mapper = _productMapperFactory.GetProductData(listing.ListingItems.First().Item);
+
+                listingDto.ConditionIDSpecified = true;
+                listingDto.ConditionID = mapper.GetConditionID();
 
                 listingDto.PrimaryCategory = new CategoryType() { CategoryID = mapper.CategoryID };
 
@@ -142,6 +272,7 @@ namespace EbayServices.Mappers
                 EbayListingItem listingItem = listing.ListingItems.First();
                 listingDto.QuantitySpecified = true;
                 listingDto.Quantity = listingItem.Quantity;
+
                 listingDto.StartPrice = new AmountType() {  currencyID = CurrencyCodeType.USD, Value = Convert.ToDouble(listingItem.Price)};
 
                 if (listing.Format.Equals("FixedPriceItem"))
@@ -150,10 +281,21 @@ namespace EbayServices.Mappers
                     listingDto.BestOfferEnabledSpecified = true;
                     listingDto.BestOfferDetails = new BestOfferDetailsType() { BestOfferEnabledSpecified = true, BestOfferEnabled = true };
                 }
+                else
+                {
+                    if(listing.BinPrice != null)
+                    {
+                        listingDto.BuyItNowPrice = new AmountType() {  currencyID = CurrencyCodeType.USD, Value = Convert.ToDouble(listing.BinPrice)};
+                    }
+                }
             }
             else
             {
                 ProductMatrixMapper matrixMapper = _productMapperFactory.GetProductMatrixData(listingDto.SKU, listing.ListingItems.Select(p => p.Item));
+
+                listingDto.ConditionIDSpecified = true;
+                listingDto.ConditionID = matrixMapper.GetConditionID();
+
                 listingDto.PrimaryCategory = new CategoryType() {  CategoryID = matrixMapper.CategoryID };
                 listingDto.ItemSpecifics = new NameValueListTypeCollection(matrixMapper.GetItemSpecifics().ToArray());
                 listingDto.Variations = new VariationsType();
@@ -199,8 +341,6 @@ namespace EbayServices.Mappers
             listingDto.ListingTypeSpecified = true;
             listingDto.ListingType = (ListingTypeCodeType)Enum.Parse(typeof(ListingTypeCodeType), listing.Format);
             listingDto.ListingDuration = listing.Duration;
-            listingDto.ConditionIDSpecified = true;
-            listingDto.ConditionID = int.Parse(listing.Condition);
             listingDto.Title = listing.Title;
 
             bool includeProductData = false;
@@ -259,6 +399,52 @@ namespace EbayServices.Mappers
             return listingDto;
         }
 
+        private ShippingDetailsType GetShippingDetails()
+        {
+            ShippingDetailsType shippingDetails = new ShippingDetailsType()
+            {
+                ShippingType = ShippingTypeCodeType.Flat,
+                ShippingServiceOptions = new ShippingServiceOptionsTypeCollection() { 
+                    new ShippingServiceOptionsType() { 
+                        ShippingServicePrioritySpecified = true,
+                        ShippingServicePriority = 1,
+                        ShippingService = ShippingServiceCodeType.UPSGround.ToString(),
+                        ShippingServiceCost = new AmountType() { currencyID = CurrencyCodeType.USD, Value = 7.95 },
+                        ShippingServiceAdditionalCost = new AmountType() { currencyID = CurrencyCodeType.USD, Value = 2.50 },
+                        ShippingSurcharge = new AmountType() { currencyID = CurrencyCodeType.USD, Value = 0 }},
+                    new ShippingServiceOptionsType(){
+                        ShippingServicePrioritySpecified = true,
+                        ShippingServicePriority = 2,
+                        ShippingService = ShippingServiceCodeType.UPSNextDay.ToString(),
+                        ShippingServiceCost = new AmountType() { currencyID = CurrencyCodeType.USD, Value = 29.95 },
+                        ShippingServiceAdditionalCost = new AmountType() { currencyID = CurrencyCodeType.USD, Value = 10.00 }}},
+                InternationalShippingServiceOption = new InternationalShippingServiceOptionsTypeCollection() {
+                    new InternationalShippingServiceOptionsType(){
+                        ShippingServicePrioritySpecified = true,
+                        ShippingServicePriority = 1,
+                        ShippingService =  ShippingServiceCodeType.USPSPriorityMailInternational.ToString(),
+                        ShippingServiceCost = new AmountType() { currencyID = CurrencyCodeType.USD, Value = 17.99 } ,
+                        ShippingServiceAdditionalCost = new AmountType() { currencyID = CurrencyCodeType.USD, Value = 5.00 } ,
+                        ShipToLocation = new StringCollection { CountryCodeType.CA.ToString() }},
+                    new InternationalShippingServiceOptionsType(){
+                        ShippingServicePrioritySpecified = true,
+                        ShippingServicePriority = 2,
+                        ShippingService =  ShippingServiceCodeType.USPSPriorityMailInternational.ToString(),
+                        ShippingServiceCost = new AmountType() { currencyID = CurrencyCodeType.USD, Value = 40.00 } ,
+                        ShippingServiceAdditionalCost = new AmountType() { currencyID = CurrencyCodeType.USD, Value = 10.00 } ,
+                        ShipToLocation = new StringCollection { ShippingRegionCodeType.Worldwide.ToString() }},
+                    new InternationalShippingServiceOptionsType(){
+                        ShippingServicePrioritySpecified = true,
+                        ShippingServicePriority = 3,
+                        ShippingService =  ShippingServiceCodeType.UPSWorldWideExpress.ToString(),
+                        ShippingServiceCost = new AmountType() { currencyID = CurrencyCodeType.USD, Value = 60.00 } ,
+                        ShippingServiceAdditionalCost = new AmountType() { currencyID = CurrencyCodeType.USD, Value = 10.00 } ,
+                        ShipToLocation = new StringCollection { ShippingRegionCodeType.Worldwide.ToString() }}}
+            };
+
+            return shippingDetails;
+        }
+
         public void Map(EbayListing listing, ItemType listingDto)
         {
             listing.Code = listingDto.ItemID;
@@ -277,7 +463,6 @@ namespace EbayServices.Mappers
 
             listing.Title = listingDto.Title != null ? listingDto.Title : listing.Title;
             listing.Sku = listingDto.SKU != null ? listingDto.SKU : listing.Sku;
-            listing.Condition = listingDto.ConditionIDSpecified ? listingDto.ConditionID.ToString() : listing.Condition;
 
             listing.Status = listingDto.SellingStatus != null && listingDto.SellingStatus.ListingStatusSpecified ?
                 listingDto.SellingStatus.ListingStatus.ToString() : listing.Status;

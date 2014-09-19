@@ -12,7 +12,14 @@ using System.Globalization;
 
 namespace BerkeleyEntities
 {
+    public enum AttributeLabel { USMenSize, USWomenSize, USBabySize, USYouthSize, EUSize, Width, Color, Waist, Inseam, Size };
 
+    public class Attribute
+    {
+        public string Code { get; set; }
+
+        public string Value { get; set; }
+    }
 
     public partial class Item
     {
@@ -111,7 +118,48 @@ namespace BerkeleyEntities
             }
         }
 
-        public Dictionary<string, Attribute> Attributes { get; set; }
+        public Dictionary<AttributeLabel, Attribute> Attributes { get; set; }
+
+        //public string GetUKSize()
+        //{
+        //    float ukSize;
+
+        //    if (_item.Attributes.ContainsKey(AttributeLabel.EUSize))
+        //    {
+        //        nv = BuildItemSpecific("EU Shoe Size", new string[1] { _item.Attributes[AttributeLabel.EUSize].Value });
+        //    }
+        //    else if (_item.Attributes.ContainsKey(AttributeLabel.USMenSize))
+        //    {
+        //        ukSize = float.Parse(_item.Attributes[AttributeLabel.USMenSize].Value) - 0.5f;
+        //    }
+        //    else if (_item.Attributes.ContainsKey(AttributeLabel.USWomenSize))
+        //    {
+        //        ukSize = float.Parse(_item.Attributes[AttributeLabel.USWomenSize].Value) - 2;
+        //    }
+        //    else if (_item.Attributes.ContainsKey(AttributeLabel.USYouthSize))
+        //    {
+        //        ukSize = float.Parse(_item.Attributes[AttributeLabel.USYouthSize].Value) - 1;
+
+        //        nv = BuildItemSpecific("US Shoe Size (Youth)", new string[1] { _item.Attributes[AttributeLabel.USYouthSize].Value });
+        //    }
+        //    else if (_item.Attributes.ContainsKey(AttributeLabel.USBabySize))
+        //    {
+        //        ukSize = float.Parse(_item.Attributes[AttributeLabel.USBabySize].Value) - 1;
+
+        //        nv = BuildItemSpecific("US Shoe Size (Baby & Toddler)", new string[1] { _item.Attributes[AttributeLabel.USBabySize].Value });
+        //    }
+
+        //    NameValueListType nv = new NameValueListType();
+
+        //    if (string.IsNullOrWhiteSpace(GetFormattedWidth()))
+        //    {
+        //        nv = BuildItemSpecific("Shoe Size", new string[1] { "UK " + ukSize.ToString() });
+        //    }
+        //    else
+        //    {
+        //        nv = BuildItemSpecific("Shoe Size", new string[1] { "UK " + ukSize.ToString() + " " + GetFormattedWidth() });
+        //    }
+        //}
 
         public string ClassName
         {

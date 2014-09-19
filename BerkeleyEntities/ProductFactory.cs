@@ -7,12 +7,7 @@ using System.Xml;
 
 namespace BerkeleyEntities
 {
-    public class Attribute
-    {
-        public string Code { get; set; }
-
-        public string Value { get; set; }
-    }
+    
 
     public class ProductFactory
     {
@@ -22,7 +17,7 @@ namespace BerkeleyEntities
         {
             _item = item;
 
-            _item.Attributes = new Dictionary<string, Attribute>();
+            _item.Attributes = new Dictionary<AttributeLabel, Attribute>();
 
             string deptCode = _item.Department == null ? "NONE" : _item.Department.code;
 
@@ -144,13 +139,13 @@ namespace BerkeleyEntities
                 {
                     case 1:
                         sizeCode = itemClass.MatrixAttributeDisplayOrders.First(p => p.Attribute.Equals(component.Detail1) && p.Dimension == 1).Code;
-                        _item.Attributes.Add("Size", new Attribute() { Code = sizeCode, Value = component.Detail1 }); break;
+                        _item.Attributes.Add(AttributeLabel.Size, new Attribute() { Code = sizeCode, Value = component.Detail1 }); break;
 
                     case 2:
                         colorCode = itemClass.MatrixAttributeDisplayOrders.First(p => p.Attribute.Equals(component.Detail1) && p.Dimension == 1).Code;
                         sizeCode = itemClass.MatrixAttributeDisplayOrders.First(p => p.Attribute.Equals(component.Detail2) && p.Dimension == 2).Code;
-                        _item.Attributes.Add("Color", new Attribute() { Code = colorCode, Value = component.Detail1 });
-                        _item.Attributes.Add("Size", new Attribute() { Code = sizeCode, Value = component.Detail2 }); break;
+                        _item.Attributes.Add(AttributeLabel.Color, new Attribute() { Code = colorCode, Value = component.Detail1 });
+                        _item.Attributes.Add(AttributeLabel.Size, new Attribute() { Code = sizeCode, Value = component.Detail2 }); break;
                 }
             }
             else
@@ -160,7 +155,7 @@ namespace BerkeleyEntities
                 switch (skuDetails.Length)
                 {
                     case 2:
-                        _item.Attributes.Add("Size", new Attribute() { Code = skuDetails[1], Value = skuDetails[1] }); break;
+                        _item.Attributes.Add(AttributeLabel.Size, new Attribute() { Code = skuDetails[1], Value = skuDetails[1] }); break;
                 }
             }
         }
@@ -183,21 +178,21 @@ namespace BerkeleyEntities
                 {
                     case 1:
                         waistCode = itemClass.MatrixAttributeDisplayOrders.First(p => p.Attribute.Equals(component.Detail1) && p.Dimension == 1).Code;
-                        _item.Attributes.Add("Waist", new Attribute() { Code = waistCode, Value = component.Detail1 }); break;
+                        _item.Attributes.Add(AttributeLabel.Waist, new Attribute() { Code = waistCode, Value = component.Detail1 }); break;
 
                     case 2:
                         waistCode = itemClass.MatrixAttributeDisplayOrders.First(p => p.Attribute.Equals(component.Detail1) && p.Dimension == 1).Code;
                         inseamCode = itemClass.MatrixAttributeDisplayOrders.First(p => p.Attribute.Equals(component.Detail2) && p.Dimension == 2).Code;
-                        _item.Attributes.Add("Waist", new Attribute() { Code = waistCode, Value = component.Detail1 });
-                        _item.Attributes.Add("Inseam", new Attribute() { Code = inseamCode, Value = component.Detail2 }); break;
+                        _item.Attributes.Add(AttributeLabel.Waist, new Attribute() { Code = waistCode, Value = component.Detail1 });
+                        _item.Attributes.Add(AttributeLabel.Inseam, new Attribute() { Code = inseamCode, Value = component.Detail2 }); break;
 
                     case 3:
                         colorCode = itemClass.MatrixAttributeDisplayOrders.First(p => p.Attribute.Equals(component.Detail1) && p.Dimension == 1).Code;
                         waistCode = itemClass.MatrixAttributeDisplayOrders.First(p => p.Attribute.Equals(component.Detail2) && p.Dimension == 2).Code;
                         inseamCode = itemClass.MatrixAttributeDisplayOrders.First(p => p.Attribute.Equals(component.Detail3) && p.Dimension == 3).Code;
-                        _item.Attributes.Add("Color", new Attribute() { Code = colorCode, Value = component.Detail1 });
-                        _item.Attributes.Add("Waist", new Attribute() { Code = waistCode, Value = component.Detail2 });
-                        _item.Attributes.Add("Inseam", new Attribute() { Code = inseamCode, Value = component.Detail3 }); break;
+                        _item.Attributes.Add(AttributeLabel.Color, new Attribute() { Code = colorCode, Value = component.Detail1 });
+                        _item.Attributes.Add(AttributeLabel.Waist, new Attribute() { Code = waistCode, Value = component.Detail2 });
+                        _item.Attributes.Add(AttributeLabel.Inseam, new Attribute() { Code = inseamCode, Value = component.Detail3 }); break;
                 }
             }
             else
@@ -207,11 +202,11 @@ namespace BerkeleyEntities
                 switch (skuDetails.Length)
                 {
                     case 2:
-                        _item.Attributes.Add("Waist", new Attribute() { Code = skuDetails[1], Value = skuDetails[1] }); break;
+                        _item.Attributes.Add(AttributeLabel.Waist, new Attribute() { Code = skuDetails[1], Value = skuDetails[1] }); break;
 
                     case 3:
-                        _item.Attributes.Add("Waist", new Attribute() { Code = skuDetails[1], Value = skuDetails[1] });
-                        _item.Attributes.Add("Inseam", new Attribute() { Code = skuDetails[2], Value = skuDetails[2] }); break;
+                        _item.Attributes.Add(AttributeLabel.Waist, new Attribute() { Code = skuDetails[1], Value = skuDetails[1] });
+                        _item.Attributes.Add(AttributeLabel.Inseam, new Attribute() { Code = skuDetails[2], Value = skuDetails[2] }); break;
                 }
             }
         }
@@ -231,25 +226,27 @@ namespace BerkeleyEntities
                     case 1:
                         sizeCode = itemClass.MatrixAttributeDisplayOrders.First(p => p.Attribute.Equals(component.Detail1) && p.Dimension == 1).Code;
 
-                        _item.Attributes.Add("Size", new Attribute() { Code = sizeCode, Value = component.Detail1 });
-                        _item.Attributes.Add("Width", new Attribute() { Code = "M", Value = "M" }); break;
+                        _item.Attributes.Add(GetShoeAttributeLabel(component.Detail1), new Attribute() { Code = sizeCode, Value = component.Detail1 });
+                        _item.Attributes.Add(AttributeLabel.Width, new Attribute() { Code = "M", Value = "M" }); break;
 
 
                     case 2:
                         sizeCode = itemClass.MatrixAttributeDisplayOrders.First(p => p.Attribute.Equals(component.Detail1) && p.Dimension == 1).Code;
                         widthCode = itemClass.MatrixAttributeDisplayOrders.First(p => p.Attribute.Equals(component.Detail2) && p.Dimension == 2).Code;
 
-                        _item.Attributes.Add("Size", new Attribute() { Code = sizeCode, Value = component.Detail1 });
-                        _item.Attributes.Add("Width", new Attribute() { Code = widthCode, Value = component.Detail2 }); break;
+                        _item.Attributes.Add(GetShoeAttributeLabel(component.Detail1), new Attribute() { Code = sizeCode, Value = component.Detail1 });
+                        _item.Attributes.Add(AttributeLabel.Width, new Attribute() { Code = widthCode, Value = component.Detail2 }); break;
 
                     case 3:
                         colorCode = itemClass.MatrixAttributeDisplayOrders.First(p => p.Attribute.Equals(component.Detail1) && p.Dimension == 1).Code;
                         sizeCode = itemClass.MatrixAttributeDisplayOrders.First(p => p.Attribute.Equals(component.Detail2) && p.Dimension == 2).Code;
                         widthCode = itemClass.MatrixAttributeDisplayOrders.First(p => p.Attribute.Equals(component.Detail3) && p.Dimension == 3).Code;
 
-                        _item.Attributes.Add("Color", new Attribute() { Code = colorCode, Value = component.Detail1 });
-                        _item.Attributes.Add("Size", new Attribute() { Code = sizeCode, Value = component.Detail2 });
-                        _item.Attributes.Add("Width", new Attribute() { Code = widthCode, Value = component.Detail3 }); break;
+                        _item.Attributes.Add(AttributeLabel.Color, new Attribute() { Code = colorCode, Value = component.Detail1 });
+                        _item.Attributes.Add(GetShoeAttributeLabel(component.Detail1), new Attribute() { Code = sizeCode, Value = component.Detail2 });
+                        _item.Attributes.Add(AttributeLabel.Width, new Attribute() { Code = widthCode, Value = component.Detail3 }); break;
+
+                        
                 }
             }
             else
@@ -259,12 +256,50 @@ namespace BerkeleyEntities
                 switch (_item.DimCount)
                 {
                     case 1:
-                        _item.Attributes.Add("Size", new Attribute() { Code = skuDetails[1], Value = skuDetails[1] });
-                        _item.Attributes.Add("Width", new Attribute() { Code = "M", Value = "M" }); break;
+                        _item.Attributes.Add(GetShoeAttributeLabel(skuDetails[1]), new Attribute() { Code = skuDetails[1], Value = skuDetails[1] });
+                        _item.Attributes.Add(AttributeLabel.Width, new Attribute() { Code = "M", Value = "M" }); break;
 
                     case 2 :
-                        _item.Attributes.Add("Size", new Attribute() { Code = skuDetails[1], Value = skuDetails[1] });
-                        _item.Attributes.Add("Width", new Attribute() { Code = skuDetails[2], Value = skuDetails[2] }); break;
+                        _item.Attributes.Add(GetShoeAttributeLabel(skuDetails[1]), new Attribute() { Code = skuDetails[1], Value = skuDetails[1] });
+                        _item.Attributes.Add(AttributeLabel.Width, new Attribute() { Code = skuDetails[2], Value = skuDetails[2] }); break;
+
+                    default: throw new NotImplementedException("invalid sku");
+                }
+            }
+        }
+
+        private AttributeLabel GetShoeAttributeLabel(string value)
+        {
+            float size = float.Parse(value);
+
+            if (size > 19) { return AttributeLabel.EUSize; }
+
+            else 
+            {
+                string gender = _item.SubDescription3.Trim().ToUpper();
+
+                switch (gender)
+                {
+                    case "BOYS":
+                    case "GIRLS":
+                    case "UNISEX-CHILD":
+                        return AttributeLabel.USYouthSize;
+
+                    case "BABY-BOYS":
+                    case "BABY-GIRLS":
+                    case "UNISEX-BABY":
+                        return AttributeLabel.USBabySize;
+
+                    case "UNISEX-ADULT":
+                    case "MENS":
+                    case "MEN":
+                        return AttributeLabel.USMenSize;
+
+                    case "WOMENS":
+                    case "WOMEN":
+                        return AttributeLabel.USWomenSize;
+
+                    default: throw new NotImplementedException("could not recognize gender");
                 }
             }
         }
@@ -282,13 +317,13 @@ namespace BerkeleyEntities
                 {
                     case 1:
                         waistCode = itemClass.MatrixAttributeDisplayOrders.First(p => p.Attribute.Equals(component.Detail1) && p.Dimension == 1).Code;
-                        _item.Attributes.Add("Waist", new Attribute() { Code = waistCode, Value = component.Detail1 }); break;
+                        _item.Attributes.Add(AttributeLabel.Waist, new Attribute() { Code = waistCode, Value = component.Detail1 }); break;
 
                     case 2:
                         colorCode = itemClass.MatrixAttributeDisplayOrders.First(p => p.Attribute.Equals(component.Detail1) && p.Dimension == 1).Code;
                         waistCode = itemClass.MatrixAttributeDisplayOrders.First(p => p.Attribute.Equals(component.Detail2) && p.Dimension == 2).Code;
-                        _item.Attributes.Add("Color", new Attribute() { Code = colorCode, Value = component.Detail1 });
-                        _item.Attributes.Add("Waist", new Attribute() { Code = waistCode, Value = component.Detail2 }); break;
+                        _item.Attributes.Add(AttributeLabel.Color, new Attribute() { Code = colorCode, Value = component.Detail1 });
+                        _item.Attributes.Add(AttributeLabel.Waist, new Attribute() { Code = waistCode, Value = component.Detail2 }); break;
                 }
             }
             else
@@ -298,7 +333,7 @@ namespace BerkeleyEntities
                 switch (skuDetails.Length)
                 {
                     case 2:
-                        _item.Attributes.Add("Waist", new Attribute() { Code = skuDetails[1], Value = skuDetails[1] }); break;
+                        _item.Attributes.Add(AttributeLabel.Waist, new Attribute() { Code = skuDetails[1], Value = skuDetails[1] }); break;
                 }
             }
         }

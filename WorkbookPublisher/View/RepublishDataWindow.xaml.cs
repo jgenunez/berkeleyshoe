@@ -54,7 +54,5 @@ namespace WorkbookPublisher.View
         {
             this.MouseDown += delegate { DragMove(); };
         }
-
-
     }
 }

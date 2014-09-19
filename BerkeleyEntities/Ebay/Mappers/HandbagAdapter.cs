@@ -43,5 +43,28 @@ namespace EbayServices.Mappers
         {
             return new List<NameValueListType>();
         }
+
+        public override int GetConditionID()
+        {
+            int conditionID = 1000;
+
+            if (_item.Notes != null)
+            {
+                if (_item.Notes.Contains("PRE"))
+                {
+                    conditionID = 1750;
+                }
+                else if (_item.Notes.Contains("NWB"))
+                {
+                    conditionID = 1500;
+                }
+                else if (_item.Notes.Contains("NWD"))
+                {
+                    conditionID = 3000;
+                }
+            }
+
+            return conditionID;
+        }
     }
 }

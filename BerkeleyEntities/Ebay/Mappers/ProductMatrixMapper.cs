@@ -21,6 +21,11 @@ namespace EbayServices.Mappers
             get { return _products.First().CategoryID; }
         }
 
+        public int GetConditionID()
+        {
+            return _products.First().GetConditionID();
+        }
+
         public List<NameValueListType> GetItemSpecifics()
         {
             var specs = _products.SelectMany(p => p.GetItemSpecifics()).GroupBy(p => p.Name).Select(p => p.First());
@@ -54,7 +59,7 @@ namespace EbayServices.Mappers
             foreach (var group in attributeGroups)
             {
                 PicturesType picByAttribute = new PicturesType();
-                picByAttribute.VariationSpecificName = group.Key;
+                picByAttribute.VariationSpecificName = group.Key.ToString();
                 picByAttribute.VariationSpecificPictureSet = new VariationSpecificPictureSetTypeCollection();
 
                 foreach (var attribute in group)

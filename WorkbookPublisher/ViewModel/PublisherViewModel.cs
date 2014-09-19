@@ -34,7 +34,7 @@ namespace WorkbookPublisher.ViewModel
 
             this.Entries = CollectionViewSource.GetDefaultView(_entries);
 
-            this.Entries.Filter = p => ((Entry)p).Status.Equals("error");
+            this.Entries.Filter = p => ((Entry)p).Status.Equals(StatusCode.Error);
 
             _entries.CollectionChanged += (e, x) => 
             {
@@ -73,15 +73,17 @@ namespace WorkbookPublisher.ViewModel
                 {
                     var entries = this.Entries.SourceCollection.OfType<Entry>();
 
-                    string completed = entries.Where(p => p.Status.Equals("completed")).Count().ToString();
-                    string waiting = entries.Where(p => p.Status.Equals("waiting")).Count().ToString();
-                    string errors = entries.Where(p => p.Status.Equals("error")).Count().ToString();
+                    string completed = entries.Where(p => p.Status.Equals(StatusCode.Completed)).Count().ToString();
+                    string waiting = entries.Where(p => p.Status.Equals(StatusCode.Pending)).Count().ToString();
+                    string errors = entries.Where(p => p.Status.Equals(StatusCode.Error)).Count().ToString();
+                    string processing = entries.Where(p => p.Status.Equals(StatusCode.Processing)).Count().ToString();
 
-                    return string.Format("{0} Pending\n{1} Completed\n{2} Errors", waiting, completed, errors);
+
+                    return string.Format("{0} Pending\n{1} Processing\n{2} Completed\n{3} Errors", waiting, processing, completed, errors);
                 }
                 else
                 {
-                    return "0 Pending\n0 Completed\n0 Errors";
+                    return "0 Pending\n0 Processing\n0 Completed\n0 Errors";
                 }
 
             }
@@ -146,7 +148,7 @@ namespace WorkbookPublisher.ViewModel
             {
                 var entries = ((ICollectionView)parameter).SourceCollection.OfType<Entry>();
 
-                var errorEntries = entries.Where(p => p.Status.Equals("error")).ToList();
+                var errorEntries = entries.Where(p => p.Status.Equals(StatusCode.Error)).ToList();
 
                 if (errorEntries.Count > 0)
                 {
@@ -185,6 +187,7 @@ namespace WorkbookPublisher.ViewModel
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         private bool _canExecute = false;
+        private ICollectionView _view;
 
         public event EventHandler CanExecuteChanged;
         public event EventHandler PublishCompleted;
@@ -199,39 +202,30 @@ namespace WorkbookPublisher.ViewModel
             return _canExecute;
         }
 
-        public async void Execute(object parameter)
+        public void Execute(object parameter)
         {
             SetCanExecute(false);
 
-            var entries = ((ICollectionView)parameter).SourceCollection.OfType<Entry>();
+            _view = ((ICollectionView)parameter);
+            
+            var entries = _view.SourceCollection.OfType<Entry>();
 
-            var pendingEntries = entries.Where(p => p.Status.Equals("waiting"));
+            var pendingEntries = entries.Where(p => p.Status.Equals(StatusCode.Pending));
 
+            Publish(pendingEntries);
+        }
 
-            try
-            {
-                await Task.Run(() => Publish(pendingEntries));
-            }
-            catch (Exception e)
-            {
-                _logger.Error(e.ToString());
+        public abstract void Publish(IEnumerable<Entry> entries);
 
-                foreach (Entry entry in pendingEntries)
-                {
-                    entry.Message = e.Message;
-                }
-            }
-
-
+        protected void RaisePublishCompleted()
+        {
             if (PublishCompleted != null)
             {
                 PublishCompleted(this, new EventArgs());
             }
 
-            ((ICollectionView)parameter).Refresh();
+            _view.Refresh();
         }
-
-        public abstract void Publish(IEnumerable<Entry> entries);
 
         private void SetCanExecute(bool canExecute)
         {

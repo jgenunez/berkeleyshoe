@@ -61,7 +61,6 @@ namespace EbayServices.Services
 
             GetItemResponseType response = call.ExecuteRequest(request) as GetItemResponseType;
 
-
             return response.Item;
         }
 
@@ -148,14 +147,15 @@ namespace EbayServices.Services
             request.DetailLevel = new DetailLevelCodeTypeCollection();
             request.DetailLevel.Add(DetailLevelCodeType.ReturnAll);
 
-            request.OutputSelector.AddRange(new string[18] 
+
+            request.OutputSelector.AddRange(new string[19] 
             { 
                 "ItemArray.Item.ItemID", "ItemArray.Item.SellingStatus.QuantitySold", 
                 "ItemArray.Item.ListingDetails.EndTime", "ItemArray.Item.ListingDetails.StartTime", 
                 "ItemArray.Item.Title", "ItemArray.Item.Quantity" , "ItemArray.Item.ListingType",
                 "ItemArray.Item.SKU", "ItemArray.Item.ConditionDisplayName", "ItemArray.Item.ListingDuration",
                 "ItemArray.Item.BestOfferEnabled", "ItemArray.Item.Variations", "ItemArray.Item.Variations.Variation",
-                "ItemArray.Item.StartPrice", "Pagination.PageNumber", "PaginationResult.TotalNumberOfPages", 
+                "ItemArray.Item.Variations.Variation", "ItemArray.Item.StartPrice", "Pagination.PageNumber", "PaginationResult.TotalNumberOfPages", 
                 "ItemArray.Item.ConditionID", "ItemArray.Item.SellingStatus.ListingStatus"
             });
         }

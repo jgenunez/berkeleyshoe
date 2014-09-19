@@ -65,57 +65,72 @@ namespace EbayServices.Mappers
             {
                 case 1 :
                 case 2 :
-                    nameValueList.Add(BuildItemSpecific(GetSizeLabel(), new string[1] { _item.Attributes["Size"].Value }));
+                    nameValueList.Add(GetSizeItemSpecific());
                     nameValueList.Add(BuildItemSpecific("Width", new string[1] { this.GetFormattedWidth() })); break;
 
                 case 3:
-                    nameValueList.Add(BuildItemSpecific(GetSizeLabel(), new string[1] { _item.Attributes["Size"].Value }));
+                    nameValueList.Add(GetSizeItemSpecific());
                     nameValueList.Add(BuildItemSpecific("Width", new string[1] { this.GetFormattedWidth() }));
-                    nameValueList.Add(BuildItemSpecific("Color", new string[1] { _item.Attributes["Color"].Value })); break;
+                    nameValueList.Add(BuildItemSpecific("Color", new string[1] { _item.Attributes[AttributeLabel.Color].Value })); break;
             }
 
             return nameValueList;
         }
 
-        private string GetSizeLabel()
+        public override int GetConditionID()
         {
-            string label = "";
-            string gender = _item.SubDescription3.Trim().ToUpper();
+            int conditionID = 1000;
 
-            switch (gender)
+            if (_item.Notes != null)
             {
-                case "BOYS":
-                case "GIRLS":
-                case "UNISEX-CHILD":
-                    label = "US Shoe Size (Youth)"; break;
-
-                case "BABY-BOYS" :
-                case "BABY-GIRLS": 
-                case "UNISEX-BABY" :
-                    label = "US Shoe Size (Baby & Toddler)"; break;
-
-                case "UNISEX-ADULT":
-                case "MENS" :
-                case "MEN" :
-                    int size = int.Parse(_item.Attributes["Size"].Value);
-
-                    if (size > 19) { label = "EU Shoe Size (Men's)"; break; }
-
-                    else { label = "US Shoe Size (Men's)"; break; }
-
-                case "WOMENS" :
-                case "WOMEN" :
-                    label = "US Shoe Size (Women's)"; break;
-
-                default: throw new NotImplementedException("could not recognize gender");
+                if (_item.Notes.Contains("PRE"))
+                {
+                    conditionID = 1750;
+                }
+                else if (_item.Notes.Contains("NWB"))
+                {
+                    conditionID = 1500;
+                }
+                else if (_item.Notes.Contains("NWD"))
+                {
+                    conditionID = 3000;
+                } 
             }
 
-            return label;
+            return conditionID;
+        }
+
+        private NameValueListType GetSizeItemSpecific()
+        {
+            NameValueListType nv = new NameValueListType();
+
+            if (_item.Attributes.ContainsKey(AttributeLabel.EUSize))
+            {
+                nv = BuildItemSpecific("EU Shoe Size", new string[1] { _item.Attributes[AttributeLabel.EUSize].Value });
+            }
+            else if (_item.Attributes.ContainsKey(AttributeLabel.USMenSize))
+            {
+                nv = BuildItemSpecific("US Shoe Size (Men's)", new string[1] { _item.Attributes[AttributeLabel.USMenSize].Value });
+            }
+            else if (_item.Attributes.ContainsKey(AttributeLabel.USWomenSize))
+            {
+                nv = BuildItemSpecific("US Shoe Size (Women's)", new string[1] { _item.Attributes[AttributeLabel.USWomenSize].Value });
+            }
+            else if (_item.Attributes.ContainsKey(AttributeLabel.USYouthSize))
+            {
+                nv = BuildItemSpecific("US Shoe Size (Youth)", new string[1] { _item.Attributes[AttributeLabel.USYouthSize].Value });
+            }
+            else if (_item.Attributes.ContainsKey(AttributeLabel.USBabySize))
+            {
+                nv = BuildItemSpecific("US Shoe Size (Baby & Toddler)", new string[1] { _item.Attributes[AttributeLabel.USBabySize].Value });
+            }
+
+            return nv;
         }
 
         private string GetFormattedWidth()
         {
-            string width = _item.Attributes["Width"].Value;
+            string width = _item.Attributes[AttributeLabel.Width].Value;
 
             switch (_item.SubDescription3)
             {
@@ -145,6 +160,7 @@ namespace EbayServices.Mappers
             switch (width)
             {
                 case "XN": return "Extra Narrow (A+)";
+                case "C" :
                 case "N": return "Narrow (C, B)";
                 case "D":
                 case "M": return "Medium (D, M)";
@@ -158,6 +174,8 @@ namespace EbayServices.Mappers
                 case "3E": return "2X Extra Wide (EEE)";
                 case "EEEE" :
                 case "4E": return "3X Extra Wide (EEEE)";
+                case "EEEEE" :
+                case "5E": return "4X Extra Wide (EEEEE)";
 
                 default: throw new NotImplementedException("width not supported");
             }
@@ -192,5 +210,7 @@ namespace EbayServices.Mappers
             }
         }
 
+
+        
     }
 }

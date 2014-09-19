@@ -90,6 +90,7 @@
     <Compile Include="Catalog\Category.cs" />
     <Compile Include="Catalog\Department.cs" />
     <Compile Include="Ebay\Mappers\HandbagAdapter.cs" />
+    <Compile Include="Ebay\Mappers\UKShoesAdapter.cs" />
     <Compile Include="Ebay\Marketplace.cs" />
     <Compile Include="Ebay\PictureServiceUrl.cs" />
     <Compile Include="Ebay\Listing.cs" />

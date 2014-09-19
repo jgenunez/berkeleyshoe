@@ -47,13 +47,16 @@ namespace WorkbookPublisher.ViewModel
             {
                 EbayMarketplace marketplace = dataContext.EbayMarketplaces.Single(p => p.Code.Equals(_marketplaceCode));
 
-                foreach (EbayEntry entry in entries.Where(p => p.Status.Equals("waiting")).ToList())
+                var pendingEntries = entries.Where(p => p.Status.Equals(StatusCode.Pending)).ToList();
+
+                foreach (EbayEntry entry in pendingEntries)
                 {
                     Item item = dataContext.Items.SingleOrDefault(p => p.ItemLookupCode.Equals(entry.Sku));
 
                     if (item == null)
                     {
                         entry.Message = "sku not found";
+                        entry.Status = StatusCode.Error;
                         continue;
                     }
 
@@ -65,6 +68,7 @@ namespace WorkbookPublisher.ViewModel
                     if (format == null)
                     {
                         entry.Message = "invalid format";
+                        entry.Status = StatusCode.Error;
                         continue;
                     }
 
@@ -80,35 +84,41 @@ namespace WorkbookPublisher.ViewModel
 
                         if (listingItem.Quantity == entry.Q)
                         {
-                            entry.Completed = true;
+                            entry.Status = StatusCode.Completed;
                         }
                     }
                     else if (listingItems.Count() > 1)
                     {
                         entry.Message = "duplicate";
+                        entry.Status = StatusCode.Error;
                     }
 
-                    if (entry.Status.Equals("waiting"))
+                    if (entry.Status.Equals(StatusCode.Pending))
                     {
                         if (format.Equals(Publisher.FORMAT_AUCTION) && entry.Q > 1)
                         {
                             entry.Message = "auction max qty is 1";
+                            entry.Status = StatusCode.Error;
                         }
                         if (entry.Q > item.QtyAvailable)
                         {
                             entry.Message = "out of stock";
+                            entry.Status = StatusCode.Error;
                         }
                         if (item.Department == null)
                         {
                             entry.Message = "department required";
+                            entry.Status = StatusCode.Error;
                         }
                         if (entry.Title.Count() > 80)
                         {
                             entry.Message = "title max characters is 80";
+                            entry.Status = StatusCode.Error;
                         }
                         if (entry.StartDateSpecified && entry.StartDate < DateTime.UtcNow)
                         {
                             entry.Message = "cannot schedule in the past";
+                            entry.Status = StatusCode.Error;
                         }
                     }
 
@@ -124,9 +134,9 @@ namespace WorkbookPublisher.ViewModel
 
     public class EbayPublishCommand : PublishCommand
     {
+        private PictureSetRepository _picSetRepository = new PictureSetRepository();
         private string _marketplaceCode;
         private berkeleyEntities _dataContext;
-        private PictureSetRepository _picSetRepository = new PictureSetRepository();
         private EbayMarketplace _marketplace;
         private Publisher _publisher;
 
@@ -136,7 +146,14 @@ namespace WorkbookPublisher.ViewModel
             _marketplaceCode = marketplaceCode;
         }
 
-        public override void Publish(IEnumerable<Entry> entries)
+        public override async void Publish(IEnumerable<Entry> entries)
+        {
+            await Task.Run(() => PublishEntries(entries));
+
+            RaisePublishCompleted();
+        }
+
+        private void PublishEntries(IEnumerable<Entry> entries)
         {
             var pendingEntries = entries.Cast<EbayEntry>();
 
@@ -145,6 +162,7 @@ namespace WorkbookPublisher.ViewModel
                 _marketplace = _dataContext.EbayMarketplaces.Single(p => p.Code.Equals(_marketplaceCode));
 
                 var auctions = pendingEntries.Where(p => p.IsAuction()).GroupBy(p => p.ClassName);
+
                 var fixedPrice = pendingEntries.Where(p => !p.IsAuction()).GroupBy(p => p.ClassName);
 
                 foreach (var group in auctions)
@@ -165,14 +183,7 @@ namespace WorkbookPublisher.ViewModel
 
             foreach (EbayEntry entry in group)
             {
-                if (!auctions.Any(p => p.Sku.Equals(entry.Sku)))
-                {
-                    TryCreateListing(new EbayEntry[] { entry });
-                }
-                else
-                {
-                    entry.Message = "cannot modify auctions";
-                }
+                TryCreateListing(new EbayEntry[] { entry });
             }
         }
 
@@ -186,7 +197,8 @@ namespace WorkbookPublisher.ViewModel
             {
                 if (fixedPrice.Any(p => p.Sku.Equals(entry.Sku)))
                 {
-                    string code = fixedPrice.Single(p => p.Sku.Equals(entry.Sku)).Code;
+                    string code = fixedPrice.Single(p => p.Sku.Equals(entry.Sku)).Code;    
+          
                     TryUpdateListing(code, new EbayEntry[] { entry });
                 }
                 else
@@ -213,12 +225,17 @@ namespace WorkbookPublisher.ViewModel
         {
             try
             {
+                entries.ToList().ForEach(p => p.Status = StatusCode.Processing);
                 CreateListing(entries);
-                entries.ToList().ForEach(p => p.Completed = true);
+                entries.ToList().ForEach(p => p.Status = StatusCode.Completed);
             }
             catch (Exception e)
             {
-                entries.ToList().ForEach(p => p.Message = e.Message);
+                foreach (var entry in entries)
+                {
+                    entry.Status = StatusCode.Error;
+                    entry.Message = e.Message;
+                }
             }
         }
 
@@ -226,12 +243,17 @@ namespace WorkbookPublisher.ViewModel
         {
             try
             {
+                entries.ToList().ForEach(p => p.Status = StatusCode.Processing);
                 UpdateListing(code, entries);
-                entries.ToList().ForEach(p => p.Completed = true);
+                entries.ToList().ForEach(p => p.Status = StatusCode.Completed);
             }
             catch (Exception e)
             {
-                entries.ToList().ForEach(p => p.Message = e.Message);
+                foreach (var entry in entries)
+                {
+                    entry.Message = e.Message;
+                    entry.Status = StatusCode.Error;
+                }
             }
         }
 
@@ -257,6 +279,11 @@ namespace WorkbookPublisher.ViewModel
                     else
                     {
                         listing.Title = entries.First(p => !string.IsNullOrWhiteSpace(p.Title)).Title;
+
+                        if (entries.First().BIN != 0 && listing.Format.Equals(Publisher.FORMAT_AUCTION))
+                        {
+                            listing.BinPrice = entries.First().BIN;
+                        }
                     }
                 }
 
@@ -277,7 +304,10 @@ namespace WorkbookPublisher.ViewModel
                     }
 
                     listingItem.Quantity = entry.Q;
+
                     listingItem.Price = entry.P;
+
+                    listingItem.Title = entry.Title;
                 }
 
                 publisher.ReviseListing(listing);
@@ -305,6 +335,16 @@ namespace WorkbookPublisher.ViewModel
 
                 EbayListing listing = new EbayListing();
 
+                listing.Marketplace = marketplace;
+                listing.Duration = entries.First(p => !string.IsNullOrWhiteSpace(p.Format)).GetDuration();
+                listing.Format = entries.First(p => !string.IsNullOrWhiteSpace(p.Format)).GetFormat();
+                listing.FullDescription = entries.First(p => !string.IsNullOrWhiteSpace(p.FullDescription)).FullDescription;
+
+                if (entries.Any(p => p.StartDateSpecified))
+                {
+                    listing.StartTime = entries.First(p => p.StartDateSpecified).StartDate;
+                }
+
                 if (entries.Count() > 1)
                 {
                     listing.Sku = entries.First(p => !string.IsNullOrWhiteSpace(p.ClassName)).ClassName;
@@ -318,14 +358,12 @@ namespace WorkbookPublisher.ViewModel
                     listing.Sku = entries.First().Sku;
                     listing.Title = entries.First().Title;
                     listing.IsVariation = false;
+
+                    if (entries.First().BIN != 0 && listing.Format.Equals(Publisher.FORMAT_AUCTION))
+                    {
+                        listing.BinPrice = entries.First().BIN;
+                    }
                 }
-
-                listing.Marketplace = marketplace;
-                listing.Condition = entries.First(p => !string.IsNullOrWhiteSpace(p.Condition)).GetConditionID();
-                listing.Duration = entries.First(p => !string.IsNullOrWhiteSpace(p.Format)).GetDuration();
-                listing.Format = entries.First(p => !string.IsNullOrWhiteSpace(p.Format)).GetFormat();
-                listing.FullDescription = entries.First(p => !string.IsNullOrWhiteSpace(p.FullDescription)).FullDescription;
-
 
                 foreach (var url in urlData)
                 {
@@ -340,6 +378,7 @@ namespace WorkbookPublisher.ViewModel
                     listingItem.Listing = listing;
                     listingItem.Quantity = entry.Q;
                     listingItem.Price = entry.P;
+                    listingItem.Title = entry.Title;
                 }
 
                 publisher.PublishListing(listing);
@@ -353,12 +392,14 @@ namespace WorkbookPublisher.ViewModel
         {
             string title = entry.Title;
 
-            var wordsToRemove = item.Attributes.Select(p => p.Key).Concat(item.Attributes.Select(p => p.Value.Value));
+            var wordsToRemove = item.Attributes.Select(p => p.Key.ToString()).Concat(item.Attributes.Select(p => p.Value.Value.ToString()));
 
             foreach (string word in wordsToRemove)
             {
                 title = title.Replace(" " + word + " ", " ");
             }
+
+            title = title.Replace("Size", "");
 
             return title;
         }

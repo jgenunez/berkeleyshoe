@@ -303,10 +303,10 @@
           <Property Name="Duration" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="StartTime" Type="datetime" Nullable="false" />
           <Property Name="EndTime" Type="datetime" Nullable="false" />
+          <Property Name="BinPrice" Type="money" />
           <Property Name="Title" Type="nvarchar" MaxLength="200" Nullable="false" />
           <Property Name="FullDescription" Type="nvarchar(max)" />
           <Property Name="IsVariation" Type="bit" />
-          <Property Name="Condition" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="LastSyncTime" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="EbayListingItem">
@@ -319,6 +319,7 @@
           <Property Name="Sku" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Quantity" Type="int" Nullable="false" />
           <Property Name="Price" Type="money" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="200" />
         </EntityType>
         <EntityType Name="EbayMarketplace">
           <Key>
@@ -2405,7 +2406,6 @@
           <Property Type="DateTime" Name="StartTime" Nullable="false" Precision="3" />
           <Property Type="DateTime" Name="EndTime" Nullable="false" Precision="3" />
           <Property Type="String" Name="Title" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Condition" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="ListingItems" Relationship="BerkeleyEntities.SyncEbayListingSyncEbayListingItem" FromRole="SyncEbayListing" ToRole="SyncEbayListingItem" />
           <Property Type="DateTime" Name="LastSyncTime" Nullable="false" Precision="3" />
           <Property Type="String" Name="Status" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -2414,6 +2414,7 @@
           <NavigationProperty Name="Marketplace" Relationship="BerkeleyEntities.EbayMarketplaceSyncEbayListing" FromRole="SyncEbayListing" ToRole="EbayMarketplace" />
           <NavigationProperty Name="Relations" Relationship="BerkeleyEntities.EbayListingEbayPictureUrlRelation" FromRole="EbayListing" ToRole="EbayPictureUrlRelation" />
           <Property Type="String" Name="FullDescription" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="BinPrice" Type="Decimal" Precision="19" Scale="4" />
         </EntityType>
         <EntityType Name="EbayListingItem">
           <Key>
@@ -2428,6 +2429,7 @@
           <NavigationProperty Name="Listing" Relationship="BerkeleyEntities.SyncEbayListingSyncEbayListingItem" FromRole="SyncEbayListingItem" ToRole="SyncEbayListing" />
           <NavigationProperty Name="OrderItems" Relationship="BerkeleyEntities.SyncEbayOrderItemSyncEbayListingItem" FromRole="SyncEbayListingItem" ToRole="SyncEbayOrderItem" />
           <Property Name="Sku" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="EbayListingItemItem">
           <End Type="BerkeleyEntities.EbayListingItem" Role="SyncEbayListingItem" Multiplicity="*" />
@@ -3458,6 +3460,7 @@
           <EntitySetMapping Name="EbayListingItems">
             <EntityTypeMapping TypeName="IsTypeOf(BerkeleyEntities.EbayListingItem)">
               <MappingFragment StoreEntitySet="EbayListingItem">
+                <ScalarProperty Name="Title" ColumnName="Title" />
                 <ScalarProperty Name="Sku" ColumnName="Sku" />
                 <ScalarProperty Name="Price" ColumnName="Price" />
                 <ScalarProperty Name="Quantity" ColumnName="Quantity" />
@@ -3470,9 +3473,9 @@
           <EntitySetMapping Name="EbayListings">
             <EntityTypeMapping TypeName="IsTypeOf(BerkeleyEntities.EbayListing)">
               <MappingFragment StoreEntitySet="EbayListing">
+                <ScalarProperty Name="BinPrice" ColumnName="BinPrice" />
                 <ScalarProperty Name="FullDescription" ColumnName="FullDescription" />
                 <ScalarProperty Name="LastSyncTime" ColumnName="LastSyncTime" />
-                <ScalarProperty Name="Condition" ColumnName="Condition" />
                 <ScalarProperty Name="IsVariation" ColumnName="IsVariation" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
                 <ScalarProperty Name="EndTime" ColumnName="EndTime" />

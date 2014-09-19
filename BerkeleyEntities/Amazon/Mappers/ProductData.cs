@@ -27,8 +27,6 @@ namespace AmazonServices
             ConditionInfo conditionInfo = new ConditionInfo();
             conditionInfo.ConditionType = ConditionType.New;
 
-            
-
             StandardProductID sid = new StandardProductID();
 
             if (_item.GtinType.Equals("UPC"))

@@ -76,11 +76,13 @@ namespace WorkbookPublisher
                 //string result = string.Join("\n", dataContext.Items.Where(p => p.SubDescription1.Equals("NIKE") && !p.Inactive && p.Quantity > 0).ToList().GroupBy(p => p.ClassName).Where(p => p.Sum(s => s.Quantity) < 3).SelectMany(p => p).Select(p => p.SubDescription1 + "," + p.ItemLookupCode + "," + p.Quantity));
                 //System.IO.File.WriteAllText(@"c:\Users\Juan\Desktop\testting.txt", result);
 
+                dataContext.MaterializeAttributes = true;
+
                 BerkeleyEntities.Amazon.Publisher publisher = new BerkeleyEntities.Amazon.Publisher(dataContext, dataContext.AmznMarketplaces.First());
 
                 AmazonServices.Mappers.ListingMapper mapper = new AmazonServices.Mappers.ListingMapper(dataContext, dataContext.AmznMarketplaces.First());
 
-                var envelope = mapper.BuildProductData(dataContext.AmznListingItems.Take(10));
+                var envelope = mapper.BuildProductData(dataContext.AmznListingItems.Where(p => p.Item.Department != null).Take(3));
 
 
                 foreach (var test in envelope.Message.ToList())

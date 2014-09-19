@@ -15,6 +15,11 @@ namespace EbayServices
         public ProductMapper(Item item)
         {
             _item = item;
+
+            if (_item.Notes != null && _item.Notes.Contains("DNP"))
+            {
+                throw new InvalidOperationException("cannot publish this product");
+            }
         }
 
         public string CategoryID
@@ -26,7 +31,9 @@ namespace EbayServices
 
         public abstract List<NameValueListType> GetVariationSpecifics();
 
-        public List<KeyValuePair<string,BerkeleyEntities.Attribute>> GetAttributes()
+        public abstract int GetConditionID();
+
+        public List<KeyValuePair<AttributeLabel,BerkeleyEntities.Attribute>> GetAttributes()
         {
             return _item.Attributes.ToList();
         }

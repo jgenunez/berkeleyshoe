@@ -547,10 +547,13 @@ namespace WorkbookPublisher
 
     }
 
+    public enum StatusCode { Pending , Processing, Error, Completed };
+
     public abstract class Entry : INotifyPropertyChanged
     {
-        private bool _completed = false;
+        
         private List<string> _messages = new List<string>();
+        private StatusCode _status;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -558,6 +561,7 @@ namespace WorkbookPublisher
         {
             this.Format = string.Empty;
             this.Title = string.Empty;
+            this.Status = StatusCode.Pending;
         }
 
         public int ListingID { get; set; }
@@ -570,21 +574,8 @@ namespace WorkbookPublisher
         public int Q { get; set; }
         public decimal P { get; set; }
         public string Title { get; set; }
-        public string Condition { get; set; }
 
-        public bool Completed
-        {
-            get { return _completed; }
-            set
-            {
-                _completed = value;
-
-                if (this.PropertyChanged != null)
-                {
-                    this.PropertyChanged(this, new PropertyChangedEventArgs("Status"));
-                }
-            }
-        }
+        
         public string Message
         {
             get { return string.Join(" | ", _messages); }
@@ -595,32 +586,24 @@ namespace WorkbookPublisher
                 if (this.PropertyChanged != null)
                 {
                     this.PropertyChanged(this, new PropertyChangedEventArgs("Message"));
+                }
+            }
+        }
+
+        public StatusCode Status
+        {
+            get { return _status; }
+            set 
+            { 
+                _status = value;
+
+                if (PropertyChanged != null)
+                {
                     this.PropertyChanged(this, new PropertyChangedEventArgs("Status"));
                 }
             }
         }
 
-        public string Status
-        {
-            get
-            {
-                if (this.Completed)
-                {
-                    return "completed";
-                }
-                else
-                {
-                    if (_messages.Count == 0)
-                    {
-                        return "waiting";
-                    }
-                    else
-                    {
-                        return "error";
-                    }
-                }
-            }
-        }
     }
 
     public class EbayEntry : Entry
@@ -691,23 +674,37 @@ namespace WorkbookPublisher
             }
         }
 
-        public string GetConditionID()
-        {
-            switch (this.Condition)
-            {
-                case "NEW": return "1000";
-                case "NWB": return "1500";
-                case "PRE": return "1750";
-                case "NWD": return "3000";
-
-                default: return null;
-            }
-        }
-
+        public decimal BIN { get; set; }
     }
 
     public class AmznEntry : Entry
     {
+        public StatusCode InventoryFeedStatus { get; set; }
 
+        public StatusCode ProductFeedStatus { get; set; }
+
+        public StatusCode ParentProductFeedStatus { get; set; }
+
+        public StatusCode PriceFeedStatus { get; set; }
+
+        public StatusCode RelationshipFeedStatus { get; set; }
+
+        public void UpdateStatus()
+        {
+            if (this.ProductFeedStatus.Equals(StatusCode.Processing) || this.ParentProductFeedStatus.Equals(StatusCode.Processing) || 
+                this.InventoryFeedStatus.Equals(StatusCode.Processing) || this.PriceFeedStatus.Equals(StatusCode.Processing))
+            {
+                this.Status = StatusCode.Processing;
+            }
+            else if (this.ProductFeedStatus.Equals(StatusCode.Error) || this.ParentProductFeedStatus.Equals(StatusCode.Error) ||
+                this.InventoryFeedStatus.Equals(StatusCode.Error) || this.PriceFeedStatus.Equals(StatusCode.Error))
+            {
+                this.Status = StatusCode.Error;
+            }
+            else
+            {
+                this.Status = StatusCode.Completed;
+            }
+        }
     }
 }

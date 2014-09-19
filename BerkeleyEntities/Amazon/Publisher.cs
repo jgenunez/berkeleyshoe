@@ -72,7 +72,7 @@ namespace BerkeleyEntities.Amazon
 
             _productFeedCompleted.Clear();
 
-            WaitForProcessingResult();
+            WaitForProcessingResult(); 
         }
 
         public void Republish(IEnumerable<AmazonEnvelope> envelopes)
@@ -99,7 +99,7 @@ namespace BerkeleyEntities.Amazon
         {
             while (AnyPendingSubmission)
             {
-                Thread.Sleep(20000);
+                Thread.Sleep(60000);
 
                 GetFeedSubmissionListRequest request = new GetFeedSubmissionListRequest();
                 request.FeedSubmissionIdList = new IdList();
@@ -142,8 +142,12 @@ namespace BerkeleyEntities.Amazon
             {
                 foreach (var result in processingReport.Result)
                 {
-                    var msg = envelope.Message.Single(p => p.MessageID.Equals(result.MessageID));
-                    msg.ProcessingResult = result;
+                    var msg = envelope.Message.SingleOrDefault(p => p.MessageID.Equals(result.MessageID));
+
+                    if (msg != null)
+                    {
+                        msg.ProcessingResult = result;
+                    }
                 } 
             }
 

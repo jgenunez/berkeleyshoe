@@ -58,13 +58,13 @@ namespace EbayServices.Mappers
             {
                 case 1:
                 case 2:
-                    nameValueList.Add(BuildItemSpecific(GetSizeLabel(), new string[1] { _item.Attributes["Waist"].Value }));
-                    nameValueList.Add(BuildItemSpecific("Inseam", new string[1] { _item.Attributes["Inseam"].Value })); break;
+                    nameValueList.Add(BuildItemSpecific(GetSizeLabel(), new string[1] { _item.Attributes[AttributeLabel.Waist].Value }));
+                    nameValueList.Add(BuildItemSpecific("Inseam", new string[1] { _item.Attributes[AttributeLabel.Inseam].Value })); break;
 
                 case 3:
-                    nameValueList.Add(BuildItemSpecific(GetSizeLabel(), new string[1] { _item.Attributes["Waist"].Value }));
-                    nameValueList.Add(BuildItemSpecific("Inseam", new string[1] { _item.Attributes["Inseam"].Value })); 
-                    nameValueList.Add(BuildItemSpecific("Color", new string[1] { _item.Attributes["Color"].Value })); break;
+                    nameValueList.Add(BuildItemSpecific(GetSizeLabel(), new string[1] { _item.Attributes[AttributeLabel.Waist].Value }));
+                    nameValueList.Add(BuildItemSpecific("Inseam", new string[1] { _item.Attributes[AttributeLabel.Inseam].Value })); 
+                    nameValueList.Add(BuildItemSpecific("Color", new string[1] { _item.Attributes[AttributeLabel.Color].Value })); break;
             }
 
             return nameValueList;
@@ -85,6 +85,29 @@ namespace EbayServices.Mappers
             }
 
             return label;
+        }
+
+        public override int GetConditionID()
+        {
+            int conditionID = 1000;
+
+            if (_item.Notes != null)
+            {
+                if (_item.Notes.Contains("PRE"))
+                {
+                    conditionID = 1750;
+                }
+                else if (_item.Notes.Contains("NWB"))
+                {
+                    conditionID = 1500;
+                }
+                else if (_item.Notes.Contains("NWD"))
+                {
+                    conditionID = 3000;
+                }
+            }
+
+            return conditionID;
         }
     }
 }
