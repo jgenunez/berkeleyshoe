@@ -3,34 +3,32 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:bky="clr-namespace:BerkeleyEntities.Amazon"
         xmlns:c="clr-namespace:WorkbookPublisher.View"
-        Title="Republish Data" ResizeMode="NoResize"  Width="500" Height="500" WindowStyle="None" >
+        Title="Republish Data" ResizeMode="NoResize" SizeToContent="WidthAndHeight" WindowStyle="None" >
     <Border BorderThickness="10" CornerRadius="5" BorderBrush="CadetBlue">
-        <DockPanel Loaded="DockPanel_Loaded">       
-            <Grid DockPanel.Dock="Bottom">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="auto"/>
-                </Grid.ColumnDefinitions>
-                <Button Name="btnPrevious" Grid.Column="0" Margin="10" Padding="10" Content="Previous" Click="btnPrevious_Click" />        
-                <Button Name="btnNext" Grid.Column="1" Margin="30,10,10,10" Padding="20,10,20,10" Content="Next" Click="btnNext_Click" />
-                <Button Name="btnDone" Grid.Column="4" Margin="10,10,10,10"  Padding="20,10,20,10" Background="AliceBlue" Content="Done" Click="btnDone_Click" />
-                <TextBlock Grid.Column="3" Margin="10,10,10,10" Padding="10">
-                    <TextBlock.Text>
-                            <MultiBinding StringFormat="{}{0} / {1}">
-                                <Binding Path="CurrentPosition"/>
-                                <Binding Path="Count"/>
-                            </MultiBinding>
-                    </TextBlock.Text>
-                </TextBlock>
-            </Grid>
-            <TextBlock DockPanel.Dock="Bottom" Margin="30" TextWrapping="Wrap" Text="{Binding Path=ProcessingResult.ResultDescription}"/>
-            <c:AmznShoesForm DataContext="{Binding Path=Item}" Margin="25">
-                
-            </c:AmznShoesForm>
-        </DockPanel>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            
+            <c:AmznShoesForm Grid.ColumnSpan="4" DataContext="{Binding Path=Item}" Margin="15"/>
+            <TextBlock Grid.Row="1" Grid.ColumnSpan="4"  Margin="15" MaxWidth="450" TextWrapping="Wrap" Text="{Binding Path=ProcessingResult.ResultDescription}"/>
+
+            <Button Name="btnPrevious" Grid.Row="2" Grid.Column="0" Margin="10" Padding="10" Content="Previous" Click="btnPrevious_Click" />
+            <Button Name="btnNext" Grid.Row="2" Grid.Column="1" Margin="30,10,10,10" Padding="20,10,20,10" Content="Next" Click="btnNext_Click" />
+            <TextBlock Grid.Row="2" Grid.Column="2" Margin="25" Text="{Binding CurrentPosition}"/>
+
+            <Button Name="btnDone" Grid.Row="2" Grid.Column="3" Margin="10,10,10,10"  Padding="20,10,20,10" Background="AliceBlue" Content="Done" Click="btnDone_Click" />
+            
+        </Grid>
     </Border>
 
 </Window>

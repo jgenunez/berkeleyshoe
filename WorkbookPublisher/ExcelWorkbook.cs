@@ -51,6 +51,7 @@ namespace WorkbookPublisher
                 WorksheetPart parentWorksheetPart = document.WorkbookPart.GetPartById(parentSheet.Id) as WorksheetPart;
 
                 var newWorksheet = parentWorksheetPart.Worksheet.CloneNode(true) as Worksheet;
+
                 var newSheetData = newWorksheet.GetFirstChild<SheetData>();
 
                 newSheetData.RemoveAllChildren();
@@ -86,6 +87,7 @@ namespace WorkbookPublisher
                         }
 
                         Cell msgCell = GetCell(newRow, _colHeadersToRefs[COLUMN_MESSAGE]);
+
                         msgCell.CellValue = new CellValue(InsertSharedString(entry.Message).ToString());
                         msgCell.DataType = CellValues.SharedString;
 
@@ -157,6 +159,7 @@ namespace WorkbookPublisher
                     headerRow.AppendChild<Cell>(msgCell);
                 }
 
+                msgCell.DataType = CellValues.SharedString;
                 msgCell.CellValue = new CellValue(InsertSharedString(COLUMN_MESSAGE).ToString());
             }
         }

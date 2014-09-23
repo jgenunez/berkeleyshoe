@@ -333,6 +333,11 @@ namespace WorkbookPublisher.ViewModel
 
                 dataContext.SaveChanges();
 
+                if (urlData.Count() == 0)
+                {
+                    throw new InvalidOperationException("picture required");
+                }
+
                 EbayListing listing = new EbayListing();
 
                 listing.Marketplace = marketplace;

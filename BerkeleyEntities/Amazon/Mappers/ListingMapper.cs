@@ -22,7 +22,6 @@ namespace AmazonServices.Mappers
             _productMapperFactory = new ProductMapperFactory();
         }
 
-
         public AmazonEnvelopeMessage BuildMessage(object item, int messageID)
         {
             AmazonEnvelopeMessage msg = new AmazonEnvelopeMessage();
@@ -61,7 +60,7 @@ namespace AmazonServices.Mappers
                     if (dataContext.Items.Any(p => p.ItemLookupCode.Equals(product.SKU)))
                     {
                         AmznListingItem listingItem = dataContext.AmznListingItems
-                            .SingleOrDefault(p => p.Item.ItemLookupCode.Equals(product.SKU) && p.MarketplaceID == _marketplace.ID && p.IsActive);
+                            .SingleOrDefault(p => p.Item.ItemLookupCode.Equals(product.SKU) && p.MarketplaceID == _marketplace.ID);
 
                         listingItems.Add(added.Single(p => p.Item.ItemLookupCode.Equals(product.SKU)));
 
@@ -74,13 +73,13 @@ namespace AmazonServices.Mappers
                             listingItem.OpenDate = DateTime.UtcNow;
                             listingItem.LastSyncTime = DateTime.UtcNow;
                             listingItem.ASIN = "UNKNOWN";
-                            listingItem.IsActive = true;
                             listingItem.Quantity = 0;
                             listingItem.Price = 0;
                             listingItem.Condition = product.Condition.ConditionType.ToString();
                             listingItem.Title = product.DescriptionData.Title;
                         }
 
+                        listingItem.IsActive = true;
                     }
                 }
 
@@ -126,8 +125,6 @@ namespace AmazonServices.Mappers
             }
         }
 
-        
-
         public AmazonEnvelope BuildProductData(IEnumerable<AmznListingItem> listingItems)
         {
             List<AmazonEnvelopeMessage> messages = new List<AmazonEnvelopeMessage>();
@@ -169,13 +166,29 @@ namespace AmazonServices.Mappers
 
             var classGroups = listingItems.Where(p => p.Item.ItemClass != null).GroupBy(p => p.Item.ItemClass.ItemLookupCode);
 
-            foreach (var classGroup in classGroups)
+            using (berkeleyEntities dataContext = new berkeleyEntities())
             {
-                Relationship relationship = MapToRelationshipDto(classGroup.ToList());
+                foreach (var classGroup in classGroups)
+                {
+                    var siblingSkus = dataContext.AmznListingItems
+                        .Where(p => p.IsActive && p.MarketplaceID == _marketplace.ID &&  p.Item.ItemClassComponents.First().ItemClass.ItemLookupCode.Equals(classGroup.Key)).Select(p => p.Sku);
 
-                messages.Add(BuildMessage(relationship, currentMsg));
+                    Relationship relationships = new Relationship();
+                    relationships.ParentSKU = classGroup.Key;
 
-                currentMsg++;
+                    List<RelationshipRelation> relations = new List<RelationshipRelation>();
+
+                    foreach(string sku in siblingSkus)
+                    {
+                        relations.Add(new RelationshipRelation() { SKU = sku, Type = RelationshipRelationType.Variation } );
+                    }
+
+                    relationships.Relation = relations.ToArray();
+
+                    messages.Add(BuildMessage(relationships, currentMsg));
+
+                    currentMsg++;
+                } 
             }
 
             return BuildEnvelope(AmazonEnvelopeMessageType.Relationship, messages);
@@ -208,15 +221,12 @@ namespace AmazonServices.Mappers
             foreach (AmznListingItem listingItem in listingItems)
             {
                 Price priceData = MapToPriceDto(listingItem);
-
                 messages.Add(BuildMessage(priceData, currentMsg));
-
                 currentMsg++;
             }
 
             return BuildEnvelope(AmazonEnvelopeMessageType.Price, messages);
         }
-
 
         private List<Product> MapToProductDto(List<AmznListingItem> listingItems)
         {
@@ -239,21 +249,12 @@ namespace AmazonServices.Mappers
             return products;
         }
 
-        private Relationship MapToRelationshipDto(List<AmznListingItem> listingItems)
-        {
-            AmznListingItem listingItem = listingItems.First();
-
-            ProductData productData = _productMapperFactory.GetProductData(listingItem.Item);
-
-            return productData.GetRelationshipDto(_marketplace.ID);
-        }
-
         private Price MapToPriceDto(AmznListingItem listingItem)
         {
             OverrideCurrencyAmount oca = new OverrideCurrencyAmount();
             oca.currency = BaseCurrencyCodeWithDefault.USD;
-            oca.Value = listingItem.Price;
-
+            oca.Value = Math.Round(listingItem.Price,4);
+           
             Price priceData = new Price();
             priceData.SKU = listingItem.Item.ItemLookupCode;
             priceData.StandardPrice = oca;

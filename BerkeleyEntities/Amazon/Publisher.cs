@@ -60,37 +60,59 @@ namespace BerkeleyEntities.Amazon
             var qtyModified = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Modified)
                 .Where(p => p.GetModifiedProperties().Contains("Quantity")).Select(p => p.Entity).OfType<AmznListingItem>();
 
-            SubmitFeed(_listingMapper.BuildProductData(added));
-            SubmitFeed(_listingMapper.BuildInventoryData(qtyModified));
-            SubmitFeed(_listingMapper.BuildPriceData(priceModified));
+            if (added.Count() > 0)
+            {
+                SubmitFeed(_listingMapper.BuildProductData(added)); 
+            }
+
+            if (qtyModified.Count() > 0)
+            {
+                SubmitFeed(_listingMapper.BuildInventoryData(qtyModified)); 
+            }
+
+            if (priceModified.Count() > 0)
+            {
+                SubmitFeed(_listingMapper.BuildPriceData(priceModified)); 
+            }
 
             WaitForProcessingResult();
 
-            SubmitFeed(_listingMapper.BuildInventoryData(_productFeedCompleted));
-            SubmitFeed(_listingMapper.BuildPriceData(_productFeedCompleted));
-            SubmitFeed(_listingMapper.BuildRelationshipData(_productFeedCompleted));
+            if (_productFeedCompleted.Count > 0)
+            {
+                SubmitFeed(_listingMapper.BuildInventoryData(_productFeedCompleted));
+                SubmitFeed(_listingMapper.BuildPriceData(_productFeedCompleted));
+                SubmitFeed(_listingMapper.BuildRelationshipData(_productFeedCompleted));
 
-            _productFeedCompleted.Clear();
+                _productFeedCompleted.Clear();
 
-            WaitForProcessingResult(); 
+                WaitForProcessingResult();  
+            }
         }
 
         public void Republish(IEnumerable<AmazonEnvelope> envelopes)
         {
             foreach (var envelope in envelopes)
             {
+                foreach (var msg in envelope.Message)
+                {
+                    msg.ProcessingResult = null;
+                }
+
                 SubmitFeed(envelope);
             }
 
             WaitForProcessingResult();
 
-            SubmitFeed(_listingMapper.BuildInventoryData(_productFeedCompleted));
-            SubmitFeed(_listingMapper.BuildPriceData(_productFeedCompleted));
-            SubmitFeed(_listingMapper.BuildRelationshipData(_productFeedCompleted));
+            if (_productFeedCompleted.Count() > 0)
+            {
+                SubmitFeed(_listingMapper.BuildInventoryData(_productFeedCompleted));
+                SubmitFeed(_listingMapper.BuildPriceData(_productFeedCompleted));
+                SubmitFeed(_listingMapper.BuildRelationshipData(_productFeedCompleted));
 
-            _productFeedCompleted.Clear();
+                _productFeedCompleted.Clear();
 
-            WaitForProcessingResult();
+                WaitForProcessingResult();
+            }
         }
 
         public event PublishingResultHandler Result;
@@ -119,6 +141,7 @@ namespace BerkeleyEntities.Amazon
 
                 var completed = _waitingProcessingResult.Where(p => p.FeedProcessingStatus.Equals(STATUS_DONE)).ToList();
 
+                
                 foreach (var submission in completed)
                 {
                     HandleProcessingResult(submission);
@@ -138,46 +161,39 @@ namespace BerkeleyEntities.Amazon
                 throw new InvalidOperationException("Error processing feed: " + submission.FeedSubmissionId);
             }
 
-            if (processingReport.Result != null)
+            List<AmazonEnvelopeMessage> completedMsgs = new List<AmazonEnvelopeMessage>();
+
+            foreach (AmazonEnvelopeMessage msg in envelope.Message)
             {
-                foreach (var result in processingReport.Result)
+                bool hasError = processingReport.Result == null ? false : 
+                    processingReport.Result.Any(p => p.MessageID.Equals(msg.MessageID) && p.ResultCode.Equals(ProcessingReportResultResultCode.Error));
+
+                if (!hasError)
                 {
-                    var msg = envelope.Message.SingleOrDefault(p => p.MessageID.Equals(result.MessageID));
-
-                    if (msg != null)
-                    {
-                        msg.ProcessingResult = result;
-                    }
-                } 
+                    completedMsgs.Add(msg);
+                }
             }
-
-            var completed = envelope.Message.Where(p => p.ProcessingResult == null || p.ProcessingResult.ResultCode.Equals(ProcessingReportResultResultCode.Warning)).ToList();
 
             switch (submission.FeedType)
             {
                 case PRODUCT_DATA:
-                    _productFeedCompleted.AddRange(_listingMapper.SaveProductDataChanges(completed)); break;
+                    _productFeedCompleted.AddRange(_listingMapper.SaveProductDataChanges(completedMsgs)); break;
                 case INVENTORY_DATA:
-                    _listingMapper.SaveInventoryDataChanges(completed); break;
+                    _listingMapper.SaveInventoryDataChanges(completedMsgs); break;
                 case PRICE_DATA:
-                    _listingMapper.SavePriceDataChanges(completed); break;
+                    _listingMapper.SavePriceDataChanges(completedMsgs); break;
                 case RELATIONSHIP_DATA:
                     break;
             }
 
             if (this.Result != null)
             {
-                this.Result(new ResultArgs() { Envelope = envelope });
+                this.Result(new ResultArgs() { Envelope = envelope, ProcessingReport = processingReport });
             }
         }
 
         private void SubmitFeed(AmazonEnvelope envelope)
         {
-            if (envelope.Message.Count() == 0)
-            {
-                return;
-            }
-
             SubmitFeedRequest request = new SubmitFeedRequest();
             request.Merchant = _marketplace.MerchantId;
             request.MarketplaceIdList = new IdList();
@@ -276,5 +292,7 @@ namespace BerkeleyEntities.Amazon
     public class ResultArgs
     {
         public AmazonEnvelope Envelope { get; set; }
+
+        public ProcessingReport ProcessingReport { get; set; }
     }
 }

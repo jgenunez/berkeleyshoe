@@ -82,32 +82,6 @@ namespace AmazonServices
             return product;
         }
 
-        public Relationship GetRelationshipDto(int marketplaceID)
-        {
-            var childSkus = _item.ItemClass.ItemClassComponents.Select(p => p.Item)
-                .Where(p => p.AmznListingItems.Any(a => a.IsActive && a.MarketplaceID == marketplaceID)).Select(p => p.ItemLookupCode);
-
-            Relationship relationship = new Relationship();
-
-            relationship.ParentSKU = _item.ItemClass.ItemLookupCode;
-
-            List<RelationshipRelation> relations = new List<RelationshipRelation>();
-
-            foreach (string sku in childSkus)
-            {
-                RelationshipRelation relation = new RelationshipRelation();
-                relation.SKU = sku;
-                relation.Type = RelationshipRelationType.Variation;
-
-                relations.Add(relation);
-            }
-
-            relationship.Relation = relations.ToArray();
-
-
-            return relationship;
-        }
-
         private string ToTitleCase(string word)
         {
             TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;

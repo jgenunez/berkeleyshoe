@@ -122,8 +122,6 @@ namespace WorkbookPublisher.ViewModel
         public List<AmznEntry> _processingEntries = new List<AmznEntry>();
         private Queue<AmazonEnvelope> _pendingResubmission = new Queue<AmazonEnvelope>();
 
-        
-
         public AmznPublishCommand(string marketplaceCode)
         {
             _marketplaceCode = marketplaceCode;
@@ -134,61 +132,85 @@ namespace WorkbookPublisher.ViewModel
             switch (e.Envelope.MessageType)
             {
                 case AmazonEnvelopeMessageType.Product:
-                    HandleProductFeedResult(e.Envelope); break;
+                    HandleProductFeedResult(e); break;
 
                 case AmazonEnvelopeMessageType.Price:
-                    HandlePriceFeedResult(e.Envelope); break;
+                    HandlePriceFeedResult(e); break;
 
                 case AmazonEnvelopeMessageType.Inventory:
-                    HandleInventoryFeedResult(e.Envelope); break;
+                    HandleInventoryFeedResult(e); break;
 
                 case AmazonEnvelopeMessageType.Relationship :
-                    HandleRelationshipFeedResult(e.Envelope); break;
+                    HandleRelationshipFeedResult(e); break;
             }
         }
 
-        private void HandleRelationshipFeedResult(AmazonEnvelope envelope)
+        private void HandleRelationshipFeedResult(ResultArgs args)
         {
-            foreach (AmazonEnvelopeMessage msg in envelope.Message)
+            foreach (var msg in args.Envelope.Message)
             {
-                string sku = ((Relationship)msg.Item).ParentSKU;
+                string parentSku = ((Relationship)msg.Item).ParentSKU;
 
-                var entries = _processingEntries.Where(p => p.ClassName.Equals(sku));
+                var entries = _processingEntries.Where(p => p.Sku.Equals(parentSku));
 
-                if (msg.ProcessingResult != null && msg.ProcessingResult.ResultCode.Equals(ProcessingReportResultResultCode.Error))
+                bool hasError = false;
+
+                if (args.ProcessingReport.Result != null)
                 {
-                    foreach (AmznEntry entry in entries)
-                    {
-                        entry.RelationshipFeedStatus = StatusCode.Error;
-                        entry.Message = msg.ProcessingResult.ResultDescription;
+                    var results = args.ProcessingReport.Result.Where(p => p.MessageID.Equals(msg.MessageID));
 
-                        entry.UpdateStatus();
+                    foreach (var result in results)
+                    {
+                        if (result.ResultCode.Equals(ProcessingReportResultResultCode.Error))
+                        {
+                            hasError = true;
+                        }
+
+                        entries.ToList().ForEach(p => p.Message = result.ResultDescription);
                     }
+                }
+
+                if (hasError)
+                {
+                    entries.ToList().ForEach(p => p.RelationshipFeedStatus = StatusCode.Error);
                 }
                 else
                 {
-                    foreach (AmznEntry entry in entries)
-                    {
-                        entry.RelationshipFeedStatus = StatusCode.Completed;
-
-                        entry.UpdateStatus();
-                    }
+                    entries.ToList().ForEach(p => p.RelationshipFeedStatus = StatusCode.Completed);
                 }
+
+                entries.ToList().ForEach(p => p.UpdateStatus());
             }
         }
 
-        private void HandleInventoryFeedResult(AmazonEnvelope envelope)
+        private void HandleInventoryFeedResult(ResultArgs args)
         {
-            foreach (AmazonEnvelopeMessage msg in envelope.Message)
+            foreach (var msg in args.Envelope.Message)
             {
                 string sku = ((Inventory)msg.Item).SKU;
 
                 AmznEntry entry = _processingEntries.Single(p => p.Sku.Equals(sku));
 
-                if (msg.ProcessingResult != null && msg.ProcessingResult.ResultCode.Equals(ProcessingReportResultResultCode.Error))
+                bool hasError = false;
+
+                if (args.ProcessingReport.Result != null)
+                {
+                    var results = args.ProcessingReport.Result.Where(p => p.MessageID.Equals(msg.MessageID));
+
+                    foreach (var result in results)
+                    {
+                        if (result.ResultCode.Equals(ProcessingReportResultResultCode.Error))
+                        {
+                            hasError = true;
+                        }
+
+                        entry.Message = result.ResultDescription;
+                    }
+                }
+
+                if (hasError)
                 {
                     entry.InventoryFeedStatus = StatusCode.Error;
-                    entry.Message = msg.ProcessingResult.ResultDescription;
                 }
                 else
                 {
@@ -199,18 +221,34 @@ namespace WorkbookPublisher.ViewModel
             }
         }
 
-        private void HandlePriceFeedResult(AmazonEnvelope envelope)
+        private void HandlePriceFeedResult(ResultArgs args)
         {
-            foreach (AmazonEnvelopeMessage msg in envelope.Message)
+            foreach (var msg in args.Envelope.Message)
             {
                 string sku = ((Price)msg.Item).SKU;
 
                 AmznEntry entry = _processingEntries.Single(p => p.Sku.Equals(sku));
 
-                if (msg.ProcessingResult != null && msg.ProcessingResult.ResultCode.Equals(ProcessingReportResultResultCode.Error))
+                bool hasError = false;
+
+                if (args.ProcessingReport.Result != null)
+                {
+                    var results = args.ProcessingReport.Result.Where(p => p.MessageID.Equals(msg.MessageID));
+
+                    foreach (var result in results)
+                    {
+                        if (result.ResultCode.Equals(ProcessingReportResultResultCode.Error))
+                        {
+                            hasError = true;
+                        }
+
+                        entry.Message = result.ResultDescription;
+                    }
+                }
+
+                if (hasError)
                 {
                     entry.PriceFeedStatus = StatusCode.Error;
-                    entry.Message = msg.ProcessingResult.ResultDescription;
                 }
                 else
                 {
@@ -221,39 +259,43 @@ namespace WorkbookPublisher.ViewModel
             }
         }
 
-        private void HandleProductFeedResult(AmazonEnvelope envelope)
+        private void HandleProductFeedResult(ResultArgs args)
         {
             List<AmazonEnvelopeMessage> newMsgs = new List<AmazonEnvelopeMessage>();
 
-            int currentMsg = 1;
-
-            foreach (AmazonEnvelopeMessage msg in envelope.Message)
+            foreach (var msg in args.Envelope.Message)
             {
-                bool hasError = false;
-
-                if (msg.ProcessingResult != null && msg.ProcessingResult.ResultCode.Equals(ProcessingReportResultResultCode.Error))
-                {
-                    newMsgs.Add(
-                        new AmazonEnvelopeMessage()
-                        {
-                            Item = msg.Item,
-                            MessageID = currentMsg.ToString(),
-                            OperationType = msg.OperationType,
-                            OperationTypeSpecified = msg.OperationTypeSpecified,
-                            ProcessingResult = msg.ProcessingResult
-                        });
-
-
-                    hasError = true;
-
-                    currentMsg++;
-                }
-
                 string sku = ((Product)msg.Item).SKU;
 
                 if (_processingEntries.Any(p => p.Sku.Equals(sku)))
                 {
+                    bool hasError = false;
+
                     AmznEntry entry = _processingEntries.Single(p => p.Sku.Equals(sku));
+
+                    if (args.ProcessingReport.Result != null)
+                    {
+                        var results = args.ProcessingReport.Result.Where(p => p.MessageID.Equals(msg.MessageID));
+
+                        foreach (var result in results)
+                        {
+                            if (result.ResultCode.Equals(ProcessingReportResultResultCode.Error))
+                            {
+                                hasError = true;
+
+                                newMsgs.Add(new AmazonEnvelopeMessage()
+                                {
+                                    Item = msg.Item,
+                                    MessageID = msg.MessageID,
+                                    OperationType = msg.OperationType,
+                                    OperationTypeSpecified = msg.OperationTypeSpecified,
+                                    ProcessingResult = result
+                                });
+                            }
+
+                            entry.Message = result.ResultDescription;
+                        }
+                    }
 
                     if (hasError)
                     {
@@ -268,31 +310,51 @@ namespace WorkbookPublisher.ViewModel
                 }
                 else if (_processingEntries.Any(p => p.ClassName.Equals(sku)))
                 {
-                    var entries = _processingEntries.Where(p => p.ClassName.Equals(sku));
+                    bool hasError = false;
+                    var entries = _processingEntries.Where(p => p.Sku.Equals(sku));
 
-                    foreach (AmznEntry entry in entries)
+                    if (args.ProcessingReport.Result != null)
                     {
-                        if (hasError)
+                        var results = args.ProcessingReport.Result.Where(p => p.MessageID.Equals(msg.MessageID));
+                        foreach (var result in results)
                         {
-                            entry.ParentProductFeedStatus = StatusCode.Error;
-                            entry.Message = msg.ProcessingResult.ResultDescription;
-                        }
-                        else
-                        {
-                            entry.ParentProductFeedStatus = StatusCode.Completed;
-                        }
+                            if (result.ResultCode.Equals(ProcessingReportResultResultCode.Error))
+                            {
+                                hasError = true;
 
-                        entry.UpdateStatus();
+                                newMsgs.Add(new AmazonEnvelopeMessage()
+                                {
+                                    Item = msg.Item,
+                                    MessageID = msg.MessageID,
+                                    OperationType = msg.OperationType,
+                                    OperationTypeSpecified = msg.OperationTypeSpecified,
+                                    ProcessingResult = result
+                                });
+                            }
+
+                            entries.ToList().ForEach(p => p.Message = result.ResultDescription);
+                        }
                     }
+
+                    if (hasError)
+                    {
+                        entries.ToList().ForEach(p => p.ParentProductFeedStatus = StatusCode.Error);
+                    }
+                    else
+                    {
+                        entries.ToList().ForEach(p => p.ParentProductFeedStatus = StatusCode.Completed);
+                    }
+
+                    entries.ToList().ForEach(p => p.UpdateStatus());
                 }
             }
 
             if (newMsgs.Count > 0)
             {
                 AmazonEnvelope newEnvelope = new AmazonEnvelope();
-                newEnvelope.MessageType = envelope.MessageType;
-                newEnvelope.Header = envelope.Header;
-                newEnvelope.MarketplaceName = envelope.MarketplaceName;
+                newEnvelope.MessageType = args.Envelope.MessageType;
+                newEnvelope.Header = args.Envelope.Header;
+                newEnvelope.MarketplaceName = args.Envelope.MarketplaceName;
                 newEnvelope.Message = newMsgs.ToArray();
 
                 _pendingResubmission.Enqueue(newEnvelope);
@@ -339,6 +401,7 @@ namespace WorkbookPublisher.ViewModel
                     listingItem = new AmznListingItem();
 
                     listingItem.Item = _dataContext.Items.Single(p => p.ItemLookupCode.Equals(entry.Sku));
+                    listingItem.Sku = entry.Sku;
                     listingItem.Title = entry.Title;
 
                     entry.ProductFeedStatus = StatusCode.Processing;

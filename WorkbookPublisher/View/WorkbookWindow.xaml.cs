@@ -28,6 +28,7 @@ namespace WorkbookPublisher
         public WorkbookWindow()
         {
             InitializeComponent();
+
         }
 
         private void btnShowAvailableHeader_Click(object sender, RoutedEventArgs e)

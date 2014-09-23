@@ -221,18 +221,51 @@ namespace AmazonServices
 
         private string GetSize()
         {
-            string gender = GetDepartment();
+            string size = string.Empty;
 
-            if (gender.Equals("unisex"))
-            {
-                string womenSize = (double.Parse(_item.Attributes[AttributeLabel.Size].Value) + 1.5).ToString();
+            string width = _item.Attributes[AttributeLabel.Width].Value;
 
-                return _item.Attributes[AttributeLabel.Size].Value + " " + FormatWidth(_item.Attributes[AttributeLabel.Width].Value, "mens") + "US Men / " + womenSize + " " + FormatWidth(_item.Attributes[AttributeLabel.Width].Value, "womens") + " US Women";
-            }
-            else
+            if (_item.Attributes.ContainsKey(AttributeLabel.USMenSize))
             {
-                return _item.Attributes[AttributeLabel.Size].Value + " " + FormatWidth(_item.Attributes[AttributeLabel.Width].Value, gender) + " US";
+                if (width.Equals("M") || width.Equals("D"))
+                {
+                    size = _item.Attributes[AttributeLabel.USMenSize].Value + "D(M) US";
+                }
+                else if (width.Equals("EE") || width.Equals("W"))
+                {
+                    size = _item.Attributes[AttributeLabel.USMenSize].Value + "2E US";
+                }
+                else if (width.Equals("EEE") || width.Equals("XW"))
+                {
+                    size = _item.Attributes[AttributeLabel.USMenSize].Value + "3E US";
+                }
+                else if (width.Equals("B") || width.Equals("N"))
+                {
+                    size = _item.Attributes[AttributeLabel.USMenSize].Value + "B(N) US";
+                }
             }
+            else if (_item.Attributes.ContainsKey(AttributeLabel.USWomenSize))
+            {
+                if (width.Equals("C") || width.Equals("D") || width.Equals("W"))
+                {
+                    size = _item.Attributes[AttributeLabel.USWomenSize].Value + "C/D US";
+                }
+                else if (width.Equals("B") || width.Equals("M"))
+                {
+                    size = _item.Attributes[AttributeLabel.USWomenSize].Value + "B(M) US";
+                }
+                else if (width.Equals("2E") || width.Equals("EE") || width.Equals("XW"))
+                {
+                    size = _item.Attributes[AttributeLabel.USWomenSize].Value + "E US";
+                }
+                else if (width.Equals("2A") || width.Equals("AA") || width.Equals("N"))
+                {
+                    size = _item.Attributes[AttributeLabel.USWomenSize].Value + "2A(N) US";
+                }
+            }
+
+            return size;
+           
         }
 
         private string GetDepartment()
@@ -258,7 +291,6 @@ namespace AmazonServices
 
         private string FormatWidth(string width, string gender)
         {
-
             if (gender.Equals("mens"))
             {
                 if (width.Equals("M") || width.Equals("D"))
