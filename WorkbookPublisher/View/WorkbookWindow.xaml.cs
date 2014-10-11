@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using BerkeleyEntities;
 using WorkbookPublisher.ViewModel;
+using WorkbookPublisher.View;
 
 namespace WorkbookPublisher
 {
@@ -28,6 +29,18 @@ namespace WorkbookPublisher
         public WorkbookWindow()
         {
             InitializeComponent();
+
+            PostingTemplateEditor test = new PostingTemplateEditor();
+
+            eBay.Service.Core.Soap.ItemType template = new eBay.Service.Core.Soap.ItemType();
+
+            template.PaymentMethods = new eBay.Service.Core.Soap.BuyerPaymentMethodCodeTypeCollection();
+
+            test.DataContext = new TemplateViewModel(template);
+
+            Window testWindow = new Window();
+            testWindow.Content = test;
+            testWindow.ShowDialog();
 
         }
 

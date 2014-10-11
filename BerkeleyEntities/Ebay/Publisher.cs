@@ -70,7 +70,7 @@ namespace BerkeleyEntities.Ebay
                 listing.Code = response.ItemID;
                 listing.StartTime = response.StartTime;
                 listing.EndTime = response.EndTime;
-                listing.Status = "Active";
+                listing.Status = STATUS_ACTIVE;
             }
             else
             {
@@ -83,7 +83,7 @@ namespace BerkeleyEntities.Ebay
                 listing.Code = response.ItemID;
                 listing.StartTime = response.StartTime;
                 listing.EndTime = response.EndTime;
-                listing.Status = "Active";
+                listing.Status = STATUS_ACTIVE;
             }
         }
 

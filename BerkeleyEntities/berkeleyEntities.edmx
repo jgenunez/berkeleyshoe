@@ -364,8 +364,8 @@
           <Property Name="CompanyName" Type="nvarchar" MaxLength="50" />
           <Property Name="CountryName" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="CountryCode" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="CityName" Type="nvarchar" MaxLength="50" />
-          <Property Name="StateOrProvince" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CityName" Type="nvarchar" MaxLength="100" />
+          <Property Name="StateOrProvince" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="PostalCode" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Street1" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="Street2" Type="nvarchar" MaxLength="100" Nullable="false" />
@@ -2339,7 +2339,7 @@
           <Property Type="DateTime" Name="ShippedTime" Nullable="true" Precision="3" />
           <Property Type="String" Name="Street1" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Street2" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="StateOrProvince" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="StateOrProvince" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="PostalCode" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="CountryCode" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="CountryName" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -2362,7 +2362,7 @@
           <Property Type="Boolean" Name="ExpeditedService" />
           <Property Type="String" Name="BuyerID" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="CompanyName" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="CityName" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="CityName" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="EbayOrderItem">
           <Key>

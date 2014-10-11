@@ -170,24 +170,30 @@ namespace AmazonServices.Mappers
             {
                 foreach (var classGroup in classGroups)
                 {
-                    var siblingSkus = dataContext.AmznListingItems
-                        .Where(p => p.IsActive && p.MarketplaceID == _marketplace.ID &&  p.Item.ItemClassComponents.First().ItemClass.ItemLookupCode.Equals(classGroup.Key)).Select(p => p.Sku);
+                    var itemClass = dataContext.ItemClasses.SingleOrDefault(p => p.ItemLookupCode.Equals(classGroup.Key));
 
-                    Relationship relationships = new Relationship();
-                    relationships.ParentSKU = classGroup.Key;
-
-                    List<RelationshipRelation> relations = new List<RelationshipRelation>();
-
-                    foreach(string sku in siblingSkus)
+                    if (itemClass != null)
                     {
-                        relations.Add(new RelationshipRelation() { SKU = sku, Type = RelationshipRelationType.Variation } );
+                        var siblingSkus = itemClass.ItemClassComponents.Select(p => p.Item)
+                            .Where(p => p.AmznListingItems.Any(s => s.IsActive && s.MarketplaceID == _marketplace.ID))
+                            .Select(p => p.ItemLookupCode);
+
+                        Relationship relationships = new Relationship();
+                        relationships.ParentSKU = classGroup.Key;
+
+                        List<RelationshipRelation> relations = new List<RelationshipRelation>();
+
+                        foreach (string sku in siblingSkus)
+                        {
+                            relations.Add(new RelationshipRelation() { SKU = sku, Type = RelationshipRelationType.Variation });
+                        }
+
+                        relationships.Relation = relations.ToArray();
+
+                        messages.Add(BuildMessage(relationships, currentMsg));
+
+                        currentMsg++;
                     }
-
-                    relationships.Relation = relations.ToArray();
-
-                    messages.Add(BuildMessage(relationships, currentMsg));
-
-                    currentMsg++;
                 } 
             }
 

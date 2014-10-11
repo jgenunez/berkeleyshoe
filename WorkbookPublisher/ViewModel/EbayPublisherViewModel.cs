@@ -84,7 +84,14 @@ namespace WorkbookPublisher.ViewModel
 
                         if (listingItem.Quantity == entry.Q)
                         {
-                            entry.Status = StatusCode.Completed;
+                            if (format.Equals(Publisher.FORMAT_AUCTION))
+                            {
+                                entry.Status = StatusCode.Completed;
+                            }
+                            else if(decimal.Equals(listingItem.Price, entry.P))
+                            {
+                                entry.Status = StatusCode.Completed;
+                            }
                         }
                     }
                     else if (listingItems.Count() > 1)

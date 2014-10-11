@@ -74,7 +74,7 @@ namespace WorkbookPublisher.ViewModel
 
                     AmznListingItem listingItem = item.AmznListingItems.SingleOrDefault(p => p.IsActive && p.MarketplaceID == marketplace.ID);
 
-                    if (listingItem != null && listingItem.Quantity == entry.Q)
+                    if (listingItem != null && listingItem.Quantity == entry.Q && decimal.Equals(listingItem.Price, entry.P))
                     {
                         entry.Status = StatusCode.Completed;
                     }

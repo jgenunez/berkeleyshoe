@@ -187,6 +187,7 @@ namespace EbayServices.Mappers
             {
                 case "SS" :
                 case "XN": return "Extra Narrow (AAA+)";
+                case "S" :
                 case "N": return "Narrow (AA, N)";
                 case "M":
                 case "B": return "Medium (B, M)";

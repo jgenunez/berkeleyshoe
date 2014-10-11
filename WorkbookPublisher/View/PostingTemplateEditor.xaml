@@ -17,8 +17,10 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="auto"/>
         </Grid.ColumnDefinitions>
@@ -38,10 +40,25 @@
         <TextBlock Grid.Row="4" Margin="10" HorizontalAlignment="Center" Text="Currency"/>
         <ComboBox Name="cbCurrency" Grid.Row="4" Grid.Column="1" Margin="10" HorizontalAlignment="Center" SelectedItem="{Binding Currency}"/>
 
-        <TextBlock Grid.Row="5" Margin="10" HorizontalAlignment="Center" Text="Payment Methods"/>
-        <ListBox Grid.Row="5" Grid.Column="1" Margin="5" ItemsSource="{Binding PaymentMethods}"></ListBox>
+        <TextBlock Grid.Row="5" Grid.RowSpan="2" Margin="10" HorizontalAlignment="Center" Text="Payment Methods"/>
+        <StackPanel Grid.Row="5" Grid.Column="1"  Orientation="Vertical">
+            <StackPanel Orientation="Horizontal">
+                <Button Name="btnAddPaymentOption" Margin="8" Padding="15,5,15,5" Content="Add" Click="btnAddPaymentOption_Click" />
+                <ComboBox Name="cbPaymentOption" Margin="8" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+            </StackPanel>
+            <ListView Name="lvPaymentOptions" ItemsSource="{Binding Path=PaymentMethods}">
+                <ListView.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Remove" Click="MenuItem_Click"/>
+                    </ContextMenu>
+                </ListView.ContextMenu>
+            </ListView>
+        </StackPanel>
 
-        <TextBlock Grid.Row="6" Margin="10" HorizontalAlignment="Center" Width="22" Text="Size"/>
-        <TextBox Grid.Row="6" Grid.Column="1" Margin="10" HorizontalAlignment="Center" Width="216" Text="{Binding Path=ProductData.Item.VariationData.Size}"/>
+        <TextBlock Grid.Row="6" Grid.RowSpan="2" Margin="10" HorizontalAlignment="Center" Text="Payment Methods"/>
+
+
+
+
     </Grid>
 </UserControl>
