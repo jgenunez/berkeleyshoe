@@ -13,6 +13,8 @@ using BerkeleyEntities;
 using System.Collections.ObjectModel;
 using System.Windows.Data;
 using System.ComponentModel;
+using System.IO;
+using System.Drawing;
 
 namespace WorkbookPublisher
 {
@@ -71,6 +73,7 @@ namespace WorkbookPublisher
                 foreach (Row row in GetValidRows(parentWorksheetPart.Worksheet))
                 {
                     string sku = GetCellValue(GetCell(row, _colHeadersToRefs[COLUMN_SKU]));
+
                     string format = GetCellValue(GetCell(row, _colHeadersToRefs[COLUMN_FORMAT]));
 
                     Entry entry = entries.SingleOrDefault(p => p.Sku.Equals(sku) && p.Format.Equals(format));
@@ -114,6 +117,40 @@ namespace WorkbookPublisher
             }
         }
 
+        public void UpdateMainSheet(List<Entry> entries)
+        {
+            using (SpreadsheetDocument document = SpreadsheetDocument.Open(this.Path, true))
+            {
+                _stringTablePart = document.WorkbookPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault();
+
+                var sheets = document.WorkbookPart.Workbook.Sheets.Elements<Sheet>();
+
+                Sheet mainSheet = sheets.SingleOrDefault(p => p.Name.Value.ToUpper().Equals("MAIN"));
+
+                if (mainSheet != null)
+                {
+                    WorksheetPart mainWorksheetPart = document.WorkbookPart.GetPartById(mainSheet.Id) as WorksheetPart;
+
+                    Worksheet worksheet = mainWorksheetPart.Worksheet;
+
+                    Row headerRow = worksheet.Descendants<Row>().Single(p => p.RowIndex.Value == 1);
+
+                    RegisterColumns(typeof(Entry), headerRow);
+
+                    var rows = worksheet.GetFirstChild<SheetData>().Elements<Row>();
+
+                    foreach (Entry entry in entries)
+                    {
+                        Row row = rows.Single(p => p.RowIndex.Value == entry.RowIndex);
+
+                        UpdateRow(entry, row);
+                    }
+
+                }
+                document.Close();
+            }
+        }
+
         public List<Entry> ReadEntry(Type entryType, string code)
         {
             List<Entry> entries = new List<Entry>();
@@ -122,7 +159,7 @@ namespace WorkbookPublisher
             {
                 _stringTablePart = document.WorkbookPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault();
 
-                Sheet sheet = document.WorkbookPart.Workbook.Sheets.Descendants<Sheet>().SingleOrDefault(p => p.Name.Value.Equals(code));
+                Sheet sheet = document.WorkbookPart.Workbook.Sheets.Descendants<Sheet>().SingleOrDefault(p => p.Name.Value.ToUpper().Equals(code));
 
                 if (sheet != null)
                 {
@@ -214,6 +251,42 @@ namespace WorkbookPublisher
             return entry;
         }
 
+        private void UpdateRow(Entry entry, Row row)
+        {
+            foreach (string header in _colHeadersToRefs.Keys)
+            {
+                string colRef = _colHeadersToRefs[header];
+
+                if (_colRefsToProp.ContainsKey(colRef))
+                {
+                    var prop = _colRefsToProp[colRef];
+                    object value = prop.GetValue(entry, null);
+
+                    if (value != null)
+                    {
+                        Cell cell = GetCell(row, colRef);
+
+                        switch (prop.PropertyType.Name)
+                        {
+                            case "String":
+                                cell.CellValue = new CellValue(InsertSharedString(value.ToString()).ToString());
+                                cell.DataType = CellValues.SharedString; break;
+                            case "Int32":
+                            case "Decimal":
+                                cell.CellValue = new CellValue(value.ToString());
+                                cell.DataType = CellValues.Number; break;
+                            case "DateTime":
+                                cell.CellValue = new CellValue(value.ToString());
+                                cell.DataType = CellValues.Date; break;
+                            default:
+                                cell.CellValue = new CellValue(InsertSharedString(value.ToString()).ToString());
+                                cell.DataType = CellValues.SharedString; break; ;
+                        }
+                    }
+                }
+            }
+        }
+
         private Cell CreateCell(EbayEntry entry, string colRef)
         {
             Cell cell = new Cell();
@@ -223,6 +296,7 @@ namespace WorkbookPublisher
             if (_colRefsToProp.ContainsKey(colRef))
             {
                 PropertyInfo prop = _colRefsToProp[colRef];
+
                 object value = prop.GetValue(entry, null);
 
                 if (value != null)
@@ -375,6 +449,7 @@ namespace WorkbookPublisher
             {
                 // Cells must be in sequential order according to CellReference. Determine where to insert the new cell.
                 Cell refCell = null;
+
                 foreach (Cell cell in row.Elements<Cell>())
                 {
                     
@@ -388,8 +463,6 @@ namespace WorkbookPublisher
                 }
 
                 Cell newCell = new Cell() { CellReference = cellRef, StyleIndex = 0 };
-
-                
 
                 row.InsertBefore(newCell, refCell);
 
@@ -552,7 +625,7 @@ namespace WorkbookPublisher
 
     public enum StatusCode { Pending , Processing, Error, Completed };
 
-    public abstract class Entry : INotifyPropertyChanged
+    public class Entry : INotifyPropertyChanged
     {
         
         private List<string> _messages = new List<string>();
@@ -570,15 +643,26 @@ namespace WorkbookPublisher
         public int ListingID { get; set; }
 
         public uint RowIndex { get; set; }
-        public string Brand { get; set; }
+        public string Brand { get; set; }        
         public string ClassName { get; set; }
         public string Sku { get; set; }
+        public string Description { get; set; }
+        public string Department { get; set; }
+        public string Category { get; set; }
+        public string Notes { get; set; }
+        public string Color { get; set; }
+        public string Gender { get; set; }
+        public string UPC { get; set; }
+        public string Location { get; set; }
+        public int Qty { get; set; }
+        public decimal Cost { get; set; }
         public string Format { get; set; }
         public int Q { get; set; }
         public decimal P { get; set; }
         public string Title { get; set; }
 
-        
+        public string FullDescription { get; set; }
+
         public string Message
         {
             get { return string.Join(" | ", _messages); }
@@ -626,7 +710,7 @@ namespace WorkbookPublisher
 
         public bool StartDateSpecified { get; set; }
 
-        public string FullDescription { get; set; }
+        
 
         public bool IsAuction()
         {

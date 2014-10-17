@@ -229,38 +229,38 @@ namespace AmazonServices
             {
                 if (width.Equals("M") || width.Equals("D"))
                 {
-                    size = _item.Attributes[AttributeLabel.USMenSize].Value + "D(M) US";
+                    size = _item.Attributes[AttributeLabel.USMenSize].Value + " D(M) US";
                 }
                 else if (width.Equals("EE") || width.Equals("W"))
                 {
-                    size = _item.Attributes[AttributeLabel.USMenSize].Value + "2E US";
+                    size = _item.Attributes[AttributeLabel.USMenSize].Value + " 2E US";
                 }
                 else if (width.Equals("EEE") || width.Equals("XW"))
                 {
-                    size = _item.Attributes[AttributeLabel.USMenSize].Value + "3E US";
+                    size = _item.Attributes[AttributeLabel.USMenSize].Value + " 3E US";
                 }
                 else if (width.Equals("B") || width.Equals("N"))
                 {
-                    size = _item.Attributes[AttributeLabel.USMenSize].Value + "B(N) US";
+                    size = _item.Attributes[AttributeLabel.USMenSize].Value + " B(N) US";
                 }
             }
             else if (_item.Attributes.ContainsKey(AttributeLabel.USWomenSize))
             {
                 if (width.Equals("C") || width.Equals("D") || width.Equals("W"))
                 {
-                    size = _item.Attributes[AttributeLabel.USWomenSize].Value + "C/D US";
+                    size = _item.Attributes[AttributeLabel.USWomenSize].Value + " C/D US";
                 }
                 else if (width.Equals("B") || width.Equals("M"))
                 {
-                    size = _item.Attributes[AttributeLabel.USWomenSize].Value + "B(M) US";
+                    size = _item.Attributes[AttributeLabel.USWomenSize].Value + " B(M) US";
                 }
                 else if (width.Equals("2E") || width.Equals("EE") || width.Equals("XW"))
                 {
-                    size = _item.Attributes[AttributeLabel.USWomenSize].Value + "E US";
+                    size = _item.Attributes[AttributeLabel.USWomenSize].Value + " E US";
                 }
                 else if (width.Equals("2A") || width.Equals("AA") || width.Equals("N"))
                 {
-                    size = _item.Attributes[AttributeLabel.USWomenSize].Value + "2A(N) US";
+                    size = _item.Attributes[AttributeLabel.USWomenSize].Value + " 2A(N) US";
                 }
             }
 

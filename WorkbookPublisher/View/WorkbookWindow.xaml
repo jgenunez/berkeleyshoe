@@ -4,21 +4,25 @@
         Title="WorkbookWindow" Height="650" Width="800">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="75"></RowDefinition>
-            <RowDefinition Height="75"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
-
+        
         <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <Button Name="btnShowAvailableHeader"  Margin="5" Padding="5" VerticalAlignment="Center" Click="btnShowAvailableHeader_Click">Headers</Button>
             <Button Name="btnSetWorkbook" Click="btnSetWorkbook_Click"  Margin="5" Padding="5" VerticalAlignment="Center">Set Workbook</Button>
             <Label Name="lbCurrentWorkbook" Margin="5" VerticalAlignment="Center" Content="{Binding Path}"/>
         </StackPanel>
-
-        <TabControl Name="tcSheets" Margin="5"  Grid.Row="1" Grid.RowSpan="5" ItemsSource="{Binding Publishers}">
+        
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <Button Name="btnUpdate" Margin="5" Padding="5" VerticalAlignment="Center" Click="btnUpdate_Click">Update Main Sheet</Button>
+            <Button Name="btnPrint" Margin="5" Padding="5" VerticalAlignment="Center" Click="btnPrint_Click">Print</Button>
+        </StackPanel>
+        
+        <TabControl Name="tcSheets" Margin="5"  Grid.Row="2" Grid.RowSpan="4" ItemsSource="{Binding Publishers}">
             <TabControl.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
