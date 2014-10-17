@@ -19,7 +19,8 @@
         
         <StackPanel Grid.Row="1" Orientation="Horizontal">
             <Button Name="btnUpdate" Margin="5" Padding="5" VerticalAlignment="Center" Click="btnUpdate_Click">Update Main Sheet</Button>
-            <Button Name="btnPrint" Margin="5" Padding="5" VerticalAlignment="Center" Click="btnPrint_Click">Print</Button>
+            <Button Name="btnPrint" Margin="5" Padding="5" VerticalAlignment="Center" Click="btnPrint_Click">Generate Report</Button>
+            <Button Name="btnImportAmznData" Margin="5" Padding="5" VerticalAlignment="Center" Click="btnImportAmznData_Click">Import Amzn Data</Button>
         </StackPanel>
         
         <TabControl Name="tcSheets" Margin="5"  Grid.Row="2" Grid.RowSpan="4" ItemsSource="{Binding Publishers}">

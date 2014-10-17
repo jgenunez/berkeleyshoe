@@ -16,6 +16,8 @@ using BerkeleyEntities;
 using WorkbookPublisher.ViewModel;
 using WorkbookPublisher.View;
 using System.IO;
+using MarketplaceWebServiceProducts.Model;
+using System.Xml;
 
 namespace WorkbookPublisher
 {
@@ -24,6 +26,7 @@ namespace WorkbookPublisher
     /// </summary>
     public partial class WorkbookWindow : Window
     {
+        private const string MAIN_SHEET = "MAIN";
         private ExcelWorkbook _workbook;
 
 
@@ -79,7 +82,7 @@ namespace WorkbookPublisher
 
             try
             {
-                var entries = await Task.Run<List<Entry>>(() => _workbook.ReadEntry(typeof(Entry), "MAIN"));
+                var entries = await Task.Run<List<Entry>>(() => _workbook.ReadEntry(typeof(Entry), MAIN_SHEET));
 
                 await Task.Run(() => UpdateEntries(entries));
 
@@ -157,7 +160,14 @@ namespace WorkbookPublisher
             {
                 var entries = await Task.Run<List<Entry>>(() => _workbook.ReadEntry(typeof(Entry), "MAIN"));
 
-                await Task.Run(() => UpdateEntries(entries));
+                using (berkeleyEntities dataContext = new berkeleyEntities())
+                {
+                    foreach (Entry entry in entries)
+                    {
+                        Item item = dataContext.Items.Single(p => p.ItemLookupCode.Equals(entry.Sku));
+                        entry.ClassName = item.ClassName;
+                    }
+                }
 
                 string htmlTable = CreateHtmlTable(entries);
 
@@ -176,7 +186,9 @@ namespace WorkbookPublisher
         {
             StringBuilder table = new StringBuilder();
 
-            table.Append("<html><body><table border=\"2\">");
+            string style = @"<style> img { height:100px; max-width:100px; width: expression(this.width > 500 ? 500: true);} td { text-align: center;} .input { padding: 50px; } </style>";
+
+            table.AppendFormat(@"<html><head>{0}</head><body><table border=""2"">", style);
 
             PictureSetRepository picRepository = new PictureSetRepository();
 
@@ -194,17 +206,15 @@ namespace WorkbookPublisher
 
                 string rowSpan = classGroup.Count().ToString();
 
-                foreach (Entry entry in classGroup)
+                foreach (Entry entry in classGroup.OrderBy(p => p.Sku))
                 {
                     table.Append("<tr>");
 
                     if (!hasImage)
                     {
-                        table.AppendFormat(@"<td rowspan=""{1}""><img src=""{0}"" style=""height:100px;max-width:100px;width: expression(this.width > 500 ? 500: true);""></td>", mainPic.Path, rowSpan);
+                        table.AppendFormat(@"<td rowspan=""{1}""><img src=""{0}""></td>", mainPic.Path, rowSpan);
                         table.AppendFormat(@"<td rowspan=""{1}"">{0}</td>", entry.Brand, rowSpan);
                         table.AppendFormat(@"<td rowspan=""{1}"">{0}</td>", entry.Gender, rowSpan);
-
-                        
                     }
 
                     
@@ -219,10 +229,10 @@ namespace WorkbookPublisher
 
                     if (!hasImage)
                     {
-                        table.AppendFormat(@"<td rowspan=""{0}"">     </td>", rowSpan);
-                        table.AppendFormat(@"<td rowspan=""{0}"">     </td>", rowSpan);
-                        table.AppendFormat(@"<td rowspan=""{0}"">     </td>", rowSpan);
-                        table.AppendFormat(@"<td rowspan=""{0}"">     </td>", rowSpan);
+                        table.AppendFormat(@"<td class=""input"" rowspan=""{0}"">     </td>", rowSpan);
+                        table.AppendFormat(@"<td class=""input""  rowspan=""{0}"">     </td>", rowSpan);
+                        table.AppendFormat(@"<td class=""input""  rowspan=""{0}"">     </td>", rowSpan);
+                        table.AppendFormat(@"<td class=""input""  rowspan=""{0}"">     </td>", rowSpan);
 
                         hasImage = true;
                     }
@@ -235,6 +245,83 @@ namespace WorkbookPublisher
             table.Append("</table></body></html>");
 
             return table.ToString();
+        }
+
+        private async void btnImportAmznData_Click(object sender, RoutedEventArgs e)
+        {
+            btnImportAmznData.IsEnabled = false;
+
+            try
+            {
+                var entries = await Task.Run<List<Entry>>(() => _workbook.ReadEntry(typeof(Entry), MAIN_SHEET));
+
+                await Task.Run(() => ImportAmznData(entries));
+
+                await Task.Run(() => _workbook.UpdateMainSheet(entries));
+            }
+            catch (IOException x)
+            {
+                MessageBox.Show(x.Message);
+            }
+
+            btnImportAmznData.IsEnabled = true;
+        }
+
+        private void ImportAmznData(IEnumerable<Entry> entries)
+        {
+            using (berkeleyEntities dataContext = new berkeleyEntities())
+            {
+                foreach (Entry entry in entries)
+                {
+                    Item item = dataContext.Items.Single(p => p.ItemLookupCode.Equals(entry.Sku));
+                    entry.UPC = item.GTIN;
+                }
+
+                AmznMarketplace marketplace = dataContext.AmznMarketplaces.First();
+
+                var entriesWithUPC = entries.Where(p => !string.IsNullOrEmpty(p.UPC));
+
+                var results = marketplace.GetCatalogData(entriesWithUPC.Select(p => p.UPC));
+
+                foreach (var result in results)
+                {
+                    Entry entry = entriesWithUPC.Single(p => p.UPC.Equals(result.Id));
+
+                    if (result.IsSetProducts() && result.Products.IsSetProduct())
+                    {
+                        Product product = result.Products.Product.First();
+
+                        foreach (var attributeSet in product.AttributeSets.Any.Cast<XmlElement>())
+                        {
+                            var nodes = attributeSet.ChildNodes.OfType<XmlNode>();
+
+                            if (nodes.Any(p => p.LocalName.Equals("Feature")))
+                            {
+                                StringBuilder features = new StringBuilder();
+
+                                features.Append("<ul>");
+
+                                foreach (XmlNode node in nodes.Where(p => p.LocalName.Equals("Feature")))
+                                {
+                                    features.AppendFormat("<li>{0}</li>", node.InnerText);
+                                }
+
+                                features.Append("</ul>");
+
+                                entry.AmznDescription = features.ToString();
+                            }
+
+
+                            if (nodes.Any(p => p.LocalName.Equals("Title")))
+                            {
+                                XmlNode node = nodes.Single(p => p.LocalName.Equals("Title"));
+
+                                entry.AmznTitle = node.InnerText;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private void Test1()
@@ -281,6 +368,8 @@ namespace WorkbookPublisher
                 
             }
         }
+
+        
 
         
 

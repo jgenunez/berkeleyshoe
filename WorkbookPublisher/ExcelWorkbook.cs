@@ -660,7 +660,8 @@ namespace WorkbookPublisher
         public int Q { get; set; }
         public decimal P { get; set; }
         public string Title { get; set; }
-
+        public string AmznDescription { get; set; }
+        public string AmznTitle { get; set; }
         public string FullDescription { get; set; }
 
         public string Message

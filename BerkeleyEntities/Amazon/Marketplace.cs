@@ -7,11 +7,80 @@ using MarketplaceWebServiceOrders;
 using MarketplaceWebServiceProducts;
 using System.Xml.Serialization;
 using System.IO;
+using MarketplaceWebServiceProducts.Model;
+using System.Timers;
 
 namespace BerkeleyEntities
 {
     public partial class AmznMarketplace
     {
+        public List<GetMatchingProductForIdResult> GetCatalogData(IEnumerable<string> upcs)
+        {
+            int quota = 100;
+
+            Timer timer = new Timer(1000);
+
+            timer.Elapsed += (sender, e) => 
+            {
+                if (quota < 100)
+                {
+                    if ((quota + 5) > 100)
+                    {
+                        quota = 100;
+                    }
+                    else
+                    {
+                        quota += 5;
+                    }
+                }
+            };
+
+            timer.Start();
+
+            List<GetMatchingProductForIdResult> results = new List<GetMatchingProductForIdResult>();
+
+            Queue<string> pending = new Queue<string>(upcs);
+
+            while (pending.Count > 0)
+            {
+                List<string> current = new List<string>();
+
+                for (int i = 0; i < 5; i++)
+                {
+                    if (pending.Count > 0 && quota > 0)
+                    {
+                        quota--;
+
+                        current.Add(pending.Dequeue());
+                    }
+                }
+
+                GetMatchingProductForIdRequest request = new GetMatchingProductForIdRequest();
+                request.SellerId = this.MerchantId;
+                request.MarketplaceId = this.MarketplaceId;
+                request.IdList = new IdListType();
+                request.IdList.Id = current;
+                request.IdType = "UPC";
+
+                GetMatchingProductForIdResponse response = GetMWSProductsClient().GetMatchingProductForId(request);
+
+                if (response.IsSetGetMatchingProductForIdResult())
+                {
+                    foreach (GetMatchingProductForIdResult result in response.GetMatchingProductForIdResult)
+                    {
+                        results.Add(result);
+                    }
+                }
+            }
+
+            return results;
+        }
+
+        void timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
         public MarketplaceWebServiceClient GetMWSClient()
         {
             MarketplaceWebServiceConfig config = new MarketplaceWebServiceConfig();

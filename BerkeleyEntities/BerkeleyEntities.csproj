@@ -75,7 +75,6 @@
     <Compile Include="Amazon\Mappers\ProductMapperFactory.cs" />
     <Compile Include="Amazon\Mappers\ShoesAdapter.cs" />
     <Compile Include="Amazon\Publisher.cs" />
-    <Compile Include="Amazon\Services\GetCompetivePriceService.cs" />
     <Compile Include="Amazon\Services\ListingSyncService.cs" />
     <Compile Include="Amazon\Services\OrderSyncService.cs" />
     <Compile Include="Amazon\Services\OverpublishedService.cs" />
