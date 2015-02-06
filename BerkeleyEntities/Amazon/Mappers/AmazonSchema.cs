@@ -2677,6 +2677,9 @@ namespace BerkeleyEntities.Amazon
 
         /// <remarks/>
         Warning,
+
+        /// <remarks/>
+        Completed,
     }
 
     /// <remarks/>

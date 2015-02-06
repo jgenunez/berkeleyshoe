@@ -37,11 +37,11 @@
   <ItemGroup>
     <Reference Include="eBay.Service, Version=3.849.0.0, Culture=neutral, PublicKeyToken=1d9d786a5932eaf0, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\LIB\eBay .NET SDK v849 Release\eBay.Service.dll</HintPath>
+      <HintPath>..\LIB\eBay .NET SDK v897 Release\eBay.Service.dll</HintPath>
     </Reference>
     <Reference Include="eBay.Service.SDK.Attribute, Version=3.849.0.0, Culture=neutral, PublicKeyToken=1d9d786a5932eaf0, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\LIB\eBay .NET SDK v849 Release\eBay.Service.SDK.Attribute.dll</HintPath>
+      <HintPath>..\LIB\eBay .NET SDK v897 Release\eBay.Service.SDK.Attribute.dll</HintPath>
     </Reference>
     <Reference Include="MarketplaceWebService">
       <HintPath>..\LIB\MarketplaceWebService\bin\Debug\MarketplaceWebService.dll</HintPath>
@@ -51,6 +51,10 @@
     </Reference>
     <Reference Include="MarketplaceWebServiceProducts">
       <HintPath>..\LIB\MarketplaceWebServiceProducts\bin\Debug\MarketplaceWebServiceProducts.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\LIB\Json60r8\Bin\Net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NLog">
       <HintPath>..\LIB\NLog-2.1.0\net40\NLog.dll</HintPath>
@@ -68,41 +72,37 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Amazon\AmznListingItem.cs" />
     <Compile Include="Amazon\Mappers\AmazonSchema.cs" />
     <Compile Include="Amazon\Marketplace.cs" />
     <Compile Include="Amazon\Mappers\ListingMapper.cs" />
     <Compile Include="Amazon\Mappers\ProductData.cs" />
     <Compile Include="Amazon\Mappers\ProductMapperFactory.cs" />
     <Compile Include="Amazon\Mappers\ShoesAdapter.cs" />
-    <Compile Include="Amazon\Publisher.cs" />
-    <Compile Include="Amazon\Services\ListingSyncService.cs" />
-    <Compile Include="Amazon\Services\OrderSyncService.cs" />
-    <Compile Include="Amazon\Services\OverpublishedService.cs" />
+    <Compile Include="Amazon\Services.cs" />
     <Compile Include="berkeleyEntities.cs" />
     <Compile Include="berkeleyEntities.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>berkeleyEntities.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Bonanza\Services.cs" />
     <Compile Include="bsi_posts.cs" />
     <Compile Include="bsi_quantities.cs" />
     <Compile Include="Catalog\Category.cs" />
     <Compile Include="Catalog\Department.cs" />
+    <Compile Include="Ebay\ListingItem.cs" />
     <Compile Include="Ebay\Mappers\HandbagAdapter.cs" />
-    <Compile Include="Ebay\Mappers\UKShoesAdapter.cs" />
+    <Compile Include="Ebay\Mappers\ShirtAdapter.cs" />
     <Compile Include="Ebay\Marketplace.cs" />
     <Compile Include="Ebay\PictureServiceUrl.cs" />
     <Compile Include="Ebay\Listing.cs" />
-    <Compile Include="Ebay\Mappers\ListingMapper.cs" />
     <Compile Include="Ebay\Mappers\PantsAdapter.cs" />
     <Compile Include="Ebay\Mappers\ProductMapper.cs" />
     <Compile Include="Ebay\Mappers\ProductMapperFactory.cs" />
     <Compile Include="Ebay\Mappers\ProductMatrixMapper.cs" />
     <Compile Include="Ebay\Mappers\ShoesAdapter.cs" />
-    <Compile Include="Ebay\Publisher.cs" />
-    <Compile Include="Ebay\Services\ListingSyncService.cs" />
-    <Compile Include="Ebay\Services\OrderSyncService.cs" />
-    <Compile Include="Ebay\Services\OverpublishedService.cs" />
+    <Compile Include="Ebay\Services.cs" />
     <Compile Include="IMarketplace.cs" />
     <Compile Include="Catalog\InventoryEntry.cs" />
     <Compile Include="Catalog\Item.cs" />

@@ -3847,7 +3847,7 @@
           <ConnectorPoint PointX="10.625" PointY="8.5" />
         </AssociationConnector>
         <EntityTypeShape EntityType="BerkeleyEntities.InventoryTransferLog" Width="2.25" PointX="9.125" PointY="3.125" Height="0.4" IsExpanded="false" />
-        <EntityTypeShape EntityType="BerkeleyEntities.TransactionEntry" Width="1.75" PointX="9" PointY="4" Height="0.4" IsExpanded="false" />
+        <EntityTypeShape EntityType="BerkeleyEntities.TransactionEntry" Width="1.75" PointX="8.875" PointY="4.375" Height="0.4" IsExpanded="false" />
         <AssociationConnector Association="BerkeleyEntities.InventoryTransferLogItem">
           <ConnectorPoint PointX="9.125" PointY="3.325" />
           <ConnectorPoint PointX="8.4895833333333339" PointY="3.3249999999999997" />

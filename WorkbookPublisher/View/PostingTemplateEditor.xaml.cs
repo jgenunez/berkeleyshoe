@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WorkbookPublisher.ViewModel;
 
 namespace WorkbookPublisher.View
 {
@@ -22,43 +23,35 @@ namespace WorkbookPublisher.View
     /// </summary>
     public partial class PostingTemplateEditor : UserControl
     {
+
         public PostingTemplateEditor()
         {
             InitializeComponent();
-
-            ItemType template = this.DataContext as ItemType;
-
-            cbCurrency.ItemsSource = Enum.GetValues(typeof(CurrencyCodeType)).Cast<CurrencyCodeType>();
-            cbCountry.ItemsSource = Enum.GetValues(typeof(CountryCodeType)).Cast<CountryCodeType>();
-            cbPaymentOption.ItemsSource = Enum.GetValues(typeof(BuyerPaymentMethodCodeType)).Cast<BuyerPaymentMethodCodeType>();
-            
         }
 
-        private void btnAddPaymentOption_Click(object sender, RoutedEventArgs e)
+        private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
-            BuyerPaymentMethodCodeType currentSelection = (BuyerPaymentMethodCodeType)cbPaymentOption.SelectedItem;
+            TemplateViewModel template = this.DataContext as TemplateViewModel;
 
-            ObservableCollection<BuyerPaymentMethodCodeType> options = lvPaymentOptions.ItemsSource as ObservableCollection<BuyerPaymentMethodCodeType>;
+            BuyerPaymentMethodCodeType currentSelection = (BuyerPaymentMethodCodeType)cbPaymentOptions.SelectedItem;
 
-            if (options.OfType<BuyerPaymentMethodCodeType>().Any(p => p.Equals(currentSelection)))
+            if (template.CurrentPayments.Contains(currentSelection))
             {
-                MessageBox.Show(currentSelection.ToString() + " already exist");
+                MessageBox.Show("cannot add duplicate payment options");
             }
             else
             {
-                options.Add(currentSelection);
-                lvPaymentOptions.ItemsSource = options;
+                template.AddPayment(currentSelection);
             }
-
         }
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        private void miRemove_Click(object sender, RoutedEventArgs e)
         {
+            TemplateViewModel template = this.DataContext as TemplateViewModel;
+
             BuyerPaymentMethodCodeType currentSelection = (BuyerPaymentMethodCodeType)lvPaymentOptions.SelectedItem;
 
-            ObservableCollection<BuyerPaymentMethodCodeType> options = lvPaymentOptions.ItemsSource as ObservableCollection<BuyerPaymentMethodCodeType>;
-
-            options.Remove(currentSelection);
+            template.RemovePayment(currentSelection);
         }
 
         

@@ -5,7 +5,7 @@ using System.Text;
 using eBay.Service.Core.Soap;
 using BerkeleyEntities;
 
-namespace EbayServices.Mappers
+namespace BerkeleyEntities.Ebay.Mappers
 {
     public class ProductMatrixMapper 
     {

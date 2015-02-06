@@ -14,15 +14,13 @@ using System.Windows.Input;
 
 namespace WorkbookPublisher.ViewModel
 {
-
-
     public abstract class PublisherViewModel : INotifyPropertyChanged
     {
         protected PublishCommand _publishCommand;
         protected ReadCommand _readEntriesCommand;
-        protected FixCommand _fixErrorsCommand;
+        protected UpdateCommand _updateCommand;
 
-        protected ObservableCollection<Entry> _entries = new ObservableCollection<Entry>();
+        protected ObservableCollection<ListingEntry> _entries = new ObservableCollection<ListingEntry>();
         protected ExcelWorkbook _workbook;
 
         protected string _marketplaceCode;
@@ -30,12 +28,11 @@ namespace WorkbookPublisher.ViewModel
         public PublisherViewModel(ExcelWorkbook workbook, string marketplaceCode)
         {
             _marketplaceCode = marketplaceCode;
+
             _workbook = workbook;
 
             this.Entries = CollectionViewSource.GetDefaultView(_entries);
-
-            this.Entries.Filter = p => ((Entry)p).Status.Equals(StatusCode.Error);
-
+            
             _entries.CollectionChanged += (e, x) => 
             {
                 if (x.NewItems != null)
@@ -46,7 +43,10 @@ namespace WorkbookPublisher.ViewModel
                         {
                             if (this.PropertyChanged != null)
                             {
-                                this.PropertyChanged(this, new PropertyChangedEventArgs("Progress"));
+                                this.PropertyChanged(this, new PropertyChangedEventArgs("Completed"));
+                                this.PropertyChanged(this, new PropertyChangedEventArgs("Pending"));
+                                this.PropertyChanged(this, new PropertyChangedEventArgs("Error"));
+                                this.PropertyChanged(this, new PropertyChangedEventArgs("Processing"));
                             }
                         };
                     } 
@@ -54,7 +54,10 @@ namespace WorkbookPublisher.ViewModel
 
                 if (this.PropertyChanged != null)
                 {
-                    this.PropertyChanged(this, new PropertyChangedEventArgs("Progress"));
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("Completed"));
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("Pending"));
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("Error"));
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("Processing"));
                 }
             };
         }
@@ -65,27 +68,71 @@ namespace WorkbookPublisher.ViewModel
 
         public string Header { get { return _marketplaceCode; } }
 
-        public string Progress
+        public int Processing
+        {
+            get 
+            {
+                if (this.Entries != null)
+                {
+                    var entries = this.Entries.SourceCollection.OfType<ListingEntry>();
+
+                    return entries.Where(p => p.Status.Equals(StatusCode.Processing)).Count();
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
+
+        public int Completed
         {
             get
             {
                 if (this.Entries != null)
                 {
-                    var entries = this.Entries.SourceCollection.OfType<Entry>();
+                    var entries = this.Entries.SourceCollection.OfType<ListingEntry>();
 
-                    string completed = entries.Where(p => p.Status.Equals(StatusCode.Completed)).Count().ToString();
-                    string waiting = entries.Where(p => p.Status.Equals(StatusCode.Pending)).Count().ToString();
-                    string errors = entries.Where(p => p.Status.Equals(StatusCode.Error)).Count().ToString();
-                    string processing = entries.Where(p => p.Status.Equals(StatusCode.Processing)).Count().ToString();
-
-
-                    return string.Format("{0} Pending\n{1} Processing\n{2} Completed\n{3} Errors", waiting, processing, completed, errors);
+                    return entries.Where(p => p.Status.Equals(StatusCode.Completed)).Count();
                 }
                 else
                 {
-                    return "0 Pending\n0 Processing\n0 Completed\n0 Errors";
+                    return 0;
                 }
+            }
+        }
 
+        public int Error
+        {
+            get
+            {
+                if (this.Entries != null)
+                {
+                    var entries = this.Entries.SourceCollection.OfType<ListingEntry>();
+
+                    return entries.Where(p => p.Status.Equals(StatusCode.Error)).Count();
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
+
+        public int Pending
+        {
+            get
+            {
+                if (this.Entries != null)
+                {
+                    var entries = this.Entries.SourceCollection.OfType<ListingEntry>();
+
+                    return entries.Where(p => p.Status.Equals(StatusCode.Pending)).Count();
+                }
+                else
+                {
+                    return 0;
+                }
             }
         }
 
@@ -106,31 +153,31 @@ namespace WorkbookPublisher.ViewModel
             }
         }
 
-        public ICommand FixCommand
+        public ICommand UpdateCommand
         {
             get
             {
-                return _fixErrorsCommand;
+                return _updateCommand;
             }
         }
     }
 
-    public class FixCommand : ICommand
+    public class UpdateCommand : ICommand
     {
-        private string _marketplacCode;
+        private string _marketplaceCode;
         private bool _canExecute = false;
         private ExcelWorkbook _workbook;
 
-        public FixCommand(ExcelWorkbook workbook, string marketplaceCode)
+        public UpdateCommand(ExcelWorkbook workbook, string marketplaceCode)
         {
             _workbook = workbook;
-            _marketplacCode = marketplaceCode;
+            _marketplaceCode = marketplaceCode;
         }
 
         public event EventHandler FixCompleted;
         public event EventHandler CanExecuteChanged;
 
-        public void PublishCompletedHandler(object e, EventArgs args)
+        public void ReadCompletedHandler(object e, EventArgs args)
         {
             SetCanExecute(true);
         }
@@ -146,16 +193,11 @@ namespace WorkbookPublisher.ViewModel
 
             try
             {
-                var entries = ((ICollectionView)parameter).SourceCollection.OfType<Entry>();
+                var entries = ((ICollectionView)parameter).SourceCollection.OfType<ListingEntry>();
 
-                var errorEntries = entries.Where(p => p.Status.Equals(StatusCode.Error)).ToList();
+                _workbook.UpdateSheet(entries.Cast<BaseEntry>().ToList(), typeof(ListingEntry), _marketplaceCode);
 
-                if (errorEntries.Count > 0)
-                {
-                    _workbook.CreateErrorSheet(_marketplacCode + "(errors)", errorEntries);
-                }
-
-                var sourceEntries = ((ICollectionView)parameter).SourceCollection as ObservableCollection<Entry>;
+                var sourceEntries = ((ICollectionView)parameter).SourceCollection as ObservableCollection<ListingEntry>;
 
                 sourceEntries.Clear();
 
@@ -197,6 +239,11 @@ namespace WorkbookPublisher.ViewModel
             SetCanExecute(true);
         }
 
+        public void FixCompletedHandler(object e, EventArgs args)
+        {
+            SetCanExecute(false);
+        }
+
         public bool CanExecute(object parameter)
         {
             return _canExecute;
@@ -208,14 +255,14 @@ namespace WorkbookPublisher.ViewModel
 
             _view = ((ICollectionView)parameter);
             
-            var entries = _view.SourceCollection.OfType<Entry>();
+            var entries = _view.SourceCollection.OfType<ListingEntry>();
 
             var pendingEntries = entries.Where(p => p.Status.Equals(StatusCode.Pending));
 
             Publish(pendingEntries);
         }
 
-        public abstract void Publish(IEnumerable<Entry> entries);
+        public abstract void Publish(IEnumerable<ListingEntry> entries);
 
         protected void RaisePublishCompleted()
         {
@@ -268,20 +315,24 @@ namespace WorkbookPublisher.ViewModel
         {
             SetCanExecute(false);
 
-            var entries = ((ICollectionView)parameter).SourceCollection as ObservableCollection<Entry>;
+            var entries = ((ICollectionView)parameter).SourceCollection as ObservableCollection<ListingEntry>;
 
             try
             {
-                var result = await Task.Run<List<Entry>>(() => _workbook.ReadEntry(this.EntryType, _marketplaceCode + "(errors)"));
+                var result = await Task.Run<List<object>>(() => _workbook.ReadSheet(this.EntryType, _marketplaceCode));
 
-                if (result.Count() == 0)
+                foreach (ListingEntry entry in result.Cast<ListingEntry>().Where(p => !string.IsNullOrWhiteSpace(p.Sku)))
                 {
-                    result = await Task.Run<List<Entry>>(() => _workbook.ReadEntry(this.EntryType, _marketplaceCode));
+                    entry.ClearMessages();
+                    entries.Add(entry);
                 }
 
-                result.ForEach(p => entries.Add(p));
+                var newEntries = await Task.Run<List<ListingEntry>>(() => UpdateAndValidateEntries(entries.ToList()));
 
-                await Task.Run(() => UpdateEntries(entries));
+                foreach (var newEntry in newEntries)
+                {
+                    entries.Add(newEntry);
+                }
 
                 if (entries.Count != 0)
                 {
@@ -295,9 +346,7 @@ namespace WorkbookPublisher.ViewModel
                 else
                 {
                     MessageBox.Show("No entry found");
-
                     entries.Clear();
-
                     SetCanExecute(true);
                 }
             }
@@ -306,9 +355,16 @@ namespace WorkbookPublisher.ViewModel
                 MessageBox.Show(e.Message);
                 SetCanExecute(true);
             }
+            catch (FormatException x)
+            {
+                MessageBox.Show("Invalid columns");
+                SetCanExecute(true);
+            }
+
+           
         }
 
-        public abstract void UpdateEntries(IEnumerable<Entry> entries);
+        public abstract List<ListingEntry> UpdateAndValidateEntries(List<ListingEntry> entries);
 
         public abstract Type EntryType { get; }
 

@@ -29,7 +29,7 @@ namespace AmazonServices
 
             StandardProductID sid = new StandardProductID();
 
-            if (_item.GtinType.Equals("UPC"))
+            if (_item.GTINType.Equals("UPC"))
             {
                 sid.Type = StandardProductIDType.UPC;
             }

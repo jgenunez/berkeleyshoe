@@ -13,20 +13,26 @@ namespace AutomaticSyncConsole
     class Program
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
+        private static BerkeleyEntities.Amazon.AmazonServices _amznServices = new BerkeleyEntities.Amazon.AmazonServices();
+        private static BerkeleyEntities.Ebay.EbayServices _ebayServices = new BerkeleyEntities.Ebay.EbayServices();
+
 
         public static void Main(string[] args)
         {
+
             try
             {
-                if (DateTime.Now.Hour == 5 && DateTime.Now.Minute < 35)
+                if (args[0].Equals("1"))
                 {
-                    SyncMarketplaces(true);
+                    SyncEbayAndAmznOrders();
+                }
+                else if (args[0].Equals("2"))
+                {
                     FixOverpublished();
                 }
-                else
+                else if (args[0].Equals("3"))
                 {
-                    SyncMarketplaces(false);
-                    FixOverpublished();
+                    SyncAmazonListings();
                 }
             }
             catch (Exception e)
@@ -37,46 +43,39 @@ namespace AutomaticSyncConsole
             _logger.Info("____________");
         }
 
-        private static void SyncMarketplaces(bool syncAmznListing)
+        private static void SyncEbayAndAmznOrders()
         {
             using (berkeleyEntities dataContext = new berkeleyEntities())
             {
                 foreach (AmznMarketplace marketplace in dataContext.AmznMarketplaces)
                 {
-                    AmazonServices.OrderSyncService orderService = new AmazonServices.OrderSyncService(marketplace.ID);
+                    _amznServices.SynchronizeOrders(marketplace.ID);
 
-                    if (syncAmznListing)
-                    {
-                        AmazonServices.ListingSyncService listingService = new AmazonServices.ListingSyncService(marketplace.ID);
-
-                        listingService.Synchronize();
-
-                        _logger.Info(marketplace.Name + " listing synchronization completed");
-
-                        orderService.MarginalSync();
-
-                        _logger.Info(marketplace.Name + " order synchronization completed");
-                    }
-                    else
-                    {
-                        orderService.MarginalSync();
-
-                        _logger.Info(marketplace.Name + " order synchronization completed");
-                    }
+                    _logger.Info(marketplace.Name + " order synchronization completed");
                 }
 
                 foreach (EbayMarketplace marketplace in dataContext.EbayMarketplaces)
                 {
-                    EbayServices.Services.ListingSyncService listingService = new EbayServices.Services.ListingSyncService(marketplace.ID);
-                    EbayServices.OrderSyncService orderService = new EbayServices.OrderSyncService(marketplace.ID);
-
-                    listingService.MarginalSync();
+                    _ebayServices.SynchronizeListings(marketplace.ID);
 
                     _logger.Info(marketplace.Name + " listing synchronization completed");
 
-                    orderService.MarginalSync();
+                    _ebayServices.SynchronizeOrders(marketplace.ID);
 
                     _logger.Info(marketplace.Name + " order synchronization completed");
+                }
+            }
+        }
+
+        private static void SyncAmazonListings()
+        {
+            using (berkeleyEntities dataContext = new berkeleyEntities())
+            {
+                foreach (AmznMarketplace marketplace in dataContext.AmznMarketplaces)
+                {
+                    _amznServices.SynchronizeListings(marketplace.ID);
+
+                    _logger.Info(marketplace.Name + " listings synchronization completed");
                 }
             }
         }
@@ -87,18 +86,14 @@ namespace AutomaticSyncConsole
             {
                 foreach (AmznMarketplace marketplace in dataContext.AmznMarketplaces)
                 {
-                    BerkeleyEntities.Amazon.Services.OverpublishedService service = new BerkeleyEntities.Amazon.Services.OverpublishedService(marketplace.ID);
-
-                    service.BalanceQuantities();
+                    _amznServices.FixOverpublished(marketplace.ID);
 
                     _logger.Info(marketplace.Name + " fixing overpublished completed");
                 }
 
                 foreach (EbayMarketplace marketplace in dataContext.EbayMarketplaces)
                 {
-                    BerkeleyEntities.Ebay.Services.OverpublishedService service = new BerkeleyEntities.Ebay.Services.OverpublishedService(marketplace.ID);
-
-                    service.BalanceQuantities();
+                    _ebayServices.FixOverpublished(marketplace.ID);
 
                     _logger.Info(marketplace.Name + " fixing overpublished completed");
                 }

@@ -33,6 +33,8 @@ namespace WorkbookPublisher.View
                 source.MoveCurrentToLast();
             }
 
+            
+
         }
 
         private void btnNext_Click(object sender, RoutedEventArgs e)
@@ -47,12 +49,21 @@ namespace WorkbookPublisher.View
 
         private void btnDone_Click(object sender, RoutedEventArgs e)
         {
+            this.DialogResult = false;
             this.Close();
         }
 
-        private void DockPanel_Loaded(object sender, RoutedEventArgs e)
+        private void btnRepublish_Click(object sender, RoutedEventArgs e)
+        {
+            this.DialogResult = true;
+            this.Close();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             this.MouseDown += delegate { DragMove(); };
         }
+
+
     }
 }

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BerkeleyEntities;
 
-namespace EbayServices.Mappers
+namespace BerkeleyEntities.Ebay.Mappers
 {
     public class HandbagAdapter : ProductMapper
     {

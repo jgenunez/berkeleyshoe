@@ -10,19 +10,16 @@
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
-        </Grid.RowDefinitions>
-        
+        </Grid.RowDefinitions>     
         <StackPanel Grid.Row="0" Orientation="Horizontal">
             <Button Name="btnSetWorkbook" Click="btnSetWorkbook_Click"  Margin="5" Padding="5" VerticalAlignment="Center">Set Workbook</Button>
-            <Label Name="lbCurrentWorkbook" Margin="5" VerticalAlignment="Center" Content="{Binding Path}"/>
+            <Label Name="lbCurrentWorkbook" Margin="5" VerticalAlignment="Center" Content="{Binding Path}" MouseDoubleClick="lbCurrentWorkbook_MouseDoubleClick"/>
         </StackPanel>
-        
         <StackPanel Grid.Row="1" Orientation="Horizontal">
             <Button Name="btnUpdate" Margin="5" Padding="5" VerticalAlignment="Center" Click="btnUpdate_Click">Update Main Sheet</Button>
             <Button Name="btnPrint" Margin="5" Padding="5" VerticalAlignment="Center" Click="btnPrint_Click">Generate Report</Button>
             <Button Name="btnImportAmznData" Margin="5" Padding="5" VerticalAlignment="Center" Click="btnImportAmznData_Click">Import Amzn Data</Button>
-        </StackPanel>
-        
+        </StackPanel>      
         <TabControl Name="tcSheets" Margin="5"  Grid.Row="2" Grid.RowSpan="4" ItemsSource="{Binding Publishers}">
             <TabControl.ItemTemplate>
                 <DataTemplate>
@@ -41,12 +38,52 @@
                         <StackPanel Orientation="Horizontal" Grid.Row="0">
                             <Button Name="btnReadEntries" Margin="10" Padding="10" VerticalAlignment="Center" Command="{Binding ReadCommand}" CommandParameter="{Binding Entries}">Load</Button>
                             <Button Name="btnPublish" Margin="10" Padding="10" VerticalAlignment="Center" Command="{Binding PublishCommand}" CommandParameter="{Binding Entries}">Publish</Button>
-                            <Button Name="btnRepublish" Margin="10" Padding="10" VerticalAlignment="Center" Command="{Binding FixCommand}" CommandParameter="{Binding Entries}">Fix Errors</Button>
+                            <Button Name="btnUpdate" Margin="10" Padding="10" VerticalAlignment="Center" Command="{Binding UpdateCommand}" CommandParameter="{Binding Entries}">Update</Button>
                             <Border Margin="5" BorderBrush="CadetBlue" BorderThickness="3" CornerRadius="2">
-                                <TextBlock Margin="5" Padding="5" FontSize="12" Text="{Binding Progress}"/>
+                                <StackPanel Margin="10" Orientation="Vertical">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Pending}" Width="30"/>
+                                        <RadioButton Name="rbtnPending" GroupName="EntryView" Checked="rbtnPending_Checked" Content="Pending"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Processing}" Width="30"/>
+                                        <RadioButton Name="rbtnProcessing" GroupName="EntryView" Checked="rbtnProcessing_Checked" Content="Processing"/>
+                                    </StackPanel>       
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Completed}" Width="30"/>
+                                        <RadioButton Name="rbtnCompleted" GroupName="EntryView" Checked="rbtnCompleted_Checked"  Content="Completed"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Error}" Width="30"/>
+                                        <RadioButton Name="rbtnError" GroupName="EntryView" Content="Error" Checked="rbtnError_Checked" IsChecked="True"/>
+                                    </StackPanel>
+                                </StackPanel>
                             </Border>
                         </StackPanel>
-                        <ListView Grid.Row="1" Name="lvEntries" ItemsSource="{Binding Entries }" ScrollViewer.CanContentScroll="True"  ScrollViewer.VerticalScrollBarVisibility="Visible">
+                        <ListView Grid.Row="1" Name="lvEntries" ItemsSource="{Binding Entries }"  ScrollViewer.VerticalScrollBarVisibility="Visible">
+                            <ListView.GroupStyle>
+                                <GroupStyle>
+                                    <GroupStyle.ContainerStyle>
+                                        <Style TargetType="{x:Type GroupItem}">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate>
+                                                        <Expander IsExpanded="False">
+                                                            <Expander.Header>
+                                                                <StackPanel Orientation="Horizontal">
+                                                                    <TextBlock Text="{Binding ItemCount}" FontSize="14" Foreground="CadetBlue"  FontWeight="Bold" Margin="10,0,10,0" VerticalAlignment="Bottom" />
+                                                                    <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="14" VerticalAlignment="Bottom" />  
+                                                                </StackPanel>
+                                                            </Expander.Header>
+                                                            <ItemsPresenter />
+                                                        </Expander>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </GroupStyle.ContainerStyle>
+                                </GroupStyle>
+                            </ListView.GroupStyle>
                             <ListView.ItemContainerStyle>
                                 <Style TargetType="ListViewItem">
                                     <Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -54,12 +91,11 @@
                             </ListView.ItemContainerStyle>
                             <ListView.View>
                                 <GridView>
-                                    <GridViewColumn Header="Row" DisplayMemberBinding="{Binding Path=RowIndex}" Width="auto"/>
                                     <GridViewColumn Header="Brand" DisplayMemberBinding="{Binding Path=Brand}" Width="auto"/>
                                     <GridViewColumn Header="Sku" DisplayMemberBinding="{Binding Path=Sku}" Width="auto"/>
                                     <GridViewColumn Header="Format" DisplayMemberBinding="{Binding Path=Format}" Width="auto"/>
-                                    <GridViewColumn Header="Status" DisplayMemberBinding="{Binding Path=Status}" Width="auto"/>
-                                    <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Path=Message}" Width="auto"/>
+                                    <GridViewColumn Header="Qty" DisplayMemberBinding="{Binding Path=Q}" Width="auto"/>
+                                    <GridViewColumn Header="Price" DisplayMemberBinding="{Binding Path=P}" Width="auto"/>
                                 </GridView>
                             </ListView.View>
                         </ListView>
@@ -67,6 +103,5 @@
                 </DataTemplate>
             </TabControl.ContentTemplate>
         </TabControl>
-
     </Grid>
 </Window>

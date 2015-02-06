@@ -1,15 +1,16 @@
-﻿using System;
+﻿using eBay.Service.Core.Soap;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using eBay.Service.Core.Soap;
-using BerkeleyEntities;
+using System.Threading.Tasks;
 
 namespace BerkeleyEntities.Ebay.Mappers
 {
-    public class PantsAdapter : ProductMapper
+    public class ShirtAdapter : ProductMapper
     {
-        public PantsAdapter(Item item)
+
+        public ShirtAdapter(Item item)
             : base(item)
         {
 
@@ -20,6 +21,9 @@ namespace BerkeleyEntities.Ebay.Mappers
             List<NameValueListType> nameValueList = new List<NameValueListType>();
 
             nameValueList.Add(BuildItemSpecific("Brand", new string[1] { this.ToTitleCase(_item.SubDescription1) }));
+
+
+            nameValueList.Add(BuildItemSpecific("Size Type", new string[1] { "Regular"}));
 
             if (!string.IsNullOrWhiteSpace(_item.GTIN))
             {
@@ -43,48 +47,56 @@ namespace BerkeleyEntities.Ebay.Mappers
         {
             List<NameValueListType> nameValueList = new List<NameValueListType>();
 
-            int dimCount = 0;
-
-            if (_item.ItemClass != null)
+            switch (_item.DimCount)
             {
-                dimCount = _item.ItemClass.Dimensions;
-            }
-            else
-            {
-                dimCount = _item.ItemLookupCode.Split(new Char[1] { '-' }).Length - 1;
-            }
+                case 1: nameValueList.Add(GetSizeItemSpecific()); break;
 
-            switch (dimCount)
-            {
-                case 1:
-                case 2:
-                    nameValueList.Add(BuildItemSpecific(GetSizeLabel(), new string[1] { _item.Attributes[AttributeLabel.Waist].Value }));
-                    nameValueList.Add(BuildItemSpecific("Inseam", new string[1] { _item.Attributes[AttributeLabel.Inseam].Value })); break;
+                case 2: nameValueList.Add(GetColorItemSpecific()); break;
 
-                case 3:
-                    nameValueList.Add(BuildItemSpecific(GetSizeLabel(), new string[1] { _item.Attributes[AttributeLabel.Waist].Value }));
-                    nameValueList.Add(BuildItemSpecific("Inseam", new string[1] { _item.Attributes[AttributeLabel.Inseam].Value })); 
-                    nameValueList.Add(BuildItemSpecific("Color", new string[1] { _item.Attributes[AttributeLabel.Color].Value })); break;
+                default: new NotImplementedException(string.Format("{0} dimensions not supported", _item.DimCount.ToString())); break;
             }
 
             return nameValueList;
         }
 
-        private string GetSizeLabel()
+        private NameValueListType GetColorItemSpecific()
         {
-            string label = "";
-            string gender = _item.SubDescription3.Trim().ToUpper();
+            NameValueListType nv = new NameValueListType();
 
-            switch (gender)
+            string label = "Color";
+
+            if (_item.Attributes.ContainsKey(AttributeLabel.Color))
             {
-                case "MENS":
-                case "MEN":
-                    label = "Bottoms Size (Men's)"; break;
-
-                default: throw new NotImplementedException("could not recognize gender");
+                nv = BuildItemSpecific(label, new string[1] { _item.Attributes[AttributeLabel.Color].Value });
             }
 
-            return label;
+            return nv;
+        }
+
+        private NameValueListType GetSizeItemSpecific()
+        {
+            NameValueListType nv = new NameValueListType();
+
+            string gender = _item.SubDescription3.Trim().ToUpper();
+
+            string label = string.Empty;
+
+            if (_item.Attributes.ContainsKey(AttributeLabel.Size))
+            {
+                switch (gender)
+                {
+                    case "MENS":
+                    case "MEN":
+                        label = "Size (Men's)"; break;
+
+                    default: throw new NotImplementedException("could not recognize gender");
+                }
+
+                nv = BuildItemSpecific(label, new string[1] { _item.Attributes[AttributeLabel.Size].Value });
+            }
+
+
+            return nv;
         }
 
         public override int GetConditionID()
@@ -95,7 +107,7 @@ namespace BerkeleyEntities.Ebay.Mappers
             {
                 if (_item.Notes.Contains("PRE"))
                 {
-                    conditionID = 1750;
+                    conditionID = 3000;
                 }
                 else if (_item.Notes.Contains("NWB"))
                 {
@@ -103,7 +115,7 @@ namespace BerkeleyEntities.Ebay.Mappers
                 }
                 else if (_item.Notes.Contains("NWD"))
                 {
-                    conditionID = 3000;
+                    conditionID = 1750;
                 }
             }
 

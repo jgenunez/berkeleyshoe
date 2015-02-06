@@ -28,18 +28,26 @@ namespace MarketplaceManager
 
         public int OnPendingOrder { get; set; }
 
-        public int OrgQty { get; set; }
+        public int Org { get; set; }
 
-        public int StgQty { get; set; }
+        public int Stg { get; set; }
 
-        public int OmsQty { get; set; }
+        public int StgAuc { get; set; }
 
-        public int SavQty { get; set; }
+        public int Oms { get; set; }
+
+        public int OmsAuc { get; set; }
+
+        public int Sav { get; set; }
+
+        public int SavAuc { get; set; }
 
         public string Duplicates { get; set; }
 
         public int EbaySold { get; set; }
 
         public int AmznSold { get; set; }
+
+        public string Supplier { get; set; }
     }
 }

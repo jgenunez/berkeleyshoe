@@ -27,7 +27,7 @@ namespace MarketplaceManager
         private Dictionary<string, BackgroundWorker> _listingServices = new Dictionary<string, BackgroundWorker>();
         private Dictionary<string, BackgroundWorker> _overPublishedServices = new Dictionary<string, BackgroundWorker>();
 
-        private string _selectedPath;
+        
 
 
         public MarketplaceForm()
@@ -44,7 +44,6 @@ namespace MarketplaceManager
 
         private void btnSyncListings_Click(object sender, EventArgs e)
         {
-
             foreach (DataGridViewRow row in dgvMarketplaces.SelectedRows)
             {
                 MarketplaceView view = row.DataBoundItem as MarketplaceView;
@@ -56,17 +55,20 @@ namespace MarketplaceManager
                 }
 
                 BackgroundWorker bw = new BackgroundWorker();
+
                 bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(ListingSyncServiceCompleted);
 
                 if (view.Host.Equals("Amazon"))
                 {
-                    AmazonServices.ListingSyncService service = new AmazonServices.ListingSyncService(view.DbID);
-                    bw.DoWork += (_, args) => { service.Synchronize(); args.Result = view; };
+                    BerkeleyEntities.Amazon.AmazonServices services = new BerkeleyEntities.Amazon.AmazonServices();
+                    
+                    bw.DoWork += (_, args) => { services.SynchronizeListings(view.DbID); args.Result = view; };
                 }
                 else
                 {
-                    EbayServices.Services.ListingSyncService service = new EbayServices.Services.ListingSyncService(view.DbID);
-                    bw.DoWork += (_, args) => { service.MarginalSync(); args.Result = view; };
+                    BerkeleyEntities.Ebay.EbayServices services = new BerkeleyEntities.Ebay.EbayServices();
+
+                    bw.DoWork += (_, args) => { services.SynchronizeListings(view.DbID); args.Result = view; };
                 }
 
                 bw.RunWorkerAsync();
@@ -92,14 +94,13 @@ namespace MarketplaceManager
 
                 if (view.Host.Equals("Amazon"))
                 {
-                    
-                    AmazonServices.OrderSyncService service = new AmazonServices.OrderSyncService(view.DbID);
-                    bw.DoWork += (_, args) => { service.MarginalSync(); args.Result = view; };         
+                    BerkeleyEntities.Amazon.AmazonServices services = new BerkeleyEntities.Amazon.AmazonServices();
+                    bw.DoWork += (_, args) => { services.SynchronizeOrders(view.DbID); args.Result = view; };    
                 }
                 else
                 {
-                    EbayServices.OrderSyncService service = new EbayServices.OrderSyncService(view.DbID);
-                    bw.DoWork += (_, args) => { service.MarginalSync(); args.Result = view; };
+                    BerkeleyEntities.Ebay.EbayServices services = new BerkeleyEntities.Ebay.EbayServices();
+                    bw.DoWork += (_, args) => { services.SynchronizeOrders(view.DbID); args.Result = view; };
                 }
 
                 bw.RunWorkerAsync();
@@ -121,17 +122,18 @@ namespace MarketplaceManager
                 }
 
                 BackgroundWorker bw = new BackgroundWorker();
+
                 bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(OverpublishedServiceCompleted);
 
                 if (view.Host.Equals("Amazon"))
                 {
-                    BerkeleyEntities.Amazon.Services.OverpublishedService service = new BerkeleyEntities.Amazon.Services.OverpublishedService(view.DbID);
-                    bw.DoWork += (_, args) => { service.BalanceQuantities(); args.Result = view; };
+                    BerkeleyEntities.Amazon.AmazonServices services = new BerkeleyEntities.Amazon.AmazonServices();
+                    bw.DoWork += (_, args) => { services.FixOverpublished(view.DbID); args.Result = view; };    
                 }
                 else
                 {
-                    BerkeleyEntities.Ebay.Services.OverpublishedService service = new BerkeleyEntities.Ebay.Services.OverpublishedService(view.DbID);
-                    bw.DoWork += (_, args) => { service.BalanceQuantities(); args.Result = view; };
+                    BerkeleyEntities.Ebay.EbayServices services = new BerkeleyEntities.Ebay.EbayServices();
+                    bw.DoWork += (_, args) => { services.FixOverpublished(view.DbID); args.Result = view; };
                 }
 
                 bw.RunWorkerAsync();
@@ -143,29 +145,32 @@ namespace MarketplaceManager
         private void btnGenerate_Click(object sender, EventArgs e)
         {
             SaveFileDialog sfd = new SaveFileDialog();
+
             sfd.DefaultExt = ".xlsx";
 
             DialogResult dr = sfd.ShowDialog();
 
             if (!dr.Equals(DialogResult.Cancel) && !string.IsNullOrWhiteSpace(sfd.FileName))
             {
-                _selectedPath = sfd.FileName;
+                btnGenerate.Enabled = false;
 
                 BackgroundWorker bw = new BackgroundWorker();
-                bw.DoWork += (_, args) => 
+
+                bw.DoWork += (_, args) =>
                 {
-                    ReportGenerator reportGenerator = new ReportGenerator(_selectedPath);
+                    ReportGenerator reportGenerator = new ReportGenerator(sfd.FileName);
                     reportGenerator.GenerateExcelReport();
-                } ;
+                };
+
+                MarketplaceForm marketplaceForm = this.Tag as MarketplaceForm;
+
                 bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(ReportCompleted);
+
                 bw.RunWorkerAsync();
-
-                btnGenerate.Enabled = false;
             }
-
         }
 
-        private void ReportCompleted(object sender, RunWorkerCompletedEventArgs e)
+        public void ReportCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if (e.Error == null)
             {
@@ -293,12 +298,15 @@ namespace MarketplaceManager
 
                 strBuilder.AppendLine(view.Name);
                 strBuilder.AppendLine();
-                strBuilder.AppendLine(view.ActiveListingQty.ToString() + " active listings");
+                strBuilder.AppendFormat("{0} Acive Listings ({1}qty)", view.ActiveListing, view.ActiveListingQty);
                 strBuilder.AppendLine();
-                strBuilder.AppendLine(view.WaitingPaymentCount.ToString() + " waiting for payment");
+                strBuilder.AppendLine();
+                strBuilder.AppendFormat("{0} waiting for payment ({1}qty)", view.WaitingPayment.Count, view.WaitingPaymentQty);
+                strBuilder.AppendLine();
                 strBuilder.AppendLine(string.Join(" | ",view.WaitingPayment));
                 strBuilder.AppendLine();
-                strBuilder.AppendLine(view.WaitingShipmentCount.ToString() + " waiting for shipment");
+                strBuilder.AppendFormat("{0} waiting for shipment ({1}qty)",view.WaitingShipment.Count, view.WaitingShipmentQty);
+                strBuilder.AppendLine();
                 strBuilder.AppendLine(string.Join(" | ",view.WaitingShipment));
 
                 MessageBox.Show(strBuilder.ToString(), "Marketplace Summary", MessageBoxButtons.OK);

@@ -28,6 +28,38 @@ namespace BerkeleyEntities
             return this.ItemLookupCode;
         }
 
+        public string ClassName
+        {
+            get
+            {
+                if (this.ItemClass != null)
+                {
+
+                    return this.ItemClass.ItemLookupCode;
+                }
+                else
+                {
+                    return this.ItemLookupCode.Split(new Char[1] { '-' })[0];
+                }
+            }
+        }
+
+        public ItemClass ItemClass
+        {
+            get
+            {
+                if (this.ItemClassComponents.Count > 0)
+                {
+                    ItemClass itemClass = this.ItemClassComponents.First().ItemClass;
+                    return itemClass;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
         public int QtyAvailable
         {
             get 
@@ -40,6 +72,16 @@ namespace BerkeleyEntities
                 }
 
                 return available;
+            }
+        }
+
+        public int AuctionCount
+        {
+            get 
+            {
+                int activeAuctions = this.EbayListingItems.Where(p => p.Listing.Status.Equals("Active") && p.Listing.Format.Equals("Chinese")).Sum(p => p.Quantity);
+
+                return activeAuctions;
             }
         }
 
@@ -67,6 +109,14 @@ namespace BerkeleyEntities
             get 
             {
                 return (int)this.PurchaseOrderEntries.Where(p => p.PurchaseOrder.Status == 0).Sum(p => p.QuantityOrdered);
+            }
+        }
+
+        public int OnPendingOrder
+        {
+            get
+            {
+                return EbayWaitingPayment + EbayUnshipped + AmznWaitingPayment + AmznUnshipped;
             }
         }
 
@@ -110,96 +160,7 @@ namespace BerkeleyEntities
             }
         }
 
-        public int OnPendingOrder
-        {
-            get
-            {
-                return EbayWaitingPayment + EbayUnshipped + AmznWaitingPayment + AmznUnshipped;
-            }
-        }
-
         public Dictionary<AttributeLabel, Attribute> Attributes { get; set; }
-
-        //public string GetUKSize()
-        //{
-        //    float ukSize;
-
-        //    if (_item.Attributes.ContainsKey(AttributeLabel.EUSize))
-        //    {
-        //        nv = BuildItemSpecific("EU Shoe Size", new string[1] { _item.Attributes[AttributeLabel.EUSize].Value });
-        //    }
-        //    else if (_item.Attributes.ContainsKey(AttributeLabel.USMenSize))
-        //    {
-        //        ukSize = float.Parse(_item.Attributes[AttributeLabel.USMenSize].Value) - 0.5f;
-        //    }
-        //    else if (_item.Attributes.ContainsKey(AttributeLabel.USWomenSize))
-        //    {
-        //        ukSize = float.Parse(_item.Attributes[AttributeLabel.USWomenSize].Value) - 2;
-        //    }
-        //    else if (_item.Attributes.ContainsKey(AttributeLabel.USYouthSize))
-        //    {
-        //        ukSize = float.Parse(_item.Attributes[AttributeLabel.USYouthSize].Value) - 1;
-
-        //        nv = BuildItemSpecific("US Shoe Size (Youth)", new string[1] { _item.Attributes[AttributeLabel.USYouthSize].Value });
-        //    }
-        //    else if (_item.Attributes.ContainsKey(AttributeLabel.USBabySize))
-        //    {
-        //        ukSize = float.Parse(_item.Attributes[AttributeLabel.USBabySize].Value) - 1;
-
-        //        nv = BuildItemSpecific("US Shoe Size (Baby & Toddler)", new string[1] { _item.Attributes[AttributeLabel.USBabySize].Value });
-        //    }
-
-        //    NameValueListType nv = new NameValueListType();
-
-        //    if (string.IsNullOrWhiteSpace(GetFormattedWidth()))
-        //    {
-        //        nv = BuildItemSpecific("Shoe Size", new string[1] { "UK " + ukSize.ToString() });
-        //    }
-        //    else
-        //    {
-        //        nv = BuildItemSpecific("Shoe Size", new string[1] { "UK " + ukSize.ToString() + " " + GetFormattedWidth() });
-        //    }
-        //}
-
-        public string ClassName
-        {
-            get
-            {
-                if (this.ItemClass != null)
-                {
-               
-                    return this.ItemClass.ItemLookupCode;
-                }
-                else
-                {
-                    return this.ItemLookupCode.Split(new Char[1] {'-'})[0];
-                }
-            }
-        }
-
-        public ItemClass ItemClass
-        {
-            get
-            {
-                if (this.ItemClassComponents.Count > 0)
-                {
-                    ItemClass itemClass = this.ItemClassComponents.First().ItemClass;
-                    return itemClass;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-        }
-
-        //public int ActiveListingQty
-        //{
-        //    get
-        //    {
-        //        return SyncListings.Where(p => p.Active == 1).Sum(p => p.Quantity);
-        //    }
-        //}
 
         public string ProductType 
         {
@@ -287,7 +248,7 @@ namespace BerkeleyEntities
             {
                 foreach (Alias alias in Aliases)
                 {
-                    if (IsValidGtin(alias.Alias1))
+                    if (IsValidGTIN(alias.Alias1))
                     {
                         return alias.Alias1;
                     }
@@ -297,7 +258,7 @@ namespace BerkeleyEntities
             }
         }
 
-        public string GtinType
+        public string GTINType
         {
             get
             {
@@ -328,280 +289,6 @@ namespace BerkeleyEntities
             
         }
 
-        //public string AmznItemType 
-        //{
-        //    get 
-        //    {
-        //        if (Category == null || Department == null)
-        //        {
-        //            return null;
-        //        }
-
-        //        string departmentCode = Department.code;
-        //        string categoryName = Category.Name;
-
-        //        if (departmentCode.Equals("53120"))
-        //        {
-        //            if (categoryName.Equals("Loafers & slip ons"))
-        //            {
-        //                return "loafers-shoes";
-        //            }
-        //            else { return "oxfords-shoes"; }
-        //        }
-
-        //        else if (departmentCode.Equals("11498") || departmentCode.Equals("53557"))
-        //        {
-        //            if (categoryName.Equals("Hiking, trail")) { return "hiking-boots"; }
-
-        //            else if (categoryName.Equals("Rainboots")) { return "rain-boots"; }
-
-        //            else if (categoryName.Equals("Riding, equestrian")) { return "equestrian-boots"; }
-
-        //            else if (categoryName.Equals("Work & safety")) { return "work-boots"; }
-
-        //            else { return "boots"; }
-        //        }
-
-        //        else if (departmentCode.Equals("11504") || departmentCode.Equals("62107"))
-        //        {
-        //            if (categoryName.Equals("Mules")) { return "clogs-and-mules-shoes"; }
-
-        //            else if (categoryName.Equals("Sport sandals")) { return "athletic-sandals"; }
-
-        //            else { return "sandals"; }
-        //        }
-
-        //        else if (departmentCode.Equals("55793"))
-        //        {
-        //            if (categoryName.Equals("Mules")) { return "clogs-and-mules-shoes"; }
-
-        //            else { return "pumps-shoes"; }
-        //        }
-
-        //        else if (departmentCode.Equals("24087"))
-        //        {
-        //            if (categoryName.Equals("Boat shoes")) { return "athletic-boating-shoes"; }
-
-        //            else if (categoryName.Equals("Fashion sneakers")) { return "fashion-sneakers"; }
-
-        //            else if (categoryName.Equals("Oxfords")) { return "oxfords-shoes"; }
-
-        //            else { return "loafers-shoes"; }
-        //        }
-
-        //        else if (departmentCode.Equals("45333"))
-        //        {
-        //            if (categoryName.Equals("Boat shoes")) { return "athletic-boating-shoes"; }
-
-        //            else if (categoryName.Equals("Clogs") || categoryName.Equals("Mules")) { return "clogs-and-mules-shoes"; }
-
-        //            else if (categoryName.Equals("Loafers & moccasins")) { return "loafers-shoes"; }
-
-        //            else if (categoryName.Equals("Oxfords")) { return "oxfords-shoes"; }
-
-        //            else { return "flats-shoes"; }
-        //        }
-
-        //        else if (departmentCode.Equals("15709") || departmentCode.Equals("95672"))
-        //        {
-        //            if (categoryName.Equals("Water shoes")) { return "athletic-water-shoes"; }
-
-        //            else if (categoryName.Equals("Walking")) { return "walking-shoes"; }
-
-        //            else if (categoryName.Equals("Skateboarding")) { return "skateboarding-shoes"; }
-
-        //            else if (categoryName.Equals("Running, cross training")) { return "cross-trainer-shoes"; }
-
-        //            else if (categoryName.Equals("Hiking, trail")) { return "hiking-shoes"; }
-
-        //            else if (categoryName.Equals("Golf shoes")) { return "golf-shoes"; }
-
-        //            else if (categoryName.Equals("Dance")) { return "dance-shoes"; }
-
-        //            else if (categoryName.Equals("Bowling shoes")) { return "bowling-shoes"; }
-
-        //            else if (categoryName.Equals("Basketball shoes")) { return "basketball-shoes"; }
-
-        //            else if (categoryName.Equals("Fashion sneakers")) { return "fashion-sneakers"; }
-
-        //            else { return "cross-trainer-shoes"; }
-        //        }
-
-        //        else if (departmentCode.Equals("11501") || departmentCode.Equals("53548"))
-        //        {
-        //            return "work-shoes";
-        //        }
-
-        //        else if (departmentCode.Equals("11505") || departmentCode.Equals("11632"))
-        //        {
-        //            return "slippers";
-        //        }
-
-        //        else { return null; }
-        //    }
-        //}
-
-        //public string AmznGender 
-        //{
-        //    get 
-        //    {
-        //        string gender = Gender;
-
-        //        if (gender.Equals("MENS") || gender.Equals("MEN"))
-        //        {
-        //            gender = "mens";
-        //        }
-        //        else if (gender.Equals("WOMENS") || gender.Equals("WOMEN"))
-        //        {
-        //            gender = "womens";
-        //        }
-        //        else if (gender.Equals("UNISEX") || gender.Equals("UNISEXS"))
-        //        {
-        //            gender = "unisex";
-        //        }
-        //        else
-        //        {
-        //            gender = null;
-        //        }
-
-        //        return gender;
-        //    }
-        //}
-
-        //public string AmznSize 
-        //{
-        //    get 
-        //    {
-        //        string size = Dimensions.Single(p => p.Name.Equals(DimensionName.ShoeSize)).Value;
-
-        //        if (AmznGender.Equals("unisex"))
-        //        {
-        //            //string womenSize = (double.Parse(size) + 1.5).ToString();
-
-        //            //return size + " " + this.AmznWidth + "US Men / " + womenSize + " " + toAmznWidth(this.width, "WOMEN") + " US Women";
-
-        //            throw new NotImplementedException("Amzn unisex gender not supported");
-        //        }
-
-        //        else
-        //        {
-        //            return size + " " + AmznWidth + " US";
-        //        }
-        //    }
-        //}
-
-        //public string AmznWidth
-        //{
-        //    get
-        //    {
-        //        string width = Dimensions.Single(p => p.Name.Equals(DimensionName.Width)).Value;
-        //        string gender = AmznGender;
-
-        //        if (gender.Equals("mens"))
-        //        {
-        //            if (width.Equals("M") || width.Equals("D"))
-        //            {
-        //                width = "D(M)";
-        //            }
-        //            else if (width.Equals("EE") || width.Equals("W"))
-        //            {
-        //                width = "2E";
-        //            }
-        //            else if (width.Equals("EEE") || width.Equals("XW"))
-        //            {
-        //                width = "3E";
-        //            }
-        //            else if (width.Equals("B") || width.Equals("N"))
-        //            {
-        //                width = "B(N)";
-        //            }
-
-        //        }
-        //        else if (gender.Equals("womens"))
-        //        {
-        //            if (width.Equals("C") || width.Equals("D") || width.Equals("W"))
-        //            {
-        //                width = "C/D";
-        //            }
-        //            else if (width.Equals("B") || width.Equals("M"))
-        //            {
-        //                width = "B(M)";
-        //            }
-        //            else if (width.Equals("2E") || width.Equals("EE") || width.Equals("XW"))
-        //            {
-        //                width = "E";
-        //            }
-        //            else if (width.Equals("2A") || width.Equals("AA") || width.Equals("N"))
-        //            {
-        //                width = "2A(N)";
-        //            }
-
-        //        }
-
-        //        return width;
-        //    }
-        //}
-
-        //public Dimension[] Dimensions 
-        //{
-        //    get 
-        //    {
-        //        List<Dimension> dimensions = new List<Dimension>();
-
-        //        string[] attributes = GetAttributes();
-
-        //        if (ProductType.Equals("CLOTHING"))
-        //        {
-        //            string departmentCode = Department.code;
-
-        //            if (departmentCode.Equals("15689") && departmentCode.Equals("11507"))
-        //            {
-        //                switch (attributes.Length)
-        //                {
-        //                    case 1: dimensions.Add(CreateDimension(DimensionName.Waist, attributes[0])); break;
-
-        //                    case 2: dimensions.Add(CreateDimension(DimensionName.Color, attributes[0]));
-        //                        dimensions.Add(CreateDimension(DimensionName.Waist, attributes[1])); break;
-        //                }
-        //            }
-        //            else
-        //            {
-        //                switch (attributes.Length)
-        //                {
-        //                    case 1: dimensions.Add(CreateDimension(DimensionName.Waist, attributes[0])); break;
-
-        //                    case 2: dimensions.Add(CreateDimension(DimensionName.Waist, attributes[0]));
-        //                        dimensions.Add(CreateDimension(DimensionName.Inseam, attributes[1])); break;
-
-        //                    case 3: dimensions.Add(CreateDimension(DimensionName.Color, attributes[0]));
-        //                        dimensions.Add(CreateDimension(DimensionName.Waist, attributes[1]));
-        //                        dimensions.Add(CreateDimension(DimensionName.Inseam, attributes[2])); break;
-        //                }
-        //            }
-        //        }
-        //        else if (ProductType.Equals("SHOES"))
-        //        {
-        //            switch (attributes.Length)
-        //            {
-        //                case 1: dimensions.Add(CreateDimension(DimensionName.ShoeSize, attributes[0])); break;
-
-        //                case 2: dimensions.Add(CreateDimension(DimensionName.ShoeSize, attributes[0]));
-        //                    dimensions.Add(CreateDimension(DimensionName.Width, attributes[1])); break;
-
-        //                case 3: dimensions.Add(CreateDimension(DimensionName.Color, attributes[0]));
-        //                    dimensions.Add(CreateDimension(DimensionName.ShoeSize, attributes[1]));
-        //                    dimensions.Add(CreateDimension(DimensionName.Width, attributes[2])); break;
-        //            }
-        //        }
-        //        else if (!ProductType.Equals("WATCHES") && !ProductType.Equals("SUNGLASSES"))
-        //        {
-        //            throw new NotImplementedException("department not recognized");
-        //        }
-
-        //        return dimensions.ToArray();
-        //    }
-        //}
-
         public string PictureBasePath 
         {
             get 
@@ -609,21 +296,6 @@ namespace BerkeleyEntities
                 return @"P:\products" + @"\" + SubDescription1 + @"\";
             }
         }
-
-        //private Dimension CreateDimension(DimensionName name, string value)
-        //{
-        //    Dimension dimension = new Dimension();
-        //    dimension.Name = name;
-        //    dimension.Value = value;
-
-
-        //    if (ItemClass != null)
-        //    {
-        //        dimension.Code = ItemClass.GetAttributeCode(value);
-        //    }
-
-        //    return dimension;
-        //}
 
         private string[] GetAttributes() 
         {
@@ -653,7 +325,7 @@ namespace BerkeleyEntities
             return attributes;
         }
 
-        private bool IsValidGtin(string code)
+        private bool IsValidGTIN(string code)
         {
             if (code != (new Regex("[^0-9]")).Replace(code, ""))
             {

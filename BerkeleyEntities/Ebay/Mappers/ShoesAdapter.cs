@@ -5,7 +5,7 @@ using System.Text;
 using eBay.Service.Core.Soap;
 using BerkeleyEntities;
 
-namespace EbayServices.Mappers
+namespace BerkeleyEntities.Ebay.Mappers
 {
     public class ShoesAdapter : ProductMapper
     {
@@ -85,7 +85,7 @@ namespace EbayServices.Mappers
             {
                 if (_item.Notes.Contains("PRE"))
                 {
-                    conditionID = 1750;
+                    conditionID = 3000;
                 }
                 else if (_item.Notes.Contains("NWB"))
                 {
@@ -93,7 +93,7 @@ namespace EbayServices.Mappers
                 }
                 else if (_item.Notes.Contains("NWD"))
                 {
-                    conditionID = 3000;
+                    conditionID = 1750;
                 } 
             }
 
@@ -106,7 +106,36 @@ namespace EbayServices.Mappers
 
             if (_item.Attributes.ContainsKey(AttributeLabel.EUSize))
             {
-                nv = BuildItemSpecific("EU Shoe Size", new string[1] { _item.Attributes[AttributeLabel.EUSize].Value });
+                string gender = _item.SubDescription3.Trim().ToUpper();
+
+                string label = string.Empty;
+
+                switch (gender)
+                {
+                    case "BOYS":
+                    case "GIRLS":
+                    case "UNISEX-CHILD":
+                        label = "US Shoe Size (Youth)"; break;
+
+                    case "BABY-BOYS":
+                    case "BABY-GIRLS":
+                    case "UNISEX-BABY":
+                        label = "US Shoe Size (Baby & Toddler)"; break;
+
+                    case "UNISEX-ADULT":
+                    case "MENS":
+                    case "MEN":
+                        label = "US Shoe Size (Men's)"; break;
+
+                    case "WOMENS":
+                    case "WOMEN":
+                        label = "US Shoe Size (Women's)"; break;
+
+                    default: throw new NotImplementedException("could not recognize gender");
+                }
+
+                nv = BuildItemSpecific(label, new string[1] { _item.Attributes[AttributeLabel.EUSize].Value });
+
             }
             else if (_item.Attributes.ContainsKey(AttributeLabel.USMenSize))
             {

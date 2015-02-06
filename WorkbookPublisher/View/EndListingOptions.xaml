@@ -1,0 +1,15 @@
+﻿<Window x:Class="WorkbookPublisher.View.EndListingOptions"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="EndListingOptions" Height="300" Width="300">
+    <Grid>
+        <DataGrid ItemsSource="{Binding DataContext}">
+            
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Marketplace" Binding="{Binding Marketplace}"> </DataGridTextColumn>
+                <DataGridCheckBoxColumn Header="Include" Binding="{Binding Include}"></DataGridCheckBoxColumn>
+                <DataGridComboBoxColumn Header="Format"></DataGridComboBoxColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>

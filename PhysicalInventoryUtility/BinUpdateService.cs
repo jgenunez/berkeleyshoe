@@ -27,11 +27,15 @@ namespace InventoryApp
             foreach (var entryGroup in groups)
             {
                 Item item = _dataContext.Items.Single(p => p.ID == entryGroup.Key);
+
                 var expectedBins = item.BinLocation.Split(new Char[1] { ' ' }).Distinct().Where(p => !string.IsNullOrWhiteSpace(p));
+
                 var actualBins = entryGroup.Select(p => p.Bin);
 
                 List<string> currentBin = new List<string>(expectedBins);
+
                 currentBin.ForEach(p => p = p.Trim().ToUpper());
+
                 foreach (string bin in expectedBins.Except(actualBins))
                 {
                     Bsi_LocationLog log = new Bsi_LocationLog();
@@ -60,24 +64,34 @@ namespace InventoryApp
                     }
                 }
 
-                int charCount = currentBin.Sum(s => s.Count()) + (currentBin.Count() - 1);
+                var newBin = string.Join(" ", currentBin);
 
-                List<string> notesField = new List<string>();
-
-                while (charCount > 20)
+                if (newBin.Count() > 20)
                 {
-                    string bin = currentBin.First();
-                    currentBin.Remove(bin);
-                    notesField.Add(bin);
-                    charCount = currentBin.Sum(s => s.Count()) + (currentBin.Count() - 1);
+                    item.BinLocation = newBin.Substring(0, 20);
+                }
+                else
+                {
+                    item.BinLocation = newBin;
                 }
 
-                item.BinLocation = string.Join(" ", currentBin);
 
-                if (notesField.Count > 0)
-                {
-                    item.Notes = item.Notes.Trim() + string.Join(" ", notesField);
-                }
+                //int charCount = currentBin.Sum(s => s.Count()) + (currentBin.Count() - 1);
+
+                //List<string> notesField = new List<string>();
+
+                //while (charCount > 20)
+                //{
+                //    string bin = currentBin.First();
+                //    currentBin.Remove(bin);
+                //    notesField.Add(bin);
+                //    charCount = currentBin.Sum(s => s.Count()) + (currentBin.Count() - 1);
+                //}
+
+                //if (notesField.Count > 0)
+                //{
+                //    item.Notes = item.Notes.Trim() + string.Join(" ", notesField);
+                //}
 
             }
 

@@ -24,14 +24,14 @@ namespace BerkeleyEntities
 
         public List<PictureInfo> GetPictures(string brand, List<string> skus)
         {
+            List<PictureInfo> pics = new List<PictureInfo>();
+
             string brandRoot = _root + brand + @"\";
 
             if (!Directory.Exists(brandRoot))
             {
-                throw new FileNotFoundException("could not find directory:" + brandRoot);
+                return pics;
             }
-
-            List<PictureInfo> pics = new List<PictureInfo>();
 
             foreach (var group in skus.GroupBy(p => p.Split(new Char[1] {'-'})[0]))
             {

@@ -19,13 +19,13 @@ namespace MarketplaceManager
         //public void ConvertToHtmlFile(List<EbayOrder> orders)
         //{
         //    StringBuilder sb = new StringBuilder();
-            
+
 
         //    sb.Append("<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>");
 
         //    streamWriter.AutoFlush = true;
 
-        //    streamWriter.Write( +
+        //    streamWriter.Write(+
         //        "<html xmlns='http://www.w3.org/1999/xhtml'><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8' /><title>" +
         //        "Untitled Document</title><style>body {font-family:Tahoma, Geneva, sans-serif;font-size:10px;} p{margin:0px;margin-bottom:5px;} .customerName {font-family:Arial,Helvetica, sans-serif;font-size:large;font-weight:bold;} .titulos {font-family:Arial," +
         //        "Helvetica, sans-serif;font-size:large;font-weight:bold;" +

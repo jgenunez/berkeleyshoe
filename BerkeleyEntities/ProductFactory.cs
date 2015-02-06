@@ -76,7 +76,7 @@ namespace BerkeleyEntities
                 case "11507":
                     this.CreateUnderwear(); break;
 
-                case "57735":
+                case "15687":
                     this.CreateTShirt(); break;
 
                 case "11484":
@@ -243,7 +243,7 @@ namespace BerkeleyEntities
                         widthCode = itemClass.MatrixAttributeDisplayOrders.First(p => p.Attribute.Equals(component.Detail3) && p.Dimension == 3).Code;
 
                         _item.Attributes.Add(AttributeLabel.Color, new Attribute() { Code = colorCode, Value = component.Detail1 });
-                        _item.Attributes.Add(GetShoeAttributeLabel(component.Detail1), new Attribute() { Code = sizeCode, Value = component.Detail2 });
+                        _item.Attributes.Add(GetShoeAttributeLabel(component.Detail2), new Attribute() { Code = sizeCode, Value = component.Detail2 });
                         _item.Attributes.Add(AttributeLabel.Width, new Attribute() { Code = widthCode, Value = component.Detail3 }); break;
 
                         

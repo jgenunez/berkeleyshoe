@@ -37,6 +37,7 @@ namespace MarketplaceManager
             {
                 // Add a WorkbookPart to the document.
                 WorkbookPart workbookpart = document.AddWorkbookPart();
+
                 workbookpart.Workbook = new Workbook();
 
                 // Add a WorksheetPart to the WorkbookPart.
@@ -46,11 +47,13 @@ namespace MarketplaceManager
                 Sheets sheets = document.WorkbookPart.Workbook.AppendChild<Sheets>(new Sheets());
 
                 // Append a new worksheet and associate it with the workbook.
+
                 Sheet sheet = new Sheet() { Id = document.WorkbookPart.GetIdOfPart(worksheetPart), SheetId = 1, Name = "HABANERO" };
 
                 sheets.Append(sheet);
 
                 Worksheet worksheet = new Worksheet();
+
                 worksheet.Append(_sheetData);
 
                 worksheetPart.Worksheet = worksheet;
@@ -113,36 +116,28 @@ namespace MarketplaceManager
 
             using (berkeleyEntities dataContext = new berkeleyEntities())
             {
-                //var items = dataContext.Items.Include("AmznListingItems.OrderItems.Order").Include("EbayListingItems.OrderItems.Order")
-                //    .Where(p => !p.Inactive &&
+                dataContext.CommandTimeout = 0;
+
+                //var items = dataContext.Items
+                //    .Include("AmznListingItems.OrderItems.Order")
+                //    .Include("EbayListingItems.OrderItems.Order")
+                //    .ToList().Where(p =>
+                //        (p.Quantity > 0 || p.OnActiveListing > 0 || p.OnPendingOrder > 0) &&
+                //        !p.Inactive &&
                 //        !p.DepartmentName.Equals("APPAREL") &&
                 //        !p.DepartmentName.Equals("ACCESSORIES") &&
-                //        !p.DepartmentName.Equals("MIXED ITEMS & LOTS")).ToList()
-                //        .Where(p => p.Quantity > 0 || p.OnActiveListing > 0);
-
-                dataContext.CommandTimeout = 0;
+                //        !p.DepartmentName.Equals("MIXED ITEMS & LOTS"));
 
                 var items = dataContext.Items
                     .Include("AmznListingItems.OrderItems.Order")
                     .Include("EbayListingItems.OrderItems.Order")
                     .ToList().Where(p =>
-                        (p.Quantity > 0 || p.OnActiveListing > 0 || p.OnPendingOrder > 0) &&
-                        !p.Inactive &&
-                        !p.DepartmentName.Equals("APPAREL") &&
-                        !p.DepartmentName.Equals("ACCESSORIES") &&
-                        !p.DepartmentName.Equals("MIXED ITEMS & LOTS"));
+                        (p.Quantity > 0 || p.OnActiveListing > 0 || p.OnPendingOrder > 0) && !p.Inactive && p.Department != null);
 
                 foreach (BerkeleyEntities.Item item in items)
                 {
-                    //if ((item.Quantity == 0 && item.OnActiveListing == 0 && item.OnPendingOrder == 0) ||
-                    //    item.DepartmentName.Equals("APPAREL") ||
-                    //    item.DepartmentName.Equals("ACCESSORIES") ||
-                    //    item.DepartmentName.Equals("MIXED ITEMS & LOTS"))
-                    //{
-                    //    continue;
-                    //}
-
                     ReportProductView product = new ReportProductView(item.ItemLookupCode);
+                    product.Supplier = string.Join(" ", item.SupplierLists.Select(p => p.Supplier.SupplierName));
                     product.Brand = item.SubDescription1;
                     product.Cost = item.Cost;
                     product.Department = item.DepartmentName;
@@ -151,14 +146,19 @@ namespace MarketplaceManager
                     product.OnHold = item.OnHold;
                     product.OnPendingOrder = item.OnPendingOrder;
 
-                    product.OrgQty = item.AmznListingItems.Where(p => p.MarketplaceID == 1 && p.IsActive).Sum(p => p.Quantity);
+                    product.Org = item.AmznListingItems.Where(p => p.MarketplaceID == 1 && p.IsActive).Sum(p => p.Quantity);
 
-                    product.StgQty = item.EbayListingItems.Where(p => p.Listing.MarketplaceID == 1 && p.Listing.Status.Equals("Active")).Sum(p => p.Quantity);
-                    product.OmsQty = item.EbayListingItems.Where(p => p.Listing.MarketplaceID == 2 && p.Listing.Status.Equals("Active")).Sum(p => p.Quantity);
-                    product.SavQty = item.EbayListingItems.Where(p => p.Listing.MarketplaceID == 3 && p.Listing.Status.Equals("Active")).Sum(p => p.Quantity);
+                    product.StgAuc = item.EbayListingItems.Where(p => p.Listing.MarketplaceID == 1 && p.Listing.Status.Equals(EbayMarketplace.STATUS_ACTIVE) && p.Listing.Format.Equals(EbayMarketplace.FORMAT_AUCTION)).Sum(p => p.Quantity);
+                    product.Stg = item.EbayListingItems.Where(p => p.Listing.MarketplaceID == 1 && p.Listing.Status.Equals(EbayMarketplace.STATUS_ACTIVE) && p.Listing.Format.Equals(EbayMarketplace.FORMAT_FIXEDPRICE)).Sum(p => p.Quantity);
+
+                    product.OmsAuc = item.EbayListingItems.Where(p => p.Listing.MarketplaceID == 2 && p.Listing.Status.Equals(EbayMarketplace.STATUS_ACTIVE) && p.Listing.Format.Equals(EbayMarketplace.FORMAT_AUCTION)).Sum(p => p.Quantity);
+                    product.Oms = item.EbayListingItems.Where(p => p.Listing.MarketplaceID == 2 && p.Listing.Status.Equals(EbayMarketplace.STATUS_ACTIVE) && p.Listing.Format.Equals(EbayMarketplace.FORMAT_FIXEDPRICE)).Sum(p => p.Quantity);
+
+                    product.SavAuc = item.EbayListingItems.Where(p => p.Listing.MarketplaceID == 3 && p.Listing.Status.Equals(EbayMarketplace.STATUS_ACTIVE) && p.Listing.Format.Equals(EbayMarketplace.FORMAT_AUCTION)).Sum(p => p.Quantity);
+                    product.Sav = item.EbayListingItems.Where(p => p.Listing.MarketplaceID == 3 && p.Listing.Status.Equals(EbayMarketplace.STATUS_ACTIVE) && p.Listing.Format.Equals(EbayMarketplace.FORMAT_FIXEDPRICE)).Sum(p => p.Quantity);
 
                     var ebayDuplicates = item.EbayListingItems
-                        .Where(p => p.Listing.Status.Equals("Active"))
+                        .Where(p => p.Listing.Status.Equals(EbayMarketplace.STATUS_ACTIVE))
                         .GroupBy(p => new { Marketplace = p.Listing.Marketplace, Format = p.Listing.Format })
                         .Where(p => p.Count() > 1);
 
@@ -172,7 +172,9 @@ namespace MarketplaceManager
                     }
  
                     product.EbaySold = item.EbayListingItems.SelectMany(p => p.OrderItems).Where(p => p.Order.MarkedAsShipped()).Sum(p => p.QuantityPurchased);
+
                     product.AmznSold = item.AmznListingItems.SelectMany(p => p.OrderItems).Where(p => p.Order.Status.Equals("Shipped")).Sum(p => p.QuantityOrdered);
+
                     products.Add(product);
                 }
             }

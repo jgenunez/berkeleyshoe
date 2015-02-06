@@ -7,6 +7,6 @@ namespace BerkeleyEntities
 {
     public partial class EbayListing
     {
-
+        public DateTime? ScheduleTime { get; set; }
     }
 }

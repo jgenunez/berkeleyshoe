@@ -9,6 +9,8 @@ using System.Xml.Serialization;
 using System.IO;
 using MarketplaceWebServiceProducts.Model;
 using System.Timers;
+using BerkeleyEntities.Amazon;
+using MarketplaceWebService.Model;
 
 namespace BerkeleyEntities
 {
@@ -49,36 +51,38 @@ namespace BerkeleyEntities
                 {
                     if (pending.Count > 0 && quota > 0)
                     {
-                        quota--;
+                        string upc = pending.Dequeue();
 
-                        current.Add(pending.Dequeue());
+                        if (!current.Contains(upc))
+                        {
+                            quota--;
+                            current.Add(upc);
+                        }
                     }
                 }
 
-                GetMatchingProductForIdRequest request = new GetMatchingProductForIdRequest();
-                request.SellerId = this.MerchantId;
-                request.MarketplaceId = this.MarketplaceId;
-                request.IdList = new IdListType();
-                request.IdList.Id = current;
-                request.IdType = "UPC";
-
-                GetMatchingProductForIdResponse response = GetMWSProductsClient().GetMatchingProductForId(request);
-
-                if (response.IsSetGetMatchingProductForIdResult())
+                if (current.Count > 0)
                 {
-                    foreach (GetMatchingProductForIdResult result in response.GetMatchingProductForIdResult)
+                    GetMatchingProductForIdRequest request = new GetMatchingProductForIdRequest();
+                    request.SellerId = this.MerchantId;
+                    request.MarketplaceId = this.MarketplaceId;
+                    request.IdList = new IdListType();
+                    request.IdList.Id = current;
+                    request.IdType = "UPC";
+
+                    GetMatchingProductForIdResponse response = GetMWSProductsClient().GetMatchingProductForId(request);
+
+                    if (response.IsSetGetMatchingProductForIdResult())
                     {
-                        results.Add(result);
-                    }
+                        foreach (GetMatchingProductForIdResult result in response.GetMatchingProductForIdResult)
+                        {
+                            results.Add(result);
+                        }
+                    } 
                 }
             }
 
             return results;
-        }
-
-        void timer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            throw new NotImplementedException();
         }
 
         public MarketplaceWebServiceClient GetMWSClient()
@@ -157,73 +161,6 @@ namespace BerkeleyEntities
                 "SyncManager", "N/A", this.AccessKeyId, this.SecretAccessKey, config);
 
             return service;
-        }
-
-        public List<string> GetWaitingSyncOrders()
-        {
-            string path = this.RootDir + @"/" + this.Code + @"/waitingOrders.xml";
-
-            return ReadXmlFile(path);
-        }
-
-        public List<string> GetWaitingSyncListings()
-        {
-            string path = this.RootDir + @"/" + this.Code + @"/waitingListings.xml";
-
-            return ReadXmlFile(path);
-        }
-
-        public void SetWaitingSyncOrders(List<string> orders)
-        {
-            string path = this.RootDir + @"/" + this.Code + @"/waitingOrders.xml";
-
-            if (orders.Count == 0)
-            {
-                if (File.Exists(path))
-                {
-                    File.Delete(path);
-                }
-            }
-            else
-            {
-                XmlSerializer serializer = new XmlSerializer(typeof(List<string>));
-                serializer.Serialize(File.Open(path, FileMode.Create), orders);
-            }
-        }
-
-        public void SetWaitingSyncListings(List<string> listings)
-        {
-            string path = this.RootDir + @"\" + this.Code + @"\waitingListings.xml";
-
-            if (listings.Count == 0)
-            {
-                if (File.Exists(path))
-                {
-                    File.Delete(path);
-                }
-            }
-            else
-            {
-                XmlSerializer serializer = new XmlSerializer(typeof(List<string>));
-                serializer.Serialize(File.Open(path, FileMode.Create), listings);
-            }
-        }
-
-        private List<string> ReadXmlFile(string path)
-        {
-            List<string> waitingSync;
-
-            if (File.Exists(path))
-            {
-                XmlSerializer serializer = new XmlSerializer(typeof(List<string>));
-                waitingSync = (List<string>)serializer.Deserialize(File.OpenRead(path));
-            }
-            else
-            {
-                waitingSync = new List<string>();
-            }
-
-            return waitingSync;
         }
     }
 }

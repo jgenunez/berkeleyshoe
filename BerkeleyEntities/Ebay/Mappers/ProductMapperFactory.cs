@@ -4,19 +4,24 @@ using System.Linq;
 using System.Text;
 using BerkeleyEntities;
 
-namespace EbayServices.Mappers
+namespace BerkeleyEntities.Ebay.Mappers
 {
     public class ProductMapperFactory 
     {
 
 
 
-        public ProductMapper GetProductData(Item item)
+        public ProductMapper GetProductMapper(Item item)
         {
             string deptCode = item.Department.code;
 
             switch (deptCode)
             {
+                case "57990":
+                case "15687":
+                case "11484":
+                    return new ShirtAdapter(item);
+
                 case "11632":
                 case "62107":
                 case "53548":
@@ -56,7 +61,7 @@ namespace EbayServices.Mappers
 
             foreach (Item item in items)
             {
-                products.Add(GetProductData(item));
+                products.Add(GetProductMapper(item));
             }
 
             return new ProductMatrixMapper(products);

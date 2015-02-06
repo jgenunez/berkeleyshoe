@@ -6,7 +6,7 @@ using eBay.Service.Core.Soap;
 using BerkeleyEntities;
 using System.Globalization;
 
-namespace EbayServices
+namespace BerkeleyEntities.Ebay.Mappers
 {
     public abstract class ProductMapper
     {

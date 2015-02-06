@@ -89,38 +89,50 @@ namespace MarketplaceManager
             {
                 if (view.Host.Equals("Amazon"))
                 {
+                    var activeListings = _dataContext.AmznListingItems.Where(p => p.MarketplaceID == view.DbID && p.IsActive);
 
-                    view.ActiveListingQty = _dataContext.AmznListingItems.Where(p => p.MarketplaceID == view.DbID && p.IsActive).Sum(p => p.Quantity);
+                    view.ActiveListingQty = activeListings.Sum(p => p.Quantity);
+                    view.ActiveListing = activeListings.Count();
 
-                    var orderItems = _dataContext.AmznOrderItems.Where(p => p.Order.MarketplaceID == view.DbID);
+                    var orders = _dataContext.AmznOrders.Where(p => p.MarketplaceID == view.DbID);
 
-                    var waitingShipments = orderItems.Where(p => p.Order.Status.Equals("Unshipped") || p.Order.Status.Equals("PartiallyShipped"));
+                    var unshippedOrders = orders.Where(p => p.Status.Equals("Unshipped") || p.Status.Equals("PartiallyShipped"));
+                    var unpaidOrders = orders.Where(p => p.Status.Equals("Pending"));
 
-                    view.WaitingShipmentCount = waitingShipments.Sum(p => p.QuantityOrdered - p.QuantityShipped);
-                    view.WaitingShipment = waitingShipments.Select(p => p.Order.Code).ToList();
+                    if (unshippedOrders.Count() > 0)
+                    {
+                        view.WaitingShipmentQty = unshippedOrders.Sum(p => p.OrderItems.Sum(s => s.QuantityOrdered - s.QuantityShipped));
+                        view.WaitingShipment = unshippedOrders.Select(p => p.Code).ToList();
+                    }
 
-                    var waitingPayments = orderItems.Where(p => p.Order.Status.Equals("Pending"));
 
-                    view.WaitingPaymentCount = waitingPayments.Sum(p => p.QuantityOrdered);
-                    view.WaitingPayment = waitingPayments.Select(p => p.Order.Code).ToList();
+                    if (unpaidOrders.Count() > 0)
+                    {
+                        view.WaitingPaymentQty = unpaidOrders.Sum(p => p.OrderItems.Sum(s => s.QuantityOrdered - s.QuantityShipped));
+                        view.WaitingPayment = unpaidOrders.Select(p => p.Code).ToList();
+                    }
 
                 }
                 else if (view.Host.Equals("Ebay"))
                 {
-                    view.ActiveListingQty = _dataContext.EbayListingItems.Where(p => p.Listing.MarketplaceID == view.DbID && p.Listing.Status.Equals("Active")).Sum(p => p.Quantity);
+                    var activeListings = _dataContext.EbayListings.Where(p => p.MarketplaceID == view.DbID && p.Status.Equals(EbayMarketplace.STATUS_ACTIVE));
 
-                    var orderItems = _dataContext.EbayOrderItems.Where(p => p.Order.MarketplaceID == view.DbID).ToList();
-
-                    var waitingShipments = orderItems.Where(p => p.Order.IsWaitingForShipment());
-
-                    view.WaitingShipmentCount = waitingShipments.Sum(p => p.QuantityPurchased);
-                    view.WaitingShipment = waitingShipments.Select(p => p.Order.SalesRecordNumber).ToList();
+                    view.ActiveListingQty = activeListings.Sum(p => p.ListingItems.Sum(s => s.Quantity));
+                    view.ActiveListing = activeListings.Count();
 
 
-                    var waitingPayments = orderItems.Where(p => p.Order.IsWaitingForPayment());
+                    var orders = _dataContext.EbayOrders.Where(p => p.MarketplaceID == view.DbID).ToList();
 
-                    view.WaitingPaymentCount = waitingPayments.Sum(p => p.QuantityPurchased);
-                    view.WaitingPayment = waitingPayments.Select(p => p.Order.SalesRecordNumber).ToList();
+                    var unshippedOrders = orders.Where(p => p.IsWaitingForShipment());
+                    var unpaidOrders = orders.Where(p => p.IsWaitingForPayment());
+
+
+
+                    view.WaitingShipmentQty = unshippedOrders.Sum(p => p.OrderItems.Sum(s => s.QuantityPurchased));
+                    view.WaitingShipment = unshippedOrders.Select(p => p.SalesRecordNumber).ToList();
+
+                    view.WaitingPaymentQty = unpaidOrders.Sum(p => p.OrderItems.Sum(s => s.QuantityPurchased));
+                    view.WaitingPayment = unpaidOrders.Select(p => p.SalesRecordNumber).ToList();
 
                 } 
             }

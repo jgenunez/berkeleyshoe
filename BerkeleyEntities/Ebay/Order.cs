@@ -51,7 +51,7 @@ namespace BerkeleyEntities
 
         private bool IsValid()
         {
-            return this.OrderStatus.Equals("Active") || this.OrderStatus.Equals("Completed");
+            return (this.OrderStatus.Equals("Active") || this.OrderStatus.Equals("Completed")) && !this.SalesRecordNumber.Equals("0");
         }
 
         private bool MarkedAsPaid()

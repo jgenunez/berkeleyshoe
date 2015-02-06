@@ -13,8 +13,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BinLocationUtility", "BinLo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhysicalInventoryUtility", "PhysicalInventoryUtility\PhysicalInventoryUtility.csproj", "{A63C6378-9516-4208-8543-49642F77BAB3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarketplaceManager", "MarketplaceServices\MarketplaceManager.csproj", "{585AA2CF-6189-4163-AD62-284C523FA289}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutomaticSyncService", "AutomaticSyncService\AutomaticSyncService.csproj", "{296FB21F-4CBF-491D-8771-4573F56A841C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutomaticSyncConsole", "AutomaticSyncConsole\AutomaticSyncConsole.csproj", "{069F44C0-9D59-425A-B4CD-286EE74C97C7}"
@@ -24,6 +22,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OperationsDashboard", "OperationsDashboard\OperationsDashboard.csproj", "{27C259C8-837E-432A-8BEA-C0FE4B407E2A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkbookPublisher", "WorkbookPublisher\WorkbookPublisher.csproj", "{8F0463F7-8E72-48B0-83DD-B3D18479E618}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarketplaceManager", "MarketplaceManager\MarketplaceManager.csproj", "{585AA2CF-6189-4163-AD62-284C523FA289}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -97,18 +97,6 @@ Global
 		{A63C6378-9516-4208-8543-49642F77BAB3}.Release|Win32.ActiveCfg = Release|x86
 		{A63C6378-9516-4208-8543-49642F77BAB3}.Release|x86.ActiveCfg = Release|x86
 		{A63C6378-9516-4208-8543-49642F77BAB3}.Release|x86.Build.0 = Release|x86
-		{585AA2CF-6189-4163-AD62-284C523FA289}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{585AA2CF-6189-4163-AD62-284C523FA289}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{585AA2CF-6189-4163-AD62-284C523FA289}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{585AA2CF-6189-4163-AD62-284C523FA289}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{585AA2CF-6189-4163-AD62-284C523FA289}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{585AA2CF-6189-4163-AD62-284C523FA289}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{585AA2CF-6189-4163-AD62-284C523FA289}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{585AA2CF-6189-4163-AD62-284C523FA289}.Release|Any CPU.Build.0 = Release|Any CPU
-		{585AA2CF-6189-4163-AD62-284C523FA289}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{585AA2CF-6189-4163-AD62-284C523FA289}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{585AA2CF-6189-4163-AD62-284C523FA289}.Release|Win32.ActiveCfg = Release|Any CPU
-		{585AA2CF-6189-4163-AD62-284C523FA289}.Release|x86.ActiveCfg = Release|Any CPU
 		{296FB21F-4CBF-491D-8771-4573F56A841C}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{296FB21F-4CBF-491D-8771-4573F56A841C}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{296FB21F-4CBF-491D-8771-4573F56A841C}.Debug|Mixed Platforms.Build.0 = Debug|x86
@@ -170,6 +158,18 @@ Global
 		{8F0463F7-8E72-48B0-83DD-B3D18479E618}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{8F0463F7-8E72-48B0-83DD-B3D18479E618}.Release|Win32.ActiveCfg = Release|Any CPU
 		{8F0463F7-8E72-48B0-83DD-B3D18479E618}.Release|x86.ActiveCfg = Release|Any CPU
+		{585AA2CF-6189-4163-AD62-284C523FA289}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{585AA2CF-6189-4163-AD62-284C523FA289}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{585AA2CF-6189-4163-AD62-284C523FA289}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{585AA2CF-6189-4163-AD62-284C523FA289}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{585AA2CF-6189-4163-AD62-284C523FA289}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{585AA2CF-6189-4163-AD62-284C523FA289}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{585AA2CF-6189-4163-AD62-284C523FA289}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{585AA2CF-6189-4163-AD62-284C523FA289}.Release|Any CPU.Build.0 = Release|Any CPU
+		{585AA2CF-6189-4163-AD62-284C523FA289}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{585AA2CF-6189-4163-AD62-284C523FA289}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{585AA2CF-6189-4163-AD62-284C523FA289}.Release|Win32.ActiveCfg = Release|Any CPU
+		{585AA2CF-6189-4163-AD62-284C523FA289}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

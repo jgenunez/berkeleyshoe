@@ -116,7 +116,7 @@ namespace AmazonServices
         private string GetItemType()
         {
             string department = _item.Department.code;
-            string category = _item.Category.Name;
+            string category = _item.CategoryName;
 
             if (department.Equals("53120"))
             {
@@ -262,6 +262,10 @@ namespace AmazonServices
                 {
                     size = _item.Attributes[AttributeLabel.USWomenSize].Value + " 2A(N) US";
                 }
+            }
+            else
+            {
+                size = _item.Attributes.Single(p => !p.Key.Equals(AttributeLabel.Width) && !p.Key.Equals(AttributeLabel.Color)).Value.Value;
             }
 
             return size;

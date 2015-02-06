@@ -20,16 +20,10 @@ namespace WorkbookPublisher
 {
     public class ExcelWorkbook
     {
+        const string TITLEMAP_PATH = @"P:\Publishing\TitleMap.xlsx";
         const string COLUMN_SKU = "SKU";
         const string COLUMN_FORMAT = "FORMAT";
         const string COLUMN_MESSAGE = "MESSAGE";
-
-        private SharedStringTablePart _stringTablePart;
-
-        private Dictionary<string, string> _colHeadersToRefs = new Dictionary<string, string>();
-        private Dictionary<string, string> _colRefsToHeaders = new Dictionary<string, string>();
-        private Dictionary<string, PropertyInfo> _colRefsToProp = new Dictionary<string, PropertyInfo>();
-
 
         public ExcelWorkbook(string path)
         {
@@ -38,94 +32,82 @@ namespace WorkbookPublisher
 
         public string Path { get; set; }
 
-        public void CreateErrorSheet(string code, List<Entry> entries)
+        //public void CreateErrorSheet(string code, List<ListingEntry> entries)
+        //{
+        //    using (SpreadsheetDocument document = SpreadsheetDocument.Open(this.Path, true))
+        //    {
+        //        SharedStringTablePart stringTablePart = document.WorkbookPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault();
+
+        //        string parentName = code.Replace("(errors)", "");
+
+        //        var sheets = document.WorkbookPart.Workbook.Sheets.Elements<Sheet>();
+
+        //        Sheet parentSheet = sheets.Single(p => p.Name.Value.Equals(parentName));
+        //        WorksheetPart parentWorksheetPart = document.WorkbookPart.GetPartById(parentSheet.Id) as WorksheetPart;
+        //        Row header = parentWorksheetPart.Worksheet.Descendants<Row>().Single(p => p.RowIndex.Value == 1).CloneNode(true) as Row;
+
+        //        var worksheet = new Worksheet();
+        //        var sheetData = worksheet.AppendChild<SheetData>(new SheetData());
+
+                
+
+        //        sheetData.AppendChild<Row>(header);
+
+        //        var entryType = entries.First().GetType();
+
+        //        RowMapper mapper = new RowMapper(entryType, header, stringTablePart.SharedStringTable);
+
+        //        uint newRowCount = 2;
+
+        //        foreach (Row row in parentWorksheetPart.Worksheet.Descendants<Row>().Where(p => p.RowIndex.Value != 1))
+        //        {
+        //            string sku = mapper.GetValue(row, COLUMN_SKU);
+        //            string format = mapper.GetValue(row, COLUMN_FORMAT); ;
+
+        //            ListingEntry entry = entries.SingleOrDefault(p => p.Code.Equals(sku + format));
+
+        //            if (entry != null)
+        //            {
+        //                Row newRow = row.CloneNode(true) as Row;
+        //                newRow.RowIndex.Value = newRowCount;
+
+        //                foreach (var cell in newRow.Elements<Cell>())                       
+        //                {
+        //                    cell.CellReference.Value = cell.CellReference.Value.Replace(row.RowIndex.Value.ToString(), newRow.RowIndex.Value.ToString());
+        //                }
+
+        //                mapper.UpdateRow(entry, newRow);
+        //                sheetData.AppendChild<Row>(newRow);
+        //                newRowCount++;
+        //            }
+        //        }
+
+        //        Sheet targetSheet = sheets.SingleOrDefault(p => p.Name.Value.Equals(code));
+
+        //        if (targetSheet == null)
+        //        {
+        //            WorksheetPart worksheetPart = CreateWorksheet(document.WorkbookPart, code);
+        //            worksheetPart.Worksheet = worksheet;
+        //        }
+        //        else
+        //        {
+        //            WorksheetPart worksheetPart = document.WorkbookPart.GetPartById(targetSheet.Id) as WorksheetPart;
+        //            worksheetPart.Worksheet = worksheet;
+        //        }
+
+        //        document.Close();
+        //    }
+        //}
+
+        public void UpdateSheet(List<BaseEntry> entries, Type entryType, string sheetName)
         {
             using (SpreadsheetDocument document = SpreadsheetDocument.Open(this.Path, true))
             {
-                _stringTablePart = document.WorkbookPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault();
-
-                string parentName = code.Replace("(errors)", "");
+                SharedStringTablePart stringTablePart = document.WorkbookPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault();
 
                 var sheets = document.WorkbookPart.Workbook.Sheets.Elements<Sheet>();
 
-                Sheet parentSheet = sheets.Single(p => p.Name.Value.Equals(parentName));
-
-                WorksheetPart parentWorksheetPart = document.WorkbookPart.GetPartById(parentSheet.Id) as WorksheetPart;
-
-                var newWorksheet = parentWorksheetPart.Worksheet.CloneNode(true) as Worksheet;
-
-                var newSheetData = newWorksheet.GetFirstChild<SheetData>();
-
-                newSheetData.RemoveAllChildren();
-
-                Row newHeaderRow = parentWorksheetPart.Worksheet.Descendants<Row>().Single(p => p.RowIndex.Value == 1).CloneNode(true) as Row;
-
-                AddMessageHeader(newHeaderRow);
-
-                newSheetData.AppendChild<Row>(newHeaderRow);
-
-                var entryType = entries.First().GetType();
-
-                RegisterColumns(entryType, newHeaderRow);
-
-                uint newRowCount = 2;
-
-                foreach (Row row in GetValidRows(parentWorksheetPart.Worksheet))
-                {
-                    string sku = GetCellValue(GetCell(row, _colHeadersToRefs[COLUMN_SKU]));
-
-                    string format = GetCellValue(GetCell(row, _colHeadersToRefs[COLUMN_FORMAT]));
-
-                    Entry entry = entries.SingleOrDefault(p => p.Sku.Equals(sku) && p.Format.Equals(format));
-
-                    if (entry != null)
-                    {
-                        Row newRow = row.CloneNode(true) as Row;
-
-                        newRow.RowIndex.Value = newRowCount;
-
-                        foreach (var cell in newRow.Elements<Cell>())                       
-                        {
-                            cell.CellReference.Value = cell.CellReference.Value.Replace(row.RowIndex.Value.ToString(), newRow.RowIndex.Value.ToString());
-                        }
-
-                        Cell msgCell = GetCell(newRow, _colHeadersToRefs[COLUMN_MESSAGE]);
-
-                        msgCell.CellValue = new CellValue(InsertSharedString(entry.Message).ToString());
-                        msgCell.DataType = CellValues.SharedString;
-
-                        newSheetData.AppendChild<Row>(newRow);
-
-                        newRowCount++;
-                    }
-                }
-
-                Sheet targetSheet = sheets.SingleOrDefault(p => p.Name.Value.Equals(code));
-
-                if (targetSheet == null)
-                {
-                    WorksheetPart worksheetPart = CreateWorksheet(document.WorkbookPart, code);
-                    worksheetPart.Worksheet = newWorksheet;
-                }
-                else
-                {
-                    WorksheetPart worksheetPart = document.WorkbookPart.GetPartById(targetSheet.Id) as WorksheetPart;
-                    worksheetPart.Worksheet = newWorksheet;
-                }
-
-                document.Close();
-            }
-        }
-
-        public void UpdateMainSheet(List<Entry> entries)
-        {
-            using (SpreadsheetDocument document = SpreadsheetDocument.Open(this.Path, true))
-            {
-                _stringTablePart = document.WorkbookPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault();
-
-                var sheets = document.WorkbookPart.Workbook.Sheets.Elements<Sheet>();
-
-                Sheet mainSheet = sheets.SingleOrDefault(p => p.Name.Value.ToUpper().Equals("MAIN"));
+                Sheet mainSheet = sheets.SingleOrDefault(p => p.Name.Value.ToUpper().Equals(sheetName));
 
                 if (mainSheet != null)
                 {
@@ -135,43 +117,88 @@ namespace WorkbookPublisher
 
                     Row headerRow = worksheet.Descendants<Row>().Single(p => p.RowIndex.Value == 1);
 
-                    RegisterColumns(typeof(Entry), headerRow);
+                    RowMapper mapper = new RowMapper(entryType, headerRow, stringTablePart.SharedStringTable);
 
-                    var rows = worksheet.GetFirstChild<SheetData>().Elements<Row>();
+                    var sheetData = worksheet.GetFirstChild<SheetData>();
+                    var rows = sheetData.Elements<Row>();
 
-                    foreach (Entry entry in entries)
+                    foreach (var entry in entries)
                     {
-                        Row row = rows.Single(p => p.RowIndex.Value == entry.RowIndex);
+                        Row row = rows.SingleOrDefault(p => p.RowIndex.Value == entry.RowIndex);
 
-                        UpdateRow(entry, row);
+                        if (row == null)
+                        {
+                            Row parentRow = rows.Single(p => p.RowIndex.Value == entry.ParentRowIndex).Clone() as Row;
+                            row = new Row() { RowIndex = new UInt32Value(entry.RowIndex) };
+                            sheetData.AppendChild<Row>(row);
+                        }
+
+                        mapper.UpdateRow(entry, row);
                     }
 
                 }
+
                 document.Close();
             }
         }
 
-        public List<Entry> ReadEntry(Type entryType, string code)
+        //public void UpdateMainSheet(List<MainEntry> entries)
+        //{
+        //    using (SpreadsheetDocument document = SpreadsheetDocument.Open(this.Path, true))
+        //    {
+        //        SharedStringTablePart stringTablePart = document.WorkbookPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault();
+
+        //        var sheets = document.WorkbookPart.Workbook.Sheets.Elements<Sheet>();
+
+        //        Sheet mainSheet = sheets.SingleOrDefault(p => p.Name.Value.ToUpper().Equals("MAIN"));
+
+        //        if (mainSheet != null)
+        //        {
+        //            WorksheetPart mainWorksheetPart = document.WorkbookPart.GetPartById(mainSheet.Id) as WorksheetPart;
+
+        //            Worksheet worksheet = mainWorksheetPart.Worksheet;
+
+        //            Row headerRow = worksheet.Descendants<Row>().Single(p => p.RowIndex.Value == 1);
+
+        //            RowMapper mapper = new RowMapper(typeof(MainEntry), headerRow, stringTablePart.SharedStringTable);
+
+        //            var rows = worksheet.GetFirstChild<SheetData>().Elements<Row>();
+
+        //            foreach (MainEntry entry in entries)
+        //            {
+        //                Row row = rows.Single(p => p.RowIndex.Value == entry.RowIndex);
+
+        //                mapper.UpdateRow(entry, row);
+        //            }
+
+        //        }
+        //        document.Close();
+        //    }
+        //}
+
+        public List<object> ReadSheet(Type entryType, string sheetName)
         {
-            List<Entry> entries = new List<Entry>();
+            List<object> entries = new List<object>();
 
             using (SpreadsheetDocument document = SpreadsheetDocument.Open(this.Path, false))
             {
-                _stringTablePart = document.WorkbookPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault();
+                SharedStringTablePart stringTablePart = document.WorkbookPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault();
 
-                Sheet sheet = document.WorkbookPart.Workbook.Sheets.Descendants<Sheet>().SingleOrDefault(p => p.Name.Value.ToUpper().Equals(code));
+                Sheet sheet = document.WorkbookPart.Workbook.Sheets.Descendants<Sheet>().SingleOrDefault(p => p.Name.Value.ToUpper().Equals(sheetName));
 
                 if (sheet != null)
                 {
                     WorksheetPart worksheetPart = document.WorkbookPart.GetPartById(sheet.Id) as WorksheetPart;
 
-                    RegisterColumns(entryType, worksheetPart.Worksheet.Descendants<Row>().Single(p => p.RowIndex.Value == 1));
+                    var headerRow = worksheetPart.Worksheet.Descendants<Row>().Single(p => p.RowIndex.Value == 1);
 
-                    foreach (Row row in GetValidRows(worksheetPart.Worksheet))
+                    RowMapper mapper = new RowMapper(entryType, headerRow, stringTablePart.SharedStringTable);
+
+                    foreach (Row row in worksheetPart.Worksheet.Descendants<Row>().Where(p => p.RowIndex.Value != 1))
                     {
-                        Entry entry = CreateEntry(row, entryType);
-                        entry.RowIndex = row.RowIndex.Value;
-                        entries.Add(entry);
+                        object entry = mapper.MapRow(row);
+
+                        entries.Add(entry);                    
                     }
                 }
 
@@ -181,488 +208,188 @@ namespace WorkbookPublisher
             return entries;
         }
 
-        private void AddMessageHeader(Row headerRow)
+        public List<TitleMapRule> ReadTitleMapRules()
         {
-            if (!headerRow.Elements<Cell>().Any(p => GetCellValue(p).Trim().ToUpper().Equals(COLUMN_MESSAGE)))
+            List<TitleMapRule> rules = new List<TitleMapRule>();
+
+            using (SpreadsheetDocument document = SpreadsheetDocument.Open(TITLEMAP_PATH, false))
             {
-                Cell msgCell = headerRow.Elements<Cell>().FirstOrDefault(p => string.IsNullOrWhiteSpace(GetCellValue(p)));
+                SharedStringTablePart stringTablePart = document.WorkbookPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault();
 
-                if (msgCell == null)
+                Sheet sheet = document.WorkbookPart.Workbook.Sheets.Descendants<Sheet>().First();
+
+                if (sheet != null)
                 {
-                    msgCell = new Cell();
-                    msgCell.DataType = CellValues.SharedString;
-                    msgCell.CellReference = new StringValue(GetColLetterFromIndex(headerRow.Elements<Cell>().Count() + 1) + headerRow.RowIndex.Value.ToString());
+                    WorksheetPart worksheetPart = document.WorkbookPart.GetPartById(sheet.Id) as WorksheetPart;
 
-                    headerRow.AppendChild<Cell>(msgCell);
-                }
+                    var headerRow = worksheetPart.Worksheet.Descendants<Row>().Single(p => p.RowIndex.Value == 1);
 
-                msgCell.DataType = CellValues.SharedString;
-                msgCell.CellValue = new CellValue(InsertSharedString(COLUMN_MESSAGE).ToString());
-            }
-        }
+                    RowMapper mapper = new RowMapper(typeof(TitleMapRule), headerRow, stringTablePart.SharedStringTable );
 
-        private List<Row> GetValidRows(Worksheet worksheet)
-        {
-            return worksheet.Descendants<Cell>().Where(c =>
-                string.Compare(ParseColRefs(c.CellReference.Value), _colHeadersToRefs[COLUMN_SKU], true) == 0 &&
-                !string.IsNullOrWhiteSpace(GetCellValue(c))
-                ).Select(p => p.Parent).Cast<Row>().Where(p => p.RowIndex != 1).ToList();
-        }
-
-        private Entry CreateEntry(Row row, Type entryType)
-        {
-            Entry entry = Activator.CreateInstance(entryType) as Entry;
-
-            foreach (Cell cell in row.OfType<Cell>())
-            {
-                string colRef = this.ParseColRefs(cell.CellReference);
-                string cellValue = this.GetCellValue(cell);
-                if (_colRefsToProp.ContainsKey(colRef) && !string.IsNullOrWhiteSpace(cellValue))
-                {
-                    PropertyInfo prop = _colRefsToProp[colRef];
-
-                    if (prop.Name.Equals("Message"))                
+                    foreach (Row row in worksheetPart.Worksheet.Descendants<Row>().Where(p => p.RowIndex.Value != 1))
                     {
-                        continue;
-                    }
+                        TitleMapRule rule = mapper.MapRow(row) as TitleMapRule;
 
-                    try
-                    {
-                        switch (prop.PropertyType.Name)
-                        {
-                            case "String":
-                                prop.SetValue(entry, cellValue, null); break;
-                            case "Int32":
-                                prop.SetValue(entry, Convert.ToInt32(cellValue), null); break;
-                            case "Decimal":
-                                prop.SetValue(entry, Convert.ToDecimal(cellValue), null); break;
-                            case "DateTime":
-                                prop.SetValue(entry, DateTime.FromOADate(Convert.ToDouble(cellValue)).ToUniversalTime(), null); break;
-                            default:
-                                prop.SetValue(entry, cellValue, null); break;
-                        }
-                    }
-                    catch (FormatException e)
-                    {
-                        entry.Message = e.Message;
-                    }
-                }
-            }
-            return entry;
-        }
-
-        private void UpdateRow(Entry entry, Row row)
-        {
-            foreach (string header in _colHeadersToRefs.Keys)
-            {
-                string colRef = _colHeadersToRefs[header];
-
-                if (_colRefsToProp.ContainsKey(colRef))
-                {
-                    var prop = _colRefsToProp[colRef];
-                    object value = prop.GetValue(entry, null);
-
-                    if (value != null)
-                    {
-                        Cell cell = GetCell(row, colRef);
-
-                        switch (prop.PropertyType.Name)
-                        {
-                            case "String":
-                                cell.CellValue = new CellValue(InsertSharedString(value.ToString()).ToString());
-                                cell.DataType = CellValues.SharedString; break;
-                            case "Int32":
-                            case "Decimal":
-                                cell.CellValue = new CellValue(value.ToString());
-                                cell.DataType = CellValues.Number; break;
-                            case "DateTime":
-                                cell.CellValue = new CellValue(value.ToString());
-                                cell.DataType = CellValues.Date; break;
-                            default:
-                                cell.CellValue = new CellValue(InsertSharedString(value.ToString()).ToString());
-                                cell.DataType = CellValues.SharedString; break; ;
-                        }
-                    }
-                }
-            }
-        }
-
-        private Cell CreateCell(EbayEntry entry, string colRef)
-        {
-            Cell cell = new Cell();
-
-            cell.CellReference = new StringValue(colRef + entry.RowIndex.ToString());
-
-            if (_colRefsToProp.ContainsKey(colRef))
-            {
-                PropertyInfo prop = _colRefsToProp[colRef];
-
-                object value = prop.GetValue(entry, null);
-
-                if (value != null)
-                {
-                    switch (prop.PropertyType.Name)
-                    {
-                        case "String":
-                            cell.CellValue = new CellValue(InsertSharedString(value.ToString()).ToString());
-                            cell.DataType = CellValues.SharedString; break;
-                        case "Int32":
-                        case "Decimal":
-                            cell.CellValue = new CellValue(value.ToString());
-                            cell.DataType = CellValues.Number; break;
-                        case "DateTime":
-                            cell.CellValue = new CellValue(value.ToString());
-                            cell.DataType = CellValues.Date; break;
-                        default:
-                            cell.CellValue = new CellValue(InsertSharedString(value.ToString()).ToString());
-                            cell.DataType = CellValues.SharedString; break; ;
-                    }
-                }
-                else
-                {
-                    cell.CellValue = new CellValue("");
-                    cell.DataType = CellValues.String;
-                }
-            }
-            else
-            {
-                cell.CellValue = new CellValue("");
-                cell.DataType = CellValues.String;
-            }
-
-            return cell;
-        }
-
-        private void RegisterColumns(Type entryType, Row headerRow)
-        {          
-            _colRefsToHeaders.Clear();
-            _colHeadersToRefs.Clear();
-            _colRefsToProp.Clear();
-
-            foreach (Cell cell in headerRow.OfType<Cell>())
-            {
-                string header = GetCellValue(cell).ToUpper().Trim();
-                string columnRef = ParseColRefs(cell.CellReference.Value);
-
-                _colRefsToHeaders.Add(columnRef, header);
-                _colHeadersToRefs.Add(header, columnRef);
-            }
-
-            PropertyInfo[] props = entryType.GetProperties();
-
-            foreach (string colRef in _colRefsToHeaders.Keys)
-            {
-                PropertyInfo prop = props.SingleOrDefault(p => string.Compare(
-                    p.Name, _colRefsToHeaders[colRef],
-                    CultureInfo.CurrentCulture,
-                    CompareOptions.IgnoreSymbols | CompareOptions.IgnoreCase
-                    ) == 0);
-
-                if (prop != null)
-                {
-                    _colRefsToProp.Add(colRef, prop);
-                }
-            }
-
-
-            //var missingCols = props.Where(p => !_colRefsToProp.Values.Any(s => s.Equals(p)));
-        }
-
-        private WorksheetPart CreateWorksheet(WorkbookPart workbookPart, string name)
-        {
-            WorksheetPart newWorksheetPart = workbookPart.AddNewPart<WorksheetPart>();
-
-            uint sheetId = 1;
-
-            var sheets = workbookPart.Workbook.Sheets.Elements<Sheet>();
-
-            if (sheets.Count() > 0)
-            {
-                sheetId = sheets.Select(s => s.SheetId.Value).Max() + 1;
-            }
-
-            string relationshipId = workbookPart.GetIdOfPart(newWorksheetPart);
-
-            // Append the new worksheet and associate it with the workbook.
-            Sheet sheet = new Sheet() { Id = relationshipId, SheetId = sheetId, Name = name };
-
-            workbookPart.Workbook.Sheets.Append(sheet);
-
-            return newWorksheetPart;
-        }
-
-        private int InsertSharedString(string text)
-        {
-            int i = 0;
-            // Iterate through all the items in the SharedStringTable. If the text already exists, return its index.
-            foreach (SharedStringItem item in _stringTablePart.SharedStringTable.Elements<SharedStringItem>())
-            {
-                if (item.InnerText == text)
-                {
-                    return i;
-                }
-
-                i++;
-            }
-            // The text does not exist in the part. Create the SharedStringItem and return its index.
-            _stringTablePart.SharedStringTable.AppendChild(new SharedStringItem(new Text(text)));
-            return i;
-        }
-
-        private string GetCellValue(Cell cell)
-        {
-            if (cell != null && cell.CellValue != null)
-            {
-                if (cell.DataType != null && cell.DataType.Value.Equals(CellValues.SharedString))
-                {
-                    int strIndex = int.Parse(cell.CellValue.Text);
-                    return _stringTablePart.SharedStringTable.ElementAt(strIndex).InnerText;
-                }
-                else
-                {
-                    return cell.CellValue.Text;
-                }
-            }
-
-            return string.Empty;
-        }
-
-        private string ParseColRefs(string cellRef)
-        {
-            // Create a regular expression to match the column name portion of the cell name.
-            Regex regex = new Regex("[A-Za-z]+");
-            Match match = regex.Match(cellRef);
-
-            return match.Value;
-        }
-
-        private Cell GetCell(Row row, string colRef)
-        {
-            string cellRef = colRef + row.RowIndex.Value.ToString();
-
-            // If there is not a cell with the specified column name, insert one.
-            if (row.Elements<Cell>().Where(c => c.CellReference.Value == cellRef).Count() > 0)
-            {
-                return row.Elements<Cell>().Where(c => c.CellReference.Value == cellRef).First();
-            }
-            else
-            {
-                // Cells must be in sequential order according to CellReference. Determine where to insert the new cell.
-                Cell refCell = null;
-
-                foreach (Cell cell in row.Elements<Cell>())
-                {
-                    
-
-                    if (string.Compare(cell.CellReference.Value, cellRef, true) > 0 && cell.CellReference.Value.Count() == cellRef.Count())
-                    {
-                        refCell = cell;
-
-                        break;
+                        rules.Add(rule);
                     }
                 }
 
-                Cell newCell = new Cell() { CellReference = cellRef, StyleIndex = 0 };
-
-                row.InsertBefore(newCell, refCell);
-
-                return newCell;
-            }
-        }
-
-        public string GetColLetterFromIndex(int columnNumber)
-        {
-            int dividend = columnNumber;
-            string columnName = String.Empty;
-            int modulo;
-
-            while (dividend > 0)
-            {
-                modulo = (dividend - 1) % 26;
-                columnName = Convert.ToChar(65 + modulo).ToString() + columnName;
-                dividend = (int)((dividend - modulo) / 26);
+                document.Close();
             }
 
-            return columnName;
+            return rules;
         }
 
-        //private void InsertImage(long x, long y, long? width, long? height, string imagePath)
+        //private WorksheetPart CreateWorksheet(WorkbookPart workbookPart, string name)
         //{
-        //    try
+        //    WorksheetPart newWorksheetPart = workbookPart.AddNewPart<WorksheetPart>();
+
+        //    uint sheetId = 1;
+
+        //    var sheets = workbookPart.Workbook.Sheets.Elements<Sheet>();
+
+        //    if (sheets.Count() > 0)
         //    {
-        //        DrawingsPart drawingPart;
-        //        ImagePart imagePart;
-        //        WorksheetDrawing workSheetDrawing;
-        //        ImagePartType imagePartType;
-
-        //        switch (imagePath.Substring(imagePath.LastIndexOf('.') + 1).ToLower())
-        //        {
-        //            case "png":
-        //                imagePartType = ImagePartType.Png;
-        //                break;
-        //            case "jpg":
-        //            case "jpeg":
-        //                imagePartType = ImagePartType.Jpeg;
-        //                break;
-        //            case "gif":
-        //                imagePartType = ImagePartType.Gif;
-        //                break;
-        //            default:
-        //                return;
-        //        }
-
-        //        if (_workSheetPart.DrawingsPart == null)
-        //        {
-        //            //----- no drawing part exists, add a new one
-
-        //            drawingPart = _workSheetPart.AddNewPart<DrawingsPart>();
-        //            imagePart = drawingPart.AddImagePart(imagePartType, _workSheetPart.GetIdOfPart(drawingPart));
-        //            workSheetDrawing = new WorksheetDrawing();
-        //        }
-        //        else
-        //        {
-        //            //----- use existing drawing part
-
-        //            drawingPart = _workSheetPart.DrawingsPart;
-        //            imagePart = drawingPart.AddImagePart(imagePartType);
-        //            drawingPart.CreateRelationshipToPart(imagePart);
-        //            workSheetDrawing = drawingPart.WorksheetDrawing;
-        //        }
-
-        //        using (System.IO.FileStream fs = new System.IO.FileStream(imagePath, System.IO.FileMode.Open))
-        //        {
-        //            imagePart.FeedData(fs);
-        //        }
-
-        //        int imageNumber = drawingPart.ImageParts.Count<ImagePart>();
-        //        if (imageNumber == 1)
-        //        {
-        //            Drawing drawing = new Drawing();
-        //            drawing.Id = drawingPart.GetIdOfPart(imagePart);
-        //            _workSheetPart.Worksheet.Append(drawing);
-        //        }
-
-        //        NonVisualDrawingProperties nvdp = new NonVisualDrawingProperties();
-        //        nvdp.Id = new UInt32Value((uint)(1024 + imageNumber));
-        //        nvdp.Name = "Picture " + imageNumber.ToString();
-        //        nvdp.Description = "";
-        //        DocumentFormat.OpenXml.Drawing.PictureLocks picLocks = new DocumentFormat.OpenXml.Drawing.PictureLocks();
-        //        picLocks.NoChangeAspect = true;
-        //        picLocks.NoChangeArrowheads = true;
-        //        NonVisualPictureDrawingProperties nvpdp = new NonVisualPictureDrawingProperties();
-        //        nvpdp.PictureLocks = picLocks;
-        //        NonVisualPictureProperties nvpp = new NonVisualPictureProperties();
-        //        nvpp.NonVisualDrawingProperties = nvdp;
-        //        nvpp.NonVisualPictureDrawingProperties = nvpdp;
-
-        //        DocumentFormat.OpenXml.Drawing.Stretch stretch = new DocumentFormat.OpenXml.Drawing.Stretch();
-        //        stretch.FillRectangle = new DocumentFormat.OpenXml.Drawing.FillRectangle();
-
-        //        BlipFill blipFill = new BlipFill();
-        //        DocumentFormat.OpenXml.Drawing.Blip blip = new DocumentFormat.OpenXml.Drawing.Blip();
-        //        blip.Embed = drawingPart.GetIdOfPart(imagePart);
-        //        blip.CompressionState = DocumentFormat.OpenXml.Drawing.BlipCompressionValues.Print;
-        //        blipFill.Blip = blip;
-        //        blipFill.SourceRectangle = new DocumentFormat.OpenXml.Drawing.SourceRectangle();
-        //        blipFill.Append(stretch);
-
-        //        DocumentFormat.OpenXml.Drawing.Transform2D t2d = new DocumentFormat.OpenXml.Drawing.Transform2D();
-        //        DocumentFormat.OpenXml.Drawing.Offset offset = new DocumentFormat.OpenXml.Drawing.Offset();
-        //        offset.X = 0;
-        //        offset.Y = 0;
-        //        t2d.Offset = offset;
-        //        System.Drawing.Bitmap bm = new System.Drawing.Bitmap(imagePath);
-
-        //        DocumentFormat.OpenXml.Drawing.Extents extents = new DocumentFormat.OpenXml.Drawing.Extents();
-
-        //        if (width == null)
-        //            extents.Cx = (long)bm.Width * (long)((float)914400 / bm.HorizontalResolution);
-        //        else
-        //            extents.Cx = width;
-
-        //        if (height == null)
-        //            extents.Cy = (long)bm.Height * (long)((float)914400 / bm.VerticalResolution);
-        //        else
-        //            extents.Cy = height;
-
-        //        bm.Dispose();
-        //        t2d.Extents = extents;
-        //        ShapeProperties sp = new ShapeProperties();
-        //        sp.BlackWhiteMode = DocumentFormat.OpenXml.Drawing.BlackWhiteModeValues.Auto;
-        //        sp.Transform2D = t2d;
-        //        DocumentFormat.OpenXml.Drawing.PresetGeometry prstGeom = new DocumentFormat.OpenXml.Drawing.PresetGeometry();
-        //        prstGeom.Preset = DocumentFormat.OpenXml.Drawing.ShapeTypeValues.Rectangle;
-        //        prstGeom.AdjustValueList = new DocumentFormat.OpenXml.Drawing.AdjustValueList();
-        //        sp.Append(prstGeom);
-        //        sp.Append(new DocumentFormat.OpenXml.Drawing.NoFill());
-
-        //        DocumentFormat.OpenXml.Drawing.Spreadsheet.Picture picture = new DocumentFormat.OpenXml.Drawing.Spreadsheet.Picture();
-        //        picture.NonVisualPictureProperties = nvpp;
-        //        picture.BlipFill = blipFill;
-        //        picture.ShapeProperties = sp;
-
-        //        Position pos = new Position();
-        //        pos.X = x;
-        //        pos.Y = y;
-        //        Extent ext = new Extent();
-        //        ext.Cx = extents.Cx;
-        //        ext.Cy = extents.Cy;
-        //        AbsoluteAnchor anchor = new AbsoluteAnchor();
-        //        anchor.Position = pos;
-        //        anchor.Extent = ext;
-        //        anchor.Append(picture);
-        //        anchor.Append(new ClientData());
-        //        workSheetDrawing.Append(anchor);
-        //        workSheetDrawing.Save(drawingPart);
+        //        sheetId = sheets.Select(s => s.SheetId.Value).Max() + 1;
         //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex; // or do something more interesting if you want
-        //    }
+
+        //    string relationshipId = workbookPart.GetIdOfPart(newWorksheetPart);
+
+        //    // Append the new worksheet and associate it with the workbook.
+        //    Sheet sheet = new Sheet() { Id = relationshipId, SheetId = sheetId, Name = name };
+
+        //    workbookPart.Workbook.Sheets.Append(sheet);
+
+        //    return newWorksheetPart;
         //}
 
     }
 
+    public class TitleMapRule
+    {
+        public string Department { get; set; }
+
+        public string Category { get; set; }
+
+        public string Map { get; set; }
+    }
+
     public enum StatusCode { Pending , Processing, Error, Completed };
 
-    public class Entry : INotifyPropertyChanged
+    public abstract class BaseEntry
     {
-        
-        private List<string> _messages = new List<string>();
+        public uint RowIndex { get; set; }
+
+        public uint ParentRowIndex { get; set; }
+    }
+
+    public class MainEntry : BaseEntry
+    {
+        public string Brand { get; set; }        
+        public string ClassName { get; set; }
+        public string Sku { get; set; }
+
+        public int PictureCount { get; set; }
+        public int Qty { get; set; }
+        public decimal Cost { get; set; }
+
+        public string UPC { get; set; }
+
+        public string Title { get; set; }
+        public string TitleFormula { get; set; }
+
+        public string AmznDescription { get; set; }
+        public string AmznTitle { get; set; }
+
+        public string FullDescription { get; set; }
+
+        public string Message { get; set; }
+
+        public string Status { get; set; }
+
+        public string Department { get; set; }
+        public string Category { get; set; }
+        public string Gender { get; set; }
+        public string Color { get; set; }
+        public string Notes { get; set; }
+        public decimal Price { get; set; }
+        public string Location { get; set; }
+        public string Description { get; set; }
+    }
+
+    public class PrintEntry : BaseEntry
+    {
+        public string Brand { get; set; }
+        public string ClassName { get; set; }
+        public string Sku { get; set; }
+        public int Qty { get; set; }
+        public decimal Cost { get; set; }
+        public string Gender { get; set; }
+        public string UPC { get; set; }
+
+        public string Active { get; set; }
+    }
+
+    public abstract class ListingEntry : BaseEntry, INotifyPropertyChanged
+    {
         private StatusCode _status;
+
+        private List<string> _messages = new List<string>();
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public Entry()
+        public ListingEntry()
         {
-            this.Format = string.Empty;
             this.Title = string.Empty;
             this.Status = StatusCode.Pending;
         }
 
-        public int ListingID { get; set; }
-
-        public uint RowIndex { get; set; }
-        public string Brand { get; set; }        
+        public abstract string Code { get; }
+        public string Format { get; set; }
+        public string Brand { get; set; }
         public string ClassName { get; set; }
         public string Sku { get; set; }
-        public string Description { get; set; }
-        public string Department { get; set; }
-        public string Category { get; set; }
-        public string Notes { get; set; }
-        public string Color { get; set; }
-        public string Gender { get; set; }
-        public string UPC { get; set; }
-        public string Location { get; set; }
-        public int Qty { get; set; }
-        public decimal Cost { get; set; }
-        public string Format { get; set; }
         public int Q { get; set; }
         public decimal P { get; set; }
         public string Title { get; set; }
-        public string AmznDescription { get; set; }
-        public string AmznTitle { get; set; }
-        public string FullDescription { get; set; }
+
+        public string Command { get; set; }
+        
+        public List<string> GetUpdateFields()
+        {
+            List<string> fields;
+
+            if (!string.IsNullOrWhiteSpace(this.Command))
+            {
+                int start = this.Command.IndexOf("(") + 1;
+                int end = this.Command.IndexOf(")", start);
+                string result = this.Command.Substring(start, end - start);
+
+                fields = result.Split(new Char[1] { '|' }).ToList();
+            }
+            else
+            {
+                fields = new List<string>();
+            }
+
+            
+
+            return fields;
+        }
+
+        public StatusCode Status
+        {
+            get { return _status; }
+            set
+            {
+                _status = value;
+
+                if (PropertyChanged != null)
+                {
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("Status"));
+                }
+            }
+        }
 
         public string Message
         {
@@ -678,23 +405,18 @@ namespace WorkbookPublisher
             }
         }
 
-        public StatusCode Status
+        public void ClearMessages()
         {
-            get { return _status; }
-            set 
-            { 
-                _status = value;
+            _messages.Clear();
 
-                if (PropertyChanged != null)
-                {
-                    this.PropertyChanged(this, new PropertyChangedEventArgs("Status"));
-                }
+            if (this.PropertyChanged != null)
+            {
+                this.PropertyChanged(this, new PropertyChangedEventArgs("Message"));
             }
         }
-
     }
 
-    public class EbayEntry : Entry
+    public class EbayEntry : ListingEntry
     {
         private DateTime _startDate;
 
@@ -703,6 +425,15 @@ namespace WorkbookPublisher
 
         }
 
+        public override string Code
+        {
+            get { return this.Sku + this.Format; }
+        }
+
+        public decimal BIN { get; set; }
+
+        public string FullDescription { get; set; }
+
         public DateTime StartDate
         {
             get { return _startDate; }
@@ -710,8 +441,6 @@ namespace WorkbookPublisher
         }
 
         public bool StartDateSpecified { get; set; }
-
-        
 
         public bool IsAuction()
         {
@@ -724,6 +453,8 @@ namespace WorkbookPublisher
                 return false;
             }
         }
+
+        
 
         public string GetDuration()
         {
@@ -751,48 +482,53 @@ namespace WorkbookPublisher
             {
                 case "BIN":
                 case "GTC":
-                    return BerkeleyEntities.Ebay.Publisher.FORMAT_FIXEDPRICE;
+                    return EbayMarketplace.FORMAT_FIXEDPRICE;
                 case "A1":
                 case "A3":
                 case "A5":
                 case "A7":
-                    return BerkeleyEntities.Ebay.Publisher.FORMAT_AUCTION;
+                    return EbayMarketplace.FORMAT_AUCTION;
                 default:
                     return null;
             }
         }
 
-        public decimal BIN { get; set; }
-    }
-
-    public class AmznEntry : Entry
-    {
-        public StatusCode InventoryFeedStatus { get; set; }
-
-        public StatusCode ProductFeedStatus { get; set; }
-
-        public StatusCode ParentProductFeedStatus { get; set; }
-
-        public StatusCode PriceFeedStatus { get; set; }
-
-        public StatusCode RelationshipFeedStatus { get; set; }
-
-        public void UpdateStatus()
+        public void SetFormat(string format, string duration)
         {
-            if (this.ProductFeedStatus.Equals(StatusCode.Processing) || this.ParentProductFeedStatus.Equals(StatusCode.Processing) || 
-                this.InventoryFeedStatus.Equals(StatusCode.Processing) || this.PriceFeedStatus.Equals(StatusCode.Processing))
+            if (format.Equals(EbayMarketplace.FORMAT_AUCTION))
             {
-                this.Status = StatusCode.Processing;
-            }
-            else if (this.ProductFeedStatus.Equals(StatusCode.Error) || this.ParentProductFeedStatus.Equals(StatusCode.Error) ||
-                this.InventoryFeedStatus.Equals(StatusCode.Error) || this.PriceFeedStatus.Equals(StatusCode.Error))
-            {
-                this.Status = StatusCode.Error;
+                switch (duration)
+                {
+                    case "Days_1": this.Format = "A1"; break;
+                    case "Days_3": this.Format = "A3"; break;
+                    case "Days_5": this.Format = "A5"; break;
+                    case "Days_7": this.Format = "A7"; break;
+                }
             }
             else
             {
-                this.Status = StatusCode.Completed;
+                switch (duration)
+                {
+                    case "Days_30": this.Format = "BIN"; break;
+                    case "GTC": this.Format = "GTC"; break;
+                }
             }
         }
+
+
+        
+    }
+
+    public class AmznEntry : ListingEntry
+    {
+
+        public override string Code
+        {
+            get { return this.Sku + this.Format; }
+        }
+
+        
+
+        
     }
 }
