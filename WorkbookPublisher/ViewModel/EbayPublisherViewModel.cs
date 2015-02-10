@@ -200,6 +200,58 @@ namespace WorkbookPublisher.ViewModel
             return _newEntries;
         }
 
+        //public List<ListingEntry> UpdateAndValidateEntries2(List<ListingEntry> entries)
+        //{
+        //    _lastRowIndex = entries.Max(p => p.RowIndex);
+        //    _newEntries = new List<ListingEntry>();
+
+        //    using (berkeleyEntities dataContext = new berkeleyEntities())
+        //    {
+        //        _marketplace = dataContext.EbayMarketplaces.Single(p => p.Code.Equals(_marketplaceCode));
+
+        //        var entryGroups = entries.Where(p => p.Status.Equals(StatusCode.Pending)).Cast<EbayEntry>().GroupBy(p => p.Sku);
+
+        //        foreach (var group in entryGroups)
+        //        {
+        //            Item item = dataContext.Items.SingleOrDefault(p => p.ItemLookupCode.Equals(group.Key));
+
+        //            if (item == null)
+        //            {
+        //                foreach (var entry in group)
+        //                {
+        //                    entry.Message = "sku not found";
+        //                    entry.Status = StatusCode.Error;
+        //                }
+        //            }
+        //            else
+        //            {
+        //                UpdateGroup(item, group.ToList());
+
+        //                foreach (EbayEntry entry in group)
+        //                {
+        //                    entry.Brand = item.SubDescription1;
+        //                    entry.ClassName = item.ClassName;
+
+        //                    if (entry.Status.Equals(StatusCode.Pending))
+        //                    {
+        //                        if (entry.GetFormat() == null)
+        //                        {
+        //                            entry.Message = "invalid format";
+        //                            entry.Status = StatusCode.Error;
+        //                        }
+        //                        else
+        //                        {
+        //                            Validate(item, entry);
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+
+        //    return _newEntries;
+        //}
+
         private void UpdateGroup(Item item, IEnumerable<EbayEntry> group)
         {
             var active = item.EbayListingItems.Where(p => p.Listing.MarketplaceID == _marketplace.ID && p.Listing.Status.Equals(EbayMarketplace.STATUS_ACTIVE));
@@ -227,6 +279,7 @@ namespace WorkbookPublisher.ViewModel
                         entry.Sku = item.ItemLookupCode;
                         entry.Brand = item.SubDescription1;
                         entry.ClassName = item.ClassName;
+                        
                         entry.ParentRowIndex = group.First().RowIndex;
                         entry.RowIndex = _lastRowIndex + 1;
                         _lastRowIndex = entry.RowIndex;
@@ -242,19 +295,22 @@ namespace WorkbookPublisher.ViewModel
                     entry.Q = listingItem.Quantity;
                     entry.Title = listingItem.Title;
                     entry.FullDescription = listingItem.Listing.FullDescription;
+                    entry.Message = "filled by program";
+                    entry.Status = StatusCode.Completed;
                 }
                 else
                 {
+                    if (entry.Q == listingItem.Quantity && decimal.Compare(entry.P, listingItem.Price) == 0 && entry.GetUpdateFlags().Count == 0)
+                    {
+                        entry.Status = StatusCode.Completed;
+                    }
+                    else
+                    {
+                        entry.Message = string.Format("({0}|{1}|{2})", listingItem.FormatCode, listingItem.Quantity, Math.Round(listingItem.Price, 2));
+                    }
+
                     existingEntries.Remove(entry);
                 }
-
-                if (string.IsNullOrEmpty(entry.Command))
-                {
-                    entry.Status = StatusCode.Completed;
-                }
-
-                entry.Message = string.Format("{0}|{1}|{2}", listingItem.FormatCode, listingItem.Quantity, Math.Round(listingItem.Price, 2));
-                
             }
         }
 
@@ -374,7 +430,7 @@ namespace WorkbookPublisher.ViewModel
 
         private void HandleFixedPriceGroup(IGrouping<string,EbayEntry> group)
         {
-            var fixedPrice = _marketplace.Listings.Where(p => p.Status.Equals(EbayMarketplace.STATUS_ACTIVE) && p.Format.Equals(EbayMarketplace.FORMAT_FIXEDPRICE));
+            var fixedPrice = _marketplace.Listings.Where(p => p.Status.Equals(EbayMarketplace.STATUS_ACTIVE) && (p.Format.Equals(EbayMarketplace.FORMAT_FIXEDPRICE) || p.Format.Equals("StoresFixedPrice")));
 
             List<EbayEntry> pending = new List<EbayEntry>();
 
@@ -481,11 +537,11 @@ namespace WorkbookPublisher.ViewModel
                 ListingItemDto listingItemDto = new ListingItemDto();
                 listingItemDto.Sku = entry.Sku;
                 listingItemDto.Qty = entry.Q;
-                listingItemDto.QtySpecified = entry.GetUpdateFields().Any(p => p.Trim().ToUpper().Equals("Q"));
+                listingItemDto.QtySpecified = entry.GetUpdateFlags().Any(p => p.Trim().ToUpper().Equals("Q"));
                 listingItemDto.Price = entry.P;
-                listingItemDto.PriceSpecified = entry.GetUpdateFields().Any(p => p.Trim().ToUpper().Equals("P"));
+                listingItemDto.PriceSpecified = entry.GetUpdateFlags().Any(p => p.Trim().ToUpper().Equals("P"));
 
-                if (entry.GetUpdateFields().Any(p => p.Trim().ToUpper().Equals("TITLE")))
+                if (entry.GetUpdateFlags().Any(p => p.Trim().ToUpper().Equals("TITLE")))
                 {
                     listingItemDto.Title = entry.Title;
                 }
@@ -504,18 +560,18 @@ namespace WorkbookPublisher.ViewModel
                     ListingItemDto listingItemDto = new ListingItemDto();
                     listingItemDto.Sku = listingItem.Sku;
                     listingItemDto.Qty = listingItem.Quantity;
-                    listingItemDto.QtySpecified = false;
+                    listingItemDto.QtySpecified = true;
                     listingItemDto.Price = listingItem.Price;
-                    listingItemDto.PriceSpecified = false;
+                    listingItemDto.PriceSpecified = true;
                     listingItemDto.Title = listingItem.Title;
 
                     listingDto.Items.Add(listingItemDto);
                 }
             }
 
-            bool includeTemplate = entries.Any(p => p.GetUpdateFields().Any(s => s.Trim().ToUpper().Equals("TEMPLATE")));
+            bool includeTemplate = entries.Any(p => p.GetUpdateFlags().Any(s => s.Trim().ToUpper().Equals("TEMPLATE")));
 
-            bool includeProductData = entries.Any(p => p.GetUpdateFields().Any(s => s.Trim().ToUpper().Equals("PRODUCTDATA"))) || mustIncludeProductData;
+            bool includeProductData = entries.Any(p => p.GetUpdateFlags().Any(s => s.Trim().ToUpper().Equals("PRODUCTDATA"))) || mustIncludeProductData;
 
             if (listingDto.Items.All(p => p.Qty == 0))
             {

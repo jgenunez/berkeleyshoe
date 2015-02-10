@@ -327,15 +327,15 @@ namespace WorkbookPublisher.ViewModel
                     entries.Add(entry);
                 }
 
-                var newEntries = await Task.Run<List<ListingEntry>>(() => UpdateAndValidateEntries(entries.ToList()));
-
-                foreach (var newEntry in newEntries)
+                if (entries.Count > 0)
                 {
-                    entries.Add(newEntry);
-                }
+                    var newEntries = await Task.Run<List<ListingEntry>>(() => UpdateAndValidateEntries(entries.ToList()));
 
-                if (entries.Count != 0)
-                {
+                    foreach (var newEntry in newEntries)
+                    {
+                        entries.Add(newEntry);
+                    }
+
                     if (ReadCompleted != null)
                     {
                         ReadCompleted(this, new EventArgs());

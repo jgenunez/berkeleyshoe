@@ -93,12 +93,14 @@ namespace WorkbookPublisher.ViewModel
 
                     if (listingItem != null)
                     {
-                        if (string.IsNullOrWhiteSpace(entry.Command))
+                        if (listingItem.Quantity == entry.Q && decimal.Compare(listingItem.Price, entry.P) == 0 && entry.GetUpdateFlags().Count == 0)
                         {
                             entry.Status = StatusCode.Completed;
                         }
-
-                        entry.Message = string.Format("{0}|{1}", listingItem.Quantity, Math.Round(listingItem.Price, 2));
+                        else
+                        {
+                            entry.Message = string.Format("({0}|{1})", listingItem.Quantity, Math.Round(listingItem.Price, 2));
+                        }
                     }
 
                     if(entry.Status.Equals(StatusCode.Pending))
@@ -168,7 +170,6 @@ namespace WorkbookPublisher.ViewModel
                 else
                 {
                     entry.Status = StatusCode.Completed;
-                    entry.Message = string.Format("{0}|{1}", entry.Q, Math.Round(entry.P, 2));
                     entry.Command = string.Empty;
                 }
             }
@@ -194,22 +195,15 @@ namespace WorkbookPublisher.ViewModel
                 listingItem.Sku = entry.Sku;
                 listingItem.Title = entry.Title;
 
-                listingItem.IncludeProductData = entry.GetUpdateFields().Any(p => p.Trim().ToUpper().Equals("PRODUCTDATA")) || string.IsNullOrWhiteSpace(entry.Command);
+                var existingListingItem = _dataContext.AmznListingItems.SingleOrDefault(p => p.IsActive && p.Item.ItemLookupCode.Equals(entry.Sku) && p.MarketplaceID == _marketplace.ID);
 
-                bool updateQty = entry.GetUpdateFields().Any(p => p.Trim().ToUpper().Equals("Q")) || string.IsNullOrWhiteSpace(entry.Command);
-                bool updatePrice = entry.GetUpdateFields().Any(p => p.Trim().ToUpper().Equals("P")) || string.IsNullOrWhiteSpace(entry.Command);
+                listingItem.IncludeProductData = existingListingItem == null || entry.GetUpdateFlags().Any(p => p.Equals("PRODUCTDATA"));
 
-                if (updateQty)
-                {
-                    listingItem.Qty = entry.Q;
-                    listingItem.QtySpecified = true;
-                }
+                listingItem.Qty = entry.Q;
+                listingItem.QtySpecified = existingListingItem == null || existingListingItem.Quantity != entry.Q;
 
-                if (updatePrice)
-                {
-                    listingItem.Price = entry.P;
-                    listingItem.PriceSpecified = true;
-                }
+                listingItem.Price = entry.P;
+                listingItem.PriceSpecified = existingListingItem == null || decimal.Compare(existingListingItem.Price, entry.P) != 0;
 
                 listingItems.Add(listingItem);
 

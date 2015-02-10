@@ -10,13 +10,13 @@ namespace BerkeleyEntities
     partial class ItemClass
     {
 
-        public IEnumerable<SyncListing> GetActiveVariationListings(string marketplace)
-        {
-            return this.ItemClassComponents.SelectMany(p => p.Item.SyncListings).ToList().Where(p =>
-                p.Marketplace.Equals(marketplace) &&
-                p.Active == 1 &&
-                p.Variation == true);
-        }
+        //public IEnumerable<SyncListing> GetActiveVariationListings(string marketplace)
+        //{
+        //    return this.ItemClassComponents.SelectMany(p => p.Item.SyncListings).ToList().Where(p =>
+        //        p.Marketplace.Equals(marketplace) &&
+        //        p.Active == 1 &&
+        //        p.Variation == true);
+        //}
 
 
         public string GetAttributeCode(string attribute)

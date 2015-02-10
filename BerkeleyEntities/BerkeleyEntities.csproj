@@ -86,6 +86,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>berkeleyEntities.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Bonanza\Marketplace.cs" />
     <Compile Include="Bonanza\Services.cs" />
     <Compile Include="bsi_posts.cs" />
     <Compile Include="bsi_quantities.cs" />

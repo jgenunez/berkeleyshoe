@@ -42,9 +42,6 @@ using System.Xml.Serialization;
 [assembly: EdmRelationshipAttribute("BerkeleyEntities", "DivisionDepartmentDivision", "Division", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(BerkeleyEntities.Division), "DepartmentDivision", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BerkeleyEntities.DepartmentDivision), true)]
 [assembly: EdmRelationshipAttribute("BerkeleyEntities", "DepartmentDivisionDepartment", "DepartmentDivision", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BerkeleyEntities.DepartmentDivision), "Department", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(BerkeleyEntities.Department), true)]
 [assembly: EdmRelationshipAttribute("BerkeleyEntities", "InventoryEntryPhysicalInventory", "InventoryEntry", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BerkeleyEntities.InventoryEntry), "PhysicalInventory", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(BerkeleyEntities.PhysicalInventory), true)]
-[assembly: EdmRelationshipAttribute("BerkeleyEntities", "SyncOrderSyncOrderItem", "SyncOrder", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(BerkeleyEntities.SyncOrder), "SyncOrderItem", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BerkeleyEntities.SyncOrderItem), true)]
-[assembly: EdmRelationshipAttribute("BerkeleyEntities", "SyncListingItem", "SyncListing", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BerkeleyEntities.SyncListing), "Item", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(BerkeleyEntities.Item), true)]
-[assembly: EdmRelationshipAttribute("BerkeleyEntities", "SyncListingSyncOrderItem", "SyncListing", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(BerkeleyEntities.SyncListing), "SyncOrderItem", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BerkeleyEntities.SyncOrderItem), true)]
 [assembly: EdmRelationshipAttribute("BerkeleyEntities", "InventoryTransferLogItem", "InventoryTransferLog", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BerkeleyEntities.InventoryTransferLog), "Item", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(BerkeleyEntities.Item), true)]
 [assembly: EdmRelationshipAttribute("BerkeleyEntities", "TransactionEntryItem", "TransactionEntry", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BerkeleyEntities.TransactionEntry), "Item", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(BerkeleyEntities.Item), true)]
 [assembly: EdmRelationshipAttribute("BerkeleyEntities", "TransactionHoldEntryItem", "TransactionHoldEntry", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BerkeleyEntities.TransactionHoldEntry), "Item", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(BerkeleyEntities.Item), true)]
@@ -64,6 +61,9 @@ using System.Xml.Serialization;
 [assembly: EdmRelationshipAttribute("BerkeleyEntities", "EbayListingEbayPictureUrlRelation", "EbayListing", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(BerkeleyEntities.EbayListing), "EbayPictureUrlRelation", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BerkeleyEntities.EbayPictureUrlRelation), true)]
 [assembly: EdmRelationshipAttribute("BerkeleyEntities", "CustomerTransaction", "Customer", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(BerkeleyEntities.Customer), "Transaction", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BerkeleyEntities.Transaction), true)]
 [assembly: EdmRelationshipAttribute("BerkeleyEntities", "TransactionTransactionEntry", "Transaction", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(BerkeleyEntities.Transaction), "TransactionEntry", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BerkeleyEntities.TransactionEntry), true)]
+[assembly: EdmRelationshipAttribute("BerkeleyEntities", "BonanzaListingItemItem", "BonanzaListingItem", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BerkeleyEntities.BonanzaListingItem), "Item", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(BerkeleyEntities.Item), true)]
+[assembly: EdmRelationshipAttribute("BerkeleyEntities", "BonanzaListingBonanzaListingItem", "BonanzaListing", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(BerkeleyEntities.BonanzaListing), "BonanzaListingItem", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BerkeleyEntities.BonanzaListingItem), true)]
+[assembly: EdmRelationshipAttribute("BerkeleyEntities", "BonanzaMarketplaceBonanzaListing", "BonanzaMarketplace", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(BerkeleyEntities.BonanzaMarketplace), "BonanzaListing", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BerkeleyEntities.BonanzaListing), true)]
 
 #endregion
 
@@ -438,54 +438,6 @@ namespace BerkeleyEntities
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        public ObjectSet<SyncOrder> SyncOrders
-        {
-            get
-            {
-                if ((_SyncOrders == null))
-                {
-                    _SyncOrders = base.CreateObjectSet<SyncOrder>("SyncOrders");
-                }
-                return _SyncOrders;
-            }
-        }
-        private ObjectSet<SyncOrder> _SyncOrders;
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        public ObjectSet<SyncOrderItem> SyncOrderItems
-        {
-            get
-            {
-                if ((_SyncOrderItems == null))
-                {
-                    _SyncOrderItems = base.CreateObjectSet<SyncOrderItem>("SyncOrderItems");
-                }
-                return _SyncOrderItems;
-            }
-        }
-        private ObjectSet<SyncOrderItem> _SyncOrderItems;
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        public ObjectSet<SyncListing> SyncListings
-        {
-            get
-            {
-                if ((_SyncListings == null))
-                {
-                    _SyncListings = base.CreateObjectSet<SyncListing>("SyncListings");
-                }
-                return _SyncListings;
-            }
-        }
-        private ObjectSet<SyncListing> _SyncListings;
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
         public ObjectSet<InventoryTransferLog> InventoryTransferLogs
         {
             get
@@ -770,6 +722,54 @@ namespace BerkeleyEntities
             }
         }
         private ObjectSet<Transaction> _Transactions;
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        public ObjectSet<BonanzaListing> BonanzaListings
+        {
+            get
+            {
+                if ((_BonanzaListings == null))
+                {
+                    _BonanzaListings = base.CreateObjectSet<BonanzaListing>("BonanzaListings");
+                }
+                return _BonanzaListings;
+            }
+        }
+        private ObjectSet<BonanzaListing> _BonanzaListings;
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        public ObjectSet<BonanzaListingItem> BonanzaListingItems
+        {
+            get
+            {
+                if ((_BonanzaListingItems == null))
+                {
+                    _BonanzaListingItems = base.CreateObjectSet<BonanzaListingItem>("BonanzaListingItems");
+                }
+                return _BonanzaListingItems;
+            }
+        }
+        private ObjectSet<BonanzaListingItem> _BonanzaListingItems;
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        public ObjectSet<BonanzaMarketplace> BonanzaMarketplaces
+        {
+            get
+            {
+                if ((_BonanzaMarketplaces == null))
+                {
+                    _BonanzaMarketplaces = base.CreateObjectSet<BonanzaMarketplace>("BonanzaMarketplaces");
+                }
+                return _BonanzaMarketplaces;
+            }
+        }
+        private ObjectSet<BonanzaMarketplace> _BonanzaMarketplaces;
 
         #endregion
 
@@ -936,30 +936,6 @@ namespace BerkeleyEntities
         }
     
         /// <summary>
-        /// Deprecated Method for adding a new object to the SyncOrders EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
-        /// </summary>
-        public void AddToSyncOrders(SyncOrder syncOrder)
-        {
-            base.AddObject("SyncOrders", syncOrder);
-        }
-    
-        /// <summary>
-        /// Deprecated Method for adding a new object to the SyncOrderItems EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
-        /// </summary>
-        public void AddToSyncOrderItems(SyncOrderItem syncOrderItem)
-        {
-            base.AddObject("SyncOrderItems", syncOrderItem);
-        }
-    
-        /// <summary>
-        /// Deprecated Method for adding a new object to the SyncListings EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
-        /// </summary>
-        public void AddToSyncListings(SyncListing syncListing)
-        {
-            base.AddObject("SyncListings", syncListing);
-        }
-    
-        /// <summary>
         /// Deprecated Method for adding a new object to the InventoryTransferLogs EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
         public void AddToInventoryTransferLogs(InventoryTransferLog inventoryTransferLog)
@@ -1101,6 +1077,30 @@ namespace BerkeleyEntities
         public void AddToTransactions(Transaction transaction)
         {
             base.AddObject("Transactions", transaction);
+        }
+    
+        /// <summary>
+        /// Deprecated Method for adding a new object to the BonanzaListings EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// </summary>
+        public void AddToBonanzaListings(BonanzaListing bonanzaListing)
+        {
+            base.AddObject("BonanzaListings", bonanzaListing);
+        }
+    
+        /// <summary>
+        /// Deprecated Method for adding a new object to the BonanzaListingItems EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// </summary>
+        public void AddToBonanzaListingItems(BonanzaListingItem bonanzaListingItem)
+        {
+            base.AddObject("BonanzaListingItems", bonanzaListingItem);
+        }
+    
+        /// <summary>
+        /// Deprecated Method for adding a new object to the BonanzaMarketplaces EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// </summary>
+        public void AddToBonanzaMarketplaces(BonanzaMarketplace bonanzaMarketplace)
+        {
+            base.AddObject("BonanzaMarketplaces", bonanzaMarketplace);
         }
 
         #endregion
@@ -2981,6 +2981,860 @@ namespace BerkeleyEntities
                 if ((value != null))
                 {
                     ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<AmznListingItem>("BerkeleyEntities.SyncAmznListingItemSyncAmznOrderItem", "SyncAmznListingItem", value);
+                }
+            }
+        }
+
+        #endregion
+
+    }
+    
+    /// <summary>
+    /// No Metadata Documentation available.
+    /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="BerkeleyEntities", Name="BonanzaListing")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
+    public partial class BonanzaListing : EntityObject
+    {
+        #region Factory Method
+    
+        /// <summary>
+        /// Create a new BonanzaListing object.
+        /// </summary>
+        /// <param name="id">Initial value of the ID property.</param>
+        /// <param name="code">Initial value of the Code property.</param>
+        /// <param name="marketplaceID">Initial value of the MarketplaceID property.</param>
+        /// <param name="sku">Initial value of the Sku property.</param>
+        /// <param name="status">Initial value of the Status property.</param>
+        /// <param name="title">Initial value of the Title property.</param>
+        /// <param name="fullDescription">Initial value of the FullDescription property.</param>
+        /// <param name="isVariation">Initial value of the IsVariation property.</param>
+        /// <param name="lastSyncTime">Initial value of the LastSyncTime property.</param>
+        public static BonanzaListing CreateBonanzaListing(global::System.Int32 id, global::System.String code, global::System.Int32 marketplaceID, global::System.String sku, global::System.String status, global::System.String title, global::System.String fullDescription, global::System.Boolean isVariation, global::System.DateTime lastSyncTime)
+        {
+            BonanzaListing bonanzaListing = new BonanzaListing();
+            bonanzaListing.ID = id;
+            bonanzaListing.Code = code;
+            bonanzaListing.MarketplaceID = marketplaceID;
+            bonanzaListing.Sku = sku;
+            bonanzaListing.Status = status;
+            bonanzaListing.Title = title;
+            bonanzaListing.FullDescription = fullDescription;
+            bonanzaListing.IsVariation = isVariation;
+            bonanzaListing.LastSyncTime = lastSyncTime;
+            return bonanzaListing;
+        }
+
+        #endregion
+
+        #region Simple Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 ID
+        {
+            get
+            {
+                return _ID;
+            }
+            set
+            {
+                if (_ID != value)
+                {
+                    OnIDChanging(value);
+                    ReportPropertyChanging("ID");
+                    _ID = StructuralObject.SetValidValue(value, "ID");
+                    ReportPropertyChanged("ID");
+                    OnIDChanged();
+                }
+            }
+        }
+        private global::System.Int32 _ID;
+        partial void OnIDChanging(global::System.Int32 value);
+        partial void OnIDChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String Code
+        {
+            get
+            {
+                return _Code;
+            }
+            set
+            {
+                OnCodeChanging(value);
+                ReportPropertyChanging("Code");
+                _Code = StructuralObject.SetValidValue(value, false, "Code");
+                ReportPropertyChanged("Code");
+                OnCodeChanged();
+            }
+        }
+        private global::System.String _Code;
+        partial void OnCodeChanging(global::System.String value);
+        partial void OnCodeChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 MarketplaceID
+        {
+            get
+            {
+                return _MarketplaceID;
+            }
+            set
+            {
+                OnMarketplaceIDChanging(value);
+                ReportPropertyChanging("MarketplaceID");
+                _MarketplaceID = StructuralObject.SetValidValue(value, "MarketplaceID");
+                ReportPropertyChanged("MarketplaceID");
+                OnMarketplaceIDChanged();
+            }
+        }
+        private global::System.Int32 _MarketplaceID;
+        partial void OnMarketplaceIDChanging(global::System.Int32 value);
+        partial void OnMarketplaceIDChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String Sku
+        {
+            get
+            {
+                return _Sku;
+            }
+            set
+            {
+                OnSkuChanging(value);
+                ReportPropertyChanging("Sku");
+                _Sku = StructuralObject.SetValidValue(value, false, "Sku");
+                ReportPropertyChanged("Sku");
+                OnSkuChanged();
+            }
+        }
+        private global::System.String _Sku;
+        partial void OnSkuChanging(global::System.String value);
+        partial void OnSkuChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String Status
+        {
+            get
+            {
+                return _Status;
+            }
+            set
+            {
+                OnStatusChanging(value);
+                ReportPropertyChanging("Status");
+                _Status = StructuralObject.SetValidValue(value, false, "Status");
+                ReportPropertyChanged("Status");
+                OnStatusChanged();
+            }
+        }
+        private global::System.String _Status;
+        partial void OnStatusChanging(global::System.String value);
+        partial void OnStatusChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String Title
+        {
+            get
+            {
+                return _Title;
+            }
+            set
+            {
+                OnTitleChanging(value);
+                ReportPropertyChanging("Title");
+                _Title = StructuralObject.SetValidValue(value, false, "Title");
+                ReportPropertyChanged("Title");
+                OnTitleChanged();
+            }
+        }
+        private global::System.String _Title;
+        partial void OnTitleChanging(global::System.String value);
+        partial void OnTitleChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String FullDescription
+        {
+            get
+            {
+                return _FullDescription;
+            }
+            set
+            {
+                OnFullDescriptionChanging(value);
+                ReportPropertyChanging("FullDescription");
+                _FullDescription = StructuralObject.SetValidValue(value, false, "FullDescription");
+                ReportPropertyChanged("FullDescription");
+                OnFullDescriptionChanged();
+            }
+        }
+        private global::System.String _FullDescription;
+        partial void OnFullDescriptionChanging(global::System.String value);
+        partial void OnFullDescriptionChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Boolean IsVariation
+        {
+            get
+            {
+                return _IsVariation;
+            }
+            set
+            {
+                OnIsVariationChanging(value);
+                ReportPropertyChanging("IsVariation");
+                _IsVariation = StructuralObject.SetValidValue(value, "IsVariation");
+                ReportPropertyChanged("IsVariation");
+                OnIsVariationChanged();
+            }
+        }
+        private global::System.Boolean _IsVariation;
+        partial void OnIsVariationChanging(global::System.Boolean value);
+        partial void OnIsVariationChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.DateTime LastSyncTime
+        {
+            get
+            {
+                return _LastSyncTime;
+            }
+            set
+            {
+                OnLastSyncTimeChanging(value);
+                ReportPropertyChanging("LastSyncTime");
+                _LastSyncTime = StructuralObject.SetValidValue(value, "LastSyncTime");
+                ReportPropertyChanged("LastSyncTime");
+                OnLastSyncTimeChanged();
+            }
+        }
+        private global::System.DateTime _LastSyncTime;
+        partial void OnLastSyncTimeChanging(global::System.DateTime value);
+        partial void OnLastSyncTimeChanged();
+
+        #endregion
+
+        #region Navigation Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("BerkeleyEntities", "BonanzaListingBonanzaListingItem", "BonanzaListingItem")]
+        public EntityCollection<BonanzaListingItem> ListingItems
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<BonanzaListingItem>("BerkeleyEntities.BonanzaListingBonanzaListingItem", "BonanzaListingItem");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<BonanzaListingItem>("BerkeleyEntities.BonanzaListingBonanzaListingItem", "BonanzaListingItem", value);
+                }
+            }
+        }
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("BerkeleyEntities", "BonanzaMarketplaceBonanzaListing", "BonanzaMarketplace")]
+        public BonanzaMarketplace Marketplace
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<BonanzaMarketplace>("BerkeleyEntities.BonanzaMarketplaceBonanzaListing", "BonanzaMarketplace").Value;
+            }
+            set
+            {
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<BonanzaMarketplace>("BerkeleyEntities.BonanzaMarketplaceBonanzaListing", "BonanzaMarketplace").Value = value;
+            }
+        }
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [DataMemberAttribute()]
+        public EntityReference<BonanzaMarketplace> MarketplaceReference
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<BonanzaMarketplace>("BerkeleyEntities.BonanzaMarketplaceBonanzaListing", "BonanzaMarketplace");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<BonanzaMarketplace>("BerkeleyEntities.BonanzaMarketplaceBonanzaListing", "BonanzaMarketplace", value);
+                }
+            }
+        }
+
+        #endregion
+
+    }
+    
+    /// <summary>
+    /// No Metadata Documentation available.
+    /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="BerkeleyEntities", Name="BonanzaListingItem")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
+    public partial class BonanzaListingItem : EntityObject
+    {
+        #region Factory Method
+    
+        /// <summary>
+        /// Create a new BonanzaListingItem object.
+        /// </summary>
+        /// <param name="id">Initial value of the ID property.</param>
+        /// <param name="itemID">Initial value of the ItemID property.</param>
+        /// <param name="listingID">Initial value of the ListingID property.</param>
+        /// <param name="quantity">Initial value of the Quantity property.</param>
+        /// <param name="title">Initial value of the Title property.</param>
+        /// <param name="price">Initial value of the Price property.</param>
+        public static BonanzaListingItem CreateBonanzaListingItem(global::System.Int32 id, global::System.Int32 itemID, global::System.Int32 listingID, global::System.Int32 quantity, global::System.String title, global::System.Decimal price)
+        {
+            BonanzaListingItem bonanzaListingItem = new BonanzaListingItem();
+            bonanzaListingItem.ID = id;
+            bonanzaListingItem.ItemID = itemID;
+            bonanzaListingItem.ListingID = listingID;
+            bonanzaListingItem.Quantity = quantity;
+            bonanzaListingItem.Title = title;
+            bonanzaListingItem.Price = price;
+            return bonanzaListingItem;
+        }
+
+        #endregion
+
+        #region Simple Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 ID
+        {
+            get
+            {
+                return _ID;
+            }
+            set
+            {
+                if (_ID != value)
+                {
+                    OnIDChanging(value);
+                    ReportPropertyChanging("ID");
+                    _ID = StructuralObject.SetValidValue(value, "ID");
+                    ReportPropertyChanged("ID");
+                    OnIDChanged();
+                }
+            }
+        }
+        private global::System.Int32 _ID;
+        partial void OnIDChanging(global::System.Int32 value);
+        partial void OnIDChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 ItemID
+        {
+            get
+            {
+                return _ItemID;
+            }
+            set
+            {
+                OnItemIDChanging(value);
+                ReportPropertyChanging("ItemID");
+                _ItemID = StructuralObject.SetValidValue(value, "ItemID");
+                ReportPropertyChanged("ItemID");
+                OnItemIDChanged();
+            }
+        }
+        private global::System.Int32 _ItemID;
+        partial void OnItemIDChanging(global::System.Int32 value);
+        partial void OnItemIDChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 ListingID
+        {
+            get
+            {
+                return _ListingID;
+            }
+            set
+            {
+                OnListingIDChanging(value);
+                ReportPropertyChanging("ListingID");
+                _ListingID = StructuralObject.SetValidValue(value, "ListingID");
+                ReportPropertyChanged("ListingID");
+                OnListingIDChanged();
+            }
+        }
+        private global::System.Int32 _ListingID;
+        partial void OnListingIDChanging(global::System.Int32 value);
+        partial void OnListingIDChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 Quantity
+        {
+            get
+            {
+                return _Quantity;
+            }
+            set
+            {
+                OnQuantityChanging(value);
+                ReportPropertyChanging("Quantity");
+                _Quantity = StructuralObject.SetValidValue(value, "Quantity");
+                ReportPropertyChanged("Quantity");
+                OnQuantityChanged();
+            }
+        }
+        private global::System.Int32 _Quantity;
+        partial void OnQuantityChanging(global::System.Int32 value);
+        partial void OnQuantityChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String Title
+        {
+            get
+            {
+                return _Title;
+            }
+            set
+            {
+                OnTitleChanging(value);
+                ReportPropertyChanging("Title");
+                _Title = StructuralObject.SetValidValue(value, false, "Title");
+                ReportPropertyChanged("Title");
+                OnTitleChanged();
+            }
+        }
+        private global::System.String _Title;
+        partial void OnTitleChanging(global::System.String value);
+        partial void OnTitleChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Decimal Price
+        {
+            get
+            {
+                return _Price;
+            }
+            set
+            {
+                OnPriceChanging(value);
+                ReportPropertyChanging("Price");
+                _Price = StructuralObject.SetValidValue(value, "Price");
+                ReportPropertyChanged("Price");
+                OnPriceChanged();
+            }
+        }
+        private global::System.Decimal _Price;
+        partial void OnPriceChanging(global::System.Decimal value);
+        partial void OnPriceChanged();
+
+        #endregion
+
+        #region Navigation Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("BerkeleyEntities", "BonanzaListingItemItem", "Item")]
+        public Item Item
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Item>("BerkeleyEntities.BonanzaListingItemItem", "Item").Value;
+            }
+            set
+            {
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Item>("BerkeleyEntities.BonanzaListingItemItem", "Item").Value = value;
+            }
+        }
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [DataMemberAttribute()]
+        public EntityReference<Item> ItemReference
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Item>("BerkeleyEntities.BonanzaListingItemItem", "Item");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<Item>("BerkeleyEntities.BonanzaListingItemItem", "Item", value);
+                }
+            }
+        }
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("BerkeleyEntities", "BonanzaListingBonanzaListingItem", "BonanzaListing")]
+        public BonanzaListing Listing
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<BonanzaListing>("BerkeleyEntities.BonanzaListingBonanzaListingItem", "BonanzaListing").Value;
+            }
+            set
+            {
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<BonanzaListing>("BerkeleyEntities.BonanzaListingBonanzaListingItem", "BonanzaListing").Value = value;
+            }
+        }
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [DataMemberAttribute()]
+        public EntityReference<BonanzaListing> ListingReference
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<BonanzaListing>("BerkeleyEntities.BonanzaListingBonanzaListingItem", "BonanzaListing");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<BonanzaListing>("BerkeleyEntities.BonanzaListingBonanzaListingItem", "BonanzaListing", value);
+                }
+            }
+        }
+
+        #endregion
+
+    }
+    
+    /// <summary>
+    /// No Metadata Documentation available.
+    /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="BerkeleyEntities", Name="BonanzaMarketplace")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
+    public partial class BonanzaMarketplace : EntityObject
+    {
+        #region Factory Method
+    
+        /// <summary>
+        /// Create a new BonanzaMarketplace object.
+        /// </summary>
+        /// <param name="id">Initial value of the ID property.</param>
+        /// <param name="code">Initial value of the Code property.</param>
+        /// <param name="name">Initial value of the Name property.</param>
+        /// <param name="token">Initial value of the Token property.</param>
+        /// <param name="payPalAccount">Initial value of the PayPalAccount property.</param>
+        /// <param name="rootDir">Initial value of the RootDir property.</param>
+        public static BonanzaMarketplace CreateBonanzaMarketplace(global::System.Int32 id, global::System.String code, global::System.String name, global::System.String token, global::System.String payPalAccount, global::System.String rootDir)
+        {
+            BonanzaMarketplace bonanzaMarketplace = new BonanzaMarketplace();
+            bonanzaMarketplace.ID = id;
+            bonanzaMarketplace.Code = code;
+            bonanzaMarketplace.Name = name;
+            bonanzaMarketplace.Token = token;
+            bonanzaMarketplace.PayPalAccount = payPalAccount;
+            bonanzaMarketplace.RootDir = rootDir;
+            return bonanzaMarketplace;
+        }
+
+        #endregion
+
+        #region Simple Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 ID
+        {
+            get
+            {
+                return _ID;
+            }
+            set
+            {
+                if (_ID != value)
+                {
+                    OnIDChanging(value);
+                    ReportPropertyChanging("ID");
+                    _ID = StructuralObject.SetValidValue(value, "ID");
+                    ReportPropertyChanged("ID");
+                    OnIDChanged();
+                }
+            }
+        }
+        private global::System.Int32 _ID;
+        partial void OnIDChanging(global::System.Int32 value);
+        partial void OnIDChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String Code
+        {
+            get
+            {
+                return _Code;
+            }
+            set
+            {
+                OnCodeChanging(value);
+                ReportPropertyChanging("Code");
+                _Code = StructuralObject.SetValidValue(value, false, "Code");
+                ReportPropertyChanged("Code");
+                OnCodeChanged();
+            }
+        }
+        private global::System.String _Code;
+        partial void OnCodeChanging(global::System.String value);
+        partial void OnCodeChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String Name
+        {
+            get
+            {
+                return _Name;
+            }
+            set
+            {
+                OnNameChanging(value);
+                ReportPropertyChanging("Name");
+                _Name = StructuralObject.SetValidValue(value, false, "Name");
+                ReportPropertyChanged("Name");
+                OnNameChanged();
+            }
+        }
+        private global::System.String _Name;
+        partial void OnNameChanging(global::System.String value);
+        partial void OnNameChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String Token
+        {
+            get
+            {
+                return _Token;
+            }
+            set
+            {
+                OnTokenChanging(value);
+                ReportPropertyChanging("Token");
+                _Token = StructuralObject.SetValidValue(value, false, "Token");
+                ReportPropertyChanged("Token");
+                OnTokenChanged();
+            }
+        }
+        private global::System.String _Token;
+        partial void OnTokenChanging(global::System.String value);
+        partial void OnTokenChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String PayPalAccount
+        {
+            get
+            {
+                return _PayPalAccount;
+            }
+            set
+            {
+                OnPayPalAccountChanging(value);
+                ReportPropertyChanging("PayPalAccount");
+                _PayPalAccount = StructuralObject.SetValidValue(value, false, "PayPalAccount");
+                ReportPropertyChanged("PayPalAccount");
+                OnPayPalAccountChanged();
+            }
+        }
+        private global::System.String _PayPalAccount;
+        partial void OnPayPalAccountChanging(global::System.String value);
+        partial void OnPayPalAccountChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.DateTime> ListingSyncTime
+        {
+            get
+            {
+                return _ListingSyncTime;
+            }
+            set
+            {
+                OnListingSyncTimeChanging(value);
+                ReportPropertyChanging("ListingSyncTime");
+                _ListingSyncTime = StructuralObject.SetValidValue(value, "ListingSyncTime");
+                ReportPropertyChanged("ListingSyncTime");
+                OnListingSyncTimeChanged();
+            }
+        }
+        private Nullable<global::System.DateTime> _ListingSyncTime;
+        partial void OnListingSyncTimeChanging(Nullable<global::System.DateTime> value);
+        partial void OnListingSyncTimeChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.DateTime> OrderSyncTime
+        {
+            get
+            {
+                return _OrderSyncTime;
+            }
+            set
+            {
+                OnOrderSyncTimeChanging(value);
+                ReportPropertyChanging("OrderSyncTime");
+                _OrderSyncTime = StructuralObject.SetValidValue(value, "OrderSyncTime");
+                ReportPropertyChanged("OrderSyncTime");
+                OnOrderSyncTimeChanged();
+            }
+        }
+        private Nullable<global::System.DateTime> _OrderSyncTime;
+        partial void OnOrderSyncTimeChanging(Nullable<global::System.DateTime> value);
+        partial void OnOrderSyncTimeChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String RootDir
+        {
+            get
+            {
+                return _RootDir;
+            }
+            set
+            {
+                OnRootDirChanging(value);
+                ReportPropertyChanging("RootDir");
+                _RootDir = StructuralObject.SetValidValue(value, false, "RootDir");
+                ReportPropertyChanged("RootDir");
+                OnRootDirChanged();
+            }
+        }
+        private global::System.String _RootDir;
+        partial void OnRootDirChanging(global::System.String value);
+        partial void OnRootDirChanged();
+
+        #endregion
+
+        #region Navigation Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("BerkeleyEntities", "BonanzaMarketplaceBonanzaListing", "BonanzaListing")]
+        public EntityCollection<BonanzaListing> Listings
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<BonanzaListing>("BerkeleyEntities.BonanzaMarketplaceBonanzaListing", "BonanzaListing");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<BonanzaListing>("BerkeleyEntities.BonanzaMarketplaceBonanzaListing", "BonanzaListing", value);
                 }
             }
         }
@@ -13665,28 +14519,6 @@ namespace BerkeleyEntities
         [XmlIgnoreAttribute()]
         [SoapIgnoreAttribute()]
         [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("BerkeleyEntities", "SyncListingItem", "SyncListing")]
-        public EntityCollection<SyncListing> SyncListings
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<SyncListing>("BerkeleyEntities.SyncListingItem", "SyncListing");
-            }
-            set
-            {
-                if ((value != null))
-                {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<SyncListing>("BerkeleyEntities.SyncListingItem", "SyncListing", value);
-                }
-            }
-        }
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [XmlIgnoreAttribute()]
-        [SoapIgnoreAttribute()]
-        [DataMemberAttribute()]
         [EdmRelationshipNavigationPropertyAttribute("BerkeleyEntities", "InventoryTransferLogItem", "InventoryTransferLog")]
         public EntityCollection<InventoryTransferLog> InventoryTransferLogs
         {
@@ -13831,6 +14663,28 @@ namespace BerkeleyEntities
                 if ((value != null))
                 {
                     ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<AmznListingItem>("BerkeleyEntities.AmznListingItemItem", "SyncAmznListingItem", value);
+                }
+            }
+        }
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("BerkeleyEntities", "BonanzaListingItemItem", "BonanzaListingItem")]
+        public EntityCollection<BonanzaListingItem> BonanzaListingItems
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<BonanzaListingItem>("BerkeleyEntities.BonanzaListingItemItem", "BonanzaListingItem");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<BonanzaListingItem>("BerkeleyEntities.BonanzaListingItemItem", "BonanzaListingItem", value);
                 }
             }
         }
@@ -19199,962 +20053,6 @@ namespace BerkeleyEntities
                 if ((value != null))
                 {
                     ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<Supplier>("BerkeleyEntities.SupplierSupplierList", "Supplier", value);
-                }
-            }
-        }
-
-        #endregion
-
-    }
-    
-    /// <summary>
-    /// No Metadata Documentation available.
-    /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName="BerkeleyEntities", Name="SyncListing")]
-    [Serializable()]
-    [DataContractAttribute(IsReference=true)]
-    public partial class SyncListing : EntityObject
-    {
-        #region Factory Method
-    
-        /// <summary>
-        /// Create a new SyncListing object.
-        /// </summary>
-        /// <param name="id">Initial value of the ID property.</param>
-        /// <param name="itemID">Initial value of the ItemID property.</param>
-        /// <param name="code">Initial value of the Code property.</param>
-        /// <param name="marketplace">Initial value of the Marketplace property.</param>
-        /// <param name="quantity">Initial value of the Quantity property.</param>
-        /// <param name="price">Initial value of the Price property.</param>
-        /// <param name="startTime">Initial value of the StartTime property.</param>
-        /// <param name="format">Initial value of the Format property.</param>
-        /// <param name="duration">Initial value of the Duration property.</param>
-        /// <param name="title">Initial value of the Title property.</param>
-        /// <param name="variation">Initial value of the Variation property.</param>
-        /// <param name="active">Initial value of the Active property.</param>
-        public static SyncListing CreateSyncListing(global::System.Int32 id, global::System.Int32 itemID, global::System.String code, global::System.String marketplace, global::System.Int32 quantity, global::System.Decimal price, global::System.DateTime startTime, global::System.String format, global::System.String duration, global::System.String title, global::System.Boolean variation, global::System.Int32 active)
-        {
-            SyncListing syncListing = new SyncListing();
-            syncListing.ID = id;
-            syncListing.ItemID = itemID;
-            syncListing.Code = code;
-            syncListing.Marketplace = marketplace;
-            syncListing.Quantity = quantity;
-            syncListing.Price = price;
-            syncListing.StartTime = startTime;
-            syncListing.Format = format;
-            syncListing.Duration = duration;
-            syncListing.Title = title;
-            syncListing.Variation = variation;
-            syncListing.Active = active;
-            return syncListing;
-        }
-
-        #endregion
-
-        #region Simple Properties
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.Int32 ID
-        {
-            get
-            {
-                return _ID;
-            }
-            set
-            {
-                if (_ID != value)
-                {
-                    OnIDChanging(value);
-                    ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value, "ID");
-                    ReportPropertyChanged("ID");
-                    OnIDChanged();
-                }
-            }
-        }
-        private global::System.Int32 _ID;
-        partial void OnIDChanging(global::System.Int32 value);
-        partial void OnIDChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.Int32 ItemID
-        {
-            get
-            {
-                return _ItemID;
-            }
-            set
-            {
-                OnItemIDChanging(value);
-                ReportPropertyChanging("ItemID");
-                _ItemID = StructuralObject.SetValidValue(value, "ItemID");
-                ReportPropertyChanged("ItemID");
-                OnItemIDChanged();
-            }
-        }
-        private global::System.Int32 _ItemID;
-        partial void OnItemIDChanging(global::System.Int32 value);
-        partial void OnItemIDChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.String Code
-        {
-            get
-            {
-                return _Code;
-            }
-            set
-            {
-                OnCodeChanging(value);
-                ReportPropertyChanging("Code");
-                _Code = StructuralObject.SetValidValue(value, false, "Code");
-                ReportPropertyChanged("Code");
-                OnCodeChanged();
-            }
-        }
-        private global::System.String _Code;
-        partial void OnCodeChanging(global::System.String value);
-        partial void OnCodeChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.String Marketplace
-        {
-            get
-            {
-                return _Marketplace;
-            }
-            set
-            {
-                OnMarketplaceChanging(value);
-                ReportPropertyChanging("Marketplace");
-                _Marketplace = StructuralObject.SetValidValue(value, false, "Marketplace");
-                ReportPropertyChanged("Marketplace");
-                OnMarketplaceChanged();
-            }
-        }
-        private global::System.String _Marketplace;
-        partial void OnMarketplaceChanging(global::System.String value);
-        partial void OnMarketplaceChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.Int32 Quantity
-        {
-            get
-            {
-                return _Quantity;
-            }
-            set
-            {
-                OnQuantityChanging(value);
-                ReportPropertyChanging("Quantity");
-                _Quantity = StructuralObject.SetValidValue(value, "Quantity");
-                ReportPropertyChanged("Quantity");
-                OnQuantityChanged();
-            }
-        }
-        private global::System.Int32 _Quantity;
-        partial void OnQuantityChanging(global::System.Int32 value);
-        partial void OnQuantityChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.Decimal Price
-        {
-            get
-            {
-                return _Price;
-            }
-            set
-            {
-                OnPriceChanging(value);
-                ReportPropertyChanging("Price");
-                _Price = StructuralObject.SetValidValue(value, "Price");
-                ReportPropertyChanged("Price");
-                OnPriceChanged();
-            }
-        }
-        private global::System.Decimal _Price;
-        partial void OnPriceChanging(global::System.Decimal value);
-        partial void OnPriceChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.DateTime StartTime
-        {
-            get
-            {
-                return _StartTime;
-            }
-            set
-            {
-                OnStartTimeChanging(value);
-                ReportPropertyChanging("StartTime");
-                _StartTime = StructuralObject.SetValidValue(value, "StartTime");
-                ReportPropertyChanged("StartTime");
-                OnStartTimeChanged();
-            }
-        }
-        private global::System.DateTime _StartTime;
-        partial void OnStartTimeChanging(global::System.DateTime value);
-        partial void OnStartTimeChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
-        public Nullable<global::System.DateTime> EndTime
-        {
-            get
-            {
-                return _EndTime;
-            }
-            set
-            {
-                OnEndTimeChanging(value);
-                ReportPropertyChanging("EndTime");
-                _EndTime = StructuralObject.SetValidValue(value, "EndTime");
-                ReportPropertyChanged("EndTime");
-                OnEndTimeChanged();
-            }
-        }
-        private Nullable<global::System.DateTime> _EndTime;
-        partial void OnEndTimeChanging(Nullable<global::System.DateTime> value);
-        partial void OnEndTimeChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.String Format
-        {
-            get
-            {
-                return _Format;
-            }
-            set
-            {
-                OnFormatChanging(value);
-                ReportPropertyChanging("Format");
-                _Format = StructuralObject.SetValidValue(value, false, "Format");
-                ReportPropertyChanged("Format");
-                OnFormatChanged();
-            }
-        }
-        private global::System.String _Format;
-        partial void OnFormatChanging(global::System.String value);
-        partial void OnFormatChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.String Duration
-        {
-            get
-            {
-                return _Duration;
-            }
-            set
-            {
-                OnDurationChanging(value);
-                ReportPropertyChanging("Duration");
-                _Duration = StructuralObject.SetValidValue(value, false, "Duration");
-                ReportPropertyChanged("Duration");
-                OnDurationChanged();
-            }
-        }
-        private global::System.String _Duration;
-        partial void OnDurationChanging(global::System.String value);
-        partial void OnDurationChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.String Title
-        {
-            get
-            {
-                return _Title;
-            }
-            set
-            {
-                OnTitleChanging(value);
-                ReportPropertyChanging("Title");
-                _Title = StructuralObject.SetValidValue(value, false, "Title");
-                ReportPropertyChanged("Title");
-                OnTitleChanged();
-            }
-        }
-        private global::System.String _Title;
-        partial void OnTitleChanging(global::System.String value);
-        partial void OnTitleChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.Boolean Variation
-        {
-            get
-            {
-                return _Variation;
-            }
-            set
-            {
-                OnVariationChanging(value);
-                ReportPropertyChanging("Variation");
-                _Variation = StructuralObject.SetValidValue(value, "Variation");
-                ReportPropertyChanged("Variation");
-                OnVariationChanged();
-            }
-        }
-        private global::System.Boolean _Variation;
-        partial void OnVariationChanging(global::System.Boolean value);
-        partial void OnVariationChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
-        public global::System.String Condition
-        {
-            get
-            {
-                return _Condition;
-            }
-            set
-            {
-                OnConditionChanging(value);
-                ReportPropertyChanging("Condition");
-                _Condition = StructuralObject.SetValidValue(value, true, "Condition");
-                ReportPropertyChanged("Condition");
-                OnConditionChanged();
-            }
-        }
-        private global::System.String _Condition;
-        partial void OnConditionChanging(global::System.String value);
-        partial void OnConditionChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.Int32 Active
-        {
-            get
-            {
-                return _Active;
-            }
-            set
-            {
-                OnActiveChanging(value);
-                ReportPropertyChanging("Active");
-                _Active = StructuralObject.SetValidValue(value, "Active");
-                ReportPropertyChanged("Active");
-                OnActiveChanged();
-            }
-        }
-        private global::System.Int32 _Active;
-        partial void OnActiveChanging(global::System.Int32 value);
-        partial void OnActiveChanged();
-
-        #endregion
-
-        #region Navigation Properties
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [XmlIgnoreAttribute()]
-        [SoapIgnoreAttribute()]
-        [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("BerkeleyEntities", "SyncListingItem", "Item")]
-        public Item Item
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Item>("BerkeleyEntities.SyncListingItem", "Item").Value;
-            }
-            set
-            {
-                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Item>("BerkeleyEntities.SyncListingItem", "Item").Value = value;
-            }
-        }
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [BrowsableAttribute(false)]
-        [DataMemberAttribute()]
-        public EntityReference<Item> ItemReference
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Item>("BerkeleyEntities.SyncListingItem", "Item");
-            }
-            set
-            {
-                if ((value != null))
-                {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<Item>("BerkeleyEntities.SyncListingItem", "Item", value);
-                }
-            }
-        }
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [XmlIgnoreAttribute()]
-        [SoapIgnoreAttribute()]
-        [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("BerkeleyEntities", "SyncListingSyncOrderItem", "SyncOrderItem")]
-        public EntityCollection<SyncOrderItem> SyncOrderItems
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<SyncOrderItem>("BerkeleyEntities.SyncListingSyncOrderItem", "SyncOrderItem");
-            }
-            set
-            {
-                if ((value != null))
-                {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<SyncOrderItem>("BerkeleyEntities.SyncListingSyncOrderItem", "SyncOrderItem", value);
-                }
-            }
-        }
-
-        #endregion
-
-    }
-    
-    /// <summary>
-    /// No Metadata Documentation available.
-    /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName="BerkeleyEntities", Name="SyncOrder")]
-    [Serializable()]
-    [DataContractAttribute(IsReference=true)]
-    public partial class SyncOrder : EntityObject
-    {
-        #region Factory Method
-    
-        /// <summary>
-        /// Create a new SyncOrder object.
-        /// </summary>
-        /// <param name="id">Initial value of the ID property.</param>
-        /// <param name="code">Initial value of the Code property.</param>
-        /// <param name="status">Initial value of the Status property.</param>
-        /// <param name="marketplace">Initial value of the Marketplace property.</param>
-        /// <param name="createdTime">Initial value of the CreatedTime property.</param>
-        public static SyncOrder CreateSyncOrder(global::System.Int32 id, global::System.String code, global::System.String status, global::System.String marketplace, global::System.DateTime createdTime)
-        {
-            SyncOrder syncOrder = new SyncOrder();
-            syncOrder.ID = id;
-            syncOrder.Code = code;
-            syncOrder.Status = status;
-            syncOrder.Marketplace = marketplace;
-            syncOrder.CreatedTime = createdTime;
-            return syncOrder;
-        }
-
-        #endregion
-
-        #region Simple Properties
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.Int32 ID
-        {
-            get
-            {
-                return _ID;
-            }
-            set
-            {
-                if (_ID != value)
-                {
-                    OnIDChanging(value);
-                    ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value, "ID");
-                    ReportPropertyChanged("ID");
-                    OnIDChanged();
-                }
-            }
-        }
-        private global::System.Int32 _ID;
-        partial void OnIDChanging(global::System.Int32 value);
-        partial void OnIDChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.String Code
-        {
-            get
-            {
-                return _Code;
-            }
-            set
-            {
-                OnCodeChanging(value);
-                ReportPropertyChanging("Code");
-                _Code = StructuralObject.SetValidValue(value, false, "Code");
-                ReportPropertyChanged("Code");
-                OnCodeChanged();
-            }
-        }
-        private global::System.String _Code;
-        partial void OnCodeChanging(global::System.String value);
-        partial void OnCodeChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.String Status
-        {
-            get
-            {
-                return _Status;
-            }
-            set
-            {
-                OnStatusChanging(value);
-                ReportPropertyChanging("Status");
-                _Status = StructuralObject.SetValidValue(value, false, "Status");
-                ReportPropertyChanged("Status");
-                OnStatusChanged();
-            }
-        }
-        private global::System.String _Status;
-        partial void OnStatusChanging(global::System.String value);
-        partial void OnStatusChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.String Marketplace
-        {
-            get
-            {
-                return _Marketplace;
-            }
-            set
-            {
-                OnMarketplaceChanging(value);
-                ReportPropertyChanging("Marketplace");
-                _Marketplace = StructuralObject.SetValidValue(value, false, "Marketplace");
-                ReportPropertyChanged("Marketplace");
-                OnMarketplaceChanged();
-            }
-        }
-        private global::System.String _Marketplace;
-        partial void OnMarketplaceChanging(global::System.String value);
-        partial void OnMarketplaceChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.DateTime CreatedTime
-        {
-            get
-            {
-                return _CreatedTime;
-            }
-            set
-            {
-                OnCreatedTimeChanging(value);
-                ReportPropertyChanging("CreatedTime");
-                _CreatedTime = StructuralObject.SetValidValue(value, "CreatedTime");
-                ReportPropertyChanged("CreatedTime");
-                OnCreatedTimeChanged();
-            }
-        }
-        private global::System.DateTime _CreatedTime;
-        partial void OnCreatedTimeChanging(global::System.DateTime value);
-        partial void OnCreatedTimeChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
-        public global::System.String Email
-        {
-            get
-            {
-                return _Email;
-            }
-            set
-            {
-                OnEmailChanging(value);
-                ReportPropertyChanging("Email");
-                _Email = StructuralObject.SetValidValue(value, true, "Email");
-                ReportPropertyChanged("Email");
-                OnEmailChanged();
-            }
-        }
-        private global::System.String _Email;
-        partial void OnEmailChanging(global::System.String value);
-        partial void OnEmailChanged();
-
-        #endregion
-
-        #region Navigation Properties
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [XmlIgnoreAttribute()]
-        [SoapIgnoreAttribute()]
-        [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("BerkeleyEntities", "SyncOrderSyncOrderItem", "SyncOrderItem")]
-        public EntityCollection<SyncOrderItem> SyncOrderItems
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<SyncOrderItem>("BerkeleyEntities.SyncOrderSyncOrderItem", "SyncOrderItem");
-            }
-            set
-            {
-                if ((value != null))
-                {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<SyncOrderItem>("BerkeleyEntities.SyncOrderSyncOrderItem", "SyncOrderItem", value);
-                }
-            }
-        }
-
-        #endregion
-
-    }
-    
-    /// <summary>
-    /// No Metadata Documentation available.
-    /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName="BerkeleyEntities", Name="SyncOrderItem")]
-    [Serializable()]
-    [DataContractAttribute(IsReference=true)]
-    public partial class SyncOrderItem : EntityObject
-    {
-        #region Factory Method
-    
-        /// <summary>
-        /// Create a new SyncOrderItem object.
-        /// </summary>
-        /// <param name="id">Initial value of the ID property.</param>
-        /// <param name="syncOrderID">Initial value of the SyncOrderID property.</param>
-        /// <param name="syncListingID">Initial value of the SyncListingID property.</param>
-        /// <param name="code">Initial value of the Code property.</param>
-        /// <param name="price">Initial value of the Price property.</param>
-        /// <param name="quantityOrdered">Initial value of the QuantityOrdered property.</param>
-        /// <param name="quantityShipped">Initial value of the QuantityShipped property.</param>
-        public static SyncOrderItem CreateSyncOrderItem(global::System.Int32 id, global::System.Int32 syncOrderID, global::System.Int32 syncListingID, global::System.String code, global::System.Decimal price, global::System.Int32 quantityOrdered, global::System.Int32 quantityShipped)
-        {
-            SyncOrderItem syncOrderItem = new SyncOrderItem();
-            syncOrderItem.ID = id;
-            syncOrderItem.SyncOrderID = syncOrderID;
-            syncOrderItem.SyncListingID = syncListingID;
-            syncOrderItem.Code = code;
-            syncOrderItem.Price = price;
-            syncOrderItem.QuantityOrdered = quantityOrdered;
-            syncOrderItem.QuantityShipped = quantityShipped;
-            return syncOrderItem;
-        }
-
-        #endregion
-
-        #region Simple Properties
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.Int32 ID
-        {
-            get
-            {
-                return _ID;
-            }
-            set
-            {
-                if (_ID != value)
-                {
-                    OnIDChanging(value);
-                    ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value, "ID");
-                    ReportPropertyChanged("ID");
-                    OnIDChanged();
-                }
-            }
-        }
-        private global::System.Int32 _ID;
-        partial void OnIDChanging(global::System.Int32 value);
-        partial void OnIDChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.Int32 SyncOrderID
-        {
-            get
-            {
-                return _SyncOrderID;
-            }
-            set
-            {
-                OnSyncOrderIDChanging(value);
-                ReportPropertyChanging("SyncOrderID");
-                _SyncOrderID = StructuralObject.SetValidValue(value, "SyncOrderID");
-                ReportPropertyChanged("SyncOrderID");
-                OnSyncOrderIDChanged();
-            }
-        }
-        private global::System.Int32 _SyncOrderID;
-        partial void OnSyncOrderIDChanging(global::System.Int32 value);
-        partial void OnSyncOrderIDChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.Int32 SyncListingID
-        {
-            get
-            {
-                return _SyncListingID;
-            }
-            set
-            {
-                OnSyncListingIDChanging(value);
-                ReportPropertyChanging("SyncListingID");
-                _SyncListingID = StructuralObject.SetValidValue(value, "SyncListingID");
-                ReportPropertyChanged("SyncListingID");
-                OnSyncListingIDChanged();
-            }
-        }
-        private global::System.Int32 _SyncListingID;
-        partial void OnSyncListingIDChanging(global::System.Int32 value);
-        partial void OnSyncListingIDChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.String Code
-        {
-            get
-            {
-                return _Code;
-            }
-            set
-            {
-                OnCodeChanging(value);
-                ReportPropertyChanging("Code");
-                _Code = StructuralObject.SetValidValue(value, false, "Code");
-                ReportPropertyChanged("Code");
-                OnCodeChanged();
-            }
-        }
-        private global::System.String _Code;
-        partial void OnCodeChanging(global::System.String value);
-        partial void OnCodeChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.Decimal Price
-        {
-            get
-            {
-                return _Price;
-            }
-            set
-            {
-                OnPriceChanging(value);
-                ReportPropertyChanging("Price");
-                _Price = StructuralObject.SetValidValue(value, "Price");
-                ReportPropertyChanged("Price");
-                OnPriceChanged();
-            }
-        }
-        private global::System.Decimal _Price;
-        partial void OnPriceChanging(global::System.Decimal value);
-        partial void OnPriceChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.Int32 QuantityOrdered
-        {
-            get
-            {
-                return _QuantityOrdered;
-            }
-            set
-            {
-                OnQuantityOrderedChanging(value);
-                ReportPropertyChanging("QuantityOrdered");
-                _QuantityOrdered = StructuralObject.SetValidValue(value, "QuantityOrdered");
-                ReportPropertyChanged("QuantityOrdered");
-                OnQuantityOrderedChanged();
-            }
-        }
-        private global::System.Int32 _QuantityOrdered;
-        partial void OnQuantityOrderedChanging(global::System.Int32 value);
-        partial void OnQuantityOrderedChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.Int32 QuantityShipped
-        {
-            get
-            {
-                return _QuantityShipped;
-            }
-            set
-            {
-                OnQuantityShippedChanging(value);
-                ReportPropertyChanging("QuantityShipped");
-                _QuantityShipped = StructuralObject.SetValidValue(value, "QuantityShipped");
-                ReportPropertyChanged("QuantityShipped");
-                OnQuantityShippedChanged();
-            }
-        }
-        private global::System.Int32 _QuantityShipped;
-        partial void OnQuantityShippedChanging(global::System.Int32 value);
-        partial void OnQuantityShippedChanged();
-
-        #endregion
-
-        #region Navigation Properties
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [XmlIgnoreAttribute()]
-        [SoapIgnoreAttribute()]
-        [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("BerkeleyEntities", "SyncOrderSyncOrderItem", "SyncOrder")]
-        public SyncOrder SyncOrder
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<SyncOrder>("BerkeleyEntities.SyncOrderSyncOrderItem", "SyncOrder").Value;
-            }
-            set
-            {
-                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<SyncOrder>("BerkeleyEntities.SyncOrderSyncOrderItem", "SyncOrder").Value = value;
-            }
-        }
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [BrowsableAttribute(false)]
-        [DataMemberAttribute()]
-        public EntityReference<SyncOrder> SyncOrderReference
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<SyncOrder>("BerkeleyEntities.SyncOrderSyncOrderItem", "SyncOrder");
-            }
-            set
-            {
-                if ((value != null))
-                {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<SyncOrder>("BerkeleyEntities.SyncOrderSyncOrderItem", "SyncOrder", value);
-                }
-            }
-        }
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [XmlIgnoreAttribute()]
-        [SoapIgnoreAttribute()]
-        [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("BerkeleyEntities", "SyncListingSyncOrderItem", "SyncListing")]
-        public SyncListing SyncListing
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<SyncListing>("BerkeleyEntities.SyncListingSyncOrderItem", "SyncListing").Value;
-            }
-            set
-            {
-                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<SyncListing>("BerkeleyEntities.SyncListingSyncOrderItem", "SyncListing").Value = value;
-            }
-        }
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [BrowsableAttribute(false)]
-        [DataMemberAttribute()]
-        public EntityReference<SyncListing> SyncListingReference
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<SyncListing>("BerkeleyEntities.SyncListingSyncOrderItem", "SyncListing");
-            }
-            set
-            {
-                if ((value != null))
-                {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<SyncListing>("BerkeleyEntities.SyncListingSyncOrderItem", "SyncListing", value);
                 }
             }
         }

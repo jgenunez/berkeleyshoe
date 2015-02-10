@@ -87,6 +87,44 @@
           <Property Name="PromotionDiscount" Type="money" Nullable="false" />
           <Property Name="ShippingDiscount" Type="money" Nullable="false" />
         </EntityType>
+        <EntityType Name="BonanzaListing">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Code" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="MarketplaceID" Type="int" Nullable="false" />
+          <Property Name="Sku" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="FullDescription" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="IsVariation" Type="bit" Nullable="false" />
+          <Property Name="LastSyncTime" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="BonanzaListingItem">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="ItemID" Type="int" Nullable="false" />
+          <Property Name="ListingID" Type="int" Nullable="false" />
+          <Property Name="Quantity" Type="int" Nullable="false" />
+          <Property Name="Price" Type="money" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="200" Nullable="false" />
+        </EntityType>
+        <EntityType Name="BonanzaMarketplace">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Code" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Token" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="PayPalAccount" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="ListingSyncTime" Type="datetime" />
+          <Property Name="OrderSyncTime" Type="datetime" />
+          <Property Name="RootDir" Type="nvarchar" MaxLength="400" Nullable="false" />
+        </EntityType>
         <EntityType Name="Bsi_LocationLog">
           <Key>
             <PropertyRef Name="ID" />
@@ -745,48 +783,6 @@
           <Property Name="DBTimeStamp" Type="timestamp" StoreGeneratedPattern="Computed" />
           <Property Name="TaxRate" Type="float" Nullable="false" />
         </EntityType>
-        <EntityType Name="SyncListing">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="ItemID" Type="int" Nullable="false" />
-          <Property Name="Code" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Marketplace" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Quantity" Type="int" Nullable="false" />
-          <Property Name="Price" Type="money" Nullable="false" />
-          <Property Name="StartTime" Type="datetime" Nullable="false" />
-          <Property Name="EndTime" Type="datetime" />
-          <Property Name="Format" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Duration" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Title" Type="nvarchar" MaxLength="150" Nullable="false" />
-          <Property Name="Variation" Type="bit" Nullable="false" />
-          <Property Name="Condition" Type="nvarchar" MaxLength="50" />
-          <Property Name="Active" Type="int" StoreGeneratedPattern="Computed" Nullable="false" />
-        </EntityType>
-        <EntityType Name="SyncOrder">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Code" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Status" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Marketplace" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="CreatedTime" Type="datetime" Nullable="false" />
-          <Property Name="Email" Type="nvarchar" MaxLength="50" />
-        </EntityType>
-        <EntityType Name="SyncOrderItem">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="SyncOrderID" Type="int" Nullable="false" />
-          <Property Name="SyncListingID" Type="int" Nullable="false" />
-          <Property Name="Code" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="QuantityOrdered" Type="int" Nullable="false" />
-          <Property Name="Price" Type="money" Nullable="false" />
-          <Property Name="QuantityShipped" Type="int" Nullable="false" />
-        </EntityType>
         <EntityType Name="Transaction">
           <Key>
             <PropertyRef Name="TransactionNumber" />
@@ -936,6 +932,9 @@
           <EntitySet Name="AmznMarketplace" EntityType="Self.AmznMarketplace" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AmznOrder" EntityType="Self.AmznOrder" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AmznOrderItem" EntityType="Self.AmznOrderItem" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BonanzaListing" EntityType="Self.BonanzaListing" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BonanzaListingItem" EntityType="Self.BonanzaListingItem" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BonanzaMarketplace" EntityType="Self.BonanzaMarketplace" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Bsi_LocationLog" EntityType="Self.Bsi_LocationLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="bsi_posting" EntityType="Self.bsi_posting" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="bsi_posts" EntityType="Self.bsi_posts" Schema="dbo" store:Type="Tables" />
@@ -965,9 +964,6 @@
           <EntitySet Name="PurchaseOrderEntry" EntityType="Self.PurchaseOrderEntry" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Supplier" EntityType="Self.Supplier" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SupplierList" EntityType="Self.SupplierList" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="SyncListing" EntityType="Self.SyncListing" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="SyncOrder" EntityType="Self.SyncOrder" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="SyncOrderItem" EntityType="Self.SyncOrderItem" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Transaction" EntityType="Self.Transaction" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TransactionEntry" EntityType="Self.TransactionEntry" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TransactionHold" EntityType="Self.TransactionHold" Schema="dbo" store:Type="Tables" />
@@ -1094,21 +1090,6 @@
             <End Role="InventoryEntry" EntitySet="InventoryEntries" />
             <End Role="PhysicalInventory" EntitySet="PhysicalInventories" />
           </AssociationSet>
-          <EntitySet Name="SyncOrders" EntityType="BerkeleyEntities.SyncOrder" />
-          <EntitySet Name="SyncOrderItems" EntityType="BerkeleyEntities.SyncOrderItem" />
-          <AssociationSet Name="SyncOrderSyncOrderItem" Association="BerkeleyEntities.SyncOrderSyncOrderItem">
-            <End Role="SyncOrder" EntitySet="SyncOrders" />
-            <End Role="SyncOrderItem" EntitySet="SyncOrderItems" />
-          </AssociationSet>
-          <EntitySet Name="SyncListings" EntityType="BerkeleyEntities.SyncListing" />
-          <AssociationSet Name="SyncListingItem" Association="BerkeleyEntities.SyncListingItem">
-            <End Role="SyncListing" EntitySet="SyncListings" />
-            <End Role="Item" EntitySet="Items" />
-          </AssociationSet>
-          <AssociationSet Name="SyncListingSyncOrderItem" Association="BerkeleyEntities.SyncListingSyncOrderItem">
-            <End Role="SyncListing" EntitySet="SyncListings" />
-            <End Role="SyncOrderItem" EntitySet="SyncOrderItems" />
-          </AssociationSet>
           <EntitySet Name="InventoryTransferLogs" EntityType="BerkeleyEntities.InventoryTransferLog" />
           <EntitySet Name="TransactionEntries" EntityType="BerkeleyEntities.TransactionEntry" />
           <AssociationSet Name="InventoryTransferLogItem" Association="BerkeleyEntities.InventoryTransferLogItem">
@@ -1202,6 +1183,21 @@
           <AssociationSet Name="TransactionTransactionEntry" Association="BerkeleyEntities.TransactionTransactionEntry">
             <End Role="Transaction" EntitySet="Transactions" />
             <End Role="TransactionEntry" EntitySet="TransactionEntries" />
+          </AssociationSet>
+          <EntitySet Name="BonanzaListings" EntityType="BerkeleyEntities.BonanzaListing" />
+          <EntitySet Name="BonanzaListingItems" EntityType="BerkeleyEntities.BonanzaListingItem" />
+          <EntitySet Name="BonanzaMarketplaces" EntityType="BerkeleyEntities.BonanzaMarketplace" />
+          <AssociationSet Name="BonanzaListingItemItem" Association="BerkeleyEntities.BonanzaListingItemItem">
+            <End Role="BonanzaListingItem" EntitySet="BonanzaListingItems" />
+            <End Role="Item" EntitySet="Items" />
+          </AssociationSet>
+          <AssociationSet Name="BonanzaListingBonanzaListingItem" Association="BerkeleyEntities.BonanzaListingBonanzaListingItem">
+            <End Role="BonanzaListing" EntitySet="BonanzaListings" />
+            <End Role="BonanzaListingItem" EntitySet="BonanzaListingItems" />
+          </AssociationSet>
+          <AssociationSet Name="BonanzaMarketplaceBonanzaListing" Association="BerkeleyEntities.BonanzaMarketplaceBonanzaListing">
+            <End Role="BonanzaMarketplace" EntitySet="BonanzaMarketplaces" />
+            <End Role="BonanzaListing" EntitySet="BonanzaListings" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="Alias">
@@ -1338,7 +1334,6 @@
           <NavigationProperty Name="SupplierLists" Relationship="BerkeleyEntities.ItemSupplierList" FromRole="Item" ToRole="SupplierList" />
           <NavigationProperty Name="PhysicalInventoryEntries" Relationship="BerkeleyEntities.PhysicalInventoryEntryItem" FromRole="Item" ToRole="PhysicalInventoryEntry" />
           <NavigationProperty Name="PurchaseOrderEntries" Relationship="BerkeleyEntities.PurchaseOrderEntryItem" FromRole="Item" ToRole="PurchaseOrderEntry" />
-          <NavigationProperty Name="SyncListings" Relationship="BerkeleyEntities.SyncListingItem" FromRole="Item" ToRole="SyncListing" />
           <NavigationProperty Name="InventoryTransferLogs" Relationship="BerkeleyEntities.InventoryTransferLogItem" FromRole="Item" ToRole="InventoryTransferLog" />
           <NavigationProperty Name="TransactionEntries" Relationship="BerkeleyEntities.TransactionEntryItem" FromRole="Item" ToRole="TransactionEntry" />
           <NavigationProperty Name="TransactionHoldEntries" Relationship="BerkeleyEntities.TransactionHoldEntryItem" FromRole="Item" ToRole="TransactionHoldEntry" />
@@ -1346,6 +1341,7 @@
           <NavigationProperty Name="EbayListingItems" Relationship="BerkeleyEntities.EbayListingItemItem" FromRole="Item" ToRole="SyncEbayListingItem" />
           <NavigationProperty Name="InventoryEntries" Relationship="BerkeleyEntities.InventoryEntryItem" FromRole="Item" ToRole="InventoryEntry" />
           <NavigationProperty Name="AmznListingItems" Relationship="BerkeleyEntities.AmznListingItemItem" FromRole="Item" ToRole="SyncAmznListingItem" />
+          <NavigationProperty Name="BonanzaListingItems" Relationship="BerkeleyEntities.BonanzaListingItemItem" FromRole="Item" ToRole="BonanzaListingItem" />
         </EntityType>
         <EntityType Name="ItemClass">
           <Key>
@@ -1988,89 +1984,6 @@
             </Principal>
             <Dependent Role="InventoryEntry">
               <PropertyRef Name="PhysicalInventoryID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="SyncOrder">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Type="Int32" Name="ID" Nullable="false" />
-          <Property Type="String" Name="Code" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Status" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Marketplace" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="DateTime" Name="CreatedTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="SyncOrderItems" Relationship="BerkeleyEntities.SyncOrderSyncOrderItem" FromRole="SyncOrder" ToRole="SyncOrderItem" />
-          <Property Type="String" Name="Email" MaxLength="50" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="SyncOrderItem">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Type="Int32" Name="ID" Nullable="false" />
-          <Property Type="Int32" Name="SyncOrderID" Nullable="false" />
-          <Property Type="Int32" Name="SyncListingID" Nullable="false" />
-          <Property Type="String" Name="Code" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="Decimal" Name="Price" Nullable="false" Precision="19" Scale="4" />
-          <NavigationProperty Name="SyncOrder" Relationship="BerkeleyEntities.SyncOrderSyncOrderItem" FromRole="SyncOrderItem" ToRole="SyncOrder" />
-          <NavigationProperty Name="SyncListing" Relationship="BerkeleyEntities.SyncListingSyncOrderItem" FromRole="SyncOrderItem" ToRole="SyncListing" />
-          <Property Type="Int32" Name="QuantityOrdered" Nullable="false" />
-          <Property Type="Int32" Name="QuantityShipped" Nullable="false" />
-        </EntityType>
-        <Association Name="SyncOrderSyncOrderItem">
-          <End Type="BerkeleyEntities.SyncOrder" Role="SyncOrder" Multiplicity="1" />
-          <End Type="BerkeleyEntities.SyncOrderItem" Role="SyncOrderItem" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="SyncOrder">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="SyncOrderItem">
-              <PropertyRef Name="SyncOrderID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="SyncListing">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Type="Int32" Name="ID" Nullable="false" />
-          <Property Type="Int32" Name="ItemID" Nullable="false" />
-          <Property Type="String" Name="Code" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Marketplace" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="Int32" Name="Quantity" Nullable="false" />
-          <Property Type="Decimal" Name="Price" Nullable="false" Precision="19" Scale="4" />
-          <Property Type="DateTime" Name="StartTime" Nullable="false" Precision="3" />
-          <Property Type="DateTime" Name="EndTime" Precision="3" />
-          <Property Type="String" Name="Format" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Duration" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Title" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Item" Relationship="BerkeleyEntities.SyncListingItem" FromRole="SyncListing" ToRole="Item" />
-          <NavigationProperty Name="SyncOrderItems" Relationship="BerkeleyEntities.SyncListingSyncOrderItem" FromRole="SyncListing" ToRole="SyncOrderItem" />
-          <Property Type="Boolean" Name="Variation" Nullable="false" />
-          <Property Type="String" Name="Condition" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="Int32" Name="Active" Nullable="false" annotation:StoreGeneratedPattern="Computed" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
-        </EntityType>
-        <Association Name="SyncListingItem">
-          <End Type="BerkeleyEntities.SyncListing" Role="SyncListing" Multiplicity="*" />
-          <End Type="BerkeleyEntities.Item" Role="Item" Multiplicity="1" />
-          <ReferentialConstraint>
-            <Principal Role="Item">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="SyncListing">
-              <PropertyRef Name="ItemID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="SyncListingSyncOrderItem">
-          <End Type="BerkeleyEntities.SyncListing" Role="SyncListing" Multiplicity="1" />
-          <End Type="BerkeleyEntities.SyncOrderItem" Role="SyncOrderItem" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="SyncListing">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="SyncOrderItem">
-              <PropertyRef Name="SyncListingID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2750,6 +2663,85 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="BonanzaListing">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Code" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MarketplaceID" Type="Int32" Nullable="false" />
+          <Property Name="Sku" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="FullDescription" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IsVariation" Type="Boolean" Nullable="false" />
+          <Property Name="LastSyncTime" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="ListingItems" Relationship="BerkeleyEntities.BonanzaListingBonanzaListingItem" FromRole="BonanzaListing" ToRole="BonanzaListingItem" />
+          <NavigationProperty Name="Marketplace" Relationship="BerkeleyEntities.BonanzaMarketplaceBonanzaListing" FromRole="BonanzaListing" ToRole="BonanzaMarketplace" />
+        </EntityType>
+        <EntityType Name="BonanzaListingItem">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="ItemID" Type="Int32" Nullable="false" />
+          <Property Name="ListingID" Type="Int32" Nullable="false" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Item" Relationship="BerkeleyEntities.BonanzaListingItemItem" FromRole="BonanzaListingItem" ToRole="Item" />
+          <NavigationProperty Name="Listing" Relationship="BerkeleyEntities.BonanzaListingBonanzaListingItem" FromRole="BonanzaListingItem" ToRole="BonanzaListing" />
+          <Property Name="Price" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+        </EntityType>
+        <EntityType Name="BonanzaMarketplace">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Code" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Token" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PayPalAccount" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ListingSyncTime" Type="DateTime" Precision="3" />
+          <Property Name="OrderSyncTime" Type="DateTime" Precision="3" />
+          <Property Name="RootDir" Type="String" Nullable="false" MaxLength="400" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Listings" Relationship="BerkeleyEntities.BonanzaMarketplaceBonanzaListing" FromRole="BonanzaMarketplace" ToRole="BonanzaListing" />
+        </EntityType>
+        <Association Name="BonanzaListingItemItem">
+          <End Type="BerkeleyEntities.BonanzaListingItem" Role="BonanzaListingItem" Multiplicity="*" />
+          <End Type="BerkeleyEntities.Item" Role="Item" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="Item">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="BonanzaListingItem">
+              <PropertyRef Name="ItemID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="BonanzaListingBonanzaListingItem">
+          <End Type="BerkeleyEntities.BonanzaListing" Role="BonanzaListing" Multiplicity="1" />
+          <End Type="BerkeleyEntities.BonanzaListingItem" Role="BonanzaListingItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BonanzaListing">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="BonanzaListingItem">
+              <PropertyRef Name="ListingID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="BonanzaMarketplaceBonanzaListing">
+          <End Type="BerkeleyEntities.BonanzaMarketplace" Role="BonanzaMarketplace" Multiplicity="1" />
+          <End Type="BerkeleyEntities.BonanzaListing" Role="BonanzaListing" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BonanzaMarketplace">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="BonanzaListing">
+              <PropertyRef Name="MarketplaceID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -3173,51 +3165,6 @@
               <MappingFragment StoreEntitySet="Division">
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Type" ColumnName="Type" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="SyncOrders">
-            <EntityTypeMapping TypeName="BerkeleyEntities.SyncOrder">
-              <MappingFragment StoreEntitySet="SyncOrder">
-                <ScalarProperty Name="Email" ColumnName="Email" />
-                <ScalarProperty Name="CreatedTime" ColumnName="CreatedTime" />
-                <ScalarProperty Name="Marketplace" ColumnName="Marketplace" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Code" ColumnName="Code" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="SyncOrderItems">
-            <EntityTypeMapping TypeName="BerkeleyEntities.SyncOrderItem">
-              <MappingFragment StoreEntitySet="SyncOrderItem">
-                <ScalarProperty Name="QuantityShipped" ColumnName="QuantityShipped" />
-                <ScalarProperty Name="QuantityOrdered" ColumnName="QuantityOrdered" />
-                <ScalarProperty Name="Price" ColumnName="Price" />
-                <ScalarProperty Name="Code" ColumnName="Code" />
-                <ScalarProperty Name="SyncListingID" ColumnName="SyncListingID" />
-                <ScalarProperty Name="SyncOrderID" ColumnName="SyncOrderID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="SyncListings">
-            <EntityTypeMapping TypeName="BerkeleyEntities.SyncListing">
-              <MappingFragment StoreEntitySet="SyncListing">
-                <ScalarProperty Name="Active" ColumnName="Active" />
-                <ScalarProperty Name="Condition" ColumnName="Condition" />
-                <ScalarProperty Name="Variation" ColumnName="Variation" />
-                <ScalarProperty Name="Title" ColumnName="Title" />
-                <ScalarProperty Name="Duration" ColumnName="Duration" />
-                <ScalarProperty Name="Format" ColumnName="Format" />
-                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
-                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
-                <ScalarProperty Name="Price" ColumnName="Price" />
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-                <ScalarProperty Name="Marketplace" ColumnName="Marketplace" />
-                <ScalarProperty Name="Code" ColumnName="Code" />
-                <ScalarProperty Name="ItemID" ColumnName="ItemID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -3656,6 +3603,47 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="BonanzaListings">
+            <EntityTypeMapping TypeName="BerkeleyEntities.BonanzaListing">
+              <MappingFragment StoreEntitySet="BonanzaListing">
+                <ScalarProperty Name="LastSyncTime" ColumnName="LastSyncTime" />
+                <ScalarProperty Name="IsVariation" ColumnName="IsVariation" />
+                <ScalarProperty Name="FullDescription" ColumnName="FullDescription" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Sku" ColumnName="Sku" />
+                <ScalarProperty Name="MarketplaceID" ColumnName="MarketplaceID" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BonanzaListingItems">
+            <EntityTypeMapping TypeName="BerkeleyEntities.BonanzaListingItem">
+              <MappingFragment StoreEntitySet="BonanzaListingItem">
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="ListingID" ColumnName="ListingID" />
+                <ScalarProperty Name="ItemID" ColumnName="ItemID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BonanzaMarketplaces">
+            <EntityTypeMapping TypeName="BerkeleyEntities.BonanzaMarketplace">
+              <MappingFragment StoreEntitySet="BonanzaMarketplace">
+                <ScalarProperty Name="RootDir" ColumnName="RootDir" />
+                <ScalarProperty Name="OrderSyncTime" ColumnName="OrderSyncTime" />
+                <ScalarProperty Name="ListingSyncTime" ColumnName="ListingSyncTime" />
+                <ScalarProperty Name="PayPalAccount" ColumnName="PayPalAccount" />
+                <ScalarProperty Name="Token" ColumnName="Token" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
@@ -3830,22 +3818,6 @@
           <ConnectorPoint PointX="14.03125" PointY="5.375" />
           <ConnectorPoint PointX="14.03125" PointY="4.775" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="BerkeleyEntities.SyncOrder" Width="1.5" PointX="8.625" PointY="9.875" Height="0.4" IsExpanded="false" />
-        <EntityTypeShape EntityType="BerkeleyEntities.SyncOrderItem" Width="1.5" PointX="10" PointY="8.5" Height="0.4" IsExpanded="false" />
-        <AssociationConnector Association="BerkeleyEntities.SyncOrderSyncOrderItem">
-          <ConnectorPoint PointX="10.0625" PointY="9.875" />
-          <ConnectorPoint PointX="10.0625" PointY="8.9" />
-        </AssociationConnector>
-        <EntityTypeShape EntityType="BerkeleyEntities.SyncListing" Width="1.5" PointX="9.75" PointY="7.5" Height="0.4" IsExpanded="false" />
-        <AssociationConnector Association="BerkeleyEntities.SyncListingItem">
-          <ConnectorPoint PointX="9.90625" PointY="7.5" />
-          <ConnectorPoint PointX="9.90625" PointY="5.43125" />
-          <ConnectorPoint PointX="8.125" PointY="5.43125" />
-        </AssociationConnector>
-        <AssociationConnector Association="BerkeleyEntities.SyncListingSyncOrderItem">
-          <ConnectorPoint PointX="10.625" PointY="7.9" />
-          <ConnectorPoint PointX="10.625" PointY="8.5" />
-        </AssociationConnector>
         <EntityTypeShape EntityType="BerkeleyEntities.InventoryTransferLog" Width="2.25" PointX="9.125" PointY="3.125" Height="0.4" IsExpanded="false" />
         <EntityTypeShape EntityType="BerkeleyEntities.TransactionEntry" Width="1.75" PointX="8.875" PointY="4.375" Height="0.4" IsExpanded="false" />
         <AssociationConnector Association="BerkeleyEntities.InventoryTransferLogItem">
@@ -3886,8 +3858,8 @@
           <ConnectorPoint PointX="5.114583333333333" PointY="5.4656319999999816" />
           <ConnectorPoint PointX="6.25" PointY="5.4656319999999816" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="BerkeleyEntities.AmznOrder" Width="2.125" PointX="5.875" PointY="8.25" Height="0.4" IsExpanded="false" />
-        <EntityTypeShape EntityType="BerkeleyEntities.AmznOrderItem" Width="2" PointX="5.875" PointY="7.375" Height="0.4" IsExpanded="false" />
+        <EntityTypeShape EntityType="BerkeleyEntities.AmznOrder" Width="2.125" PointX="6" PointY="10.875" Height="0.4" IsExpanded="false" />
+        <EntityTypeShape EntityType="BerkeleyEntities.AmznOrderItem" Width="2" PointX="6" PointY="9.75" Height="0.4" IsExpanded="false" />
         <EntityTypeShape EntityType="BerkeleyEntities.EbayOrder" Width="1.625" PointX="3.375" PointY="11.125" Height="0.4" IsExpanded="false" />
         <EntityTypeShape EntityType="BerkeleyEntities.EbayOrderItem" Width="2" PointX="3.375" PointY="10" Height="0.4" IsExpanded="false" />
         <AssociationConnector Association="BerkeleyEntities.EbayOrderItemEbayOrder">
@@ -3922,7 +3894,7 @@
           <ConnectorPoint PointX="7.687502" PointY="5.775" />
           <ConnectorPoint PointX="7.687502" PointY="5.525" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="BerkeleyEntities.AmznListingItem" Width="1.875" PointX="5.875" PointY="6.5" Height="0.4" IsExpanded="false" />
+        <EntityTypeShape EntityType="BerkeleyEntities.AmznListingItem" Width="1.875" PointX="6" PointY="8.625" Height="0.4" IsExpanded="false" />
         <AssociationConnector Association="BerkeleyEntities.AmznListingItemItem">
           <ConnectorPoint PointX="6.65625" PointY="6.5" />
           <ConnectorPoint PointX="6.65625" PointY="5.525" />
@@ -3931,7 +3903,7 @@
           <ConnectorPoint PointX="6.8125" PointY="6.9" />
           <ConnectorPoint PointX="6.8125" PointY="7.375" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="BerkeleyEntities.AmznMarketplace" Width="1.5" PointX="8.125" PointY="6.5" Height="0.4" IsExpanded="false" />
+        <EntityTypeShape EntityType="BerkeleyEntities.AmznMarketplace" Width="1.5" PointX="8.5" PointY="8.625" Height="0.4" IsExpanded="false" />
         <AssociationConnector Association="BerkeleyEntities.AmznMarketplaceSyncAmznListingItem">
           <ConnectorPoint PointX="8.125" PointY="6.7" />
           <ConnectorPoint PointX="7.75" PointY="6.7" />
@@ -3962,6 +3934,12 @@
           <ConnectorPoint PointX="9.03125" PointY="3.7437500000000004" />
           <ConnectorPoint PointX="9.03125" PointY="4" />
         </AssociationConnector>
+        <EntityTypeShape EntityType="BerkeleyEntities.BonanzaListing" Width="1.5" PointX="10.75" PointY="7.375" IsExpanded="false" />
+        <EntityTypeShape EntityType="BerkeleyEntities.BonanzaListingItem" Width="1.5" PointX="7.5" PointY="7.375" IsExpanded="false" />
+        <EntityTypeShape EntityType="BerkeleyEntities.BonanzaMarketplace" Width="1.5" PointX="10.625" PointY="9.25" IsExpanded="false" />
+        <AssociationConnector Association="BerkeleyEntities.BonanzaListingItemItem" />
+        <AssociationConnector Association="BerkeleyEntities.BonanzaListingBonanzaListingItem" />
+        <AssociationConnector Association="BerkeleyEntities.BonanzaMarketplaceBonanzaListing" />
         </Diagram>
     </Diagrams>
   </Designer>

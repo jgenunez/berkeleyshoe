@@ -354,27 +354,27 @@ namespace WorkbookPublisher
         public string Title { get; set; }
 
         public string Command { get; set; }
-        
-        public List<string> GetUpdateFields()
+
+        public List<string> GetUpdateFlags()
         {
-            List<string> fields;
+            List<string> flags;
 
             if (!string.IsNullOrWhiteSpace(this.Command))
             {
-                int start = this.Command.IndexOf("(") + 1;
-                int end = this.Command.IndexOf(")", start);
-                string result = this.Command.Substring(start, end - start);
+                flags = this.Command.Split(new Char[1] { '|' }).Select(p => p.Trim().ToUpper()).ToList();
 
-                fields = result.Split(new Char[1] { '|' }).ToList();
+                //int start = this.Command.IndexOf("(") + 1;
+                //int end = this.Command.IndexOf(")", start);
+                //string result = this.Command.Substring(start, end - start);
+
+                //fields = result.Split(new Char[1] { '|' }).ToList();
             }
             else
             {
-                fields = new List<string>();
+                flags = new List<string>();
             }
 
-            
-
-            return fields;
+            return flags;
         }
 
         public StatusCode Status
@@ -530,5 +530,14 @@ namespace WorkbookPublisher
         
 
         
+    }
+
+    public class BonanzaEntry : ListingEntry
+    {
+
+        public override string Code
+        {
+            get { return this.Sku + this.Format; }
+        }
     }
 }
