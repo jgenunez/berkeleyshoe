@@ -37,6 +37,10 @@ namespace WorkbookPublisher.ViewModel
 
     public class AmznReadCommand : ReadCommand
     {
+        public AmznMarketplace _marketplace;
+        private uint _lastRowIndex;
+        private List<ListingEntry> _newEntries;
+
         public AmznReadCommand(ExcelWorkbook workbook, string marketplaceCode)
             : base(workbook, marketplaceCode)
         {
@@ -45,94 +49,122 @@ namespace WorkbookPublisher.ViewModel
 
         public override List<ListingEntry> UpdateAndValidateEntries(List<ListingEntry> entries)
         {
-            var pendingEntries = entries.Where(p => p.Status.Equals(StatusCode.Pending)).Cast<AmznEntry>();
+            _lastRowIndex = entries.Max(p => p.RowIndex);
+            _newEntries = new List<ListingEntry>();
+
+            var entryGroups = entries.Where(p => p.Status.Equals(StatusCode.Pending)).Cast<AmznEntry>().GroupBy(p => p.Sku);
 
             using (berkeleyEntities dataContext = new berkeleyEntities())
             {
-                AmznMarketplace marketplace = dataContext.AmznMarketplaces.Single(p => p.Code.Equals(_marketplaceCode));
+                _marketplace = dataContext.AmznMarketplaces.Single(p => p.Code.Equals(_marketplaceCode));
 
-                foreach (var entryGroup in entries.GroupBy(p => p.Code))
+                foreach (var group in entryGroups)
                 {
-                    if (entryGroup.Count() > 1)
+                    Item item = dataContext.Items.SingleOrDefault(p => p.ItemLookupCode.Equals(group.Key));
+
+                    if (item != null)
                     {
-                        foreach (var duplicate in entryGroup)
+                        UpdateGroup(item, group.ToList());
+
+                        foreach (var entry in group)
                         {
-                            duplicate.Status = StatusCode.Error;
-                            duplicate.Message = "duplicate entry";
-                        }
+                            entry.ClassName = item.ClassName;
+                            entry.Brand = item.SubDescription1;
 
-                        continue;
-                    }
-
-                    AmznEntry entry = entryGroup.First() as AmznEntry;
-
-                    Item item = dataContext.Items.SingleOrDefault(p => p.ItemLookupCode.Equals(entry.Sku));
-
-                    if (item == null)
-                    {
-                        entry.Message = "sku not found";
-                        entry.Status = StatusCode.Error;
-                        continue;
-                    }
-
-                    entry.ClassName = item.ClassName;
-                    entry.Brand = item.SubDescription1;
-
-                    entry.Format = "GTC";
-
-                    if (item.Notes != null)
-                    {
-                        if (item.Notes.Contains("PRE") || item.Notes.Contains("NWB") || item.Notes.Contains("NWD"))
-                        {
-                            entry.Message = "only new products allowed";
-                            entry.Status = StatusCode.Error;
+                            if (entry.Status.Equals(StatusCode.Pending))
+                            {
+                                Validate(item, entry);
+                            }
                         }
                     }
-
-                    AmznListingItem listingItem = item.AmznListingItems.SingleOrDefault(p => p.IsActive && p.MarketplaceID == marketplace.ID);
-
-                    if (listingItem != null)
+                    else
                     {
-                        if (listingItem.Quantity == entry.Q && decimal.Compare(listingItem.Price, entry.P) == 0 && entry.GetUpdateFlags().Count == 0)
+                        foreach (var entry in group)
                         {
-                            entry.Status = StatusCode.Completed;
-                        }
-                        else
-                        {
-                            entry.Message = string.Format("({0}|{1})", listingItem.Quantity, Math.Round(listingItem.Price, 2));
-                        }
-                    }
-
-                    if(entry.Status.Equals(StatusCode.Pending))
-                    {
-                        if (entry.Q == 0 && string.IsNullOrWhiteSpace(entry.Command))
-                        {
-                            entry.Message = "qty must be greater than 0";
-                            entry.Status = StatusCode.Error;
-                        }
-
-                        if (entry.Q > item.QtyAvailable)
-                        {
-                            entry.Message = "out of stock";
-                            entry.Status = StatusCode.Error;
-                        }
-
-                        if (string.IsNullOrEmpty(item.GTIN))
-                        {
-                            entry.Message = "UPC or EAN required";
-                            entry.Status = StatusCode.Error;
-                        }
-
-                        if (item.Department == null)
-                        {
-                            entry.Message = "department classification required";
+                            entry.Message = "sku not found";
                             entry.Status = StatusCode.Error;
                         }
                     }
                 } 
             }
 
-            return new List<ListingEntry>();
+            return _newEntries;
+        }
+
+        private void Validate(Item item, AmznEntry entry)
+        {
+            if (item.Notes != null)
+            {
+                if (item.Notes.Contains("PRE") || item.Notes.Contains("NWB") || item.Notes.Contains("NWD"))
+                {
+                    entry.Message = "only new products allowed";
+                    entry.Status = StatusCode.Error;
+                }
+            }
+
+            if (entry.Q > item.QtyAvailable)
+            {
+                entry.Message = "out of stock";
+                entry.Status = StatusCode.Error;
+            }
+
+            if (string.IsNullOrEmpty(item.GTIN))
+            {
+                entry.Message = "UPC or EAN required";
+                entry.Status = StatusCode.Error;
+            }
+
+            if (item.Department == null)
+            {
+                entry.Message = "department classification required";
+                entry.Status = StatusCode.Error;
+            }
+        }
+
+        private void UpdateGroup(Item item, IEnumerable<AmznEntry> group)
+        {
+            var active = item.AmznListingItems.Where(p => p.IsActive && p.MarketplaceID == _marketplace.ID);
+
+            var existingEntries = group.ToList();
+
+            foreach (var listingItem in active)
+            {
+                var entry = existingEntries.FirstOrDefault();
+
+                if (entry != null)
+                {
+                    if (listingItem.Quantity == entry.Q && decimal.Compare(listingItem.Price, entry.P) == 0 && entry.GetUpdateFlags().Count == 0)
+                    {
+                        entry.Status = StatusCode.Completed;
+                    }
+                    else
+                    {
+                        entry.Message = string.Format("({0}|{1})", listingItem.Quantity, Math.Round(listingItem.Price, 2));
+                    }
+
+                    existingEntries.Remove(entry);
+                }
+                else
+                {
+                    entry = new AmznEntry();
+                    entry.Sku = item.ItemLookupCode;
+                    entry.Brand = item.SubDescription1;
+                    entry.ClassName = item.ClassName;
+
+                    entry.P = listingItem.Price;
+                    entry.Q = listingItem.Quantity;
+                    entry.Title = listingItem.Title;
+                    entry.Message = "added by program";
+                    entry.Status = StatusCode.Completed;
+
+                    entry.ParentRowIndex = group.First().RowIndex;
+                    entry.RowIndex = _lastRowIndex + 1;
+
+                    _lastRowIndex = entry.RowIndex;
+                    _newEntries.Add(entry);
+                }
+                
+            }
         }
 
         public override Type EntryType

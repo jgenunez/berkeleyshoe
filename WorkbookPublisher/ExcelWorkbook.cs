@@ -344,7 +344,6 @@ namespace WorkbookPublisher
             this.Status = StatusCode.Pending;
         }
 
-        public abstract string Code { get; }
         public string Format { get; set; }
         public string Brand { get; set; }
         public string ClassName { get; set; }
@@ -362,12 +361,6 @@ namespace WorkbookPublisher
             if (!string.IsNullOrWhiteSpace(this.Command))
             {
                 flags = this.Command.Split(new Char[1] { '|' }).Select(p => p.Trim().ToUpper()).ToList();
-
-                //int start = this.Command.IndexOf("(") + 1;
-                //int end = this.Command.IndexOf(")", start);
-                //string result = this.Command.Substring(start, end - start);
-
-                //fields = result.Split(new Char[1] { '|' }).ToList();
             }
             else
             {
@@ -425,10 +418,7 @@ namespace WorkbookPublisher
 
         }
 
-        public override string Code
-        {
-            get { return this.Sku + this.Format; }
-        }
+        public string Code { get; set; }
 
         public decimal BIN { get; set; }
 
@@ -522,22 +512,13 @@ namespace WorkbookPublisher
     public class AmznEntry : ListingEntry
     {
 
-        public override string Code
-        {
-            get { return this.Sku + this.Format; }
-        }
-
-        
-
         
     }
 
     public class BonanzaEntry : ListingEntry
     {
+        public string Code { get; set; }
 
-        public override string Code
-        {
-            get { return this.Sku + this.Format; }
-        }
+        public string FullDescription { get; set; }
     }
 }

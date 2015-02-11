@@ -22,6 +22,7 @@ namespace BerkeleyEntities
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         public const string FORMAT_FIXEDPRICE = "FixedPriceItem";
+        public const string FORMAT_STOREFIXEDPRICE = "StoresFixedPrice";
         public const string FORMAT_AUCTION = "Chinese";
 
         public const string STATUS_ACTIVE = "Active";
