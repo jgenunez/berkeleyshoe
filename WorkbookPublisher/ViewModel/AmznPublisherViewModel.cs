@@ -85,7 +85,8 @@ namespace WorkbookPublisher.ViewModel
                             entry.Status = StatusCode.Error;
                         }
                     }
-                } 
+                }
+
             }
 
             return _newEntries;
@@ -225,9 +226,10 @@ namespace WorkbookPublisher.ViewModel
                 ListingItemDto listingItem = new ListingItemDto();
 
                 listingItem.Sku = entry.Sku;
+
                 listingItem.Title = entry.Title;
 
-                var existingListingItem = _dataContext.AmznListingItems.SingleOrDefault(p => p.IsActive && p.Item.ItemLookupCode.Equals(entry.Sku) && p.MarketplaceID == _marketplace.ID);
+                var existingListingItem = _dataContext.AmznListingItems.SingleOrDefault(p => p.IsActive && p.Item != null && p.Item.ItemLookupCode.Equals(entry.Sku) && p.MarketplaceID == _marketplace.ID);
 
                 listingItem.IncludeProductData = existingListingItem == null || entry.GetUpdateFlags().Any(p => p.Equals("PRODUCTDATA"));
 
@@ -235,7 +237,12 @@ namespace WorkbookPublisher.ViewModel
                 listingItem.QtySpecified = existingListingItem == null || existingListingItem.Quantity != entry.Q;
 
                 listingItem.Price = entry.P;
-                listingItem.PriceSpecified = existingListingItem == null || decimal.Compare(existingListingItem.Price, entry.P) != 0;
+                listingItem.PriceSpecified = existingListingItem == null || decimal.Compare(existingListingItem.Price, entry.P) != 0 || entry.GetUpdateFlags().Any(p => p.Equals("SALE"));
+
+                if (entry.SalePriceSpecified)
+                {
+                    listingItem.SaleData = new SaleData() { SalePrice = entry.SalePrice, StartDate = entry.SaleStart, EndDate = entry.SaleEnd };
+                }
 
                 listingItems.Add(listingItem);
 

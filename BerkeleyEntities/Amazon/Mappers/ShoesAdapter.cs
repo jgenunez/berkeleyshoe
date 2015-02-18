@@ -218,7 +218,6 @@ namespace AmazonServices
             else { return string.Empty; }
         }
         
-
         private string GetSize()
         {
             string size = string.Empty;

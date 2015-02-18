@@ -37,6 +37,7 @@ namespace WorkbookPublisher.ViewModel
     public class EbayReadCommand : ReadCommand
     {
         private EbayMarketplace _marketplace;
+        private berkeleyEntities _dataContext;
         private uint _lastRowIndex;
         private List<ListingEntry> _newEntries;
 
@@ -46,122 +47,20 @@ namespace WorkbookPublisher.ViewModel
  
         }
 
-        //public override void UpdateAndValidateEntries(IEnumerable<ListingEntry> entries)
-        //{
-        //    using (berkeleyEntities dataContext = new berkeleyEntities())
-        //    {
-        //        EbayMarketplace marketplace = dataContext.EbayMarketplaces.Single(p => p.Code.Equals(_marketplaceCode));
-
-        //        var pendingEntries = entries.Where(p => p.Progress.Equals(StatusCode.Pending)).Cast<EbayEntry>().ToList();
-
-        //        foreach (EbayEntry entry in pendingEntries)
-        //        {
-        //            Item item = dataContext.Items.SingleOrDefault(p => p.ItemLookupCode.Equals(entry.Sku));
-
-        //            if (item == null)
-        //            {
-        //                entry.Message = "sku not found";
-        //                entry.Progress = StatusCode.Error;
-        //                continue;
-        //            }
-
-        //            entry.Brand = item.SubDescription1;
-        //            entry.ClassName = item.ClassName;
-                    
-        //            string format = entry.GetFormat();
-
-        //            if (format == null)
-        //            {
-        //                entry.Message = "invalid format";
-        //                entry.Progress = StatusCode.Error;
-        //                continue;
-        //            }
-
-        //            var active = item.EbayListingItems.Where(p => p.Listing.MarketplaceID == marketplace.ID && p.Listing.Status.Equals(EbayMarketplace.STATUS_ACTIVE));
-        //            var target = active.Where(p => p.Listing.Format.Equals(format));
-
-        //            if (target.Count() == 1)
-        //            {
-        //                EbayListingItem listingItem = target.First();
-
-        //                if (listingItem.Quantity == entry.Q)
-        //                {
-        //                    if (format.Equals(EbayMarketplace.FORMAT_AUCTION))
-        //                    {
-        //                        entry.Progress = StatusCode.Completed;
-                                
-        //                        entry.Message = "Completed";
-        //                    }
-        //                    else if(decimal.Equals(listingItem.Price, Math.Round(entry.P, 2)))
-        //                    {
-        //                        entry.Progress = StatusCode.Completed;
-        //                        entry.Message = "Completed";
-        //                    }
-        //                }
-        //            }
-        //            else if (target.Count() > 1)
-        //            {
-        //                entry.Message = "duplicate";
-        //                entry.Progress = StatusCode.Error;
-        //            }
-
-        //            if (entry.Progress.Equals(StatusCode.Pending))
-        //            {
-                        
-        //                if (format.Equals(EbayMarketplace.FORMAT_AUCTION) && entry.Q > 1)
-        //                {
-        //                    if (entry.Q > 1)
-        //                    {
-        //                        entry.Message = "auction max qty is 1";
-        //                        entry.Progress = StatusCode.Error;
-        //                    }
-        //                    if(item.AuctionCount >= item.QtyAvailable)
-        //                    {
-        //                        entry.Message = "out of stock";
-        //                        entry.Progress = StatusCode.Error;
-        //                    }
-        //                }
-
-        //                if (entry.Q > item.QtyAvailable)
-        //                {
-        //                    entry.Message = "out of stock";
-        //                    entry.Progress = StatusCode.Error;
-        //                }
-        //                if (item.Department == null)
-        //                {
-        //                    entry.Message = "department required";
-        //                    entry.Progress = StatusCode.Error;
-        //                }
-        //                if (entry.Title.Count() > 80)
-        //                {
-        //                    entry.Message = "title max characters is 80";
-        //                    entry.Progress = StatusCode.Error;
-        //                }
-        //                if (entry.StartDateSpecified && entry.StartDate < DateTime.UtcNow)
-        //                {
-        //                    entry.Message = "cannot schedule in the past";
-        //                    entry.Progress = StatusCode.Error;
-        //                }
-        //            }
-
-        //        } 
-        //    }
-        //}
-
         public override List<ListingEntry> UpdateAndValidateEntries(List<ListingEntry> entries)
         {
             _lastRowIndex = entries.Max(p => p.RowIndex);
             _newEntries = new List<ListingEntry>();
 
-            using (berkeleyEntities dataContext = new berkeleyEntities())
+            using (_dataContext = new berkeleyEntities())
             {
-                _marketplace = dataContext.EbayMarketplaces.Single(p => p.Code.Equals(_marketplaceCode));
+                _marketplace = _dataContext.EbayMarketplaces.Single(p => p.Code.Equals(_marketplaceCode));
 
                 var entryGroups = entries.Where(p => p.Status.Equals(StatusCode.Pending)).Cast<EbayEntry>().GroupBy(p => p.Sku);
 
                 foreach (var group in entryGroups)
                 {
-                    Item item = dataContext.Items.SingleOrDefault(p => p.ItemLookupCode.Equals(group.Key));
+                    Item item = _dataContext.Items.SingleOrDefault(p => p.ItemLookupCode.Equals(group.Key));
 
                     if (item != null)
                     {
@@ -199,58 +98,6 @@ namespace WorkbookPublisher.ViewModel
 
             return _newEntries;
         }
-
-        //public List<ListingEntry> UpdateAndValidateEntries2(List<ListingEntry> entries)
-        //{
-        //    _lastRowIndex = entries.Max(p => p.RowIndex);
-        //    _newEntries = new List<ListingEntry>();
-
-        //    using (berkeleyEntities dataContext = new berkeleyEntities())
-        //    {
-        //        _marketplace = dataContext.EbayMarketplaces.Single(p => p.Code.Equals(_marketplaceCode));
-
-        //        var entryGroups = entries.Where(p => p.Status.Equals(StatusCode.Pending)).Cast<EbayEntry>().GroupBy(p => p.Sku);
-
-        //        foreach (var group in entryGroups)
-        //        {
-        //            Item item = dataContext.Items.SingleOrDefault(p => p.ItemLookupCode.Equals(group.Key));
-
-        //            if (item == null)
-        //            {
-        //                foreach (var entry in group)
-        //                {
-        //                    entry.Message = "sku not found";
-        //                    entry.Status = StatusCode.Error;
-        //                }
-        //            }
-        //            else
-        //            {
-        //                UpdateGroup(item, group.ToList());
-
-        //                foreach (EbayEntry entry in group)
-        //                {
-        //                    entry.Brand = item.SubDescription1;
-        //                    entry.ClassName = item.ClassName;
-
-        //                    if (entry.Status.Equals(StatusCode.Pending))
-        //                    {
-        //                        if (entry.GetFormat() == null)
-        //                        {
-        //                            entry.Message = "invalid format";
-        //                            entry.Status = StatusCode.Error;
-        //                        }
-        //                        else
-        //                        {
-        //                            Validate(item, entry);
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    return _newEntries;
-        //}
 
         private void UpdateGroup(Item item, IEnumerable<EbayEntry> group)
         {
@@ -304,7 +151,12 @@ namespace WorkbookPublisher.ViewModel
 
             foreach (var entry in existingEntries)
             {
- 
+                if (_dataContext.EbayListings.Any(p => p.Sku.Equals(item.ClassName) && p.Status.Equals(EbayMarketplace.STATUS_ACTIVE)))
+                {
+                    EbayListing listing = _dataContext.EbayListings.Single(p => p.Sku.Equals(item.ClassName) && p.Status.Equals(EbayMarketplace.STATUS_ACTIVE));
+
+                    entry.Code = listing.Code;
+                }
             }
         }
 
@@ -414,72 +266,22 @@ namespace WorkbookPublisher.ViewModel
             {
                 _marketplace = _dataContext.EbayMarketplaces.Single(p => p.Code.Equals(_marketplaceCode));
 
-                var auctions = pendingEntries.Where(p => p.IsAuction()).GroupBy(p => p.ClassName);
+                var update = entries.Where(p => !string.IsNullOrWhiteSpace(p.Code)).GroupBy(p => p.Code);
 
-                var fixedPrice = pendingEntries.Where(p => !p.IsAuction()).GroupBy(p => p.ClassName);
-
-                foreach (var group in auctions)
+                foreach (var group in update)
                 {
-                    HandleAuctionGroup(group);
+                    EbayListing listing = _marketplace.Listings.Single(p => p.Code.Equals(group.Key));
+
+                    TryUpdateListing(listing, group);
                 }
 
-                foreach (var group in fixedPrice)
+                var create = entries.Where(p => string.IsNullOrWhiteSpace(p.Code)).GroupBy(p => p.ClassName);
+
+                foreach (var group in create)
                 {
-                    HandleFixedPriceGroup(group);
+                    TryCreateListing(group);
                 }
-            }
-        }
 
-        private void HandleAuctionGroup(IGrouping<string, EbayEntry> group)
-        {
-            var auctions = _marketplace.Listings.Where(p => p.Format.Equals(EbayMarketplace.FORMAT_AUCTION)).Where(p => p.Status.Equals(EbayMarketplace.STATUS_ACTIVE));
-
-            foreach (EbayEntry entry in group)
-            {
-                if (auctions.Any(p => p.Sku.Equals(entry.Sku)))
-                {
-                    EbayListing listing = auctions.Single(p => p.Sku.Equals(entry.Sku));
-
-                    TryUpdateListing(listing, new EbayEntry[] { entry });
-                }
-                else
-                {
-                    TryCreateListing(new EbayEntry[] { entry });
-                }
-            }
-        }
-
-        private void HandleFixedPriceGroup(IGrouping<string,EbayEntry> group)
-        {
-            var fixedPrice = _marketplace.Listings.Where(p => p.Status.Equals(EbayMarketplace.STATUS_ACTIVE) && (p.Format.Equals(EbayMarketplace.FORMAT_FIXEDPRICE) || p.Format.Equals("StoresFixedPrice")));
-
-            List<EbayEntry> pending = new List<EbayEntry>();
-
-            foreach (EbayEntry entry in group)
-            {
-                if (fixedPrice.Any(p => p.Sku.Equals(entry.Sku)))
-                {
-                    EbayListing listing = fixedPrice.Single(p => p.Sku.Equals(entry.Sku));
-
-                    TryUpdateListing(listing, new EbayEntry[] { entry });
-                }
-                else
-                {
-                    pending.Add(entry);
-                }
-            }
-
-            if (pending.Count > 0)
-            {
-                if (fixedPrice.Any(p => p.Sku.Equals(group.Key)))
-                {
-                    EbayListing listing = fixedPrice.Single(p => p.Sku.Equals(group.Key));
-                    TryUpdateListing(listing, pending);
-                }
-                else
-                {
-                    TryCreateListing(pending);
-                }
             }
         }
 
@@ -493,9 +295,6 @@ namespace WorkbookPublisher.ViewModel
 
                 foreach (var entry in entries)
                 {
-
-                    entry.Message = string.Format("{0}|{1}|{2}", entry.Format, entry.Q, Math.Round(entry.P, 2));
-
                     entry.Status = StatusCode.Completed;
                 }
             }
@@ -519,10 +318,6 @@ namespace WorkbookPublisher.ViewModel
 
                 foreach (var entry in entries)
                 {
-                    entry.ClearMessages();
-
-                    entry.Message = string.Format("{0}|{1}|{2}", entry.Format, entry.Q, Math.Round(entry.P, 2));
-
                     entry.Command = string.Empty;
 
                     entry.Status = StatusCode.Completed;
@@ -555,12 +350,14 @@ namespace WorkbookPublisher.ViewModel
 
             foreach (EbayEntry entry in entries)
             {
+                EbayListingItem listingItem = listing.ListingItems.SingleOrDefault(p => p.Item.ItemLookupCode.Equals(entry.Sku));
+
                 ListingItemDto listingItemDto = new ListingItemDto();
                 listingItemDto.Sku = entry.Sku;
                 listingItemDto.Qty = entry.Q;
-                listingItemDto.QtySpecified = entry.GetUpdateFlags().Any(p => p.Trim().ToUpper().Equals("Q"));
+                listingItemDto.QtySpecified = listingItem == null || listingItem.Quantity != entry.Q;
                 listingItemDto.Price = entry.P;
-                listingItemDto.PriceSpecified = entry.GetUpdateFlags().Any(p => p.Trim().ToUpper().Equals("P"));
+                listingItemDto.PriceSpecified = listingItem == null || decimal.Compare(entry.P, listingItem.Price) != 0;
 
                 if (entry.GetUpdateFlags().Any(p => p.Trim().ToUpper().Equals("TITLE")))
                 {

@@ -7488,6 +7488,7 @@ namespace BerkeleyEntities.Amazon
 
 
         public ProcessingReportResult ProcessingResult { get; set; }
+
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(DataType = "positiveInteger")]
         public string MessageID

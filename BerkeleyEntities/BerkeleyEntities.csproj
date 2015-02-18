@@ -74,6 +74,7 @@
   <ItemGroup>
     <Compile Include="Amazon\AmznListingItem.cs" />
     <Compile Include="Amazon\Mappers\AmazonSchema.cs" />
+    <Compile Include="Amazon\Mappers\PantsAdapter.cs" />
     <Compile Include="Amazon\Marketplace.cs" />
     <Compile Include="Amazon\Mappers\ListingMapper.cs" />
     <Compile Include="Amazon\Mappers\ProductData.cs" />

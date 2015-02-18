@@ -444,8 +444,6 @@ namespace WorkbookPublisher
             }
         }
 
-        
-
         public string GetDuration()
         {
             switch (this.Format)
@@ -511,8 +509,23 @@ namespace WorkbookPublisher
 
     public class AmznEntry : ListingEntry
     {
+        private decimal _salePrice;
 
-        
+        public decimal SalePrice
+        {
+            get { return _salePrice; }
+            set 
+            {
+                this.SalePriceSpecified = true;
+                _salePrice = value;
+            }
+        }
+
+        public bool SalePriceSpecified { get; set; }
+
+        public DateTime SaleStart { get; set; }
+
+        public DateTime SaleEnd { get; set; }
     }
 
     public class BonanzaEntry : ListingEntry

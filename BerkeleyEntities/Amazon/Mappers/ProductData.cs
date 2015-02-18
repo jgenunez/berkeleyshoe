@@ -8,7 +8,7 @@ using BerkeleyEntities.Amazon;
 
 namespace AmazonServices
 {
-    public abstract class ProductData
+    public class ProductData
     {
         protected Item _item;
 
@@ -42,10 +42,24 @@ namespace AmazonServices
 
             ProductDescriptionData descriptiondata = new ProductDescriptionData();
             descriptiondata.Brand = ToTitleCase(_item.SubDescription1);
-            //descriptiondata.Description = this.FullDescription;
-            
-            descriptiondata.Title = title;
 
+            if (_item.Price > _item.Cost)
+            {
+                descriptiondata.MSRP = new CurrencyAmount() { currency = BaseCurrencyCode.USD, Value = _item.Price };
+            }
+
+            //descriptiondata.Description = this.FullDescription;
+
+            if (string.IsNullOrWhiteSpace(title))
+            {
+                descriptiondata.Title = _item.Description;
+            }
+            else
+            {
+                descriptiondata.Title = title;
+            }
+
+            
             Product product = new Product();
             product.SKU = _item.ItemLookupCode;
             product.StandardProductID = sid;
@@ -53,6 +67,8 @@ namespace AmazonServices
             product.NumberOfItems = "1";
             product.Condition = conditionInfo;
             product.DescriptionData = descriptiondata;
+
+           
             //product.ReleaseDateSpecified = true;
             //product.ReleaseDate = post.startDate;
             
@@ -68,7 +84,14 @@ namespace AmazonServices
             descriptiondata.Brand = ToTitleCase(_item.SubDescription1);
             //descriptiondata.Description = this.FullDescription;
 
-            descriptiondata.Title = title;
+            if (string.IsNullOrWhiteSpace(title))
+            {
+                descriptiondata.Title = _item.ItemClass.Description;
+            }
+            else
+            {
+                descriptiondata.Title = title;
+            }
 
             Product product = new Product();
             product.SKU = _item.ItemClass.ItemLookupCode;

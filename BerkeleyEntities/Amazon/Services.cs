@@ -154,8 +154,6 @@ namespace BerkeleyEntities.Amazon
                     listingItem.ClassName = item.ItemClass.ItemLookupCode;
                 }
 
-
-
                 if (listingItem.IncludeProductData)
                 {
                     productFeed.Add(listingItem);
@@ -257,7 +255,11 @@ namespace BerkeleyEntities.Amazon
                             }
                         }
 
-                        result.Message = string.Join(" ", errorMsgs.Select(p => p.ProcessingResult.ResultDescription));
+                        var completedMsgs = msgs.Where(p => !p.ProcessingResult.ResultCode.Equals(ProcessingReportResultResultCode.Error));
+
+
+                        result.Message = string.Join(" ", errorMsgs.Select(p => p.ProcessingResult.ResultDescription).Concat(completedMsgs.Select(p => p.MessageID + " completed")));
+
                         result.HasError = true;
                         result.Data = listingItem;
                     }
@@ -289,6 +291,7 @@ namespace BerkeleyEntities.Amazon
 
             foreach (AmazonEnvelopeMessage msg in envelope.Message)
             {
+
                 bool hasError = processingReport.Result == null ? false :
                     processingReport.Result.Any(p => p.MessageID.Equals(msg.MessageID) && p.ResultCode.Equals(ProcessingReportResultResultCode.Error));
 
@@ -497,7 +500,9 @@ namespace BerkeleyEntities.Amazon
                 }
 
                 var msg = BuildMessage(listingItem.ProductData, currentMsg);
+
                 _pending[listingItem].Add(msg);
+
                 messages.Add(msg);
 
                 currentMsg++;
@@ -512,16 +517,21 @@ namespace BerkeleyEntities.Amazon
 
                     ProductData productDataMapper = _productMapperFactory.GetProductData(_dataContext.Items.Single(p => p.ItemLookupCode.Equals(first.Sku)));
 
-                    var msg = BuildMessage(productDataMapper.GetParentProductDto(first.Condition, first.Title), currentMsg);
+                    Product product = productDataMapper.GetParentProductDto(first.Condition, first.Title);
 
-                    foreach(var listingItem in classGroup)
+                    if (product.DescriptionData != null)
                     {
-                        _pending[listingItem].Add(msg);
+                        var msg = BuildMessage(product, currentMsg);
+
+                        foreach (var listingItem in classGroup)
+                        {
+                            _pending[listingItem].Add(msg);
+                        }
+
+                        messages.Add(msg);
+
+                        currentMsg++; 
                     }
-
-                    messages.Add(msg);
-
-                    currentMsg++;
                 }
 
                 foreach (ListingItemDto listingItem in classGroup)
@@ -644,6 +654,14 @@ namespace BerkeleyEntities.Amazon
                 priceData.SKU = listingItem.Sku;
                 priceData.StandardPrice = oca;
 
+                if (listingItem.SaleData != null)
+                {
+                    priceData.Sale = new PriceSale();
+                    priceData.Sale.SalePrice = new OverrideCurrencyAmount() { currency = BaseCurrencyCodeWithDefault.USD, Value = listingItem.SaleData.SalePrice };
+                    priceData.Sale.StartDate = listingItem.SaleData.StartDate;
+                    priceData.Sale.EndDate = listingItem.SaleData.EndDate;
+                }
+
                 var msg = BuildMessage(priceData, currentMsg);
 
                 _pending[listingItem].Add(msg);
@@ -714,11 +732,22 @@ namespace BerkeleyEntities.Amazon
 
         public bool PriceSpecified { get; set; }
 
+        public SaleData SaleData { get; set; }
+
         public string Title { get; set; }
 
         public string Condition { get; set; }
 
         public bool IncludeProductData { get; set; }
+    }
+
+    public class SaleData
+    {
+        public decimal SalePrice { get; set; }
+
+        public DateTime StartDate { get; set; }
+
+        public DateTime EndDate { get; set; }
     }
 
     public class ListingSynchronizer

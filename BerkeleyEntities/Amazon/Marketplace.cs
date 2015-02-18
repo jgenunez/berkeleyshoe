@@ -11,6 +11,7 @@ using MarketplaceWebServiceProducts.Model;
 using System.Timers;
 using BerkeleyEntities.Amazon;
 using MarketplaceWebService.Model;
+using System.Threading;
 
 namespace BerkeleyEntities
 {
@@ -18,17 +19,19 @@ namespace BerkeleyEntities
     {
         public List<GetMatchingProductForIdResult> GetCatalogData(IEnumerable<string> upcs)
         {
-            int quota = 100;
+            int max = 19;
 
-            Timer timer = new Timer(1000);
+            int quota = max;
+
+            System.Timers.Timer timer = new System.Timers.Timer(1000);
 
             timer.Elapsed += (sender, e) => 
             {
-                if (quota < 100)
+                if (quota < 20)
                 {
-                    if ((quota + 5) > 100)
+                    if ((quota + 5) > max)
                     {
-                        quota = 100;
+                        quota = max;
                     }
                     else
                     {
@@ -49,13 +52,12 @@ namespace BerkeleyEntities
 
                 for (int i = 0; i < 5; i++)
                 {
-                    if (pending.Count > 0 && quota > 0)
+                    if (pending.Count > 0)
                     {
                         string upc = pending.Dequeue();
 
                         if (!current.Contains(upc))
                         {
-                            quota--;
                             current.Add(upc);
                         }
                     }
@@ -70,7 +72,14 @@ namespace BerkeleyEntities
                     request.IdList.Id = current;
                     request.IdType = "UPC";
 
+                    while (quota < current.Count)
+                    {
+                        Thread.Sleep(1000);
+                    }
+
                     GetMatchingProductForIdResponse response = GetMWSProductsClient().GetMatchingProductForId(request);
+
+                    quota = quota - current.Count;
 
                     if (response.IsSetGetMatchingProductForIdResult())
                     {

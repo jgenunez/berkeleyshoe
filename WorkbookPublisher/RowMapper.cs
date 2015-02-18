@@ -203,8 +203,6 @@ namespace WorkbookPublisher
             return i;
         }
 
-        
-
         private string ParseColRefs(string cellRef)
         {
             // Create a regular expression to match the column name portion of the cell name.

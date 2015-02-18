@@ -36,7 +36,7 @@ namespace AmazonServices
                 case "57974":
                     return new ShoesAdapter(item);
 
-                default: throw new NotImplementedException(item.Department.Name + " not supported for Amazon");
+                default: return new ProductData(item);
 
             }
 

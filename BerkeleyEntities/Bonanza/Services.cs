@@ -173,6 +173,43 @@ namespace BerkeleyEntities.Bonanza
         //    }                                  
         //}
 
+
+        public void FetchToken(int marketplaceID)
+        {
+            HttpWebRequest request = WebRequest.CreateHttp("https://api.bonanza.com/api_requests/secure_request");
+
+            request.Headers.Add("X-BONANZLE-API-DEV-NAME", "vWhzo4w8l7sKDUT");
+            request.Headers.Add("X-BONANZLE-API-CERT-NAME", "YOL7ZWkbcBJGKTI");
+            //request.Headers.Add("Accept","application/json");
+
+            request.Method = "POST";
+
+            string payload = "fetchTokenRequest";
+
+            byte[] binData = Encoding.ASCII.GetBytes(payload);
+
+            using (Stream stream = request.GetRequestStream())
+            {
+                stream.Write(binData, 0, binData.Length);
+            }
+
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
+            string output = null;
+
+            using (StreamReader sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
+            {
+                output = sr.ReadToEnd();
+            }
+
+            //using (berkeleyEntities dataContext = new berkeleyEntities())
+            //{
+            //    BonanzaMarketplace marketplace = dataContext.BonanzaMarketplaces.Single(p => p.ID == marketplaceID);
+
+            //    marketplace.Toke
+            //}
+        }
+
         public void Publish(ListingDto listingDto)
         {
             using (berkeleyEntities dataContext = new berkeleyEntities())
@@ -232,40 +269,46 @@ namespace BerkeleyEntities.Bonanza
 
         public void AddListing(ListingDto listingDto)
         {
-            var pics = _picSetRepository.GetPictures(listingDto.Brand, listingDto.Items.Select(p => p.Sku).ToList());
+            //var pics = _picSetRepository.GetPictures(listingDto.Brand, listingDto.Items.Select(p => p.Sku).ToList());
 
-            if (pics.Count() == 0)
-            {
-                throw new InvalidOperationException("picture required");
-            }
+            //if (pics.Count() == 0)
+            //{
+            //    throw new InvalidOperationException("picture required");
+            //}
 
             //listingDto.UrlsIds = GetEPSUrls(pics);
 
-            var bonanzaDto = MapToBonanzaDto(listingDto, true, true);
+            HttpWebRequest request = WebRequest.CreateHttp("https://api.bonanza.com/api_requests/secure_request");
 
-            var payload = Newtonsoft.Json.JsonConvert.SerializeObject(bonanzaDto);
+            request.Headers.Add("X-BONANZLE-API-DEV-NAME", "vWhzo4w8l7sKDUT");
+            request.Headers.Add("X-BONANZLE-API-CERT-NAME", "YOL7ZWkbcBJGKTI");
+            request.ContentType = "application/json";
+            request.Accept = "application/json";
 
-            //if (listingDto.IsVariation)
-            //{
-            //    AddFixedPriceItemCall call = new AddFixedPriceItemCall(_marketplace.GetApiContext());
+            request.Method = "POST";
 
-            //    AddFixedPriceItemResponseType response = call.ExecuteRequest(new AddFixedPriceItemRequestType() { Item = ebayDto}) as AddFixedPriceItemResponseType;
+            var jsonPayload = Newtonsoft.Json.JsonConvert.SerializeObject(MapToBonanzaDto(listingDto, true, true));
 
-            //    listingDto.Code = response.ItemID;
-            //    listingDto.StartTime = response.StartTime;
-            //    listingDto.EndTime = response.EndTime;
-                
-            //}
-            //else
-            //{
-            //    AddItemCall call = new AddItemCall(_marketplace.GetApiContext());
+            string requestName = "addFixedPriceItemRequest";
 
-            //    AddItemResponseType response = call.ExecuteRequest(new AddItemRequestType() { Item = ebayDto }) as AddItemResponseType;
+            byte[] binData = Encoding.ASCII.GetBytes(requestName + "=" + jsonPayload);
 
-            //    listingDto.Code = response.ItemID;
-            //    listingDto.StartTime = response.StartTime;
-            //    listingDto.EndTime = response.EndTime;
-            //}
+            using (Stream stream = request.GetRequestStream())
+            {
+                stream.Write(binData, 0, binData.Length);
+            }
+
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
+            string output = null;
+
+            using (StreamReader sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
+            {
+                output = sr.ReadToEnd();
+            }
+
+            dynamic reponse = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(output);
+
 
             Persist(listingDto);       
         }
@@ -380,29 +423,45 @@ namespace BerkeleyEntities.Bonanza
 
         private dynamic MapToBonanzaDto(ListingDto listingDto, bool includeProductData, bool includeTemplate)
         {
-            dynamic bonanzaDto = new ExpandoObject();
+            dynamic requesterCredentials = new ExpandoObject();
 
-            bonanzaDto.itemId = !string.IsNullOrEmpty(listingDto.Code) ? listingDto.Code : bonanzaDto.itemId;
+            requesterCredentials.bonanzleAuthToken = _marketplace.Token;
 
-            bonanzaDto.sku = !string.IsNullOrEmpty(listingDto.Sku) ? listingDto.Sku : bonanzaDto.sku;
 
-            bonanzaDto.title = !string.IsNullOrEmpty(listingDto.Title) ? listingDto.Title : bonanzaDto.title;
+            dynamic item = new ExpandoObject();
 
-            bonanzaDto.primaryCategory = new ExpandoObject();
-            bonanzaDto.primaryCategory.categoryId = "Guess";
+            if (!string.IsNullOrEmpty(listingDto.Code))
+            {
+                item.itemId = listingDto.Code;
+            }
+
+            
+            if(!string.IsNullOrEmpty(listingDto.Sku))
+            {
+                item.sku = listingDto.Sku;
+            }
+
+            if (!string.IsNullOrEmpty(listingDto.Title))
+            {
+                item.title = listingDto.Title;
+            }
+
+            item.primaryCategory = new ExpandoObject();
+            item.primaryCategory.categoryId = "Guess";
+
 
             if (includeTemplate)
             {
-                bonanzaDto.shippingDetails  = new ExpandoObject();
-                bonanzaDto.shippingDetails.shippingServiceOptions = new ExpandoObject();
-                bonanzaDto.shippingDetails.shippingServiceOptions.shippingType = "Free";
-                bonanzaDto.shippingDetails.shippingServiceOptions.freeShipping = true;
+                item.shippingDetails  = new ExpandoObject();
+                item.shippingDetails.shippingServiceOptions = new ExpandoObject();
+                item.shippingDetails.shippingServiceOptions.shippingType = "Free";
+                item.shippingDetails.shippingServiceOptions.freeShipping = true;
 
-                bonanzaDto.returnPolicy = new ExpandoObject();
-                bonanzaDto.returnPolicy.returnsAcceptedOption = "ReturnsAccepted";
+                item.returnPolicy = new ExpandoObject();
+                item.returnPolicy.returnsAcceptedOption = "ReturnsAccepted";
 
-                bonanzaDto.returnPolicy.returnsWithinOption = 30;
-                bonanzaDto.returnPolicy.shippingCostPaidByOption = "buyer";
+                item.returnPolicy.returnsWithinOption = 30;
+                item.returnPolicy.shippingCostPaidByOption = "buyer";
 
                 //if (!string.IsNullOrEmpty(listingDto.FullDescription))
                 //{
@@ -414,11 +473,11 @@ namespace BerkeleyEntities.Bonanza
             {
                 ListingItemDto listingItemDto = listingDto.Items.First();
 
-                bonanzaDto.Quantity = listingItemDto.QtySpecified ? listingItemDto.Qty : bonanzaDto.Quantity;
+                item.Quantity = listingItemDto.QtySpecified ? listingItemDto.Qty : item.Quantity;
 
                 if (listingItemDto.PriceSpecified)
                 {
-                    bonanzaDto.price = Convert.ToDouble(listingItemDto.Price);
+                    item.price = Convert.ToDouble(listingItemDto.Price);
                 }
 
                 if (includeProductData)
@@ -430,7 +489,7 @@ namespace BerkeleyEntities.Bonanza
                     //ebayDto.ConditionIDSpecified = true;
                     //ebayDto.ConditionID = mapper.GetConditionID();
 
-                    bonanzaDto.itemSpecifics = itemSpecifics.Select(p => new { label = p.Name, value = p.Value.ItemAt(0) }).ToArray();
+                    item.itemSpecifics = itemSpecifics.Select(p => new { label = p.Name, value = p.Value.ItemAt(0) }).ToArray();
                     
                     //if (listingDto.UrlsIds.Count() > 0)
                     //{
@@ -448,7 +507,7 @@ namespace BerkeleyEntities.Bonanza
                 {
                     var skus = listingDto.Items.Select(p => p.Sku);
 
-                    ProductMatrixMapper matrixMapper = _productMapperFactory.GetProductMatrixData(bonanzaDto.SKU, _dataContext.Items.Where(p => skus.Contains(p.ItemLookupCode)));
+                    ProductMatrixMapper matrixMapper = _productMapperFactory.GetProductMatrixData(item.SKU, _dataContext.Items.Where(p => skus.Contains(p.ItemLookupCode)));
 
                     //ebayDto.ConditionIDSpecified = true;
 
@@ -460,7 +519,7 @@ namespace BerkeleyEntities.Bonanza
                     //}
 
 
-                    bonanzaDto.itemSpecifics = matrixMapper.GetItemSpecifics().ToArray().Select(p => new { label = p.Name, value = p.Value.ItemAt(0) }).ToArray();
+                    item.itemSpecifics = matrixMapper.GetItemSpecifics().ToArray().Select(p => new { label = p.Name, value = p.Value.ItemAt(0) }).ToArray();
 
                     //if (listingDto.UrlsIds.Count() > 0)
                     //{
@@ -498,10 +557,16 @@ namespace BerkeleyEntities.Bonanza
                     variations.Add(variationDto);
                 }
 
-                bonanzaDto.variations = variations.ToArray();
+                item.variations = variations.ToArray();
 
 
             }
+
+
+            dynamic bonanzaDto = new ExpandoObject();
+
+            bonanzaDto.requesterCredentials = requesterCredentials;
+            bonanzaDto.item = item;
 
             return bonanzaDto;
         }

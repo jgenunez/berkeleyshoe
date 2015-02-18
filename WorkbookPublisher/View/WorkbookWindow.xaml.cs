@@ -54,6 +54,20 @@ namespace WorkbookPublisher
             window.ShowDialog();
         }
 
+        private void TestBonanza()
+        {
+            //BerkeleyEntities.Bonanza.BonanzaServices services = new BerkeleyEntities.Bonanza.BonanzaServices();
+
+            //services.FetchToken(1);
+
+            //using (berkeleyEntities dataContext = new berkeleyEntities())
+            //{
+            //    var marketplace = dataContext.BonanzaMarketplaces.Single(p => p.ID == 1);
+            //    marketplace.Token = "OVuUeDliFG";
+            //    dataContext.SaveChanges();
+            //}
+        }
+
         private void lbCurrentWorkbook_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             Process.Start(lbCurrentWorkbook.Content as string);
@@ -86,6 +100,11 @@ namespace WorkbookPublisher
                     foreach (var marketplace in dataContext.AmznMarketplaces)
                     {
                         composite.Add(new AmznPublisherViewModel(_workbook, marketplace.Code));
+                    }
+
+                    foreach (var marketplace in dataContext.BonanzaMarketplaces)
+                    {
+                        composite.Add(new BonanzaPublisherViewModel(_workbook, marketplace.Code));
                     }
 
                     tcSheets.ItemsSource = composite;
@@ -282,24 +301,24 @@ namespace WorkbookPublisher
 
                         //entry.PictureCount = pics.Count;
 
-                        //var titleMap = titleMaps.SingleOrDefault(p => p.Department.Equals(item.DepartmentName) && p.Category.Equals(item.CategoryName));
+                        var titleMap = titleMaps.SingleOrDefault(p => p.Department.Equals(item.DepartmentName) && p.Category.Equals(item.CategoryName));
 
-                        //if (titleMap == null)
-                        //{
-                        //    titleMap = new TitleMapRule();
-                        //    titleMap.Map = "";
-                        //}
+                        if (titleMap == null)
+                        {
+                            titleMap = new TitleMapRule();
+                            titleMap.Map = "";
+                        }
 
-                        //string description = item.Description;
-                        //string dims = string.Empty;
+                        string description = item.Description;
+                        string dims = string.Empty;
 
-                        //foreach (var attribute in item.Attributes)
-                        //{
-                        //    description = description.Replace(attribute.Value.Value, "");
-                        //    dims += attribute.Value.Value + " ";
-                        //}
+                        foreach (var attribute in item.Attributes)
+                        {
+                            description = description.Replace(attribute.Value.Value, "");
+                            dims += attribute.Value.Value + " ";
+                        }
 
-                        //entry.TitleFormula = textInfo.ToTitleCase((entry.Brand + " " + titleMap.Map + " Size " + dims + description).ToLower());
+                        entry.TitleFormula = textInfo.ToTitleCase((entry.Brand + " " + titleMap.Map + " Size " + dims + description).ToLower());
 
                         var ebayHistory = string.Join(" ", item.EbayListingItems.Where(p => p.Listing.Status.Equals(EbayMarketplace.STATUS_ACTIVE)).Select(p => p.ToString()));
                         var amznHistory = string.Join(" ", item.AmznListingItems.Where(p => p.IsActive).Select(p => p.ToString()));

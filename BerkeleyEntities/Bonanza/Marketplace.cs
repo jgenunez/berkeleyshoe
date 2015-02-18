@@ -13,5 +13,8 @@ namespace BerkeleyEntities
         public const string STATUS_MISSING_FIELDS = "Missing required fields";
         public const string STATUS_READY = "Ready for sale";
         public const string STATUS_UNKNOWN = "Unknown";
+
+
+        
     }
 }
