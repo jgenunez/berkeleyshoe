@@ -122,6 +122,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Compile Include="AmznEntryUpdater.cs" />
+    <Compile Include="BnzEntryUpdater.cs" />
+    <Compile Include="EbayEntryUpdater.cs" />
     <Compile Include="RowMapper.cs" />
     <Compile Include="ViewModel\AmznPublisherViewModel.cs" />
     <Compile Include="App.xaml.cs">

@@ -286,16 +286,18 @@ namespace WorkbookPublisher.ViewModel
         
     }
 
-    public abstract class ReadCommand : ICommand
+    public class ReadCommand : ICommand
     {
         protected string _marketplaceCode;
         private bool _canExecute = true;
         private ExcelWorkbook _workbook;
+        private Type _entryType;
 
-        public ReadCommand(ExcelWorkbook workbook, string marketplaceCode)
+        public ReadCommand(ExcelWorkbook workbook, string marketplaceCode, Type entryType)
         {
             _workbook = workbook;
             _marketplaceCode = marketplaceCode;
+            _entryType = entryType;
         }
 
         public event EventHandler CanExecuteChanged;
@@ -319,21 +321,13 @@ namespace WorkbookPublisher.ViewModel
 
             try
             {
-                var result = await Task.Run<List<object>>(() => _workbook.ReadSheet(this.EntryType, _marketplaceCode));
+                var result = await Task.Run<List<object>>(() => _workbook.ReadSheet(_entryType, _marketplaceCode));
 
-                foreach (ListingEntry entry in result.Cast<ListingEntry>().Where(p => !string.IsNullOrWhiteSpace(p.Sku)))
+                if (result.Count > 0)
                 {
-                    entry.ClearMessages();
-                    entries.Add(entry);
-                }
-
-                if (entries.Count > 0)
-                {
-                    var newEntries = await Task.Run<List<ListingEntry>>(() => UpdateAndValidateEntries(entries.ToList()));
-
-                    foreach (var newEntry in newEntries)
+                    foreach (var entry in result.Cast<ListingEntry>())
                     {
-                        entries.Add(newEntry);
+                        entries.Add(entry);
                     }
 
                     if (ReadCompleted != null)
@@ -363,10 +357,6 @@ namespace WorkbookPublisher.ViewModel
 
            
         }
-
-        public abstract List<ListingEntry> UpdateAndValidateEntries(List<ListingEntry> entries);
-
-        public abstract Type EntryType { get; }
 
         private void SetCanExecute(bool canExecute)
         {

@@ -205,6 +205,24 @@ namespace WorkbookPublisher
                 document.Close();
             }
 
+            switch (entryType.Name)
+            {
+                case "BonanzaEntry" :
+
+                    var bnzUpdater = new BnzEntryUpdater(entries.Cast<BonanzaEntry>().ToList(), sheetName);
+                    entries = bnzUpdater.Update().Cast<object>().ToList(); break;
+
+                case "EbayEntry" :
+
+                    var ebayUpdater = new EbayEntryUpdater(entries.Cast<EbayEntry>().ToList(), sheetName);
+                    entries = ebayUpdater.Update().Cast<object>().ToList(); break;
+
+                case "AmznEntry" : 
+
+                    var amznUpdater = new AmznEntryUpdater(entries.Cast<AmznEntry>().ToList(), sheetName);
+                    entries = amznUpdater.Update().Cast<object>().ToList(); break;
+            }
+
             return entries;
         }
 
@@ -348,8 +366,13 @@ namespace WorkbookPublisher
         public string Brand { get; set; }
         public string ClassName { get; set; }
         public string Sku { get; set; }
+
         public int Q { get; set; }
+        public bool QSpecified { get; set; }
+
         public decimal P { get; set; }
+        public bool PSpecified { get; set; }
+
         public string Title { get; set; }
 
         public string Command { get; set; }
@@ -503,13 +526,13 @@ namespace WorkbookPublisher
             }
         }
 
-
-        
     }
 
     public class AmznEntry : ListingEntry
     {
         private decimal _salePrice;
+
+        public string ASIN { get; set; }
 
         public decimal SalePrice
         {
