@@ -18,7 +18,7 @@ namespace WorkbookPublisher
         public AmznEntryUpdater(IEnumerable<AmznEntry> entries, string marketplaceCode)
         {
             _marketplaceCode = marketplaceCode;
-            _entries = entries.Where(p => !string.IsNullOrWhiteSpace(p.Sku)).ToList();
+            _entries = entries.ToList();
             _lastRowIndex = entries.Max(p => p.RowIndex);
         }
 
@@ -28,10 +28,10 @@ namespace WorkbookPublisher
 
             foreach (var group in entryGroups)
             {
-                Item item = _dataContext.Items.SingleOrDefault(p => p.ItemLookupCode.Equals(group.Key));
-
-                if (item != null)
+                try
                 {
+                    Item item = _dataContext.Items.Single(p => p.ItemLookupCode.Equals(group.Key));
+
                     UpdateGroup(item, group.ToList());
 
                     foreach (var entry in group)
@@ -45,17 +45,17 @@ namespace WorkbookPublisher
                         }
                     }
                 }
-                else
+                catch (InvalidOperationException e)
                 {
                     foreach (var entry in group)
                     {
-                        entry.Message = "sku not found";
+                        entry.Message = e.Message;
                         entry.Status = StatusCode.Error;
                     }
                 }
             }
 
-            return _addedEntries.Concat(_entries).ToList();
+            return _addedEntries;
  
         }
 

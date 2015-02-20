@@ -13,8 +13,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BinLocationUtility", "BinLo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhysicalInventoryUtility", "PhysicalInventoryUtility\PhysicalInventoryUtility.csproj", "{A63C6378-9516-4208-8543-49642F77BAB3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutomaticSyncService", "AutomaticSyncService\AutomaticSyncService.csproj", "{296FB21F-4CBF-491D-8771-4573F56A841C}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutomaticSyncConsole", "AutomaticSyncConsole\AutomaticSyncConsole.csproj", "{069F44C0-9D59-425A-B4CD-286EE74C97C7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmazonCompetitivePriceAnalyzer", "AmazonCompetitivePriceAnalyzer\AmazonCompetitivePriceAnalyzer.csproj", "{E70FF912-10A4-4B9C-BFB9-DD2B58E00C78}"
@@ -97,18 +95,6 @@ Global
 		{A63C6378-9516-4208-8543-49642F77BAB3}.Release|Win32.ActiveCfg = Release|x86
 		{A63C6378-9516-4208-8543-49642F77BAB3}.Release|x86.ActiveCfg = Release|x86
 		{A63C6378-9516-4208-8543-49642F77BAB3}.Release|x86.Build.0 = Release|x86
-		{296FB21F-4CBF-491D-8771-4573F56A841C}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{296FB21F-4CBF-491D-8771-4573F56A841C}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{296FB21F-4CBF-491D-8771-4573F56A841C}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{296FB21F-4CBF-491D-8771-4573F56A841C}.Debug|Win32.ActiveCfg = Debug|x86
-		{296FB21F-4CBF-491D-8771-4573F56A841C}.Debug|x86.ActiveCfg = Debug|x86
-		{296FB21F-4CBF-491D-8771-4573F56A841C}.Debug|x86.Build.0 = Debug|x86
-		{296FB21F-4CBF-491D-8771-4573F56A841C}.Release|Any CPU.ActiveCfg = Release|x86
-		{296FB21F-4CBF-491D-8771-4573F56A841C}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{296FB21F-4CBF-491D-8771-4573F56A841C}.Release|Mixed Platforms.Build.0 = Release|x86
-		{296FB21F-4CBF-491D-8771-4573F56A841C}.Release|Win32.ActiveCfg = Release|x86
-		{296FB21F-4CBF-491D-8771-4573F56A841C}.Release|x86.ActiveCfg = Release|x86
-		{296FB21F-4CBF-491D-8771-4573F56A841C}.Release|x86.Build.0 = Release|x86
 		{069F44C0-9D59-425A-B4CD-286EE74C97C7}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{069F44C0-9D59-425A-B4CD-286EE74C97C7}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{069F44C0-9D59-425A-B4CD-286EE74C97C7}.Debug|Mixed Platforms.Build.0 = Debug|x86

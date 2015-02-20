@@ -12,7 +12,7 @@ using System.Globalization;
 
 namespace BerkeleyEntities
 {
-    public enum AttributeLabel { USMenSize, USWomenSize, USBabySize, USYouthSize, EUSize, Width, Color, Waist, Inseam, Size };
+    public enum AttributeLabel { USMenSize, USWomenSize, USBabySize, USYouthSize, EUSize, Width, Color, Waist, Inseam, Size, Unknown };
 
     public class Attribute
     {

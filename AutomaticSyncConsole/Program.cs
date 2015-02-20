@@ -19,7 +19,6 @@ namespace AutomaticSyncConsole
 
         public static void Main(string[] args)
         {
-
             try
             {
                 if (args[0].Equals("1"))

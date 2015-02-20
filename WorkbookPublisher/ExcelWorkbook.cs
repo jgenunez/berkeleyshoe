@@ -205,25 +205,34 @@ namespace WorkbookPublisher
                 document.Close();
             }
 
-            switch (entryType.Name)
-            {
-                case "BonanzaEntry" :
-
-                    var bnzUpdater = new BnzEntryUpdater(entries.Cast<BonanzaEntry>().ToList(), sheetName);
-                    entries = bnzUpdater.Update().Cast<object>().ToList(); break;
-
-                case "EbayEntry" :
-
-                    var ebayUpdater = new EbayEntryUpdater(entries.Cast<EbayEntry>().ToList(), sheetName);
-                    entries = ebayUpdater.Update().Cast<object>().ToList(); break;
-
-                case "AmznEntry" : 
-
-                    var amznUpdater = new AmznEntryUpdater(entries.Cast<AmznEntry>().ToList(), sheetName);
-                    entries = amznUpdater.Update().Cast<object>().ToList(); break;
-            }
+            
 
             return entries;
+        }
+
+        public List<ListingEntry> UpdateEntries(IEnumerable<ListingEntry> entries, Type entryType, string sheetName)
+        {
+            List<ListingEntry> newEntries = new List<ListingEntry>();
+
+            switch (entryType.Name)
+            {
+                case "BonanzaEntry":
+
+                    var bnzUpdater = new BnzEntryUpdater(entries.Cast<BonanzaEntry>().ToList(), sheetName);
+                    newEntries = bnzUpdater.Update().Cast<ListingEntry>().ToList(); break;
+
+                case "EbayEntry":
+
+                    var ebayUpdater = new EbayEntryUpdater(entries.Cast<EbayEntry>().ToList(), sheetName);
+                    newEntries = ebayUpdater.Update().Cast<ListingEntry>().ToList(); break;
+
+                case "AmznEntry":
+
+                    var amznUpdater = new AmznEntryUpdater(entries.Cast<AmznEntry>().ToList(), sheetName);
+                    newEntries = amznUpdater.Update().Cast<ListingEntry>().ToList(); break;
+            }
+
+            return newEntries;
         }
 
         public List<TitleMapRule> ReadTitleMapRules()

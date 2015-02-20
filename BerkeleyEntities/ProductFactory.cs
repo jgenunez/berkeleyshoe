@@ -270,7 +270,13 @@ namespace BerkeleyEntities
 
         private AttributeLabel GetShoeAttributeLabel(string value)
         {
-            float size = float.Parse(value);
+            float size = 0;
+
+            if (!float.TryParse(value, out size))
+            {
+                return AttributeLabel.Unknown;
+            }
+
 
             if (size > 19) { return AttributeLabel.EUSize; }
 

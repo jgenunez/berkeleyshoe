@@ -321,14 +321,15 @@ namespace WorkbookPublisher.ViewModel
 
             try
             {
-                var result = await Task.Run<List<object>>(() => _workbook.ReadSheet(_entryType, _marketplaceCode));
+                var result = (await Task.Run<List<object>>(() => _workbook.ReadSheet(_entryType, _marketplaceCode))).Cast<ListingEntry>().Where(p => !string.IsNullOrWhiteSpace(p.Sku)).ToList();
 
                 if (result.Count > 0)
                 {
-                    foreach (var entry in result.Cast<ListingEntry>())
-                    {
-                        entries.Add(entry);
-                    }
+                    result.ForEach(p => entries.Add(p));
+
+                    var addedEntries = await Task.Run<List<ListingEntry>>(() => _workbook.UpdateEntries(result, _entryType, _marketplaceCode));
+
+                    addedEntries.ForEach(p => entries.Add(p));
 
                     if (ReadCompleted != null)
                     {

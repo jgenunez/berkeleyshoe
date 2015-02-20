@@ -16,9 +16,9 @@ namespace WorkbookPublisher
         private List<BonanzaEntry> _addedEntries = new List<BonanzaEntry>();
         private berkeleyEntities _dataContext = new berkeleyEntities();
 
-        public BnzEntryUpdater(List<BonanzaEntry> entries, string marketplaceCode)
+        public BnzEntryUpdater(IEnumerable<BonanzaEntry> entries, string marketplaceCode)
         {
-            _entries = entries;
+            _entries = entries.ToList();
             _marketplaceCode = marketplaceCode;
             _lastRowIndex = entries.Max(p => p.RowIndex);
         }
@@ -29,10 +29,10 @@ namespace WorkbookPublisher
 
             foreach (var group in entryGroups)
             {
-                Item item = _dataContext.Items.SingleOrDefault(p => p.ItemLookupCode.Equals(group.Key));
-
-                if (item != null)
+                try
                 {
+                    Item item = _dataContext.Items.Single(p => p.ItemLookupCode.Equals(group.Key));
+
                     UpdateGroup(item, group.ToList());
 
                     foreach (BonanzaEntry entry in group)
@@ -46,17 +46,17 @@ namespace WorkbookPublisher
                         }
                     }
                 }
-                else
+                catch (InvalidOperationException e)
                 {
                     foreach (var entry in group)
                     {
-                        entry.Message = "sku not found";
+                        entry.Message = e.Message;
                         entry.Status = StatusCode.Error;
                     }
                 }
             }
 
-            return _addedEntries.Concat(_entries).ToList();
+            return _addedEntries;
         }
 
         private void UpdateGroup(Item item, IEnumerable<BonanzaEntry> group)
