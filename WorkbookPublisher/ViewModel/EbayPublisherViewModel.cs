@@ -167,7 +167,7 @@ namespace WorkbookPublisher.ViewModel
 
             bool mustIncludeProductData = listingDto.Items.Any(p => !activeSkus.Any(s => s.Equals(p.Sku)));
 
-            foreach (EbayListingItem listingItem in listing.ListingItems)
+            foreach (EbayListingItem listingItem in listing.ListingItems.Where(p => p.Quantity != 0))
             {
                 if (!listingDto.Items.Any(p => p.Sku.Equals(listingItem.Sku)))
                 {
@@ -263,7 +263,7 @@ namespace WorkbookPublisher.ViewModel
 
                 Item item = dataContext.Items.Single(p => p.ItemLookupCode.Equals(entry.Sku));
 
-                var wordsToRemove = item.Attributes.Select(p => p.Key.ToString()).Concat(item.Attributes.Select(p => p.Value.Value.ToString()));
+                var wordsToRemove = item.Dimensions.Select(p => p.Key.ToString()).Concat(item.Dimensions.Select(p => p.Value.Value.ToString()));
 
                 foreach (string word in wordsToRemove)
                 {

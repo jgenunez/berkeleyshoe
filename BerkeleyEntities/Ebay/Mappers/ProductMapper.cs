@@ -33,9 +33,9 @@ namespace BerkeleyEntities.Ebay.Mappers
 
         public abstract int GetConditionID();
 
-        public List<KeyValuePair<AttributeLabel,BerkeleyEntities.Attribute>> GetAttributes()
+        public List<KeyValuePair<DimensionName,BerkeleyEntities.Attribute>> GetAttributes()
         {
-            return _item.Attributes.ToList();
+            return _item.Dimensions.ToList();
         }
 
         protected NameValueListType BuildItemSpecific(string name, string[] values)

@@ -8685,7 +8685,8 @@ namespace BerkeleyEntities
         /// <param name="lastSyncTime">Initial value of the LastSyncTime property.</param>
         /// <param name="status">Initial value of the Status property.</param>
         /// <param name="sku">Initial value of the Sku property.</param>
-        public static EbayListing CreateEbayListing(global::System.Int32 id, global::System.String code, global::System.Int32 marketplaceID, global::System.String format, global::System.String duration, global::System.DateTime startTime, global::System.DateTime endTime, global::System.String title, global::System.DateTime lastSyncTime, global::System.String status, global::System.String sku)
+        /// <param name="bidCount">Initial value of the BidCount property.</param>
+        public static EbayListing CreateEbayListing(global::System.Int32 id, global::System.String code, global::System.Int32 marketplaceID, global::System.String format, global::System.String duration, global::System.DateTime startTime, global::System.DateTime endTime, global::System.String title, global::System.DateTime lastSyncTime, global::System.String status, global::System.String sku, global::System.Int32 bidCount)
         {
             EbayListing ebayListing = new EbayListing();
             ebayListing.ID = id;
@@ -8699,6 +8700,7 @@ namespace BerkeleyEntities
             ebayListing.LastSyncTime = lastSyncTime;
             ebayListing.Status = status;
             ebayListing.Sku = sku;
+            ebayListing.BidCount = bidCount;
             return ebayListing;
         }
 
@@ -9044,6 +9046,30 @@ namespace BerkeleyEntities
         private Nullable<global::System.Decimal> _BinPrice;
         partial void OnBinPriceChanging(Nullable<global::System.Decimal> value);
         partial void OnBinPriceChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 BidCount
+        {
+            get
+            {
+                return _BidCount;
+            }
+            set
+            {
+                OnBidCountChanging(value);
+                ReportPropertyChanging("BidCount");
+                _BidCount = StructuralObject.SetValidValue(value, "BidCount");
+                ReportPropertyChanged("BidCount");
+                OnBidCountChanged();
+            }
+        }
+        private global::System.Int32 _BidCount;
+        partial void OnBidCountChanging(global::System.Int32 value);
+        partial void OnBidCountChanged();
 
         #endregion
 

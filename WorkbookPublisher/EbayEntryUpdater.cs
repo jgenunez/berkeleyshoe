@@ -91,8 +91,8 @@ namespace WorkbookPublisher
                     {
                         entry.Message = string.Format("({0}|{1}|{2})", listingItem.FormatCode, listingItem.Quantity, Math.Round(listingItem.Price, 2));
 
-                        entry.PSpecified = decimal.Compare(entry.P, listingItem.Price) != 0;
-                        entry.QSpecified = entry.Q != listingItem.Quantity;
+                        entry.PSpecified = true;
+                        entry.QSpecified = true;
                     }
 
                     entries.Remove(entry);
@@ -171,17 +171,11 @@ namespace WorkbookPublisher
                     entry.Status = StatusCode.Error;
                 }
 
-                if (item.AuctionCount >= item.QtyAvailable && entry.Q != 0)
+                if (item.AuctionWithBidQty >= item.QtyAvailable && entry.Q != 0)
                 {
                     entry.Message = "out of stock";
                     entry.Status = StatusCode.Error;
                 }
-            }
-
-            if (entry.Q == 0 && string.IsNullOrWhiteSpace(entry.Command))
-            {
-                entry.Message = "qty must be greater than 0";
-                entry.Status = StatusCode.Error;
             }
 
             if (entry.Q > item.QtyAvailable)

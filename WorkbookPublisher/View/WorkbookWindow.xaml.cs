@@ -266,7 +266,7 @@ namespace WorkbookPublisher
 
             using (berkeleyEntities dataContext = new berkeleyEntities())
             {
-                //dataContext.MaterializeAttributes = true;
+                dataContext.MaterializeAttributes = true;
 
                 foreach (MainEntry entry in entries)
                 {
@@ -297,9 +297,9 @@ namespace WorkbookPublisher
                         entry.Description = item.Description;
                         entry.UPC = item.GTIN;
 
-                        //var pics = picRepository.GetPictures(entry.Brand, new List<string>() { entry.Sku });
+                        var pics = picRepository.GetPictures(entry.Brand, new List<string>() { entry.Sku });
 
-                        //entry.PictureCount = pics.Count;
+                        entry.PictureCount = pics.Count;
 
                         var titleMap = titleMaps.SingleOrDefault(p => p.Department.Equals(item.DepartmentName) && p.Category.Equals(item.CategoryName));
 
@@ -312,7 +312,7 @@ namespace WorkbookPublisher
                         string description = item.Description;
                         string dims = string.Empty;
 
-                        foreach (var attribute in item.Attributes)
+                        foreach (var attribute in item.Dimensions)
                         {
                             description = description.Replace(attribute.Value.Value, "");
                             dims += attribute.Value.Value + " ";

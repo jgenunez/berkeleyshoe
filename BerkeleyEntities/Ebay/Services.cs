@@ -12,6 +12,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Data.Objects;
 
 namespace BerkeleyEntities.Ebay
 {
@@ -109,12 +110,11 @@ namespace BerkeleyEntities.Ebay
 
                 foreach (EbayListing listing in listings.Where(p => !p.ListingItems.Any(s => s.Item == null)))
                 {
-
                     if(listing.Format.Equals(EbayMarketplace.FORMAT_AUCTION))
                     {
                         var listingItem = listing.ListingItems.First();
 
-                        if(listingItem.Item.AuctionCount > listingItem.Item.QtyAvailable)
+                        if(listing.BidCount == 0 && listingItem.Item.QtyAvailable == 0)
                         {
                             try
                             {
@@ -128,7 +128,7 @@ namespace BerkeleyEntities.Ebay
                     }
                     else
                     {
-                        var listingItems = listing.ListingItems.ToList();
+                        var listingItems = listing.ListingItems.Where(p => p.Quantity != 0).ToList();
 
                         if (listingItems.Any(p => p.Quantity > p.Item.QtyAvailable))
                         {
@@ -164,7 +164,6 @@ namespace BerkeleyEntities.Ebay
                                 listingDto.Code = listing.Code;
                                 listingDto.Items.AddRange(listingItemDtos);
                                 listingDto.IsVariation = (bool)listing.IsVariation;
-
 
                                 try
                                 {
@@ -233,6 +232,7 @@ namespace BerkeleyEntities.Ebay
         private EbayMarketplace _marketplace;
         private PictureSetRepository _picSetRepository = new PictureSetRepository();
         private ProductMapperFactory _productMapperFactory = new ProductMapperFactory();
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         public Publisher(berkeleyEntities dataContext, EbayMarketplace marketplace)
         {
@@ -313,12 +313,38 @@ namespace BerkeleyEntities.Ebay
 
                 listing.Status = EbayMarketplace.STATUS_COMPLETED;
 
+                foreach (var listingItem in listing.ListingItems)
+                {
+                    listingItem.Quantity = 0;
+                }
+
                 if (response.EndTimeSpecified)
                 {
                     listing.EndTime = response.EndTime;
                 }
 
+
+
                 dataContext.SaveChanges();
+            }
+        }
+
+        private void LogChanges(berkeleyEntities dataContext)
+        {
+            var entries = dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added | EntityState.Modified | EntityState.Deleted);
+
+            foreach (var entry in entries.Where(p => p.Entity is EbayListingItem))
+            {
+                EbayListingItem listingItem = entry.Entity as EbayListingItem;
+
+                switch(entry.State)
+                {
+                    case EntityState.Added :
+                        _logger.Info(string.Format("{0} | {1} | ", listingItem.Item.ItemLookupCode, listingItem.Listing.Code, listingItem.Quantity, listingItem.Price)); break;
+                    case EntityState.Modified : break;
+                    default: break;
+
+                }
             }
         }
 
@@ -946,8 +972,11 @@ namespace BerkeleyEntities.Ebay
 
             listing.Sku = listingDto.SKU != null ? listingDto.SKU : listing.Sku != null ? listing.Sku : string.Empty;
 
-            listing.Status = listingDto.SellingStatus != null && listingDto.SellingStatus.ListingStatusSpecified ?
-                listingDto.SellingStatus.ListingStatus.ToString() : listing.Status;
+            if (listingDto.SellingStatus != null)
+            {
+                listing.Status = listingDto.SellingStatus.ListingStatusSpecified ? listingDto.SellingStatus.ListingStatus.ToString() : listing.Status;
+                listing.BidCount = listingDto.SellingStatus.BidCountSpecified ? listingDto.SellingStatus.BidCount : listing.BidCount;
+            }
 
             listing.LastSyncTime = DateTime.UtcNow;
 

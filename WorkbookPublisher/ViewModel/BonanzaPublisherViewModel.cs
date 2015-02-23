@@ -237,7 +237,7 @@ namespace WorkbookPublisher.ViewModel
 
                     Item item = dataContext.Items.Single(p => p.ItemLookupCode.Equals(entry.Sku));
 
-                    var wordsToRemove = item.Attributes.Select(p => p.Key.ToString()).Concat(item.Attributes.Select(p => p.Value.Value.ToString()));
+                    var wordsToRemove = item.Dimensions.Select(p => p.Key.ToString()).Concat(item.Dimensions.Select(p => p.Value.Value.ToString()));
 
                     foreach (string word in wordsToRemove)
                     {

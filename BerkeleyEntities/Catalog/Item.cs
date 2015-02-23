@@ -7,12 +7,15 @@ using System.IO;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 using System.Globalization;
+using System.Xml;
+using System.Xml.Linq;
+using System.Xml.Serialization;
 
 
 
 namespace BerkeleyEntities
 {
-    public enum AttributeLabel { USMenSize, USWomenSize, USBabySize, USYouthSize, EUSize, Width, Color, Waist, Inseam, Size, Unknown };
+    public enum DimensionName { USMenSize, USWomenSize, USBabySize, USYouthSize, EUSize, Width, Color, Waist, Inseam, Size, Unknown };
 
     public class Attribute
     {
@@ -64,7 +67,7 @@ namespace BerkeleyEntities
         {
             get 
             {
-                int available = (int)this.Quantity - this.OnPendingOrder - this.OnHold;
+                int available = (int)this.Quantity - this.OnPendingOrder - this.OnHold - this.AuctionWithBidQty;
 
                 if (available < 0)
                 {
@@ -75,13 +78,13 @@ namespace BerkeleyEntities
             }
         }
 
-        public int AuctionCount
+        public int AuctionWithBidQty
         {
             get 
             {
-                int activeAuctions = this.EbayListingItems.Where(p => p.Listing.Status.Equals("Active") && p.Listing.Format.Equals("Chinese")).Sum(p => p.Quantity);
+                var activeAuctions = this.EbayListingItems.Where(p => p.Listing.Status.Equals(EbayMarketplace.STATUS_ACTIVE) && p.Listing.Format.Equals(EbayMarketplace.FORMAT_AUCTION));
 
-                return activeAuctions;
+                return activeAuctions.Where(p => p.Listing.BidCount > 0).Sum(p => p.Quantity);
             }
         }
 
@@ -160,7 +163,33 @@ namespace BerkeleyEntities
             }
         }
 
-        public Dictionary<AttributeLabel, Attribute> Attributes { get; set; }
+        public Dictionary<DimensionName, Attribute> Dimensions { get; set; }
+
+        public void SetAttribute(string name, string value)
+        {
+            //XmlSerializer serializer = new XmlSerializer(dynamic);
+            //dynamic attributes = 
+
+            //var root = XElement.Parse(this.Notes);
+
+            //var target = root.Element(name);
+
+            //if (target != null)
+            //{
+            //    target.Value = value;
+            //}
+            //else
+            //{
+            //    target = new XElement(XName.Get(name, null));
+            //}
+
+            
+        }
+
+        public string GetAttribute(string name)
+        {
+            return null;
+        }
 
         public string ProductType 
         {
@@ -401,4 +430,6 @@ namespace BerkeleyEntities
             
         }
     }
+
+    
 }

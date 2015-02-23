@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BerkeleyEntities
 {
-    public enum DimensionName { ShoeSize , Width, Waist, Color, Inseam};
+    //public enum DimensionName { ShoeSize , Width, Waist, Color, Inseam};
 
     //partial class SyncListing
     //{

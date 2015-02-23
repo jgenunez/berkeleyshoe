@@ -71,7 +71,7 @@ namespace BerkeleyEntities.Ebay.Mappers
                 case 3:
                     nameValueList.Add(GetSizeItemSpecific());
                     nameValueList.Add(BuildItemSpecific("Width", new string[1] { this.GetFormattedWidth() }));
-                    nameValueList.Add(BuildItemSpecific("Color", new string[1] { _item.Attributes[AttributeLabel.Color].Value })); break;
+                    nameValueList.Add(BuildItemSpecific("Color", new string[1] { _item.Dimensions[DimensionName.Color].Value })); break;
             }
 
             return nameValueList;
@@ -104,7 +104,7 @@ namespace BerkeleyEntities.Ebay.Mappers
         {
             NameValueListType nv = new NameValueListType();
 
-            if (_item.Attributes.ContainsKey(AttributeLabel.EUSize))
+            if (_item.Dimensions.ContainsKey(DimensionName.EUSize))
             {
                 string gender = _item.SubDescription3.Trim().ToUpper();
 
@@ -134,24 +134,24 @@ namespace BerkeleyEntities.Ebay.Mappers
                     default: throw new NotImplementedException("could not recognize gender");
                 }
 
-                nv = BuildItemSpecific(label, new string[1] { _item.Attributes[AttributeLabel.EUSize].Value });
+                nv = BuildItemSpecific(label, new string[1] { _item.Dimensions[DimensionName.EUSize].Value });
 
             }
-            else if (_item.Attributes.ContainsKey(AttributeLabel.USMenSize))
+            else if (_item.Dimensions.ContainsKey(DimensionName.USMenSize))
             {
-                nv = BuildItemSpecific("US Shoe Size (Men's)", new string[1] { _item.Attributes[AttributeLabel.USMenSize].Value });
+                nv = BuildItemSpecific("US Shoe Size (Men's)", new string[1] { _item.Dimensions[DimensionName.USMenSize].Value });
             }
-            else if (_item.Attributes.ContainsKey(AttributeLabel.USWomenSize))
+            else if (_item.Dimensions.ContainsKey(DimensionName.USWomenSize))
             {
-                nv = BuildItemSpecific("US Shoe Size (Women's)", new string[1] { _item.Attributes[AttributeLabel.USWomenSize].Value });
+                nv = BuildItemSpecific("US Shoe Size (Women's)", new string[1] { _item.Dimensions[DimensionName.USWomenSize].Value });
             }
-            else if (_item.Attributes.ContainsKey(AttributeLabel.USYouthSize))
+            else if (_item.Dimensions.ContainsKey(DimensionName.USYouthSize))
             {
-                nv = BuildItemSpecific("US Shoe Size (Youth)", new string[1] { _item.Attributes[AttributeLabel.USYouthSize].Value });
+                nv = BuildItemSpecific("US Shoe Size (Youth)", new string[1] { _item.Dimensions[DimensionName.USYouthSize].Value });
             }
-            else if (_item.Attributes.ContainsKey(AttributeLabel.USBabySize))
+            else if (_item.Dimensions.ContainsKey(DimensionName.USBabySize))
             {
-                nv = BuildItemSpecific("US Shoe Size (Baby & Toddler)", new string[1] { _item.Attributes[AttributeLabel.USBabySize].Value });
+                nv = BuildItemSpecific("US Shoe Size (Baby & Toddler)", new string[1] { _item.Dimensions[DimensionName.USBabySize].Value });
             }
 
             return nv;
@@ -159,7 +159,7 @@ namespace BerkeleyEntities.Ebay.Mappers
 
         private string GetFormattedWidth()
         {
-            string width = _item.Attributes[AttributeLabel.Width].Value;
+            string width = _item.Dimensions[DimensionName.Width].Value;
 
             switch (_item.SubDescription3)
             {

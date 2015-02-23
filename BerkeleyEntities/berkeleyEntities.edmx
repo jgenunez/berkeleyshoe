@@ -341,6 +341,7 @@
           <Property Name="Duration" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="StartTime" Type="datetime" Nullable="false" />
           <Property Name="EndTime" Type="datetime" Nullable="false" />
+          <Property Name="BidCount" Type="int" Nullable="false" />
           <Property Name="BinPrice" Type="money" />
           <Property Name="Title" Type="nvarchar" MaxLength="200" Nullable="false" />
           <Property Name="FullDescription" Type="nvarchar(max)" />
@@ -2328,6 +2329,7 @@
           <NavigationProperty Name="Relations" Relationship="BerkeleyEntities.EbayListingEbayPictureUrlRelation" FromRole="EbayListing" ToRole="EbayPictureUrlRelation" />
           <Property Type="String" Name="FullDescription" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="BinPrice" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="BidCount" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="EbayListingItem">
           <Key>
@@ -3420,6 +3422,7 @@
           <EntitySetMapping Name="EbayListings">
             <EntityTypeMapping TypeName="IsTypeOf(BerkeleyEntities.EbayListing)">
               <MappingFragment StoreEntitySet="EbayListing">
+                <ScalarProperty Name="BidCount" ColumnName="BidCount" />
                 <ScalarProperty Name="BinPrice" ColumnName="BinPrice" />
                 <ScalarProperty Name="FullDescription" ColumnName="FullDescription" />
                 <ScalarProperty Name="LastSyncTime" ColumnName="LastSyncTime" />
@@ -3669,7 +3672,7 @@
         <EntityTypeShape EntityType="BerkeleyEntities.Alias" Width="1.5" PointX="6.375" PointY="3.625" Height="0.4" IsExpanded="false" />
         <EntityTypeShape EntityType="BerkeleyEntities.Category" Width="1.5" PointX="3" PointY="1.375" Height="0.4" IsExpanded="false" />
         <EntityTypeShape EntityType="BerkeleyEntities.Department" Width="1.5" PointX="2.125" PointY="2.75" Height="0.4" IsExpanded="false" />
-        <EntityTypeShape EntityType="BerkeleyEntities.Item" Width="1.875" PointX="6.25" PointY="5.125" Height="0.4" IsExpanded="false" />
+        <EntityTypeShape EntityType="BerkeleyEntities.Item" Width="1.875" PointX="6.5" PointY="5.5" Height="0.4" IsExpanded="false" />
         <EntityTypeShape EntityType="BerkeleyEntities.ItemClass" Width="1.5" PointX="5.75" PointY="0.625" Height="0.4" IsExpanded="false" />
         <EntityTypeShape EntityType="BerkeleyEntities.ItemClassComponent" Width="1.5" PointX="4.875" PointY="2.625" Height="0.4" IsExpanded="false" />
         <EntityTypeShape EntityType="BerkeleyEntities.MatrixAttributeDisplayOrder" Width="1.5" PointX="9.75" PointY="0.875" Height="0.4" IsExpanded="false" />
@@ -3866,7 +3869,7 @@
           <ConnectorPoint PointX="4.1875" PointY="10.4" />
           <ConnectorPoint PointX="4.1875" PointY="11.125" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="BerkeleyEntities.EbayListing" Width="1.875" PointX="0.625" PointY="9.25" Height="0.4" IsExpanded="false" />
+        <EntityTypeShape EntityType="BerkeleyEntities.EbayListing" Width="1.875" PointX="0.5" PointY="9.125" Height="0.4" IsExpanded="false" />
         <EntityTypeShape EntityType="BerkeleyEntities.EbayListingItem" Width="1.875" PointX="3.375" PointY="9.125" Height="0.4" IsExpanded="false" />
         <AssociationConnector Association="BerkeleyEntities.EbayListingItemItem">
           <ConnectorPoint PointX="5.03125" PointY="9.125" />

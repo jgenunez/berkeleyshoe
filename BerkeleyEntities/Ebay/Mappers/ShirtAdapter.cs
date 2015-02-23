@@ -65,9 +65,9 @@ namespace BerkeleyEntities.Ebay.Mappers
 
             string label = "Color";
 
-            if (_item.Attributes.ContainsKey(AttributeLabel.Color))
+            if (_item.Dimensions.ContainsKey(DimensionName.Color))
             {
-                nv = BuildItemSpecific(label, new string[1] { _item.Attributes[AttributeLabel.Color].Value });
+                nv = BuildItemSpecific(label, new string[1] { _item.Dimensions[DimensionName.Color].Value });
             }
 
             return nv;
@@ -81,7 +81,7 @@ namespace BerkeleyEntities.Ebay.Mappers
 
             string label = string.Empty;
 
-            if (_item.Attributes.ContainsKey(AttributeLabel.Size))
+            if (_item.Dimensions.ContainsKey(DimensionName.Size))
             {
                 switch (gender)
                 {
@@ -92,7 +92,7 @@ namespace BerkeleyEntities.Ebay.Mappers
                     default: throw new NotImplementedException("could not recognize gender");
                 }
 
-                nv = BuildItemSpecific(label, new string[1] { _item.Attributes[AttributeLabel.Size].Value });
+                nv = BuildItemSpecific(label, new string[1] { _item.Dimensions[DimensionName.Size].Value });
             }
 
 

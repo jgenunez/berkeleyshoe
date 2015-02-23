@@ -58,13 +58,13 @@ namespace BerkeleyEntities.Ebay.Mappers
             {
                 case 1:
                 case 2:
-                    nameValueList.Add(BuildItemSpecific(GetSizeLabel(), new string[1] { _item.Attributes[AttributeLabel.Waist].Value }));
-                    nameValueList.Add(BuildItemSpecific("Inseam", new string[1] { _item.Attributes[AttributeLabel.Inseam].Value })); break;
+                    nameValueList.Add(BuildItemSpecific(GetSizeLabel(), new string[1] { _item.Dimensions[DimensionName.Waist].Value }));
+                    nameValueList.Add(BuildItemSpecific("Inseam", new string[1] { _item.Dimensions[DimensionName.Inseam].Value })); break;
 
                 case 3:
-                    nameValueList.Add(BuildItemSpecific(GetSizeLabel(), new string[1] { _item.Attributes[AttributeLabel.Waist].Value }));
-                    nameValueList.Add(BuildItemSpecific("Inseam", new string[1] { _item.Attributes[AttributeLabel.Inseam].Value })); 
-                    nameValueList.Add(BuildItemSpecific("Color", new string[1] { _item.Attributes[AttributeLabel.Color].Value })); break;
+                    nameValueList.Add(BuildItemSpecific(GetSizeLabel(), new string[1] { _item.Dimensions[DimensionName.Waist].Value }));
+                    nameValueList.Add(BuildItemSpecific("Inseam", new string[1] { _item.Dimensions[DimensionName.Inseam].Value })); 
+                    nameValueList.Add(BuildItemSpecific("Color", new string[1] { _item.Dimensions[DimensionName.Color].Value })); break;
             }
 
             return nameValueList;
