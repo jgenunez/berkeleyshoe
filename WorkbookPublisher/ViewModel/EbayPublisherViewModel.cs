@@ -139,6 +139,16 @@ namespace WorkbookPublisher.ViewModel
             listingDto.Brand = entries.First(p => !string.IsNullOrWhiteSpace(p.Brand)).Brand;
             listingDto.IsVariation = (bool)listing.IsVariation;
 
+            if (entries.Any(p => !string.IsNullOrWhiteSpace(p.Template)))
+            {
+                listingDto.Template = entries.First(p => !string.IsNullOrWhiteSpace(p.Template)).Template;
+            }
+
+            if (entries.Any(p => !string.IsNullOrWhiteSpace(p.Design)))
+            {
+                listingDto.Design = entries.First(p => !string.IsNullOrWhiteSpace(p.Design)).Design;
+            }
+
             if (entries.Any(p => !string.IsNullOrWhiteSpace(p.FullDescription)))
             {
                 listingDto.FullDescription = entries.First(p => !string.IsNullOrWhiteSpace(p.FullDescription)).FullDescription;
@@ -183,17 +193,30 @@ namespace WorkbookPublisher.ViewModel
                 }
             }
 
+            if (entries.Any(p => p.GetUpdateFlags().Any(s => s.Trim().ToUpper().Equals("TITLE"))))
+            {
+                if ((bool)listing.IsVariation)
+                {
+                    EbayEntry entry = entries.First(p => !string.IsNullOrWhiteSpace(p.Title));
+                    listingDto.Title = GetParentTitle(entry);
+                }
+                else
+                {
+                    listingDto.Title = entries.First().Title;
+                }
+            }
+
             bool includeTemplate = entries.Any(p => p.GetUpdateFlags().Any(s => s.Trim().ToUpper().Equals("TEMPLATE")));
 
             bool includeProductData = entries.Any(p => p.GetUpdateFlags().Any(s => s.Trim().ToUpper().Equals("PRODUCTDATA"))) || mustIncludeProductData;
 
             if (listingDto.Items.All(p => p.Qty == 0))
             {
-                _ebayServices.End(_marketplace.ID, listing.Code);
+                _ebayServices.End(_marketplace.ID, listing.Code, "Publisher");
             }
             else
             {
-                _ebayServices.Revise(listingDto, includeProductData, includeTemplate);
+                _ebayServices.Revise(listingDto, includeProductData, includeTemplate, "Publisher");
             }
 
             
@@ -209,6 +232,16 @@ namespace WorkbookPublisher.ViewModel
             listingDto.Format = entries.First(p => !string.IsNullOrWhiteSpace(p.Format)).GetFormat();
             listingDto.FullDescription = entries.First(p => !string.IsNullOrWhiteSpace(p.FullDescription)).FullDescription;
 
+            if (entries.Any(p => !string.IsNullOrWhiteSpace(p.Template)))
+            {
+                listingDto.Template = entries.First(p => !string.IsNullOrWhiteSpace(p.Template)).Template;
+            }
+
+            if (entries.Any(p => !string.IsNullOrWhiteSpace(p.Design)))
+            {
+                listingDto.Design = entries.First(p => !string.IsNullOrWhiteSpace(p.Design)).Design;
+            }
+
             if (entries.Any(p => p.StartDateSpecified))
             {
                 listingDto.ScheduleTime = entries.First(p => p.StartDateSpecified).StartDate;
@@ -220,7 +253,8 @@ namespace WorkbookPublisher.ViewModel
                 listingDto.Sku = entries.First(p => !string.IsNullOrWhiteSpace(p.ClassName)).ClassName;
 
                 EbayEntry entry = entries.First(p => !string.IsNullOrWhiteSpace(p.Title));
-                listingDto.Title = GetParentTitle(entry); ;
+
+                listingDto.Title = GetParentTitle(entry); 
                 listingDto.IsVariation = true;
             }
             else
@@ -250,7 +284,7 @@ namespace WorkbookPublisher.ViewModel
                 listingDto.Items.Add(listingItem);
             }
 
-            _ebayServices.Publish(listingDto);
+            _ebayServices.Publish(listingDto, "Publisher");
         }
 
         private string GetParentTitle(EbayEntry entry)

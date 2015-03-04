@@ -163,6 +163,18 @@ namespace BerkeleyEntities
             }
         }
 
+        public bool HasAsin()
+        {
+            if (this.AmznListingItems.Any(p => !p.ASIN.Equals("UNKNOWN")))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public Dictionary<DimensionName, Attribute> Dimensions { get; set; }
 
         public void SetAttribute(string name, string value)

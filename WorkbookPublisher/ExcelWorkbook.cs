@@ -327,6 +327,7 @@ namespace WorkbookPublisher
 
         public string AmznDescription { get; set; }
         public string AmznTitle { get; set; }
+        public decimal AmznPrice { get; set; }
 
         public string FullDescription { get; set; }
 
@@ -342,6 +343,8 @@ namespace WorkbookPublisher
         public decimal Price { get; set; }
         public string Location { get; set; }
         public string Description { get; set; }
+
+        public string Asin { get; set; }
     }
 
     public class PrintEntry : BaseEntry
@@ -452,6 +455,8 @@ namespace WorkbookPublisher
 
         public string Code { get; set; }
 
+        public string Template { get; set; }
+
         public decimal BIN { get; set; }
 
         public string FullDescription { get; set; }
@@ -535,6 +540,8 @@ namespace WorkbookPublisher
             }
         }
 
+
+        public string Design { get; set; }
     }
 
     public class AmznEntry : ListingEntry

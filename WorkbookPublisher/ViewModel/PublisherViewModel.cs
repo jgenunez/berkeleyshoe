@@ -317,7 +317,7 @@ namespace WorkbookPublisher.ViewModel
         {
             SetCanExecute(false);
 
-            var entries = ((ICollectionView)parameter).SourceCollection as ObservableCollection<ListingEntry>;
+            var entriesView = ((ICollectionView)parameter).SourceCollection as ObservableCollection<ListingEntry>;
 
             try
             {
@@ -325,11 +325,16 @@ namespace WorkbookPublisher.ViewModel
 
                 if (result.Count > 0)
                 {
-                    result.ForEach(p => entries.Add(p));
+
+                    foreach (var entry in result)
+                    {
+                        entry.ClearMessages();
+                        entriesView.Add(entry);
+                    }
 
                     var addedEntries = await Task.Run<List<ListingEntry>>(() => _workbook.UpdateEntries(result, _entryType, _marketplaceCode));
 
-                    addedEntries.ForEach(p => entries.Add(p));
+                    addedEntries.ForEach(p => entriesView.Add(p));
 
                     if (ReadCompleted != null)
                     {
@@ -341,7 +346,7 @@ namespace WorkbookPublisher.ViewModel
                 else
                 {
                     MessageBox.Show("No entry found");
-                    entries.Clear();
+                    entriesView.Clear();
                     SetCanExecute(true);
                 }
             }

@@ -26,7 +26,6 @@
           <Property Name="Price" Type="money" Nullable="false" />
           <Property Name="Title" Type="nvarchar" MaxLength="200" Nullable="false" />
           <Property Name="OpenDate" Type="datetime" Nullable="false" />
-          <Property Name="Condition" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="ASIN" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
           <Property Name="LastSyncTime" Type="datetime" Nullable="false" />
@@ -124,6 +123,19 @@
           <Property Name="ListingSyncTime" Type="datetime" />
           <Property Name="OrderSyncTime" Type="datetime" />
           <Property Name="RootDir" Type="nvarchar" MaxLength="400" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Bsi_ListingChangesLog">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ItemID" Type="int" Nullable="false" />
+          <Property Name="Source" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Marketplace" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="ListingCode" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ListingType" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Date" Type="datetime" Nullable="false" />
+          <Property Name="Change" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Bsi_LocationLog">
           <Key>
@@ -936,6 +948,7 @@
           <EntitySet Name="BonanzaListing" EntityType="Self.BonanzaListing" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BonanzaListingItem" EntityType="Self.BonanzaListingItem" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BonanzaMarketplace" EntityType="Self.BonanzaMarketplace" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Bsi_ListingChangesLog" EntityType="Self.Bsi_ListingChangesLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Bsi_LocationLog" EntityType="Self.Bsi_LocationLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="bsi_posting" EntityType="Self.bsi_posting" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="bsi_posts" EntityType="Self.bsi_posts" Schema="dbo" store:Type="Tables" />
@@ -1200,6 +1213,11 @@
             <End Role="BonanzaMarketplace" EntitySet="BonanzaMarketplaces" />
             <End Role="BonanzaListing" EntitySet="BonanzaListings" />
           </AssociationSet>
+          <EntitySet Name="Bsi_ListingChangesLog" EntityType="BerkeleyEntities.Bsi_ListingChangesLog" />
+          <AssociationSet Name="Bsi_ListingChangesLogItem" Association="BerkeleyEntities.Bsi_ListingChangesLogItem">
+            <End Role="Bsi_ListingChangesLog" EntitySet="Bsi_ListingChangesLog" />
+            <End Role="Item" EntitySet="Items" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="Alias">
           <Key>
@@ -1343,6 +1361,7 @@
           <NavigationProperty Name="InventoryEntries" Relationship="BerkeleyEntities.InventoryEntryItem" FromRole="Item" ToRole="InventoryEntry" />
           <NavigationProperty Name="AmznListingItems" Relationship="BerkeleyEntities.AmznListingItemItem" FromRole="Item" ToRole="SyncAmznListingItem" />
           <NavigationProperty Name="BonanzaListingItems" Relationship="BerkeleyEntities.BonanzaListingItemItem" FromRole="Item" ToRole="BonanzaListingItem" />
+          <NavigationProperty Name="ListingChangesLog" Relationship="BerkeleyEntities.Bsi_ListingChangesLogItem" FromRole="Item" ToRole="Bsi_ListingChangesLog" />
         </EntityType>
         <EntityType Name="ItemClass">
           <Key>
@@ -2416,7 +2435,6 @@
           <Property Type="Decimal" Name="Price" Nullable="false" Precision="19" Scale="4" />
           <Property Type="String" Name="Title" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Type="DateTime" Name="OpenDate" Nullable="false" Precision="3" />
-          <Property Type="String" Name="Condition" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="ASIN" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="Boolean" Name="IsActive" Nullable="false" />
           <Property Type="DateTime" Name="LastSyncTime" Nullable="false" Precision="3" />
@@ -2741,6 +2759,32 @@
             </Principal>
             <Dependent Role="BonanzaListing">
               <PropertyRef Name="MarketplaceID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Bsi_ListingChangesLog">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="ItemID" Type="Int32" Nullable="false" />
+          <Property Name="Source" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Marketplace" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ListingCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ListingType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Change" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Item" Relationship="BerkeleyEntities.Bsi_ListingChangesLogItem" FromRole="Bsi_ListingChangesLog" ToRole="Item" />
+        </EntityType>
+        <Association Name="Bsi_ListingChangesLogItem">
+          <End Type="BerkeleyEntities.Bsi_ListingChangesLog" Role="Bsi_ListingChangesLog" Multiplicity="*" />
+          <End Type="BerkeleyEntities.Item" Role="Item" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="Item">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Bsi_ListingChangesLog">
+              <PropertyRef Name="ItemID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3352,7 +3396,6 @@
                 <ScalarProperty Name="LastSyncTime" ColumnName="LastSyncTime" />
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="ASIN" ColumnName="ASIN" />
-                <ScalarProperty Name="Condition" ColumnName="Condition" />
                 <ScalarProperty Name="OpenDate" ColumnName="OpenDate" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
                 <ScalarProperty Name="Price" ColumnName="Price" />
@@ -3647,6 +3690,20 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Bsi_ListingChangesLog">
+            <EntityTypeMapping TypeName="BerkeleyEntities.Bsi_ListingChangesLog">
+              <MappingFragment StoreEntitySet="Bsi_ListingChangesLog">
+                <ScalarProperty Name="Change" ColumnName="Change" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="ListingType" ColumnName="ListingType" />
+                <ScalarProperty Name="ListingCode" ColumnName="ListingCode" />
+                <ScalarProperty Name="Marketplace" ColumnName="Marketplace" />
+                <ScalarProperty Name="Source" ColumnName="Source" />
+                <ScalarProperty Name="ItemID" ColumnName="ItemID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
@@ -3862,7 +3919,7 @@
           <ConnectorPoint PointX="6.25" PointY="5.4656319999999816" />
         </AssociationConnector>
         <EntityTypeShape EntityType="BerkeleyEntities.AmznOrder" Width="2.125" PointX="6" PointY="10.875" Height="0.4" IsExpanded="false" />
-        <EntityTypeShape EntityType="BerkeleyEntities.AmznOrderItem" Width="2" PointX="6" PointY="9.75" Height="0.4" IsExpanded="false" />
+        <EntityTypeShape EntityType="BerkeleyEntities.AmznOrderItem" Width="2" PointX="7.625" PointY="9.625" Height="0.4" IsExpanded="false" />
         <EntityTypeShape EntityType="BerkeleyEntities.EbayOrder" Width="1.625" PointX="3.375" PointY="11.125" Height="0.4" IsExpanded="false" />
         <EntityTypeShape EntityType="BerkeleyEntities.EbayOrderItem" Width="2" PointX="3.375" PointY="10" Height="0.4" IsExpanded="false" />
         <AssociationConnector Association="BerkeleyEntities.EbayOrderItemEbayOrder">
@@ -3897,7 +3954,7 @@
           <ConnectorPoint PointX="7.687502" PointY="5.775" />
           <ConnectorPoint PointX="7.687502" PointY="5.525" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="BerkeleyEntities.AmznListingItem" Width="1.875" PointX="6" PointY="8.625" Height="0.4" IsExpanded="false" />
+        <EntityTypeShape EntityType="BerkeleyEntities.AmznListingItem" Width="1.875" PointX="7.125" PointY="8.375" Height="0.4" IsExpanded="false" />
         <AssociationConnector Association="BerkeleyEntities.AmznListingItemItem">
           <ConnectorPoint PointX="6.65625" PointY="6.5" />
           <ConnectorPoint PointX="6.65625" PointY="5.525" />
@@ -3906,7 +3963,7 @@
           <ConnectorPoint PointX="6.8125" PointY="6.9" />
           <ConnectorPoint PointX="6.8125" PointY="7.375" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="BerkeleyEntities.AmznMarketplace" Width="1.5" PointX="8.5" PointY="8.625" Height="0.4" IsExpanded="false" />
+        <EntityTypeShape EntityType="BerkeleyEntities.AmznMarketplace" Width="1.5" PointX="9.75" PointY="8.25" Height="0.4" IsExpanded="false" />
         <AssociationConnector Association="BerkeleyEntities.AmznMarketplaceSyncAmznListingItem">
           <ConnectorPoint PointX="8.125" PointY="6.7" />
           <ConnectorPoint PointX="7.75" PointY="6.7" />
@@ -3938,11 +3995,13 @@
           <ConnectorPoint PointX="9.03125" PointY="4" />
         </AssociationConnector>
         <EntityTypeShape EntityType="BerkeleyEntities.BonanzaListing" Width="1.5" PointX="10.75" PointY="7.375" IsExpanded="false" />
-        <EntityTypeShape EntityType="BerkeleyEntities.BonanzaListingItem" Width="1.5" PointX="7.5" PointY="7.375" IsExpanded="false" />
-        <EntityTypeShape EntityType="BerkeleyEntities.BonanzaMarketplace" Width="1.5" PointX="10.625" PointY="9.25" IsExpanded="false" />
+        <EntityTypeShape EntityType="BerkeleyEntities.BonanzaListingItem" Width="1.5" PointX="8.375" PointY="7.25" IsExpanded="false" />
+        <EntityTypeShape EntityType="BerkeleyEntities.BonanzaMarketplace" Width="1.5" PointX="13.125" PointY="7.25" IsExpanded="false" />
         <AssociationConnector Association="BerkeleyEntities.BonanzaListingItemItem" />
         <AssociationConnector Association="BerkeleyEntities.BonanzaListingBonanzaListingItem" />
         <AssociationConnector Association="BerkeleyEntities.BonanzaMarketplaceBonanzaListing" />
+        <EntityTypeShape EntityType="BerkeleyEntities.Bsi_ListingChangesLog" Width="1.5" PointX="5.375" PointY="6.25" IsExpanded="false" />
+        <AssociationConnector Association="BerkeleyEntities.Bsi_ListingChangesLogItem" />
         </Diagram>
     </Diagrams>
   </Designer>

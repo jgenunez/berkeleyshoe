@@ -75,7 +75,6 @@ namespace AmazonServices.Mappers
                             listingItem.ASIN = "UNKNOWN";
                             listingItem.Quantity = 0;
                             listingItem.Price = 0;
-                            listingItem.Condition = product.Condition.ConditionType.ToString();
                             listingItem.Title = product.DescriptionData.Title;
                         }
 
@@ -244,11 +243,11 @@ namespace AmazonServices.Mappers
 
                 ProductData productData = _productMapperFactory.GetProductData(listingItem.Item);
                
-                products.Add(productData.GetProductDto(listingItem.Condition, listingItem.Title));
+                products.Add(productData.GetProductDto( listingItem.Title));
 
                 if(i == 0 && listingItem.Item.ItemClass != null && !listingItem.Item.ItemClass.AnyActiveListing(_marketplace.ID))
                 {
-                    products.Add(productData.GetParentProductDto(listingItem.Condition, listingItem.Title));
+                    products.Add(productData.GetParentProductDto(listingItem.Title));
                 }
             }
 

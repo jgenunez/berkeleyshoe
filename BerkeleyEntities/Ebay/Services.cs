@@ -13,6 +13,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Data.Objects;
+using System.Xml.Serialization;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace BerkeleyEntities.Ebay
 {
@@ -118,7 +121,7 @@ namespace BerkeleyEntities.Ebay
                         {
                             try
                             {
-                                End(marketplaceID, listing.Code);
+                                End(marketplaceID, listing.Code, "Overpublished Service");
                             }
                             catch (Exception e)
                             {
@@ -150,7 +153,7 @@ namespace BerkeleyEntities.Ebay
                             {
                                 try
                                 {
-                                    End(marketplaceID, listing.Code);
+                                    End(marketplaceID, listing.Code, "Overpublished Service");
                                 }
                                 catch (Exception e)
                                 {
@@ -167,7 +170,7 @@ namespace BerkeleyEntities.Ebay
 
                                 try
                                 {
-                                    Revise(listingDto, false, false);
+                                    Revise(listingDto, false, false, "Overpublished Service");
                                 }
                                 catch (Exception e)
                                 {
@@ -182,7 +185,7 @@ namespace BerkeleyEntities.Ebay
             }                                  
         }
 
-        public void Publish(ListingDto listingDto)
+        public void Publish(ListingDto listingDto, string source)
         {
             using (berkeleyEntities dataContext = new berkeleyEntities())
             {
@@ -190,13 +193,13 @@ namespace BerkeleyEntities.Ebay
 
                 EbayMarketplace marketplace = dataContext.EbayMarketplaces.Single(p => p.ID == listingDto.MarketplaceID);
 
-                Publisher publisher = new Publisher(dataContext, marketplace);
+                Publisher publisher = new Publisher(dataContext, marketplace, source);
 
                 publisher.AddListing(listingDto);
             }
         }
 
-        public void End(int marketplaceID, string code)
+        public void End(int marketplaceID, string code, string source)
         {
             using (berkeleyEntities dataContext = new berkeleyEntities())
             {
@@ -204,13 +207,13 @@ namespace BerkeleyEntities.Ebay
 
                 EbayMarketplace marketplace = dataContext.EbayMarketplaces.Single(p => p.ID == marketplaceID);
 
-                Publisher publisher = new Publisher(dataContext, marketplace);
+                Publisher publisher = new Publisher(dataContext, marketplace, source);
 
                 publisher.EndListing(code);
             }
         }
 
-        public void Revise(ListingDto listingDto, bool includeProductData, bool includeTemplate)
+        public void Revise(ListingDto listingDto, bool includeProductData, bool includeTemplate, string source)
         {
             using (berkeleyEntities dataContext = new berkeleyEntities())
             {
@@ -218,7 +221,7 @@ namespace BerkeleyEntities.Ebay
 
                 EbayMarketplace marketplace = dataContext.EbayMarketplaces.Single(p => p.ID == listingDto.MarketplaceID);
 
-                Publisher publisher = new Publisher(dataContext, marketplace);
+                Publisher publisher = new Publisher(dataContext, marketplace, source);
 
                 publisher.ReviseListing(listingDto, includeProductData, includeTemplate);
             }
@@ -232,10 +235,16 @@ namespace BerkeleyEntities.Ebay
         private EbayMarketplace _marketplace;
         private PictureSetRepository _picSetRepository = new PictureSetRepository();
         private ProductMapperFactory _productMapperFactory = new ProductMapperFactory();
+
+        private Dictionary<string, ItemType> _cachedTemplates = new Dictionary<string, ItemType>();
+        private Dictionary<string, string> _cachedDesigns = new Dictionary<string, string>();
+
+        private string _source;
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public Publisher(berkeleyEntities dataContext, EbayMarketplace marketplace)
+        public Publisher(berkeleyEntities dataContext, EbayMarketplace marketplace, string source)
         {
+            _source = source;
             _dataContext = dataContext;
             _marketplace = marketplace;
         }
@@ -257,12 +266,12 @@ namespace BerkeleyEntities.Ebay
             {
                 AddFixedPriceItemCall call = new AddFixedPriceItemCall(_marketplace.GetApiContext());
 
-                AddFixedPriceItemResponseType response = call.ExecuteRequest(new AddFixedPriceItemRequestType() { Item = ebayDto}) as AddFixedPriceItemResponseType;
+                AddFixedPriceItemResponseType response = call.ExecuteRequest(new AddFixedPriceItemRequestType() { Item = ebayDto }) as AddFixedPriceItemResponseType;
 
                 listingDto.Code = response.ItemID;
                 listingDto.StartTime = response.StartTime;
                 listingDto.EndTime = response.EndTime;
-                
+
             }
             else
             {
@@ -323,7 +332,7 @@ namespace BerkeleyEntities.Ebay
                     listing.EndTime = response.EndTime;
                 }
 
-
+                LogChanges(dataContext);
 
                 dataContext.SaveChanges();
             }
@@ -340,8 +349,38 @@ namespace BerkeleyEntities.Ebay
                 switch(entry.State)
                 {
                     case EntityState.Added :
-                        _logger.Info(string.Format("{0} | {1} | ", listingItem.Item.ItemLookupCode, listingItem.Listing.Code, listingItem.Quantity, listingItem.Price)); break;
-                    case EntityState.Modified : break;
+
+                        Bsi_ListingChangesLog logEntryAdded = new Bsi_ListingChangesLog();
+                        logEntryAdded.Date = DateTime.Now;
+                        logEntryAdded.Item = listingItem.Item;
+                        logEntryAdded.ListingCode = listingItem.Listing.Code;
+                        logEntryAdded.Marketplace = listingItem.Listing.Marketplace.Code;
+                        logEntryAdded.ListingType = listingItem.Listing.Format;
+                        logEntryAdded.Source = _source;
+                        logEntryAdded.Change = listingItem.Quantity;
+                        break;
+
+                    case EntityState.Modified :
+
+                        int originalQty = int.Parse(entry.OriginalValues["Quantity"].ToString());
+                        int currentyQty = int.Parse(entry.CurrentValues["Quantity"].ToString());
+
+                        int change = currentyQty - originalQty;
+
+                        if (change != 0)
+                        {
+                            Bsi_ListingChangesLog logEntryModified = new Bsi_ListingChangesLog();
+                            logEntryModified.Date = DateTime.Now;
+                            logEntryModified.Item = listingItem.Item;
+                            logEntryModified.ListingCode = listingItem.Listing.Code;
+                            logEntryModified.Marketplace = listingItem.Listing.Marketplace.Code;
+                            logEntryModified.ListingType = listingItem.Listing.Format;
+                            logEntryModified.Source = _source;
+                            logEntryModified.Change = change;
+                        }
+
+                        break;
+
                     default: break;
 
                 }
@@ -394,6 +433,8 @@ namespace BerkeleyEntities.Ebay
                     listingItem.Title = listingItemDto.Title;
                 }
 
+                LogChanges(dataContext);
+
                 dataContext.SaveChanges();
             }
         }
@@ -428,34 +469,31 @@ namespace BerkeleyEntities.Ebay
 
                 listing.LastSyncTime = DateTime.UtcNow;
 
+                LogChanges(dataContext);
+
                 dataContext.SaveChanges();
             }
         }
 
         private ItemType MapToEbayDto(ListingDto listingDto, bool includeProductData, bool includeTemplate)
         {
-            ItemType ebayDto = new ItemType();
+            ItemType ebayDto = null;
 
             if (includeTemplate)
             {
-                ebayDto.CountrySpecified = true;
-                ebayDto.Country = CountryCodeType.US;
-                ebayDto.Location = "Clermont, Florida";
-                ebayDto.Currency = CurrencyCodeType.USD;
-                ebayDto.CurrencySpecified = true;
-                ebayDto.HitCounterSpecified = true;
-                ebayDto.HitCounter = HitCounterCodeType.BasicStyle;
-                ebayDto.PaymentMethods = new BuyerPaymentMethodCodeTypeCollection() { BuyerPaymentMethodCodeType.PayPal };
-                ebayDto.ShippingDetails = _marketplace.GetShippingDetails();
-                ebayDto.PayPalEmailAddress = _marketplace.PayPalAccount;
-                ebayDto.DispatchTimeMaxSpecified = true;
-                ebayDto.DispatchTimeMax = 1;
-                ebayDto.ReturnPolicy = new ReturnPolicyType()
-                {
-                    ReturnsAcceptedOption = "ReturnsAccepted",
-                    ReturnsWithinOption = "Days_30",
-                    ShippingCostPaidByOption = "Buyer"
-                }; 
+                string templateName = string.IsNullOrWhiteSpace(listingDto.Template) ? "default" : listingDto.Template;
+
+                string designName = string.IsNullOrWhiteSpace(listingDto.Design) ? "default" : listingDto.Design;
+
+                ebayDto = GetTemplate(templateName);
+
+                ebayDto.LookupAttributeArray = null;
+
+                ebayDto.Description = GetDesign(designName).Replace("<!-- INSERT FULL DESCRIPTION -->", listingDto.FullDescription); ;
+            }
+            else
+            {
+                ebayDto = new ItemType();
             }
 
             ebayDto.ItemID = !string.IsNullOrEmpty(listingDto.Code) ? listingDto.Code : ebayDto.ItemID;
@@ -469,11 +507,6 @@ namespace BerkeleyEntities.Ebay
                 ebayDto.ListingType = (ListingTypeCodeType)Enum.Parse(typeof(ListingTypeCodeType), listingDto.Format);
             }
 
-            if (!string.IsNullOrEmpty(listingDto.FullDescription))
-            {
-                ebayDto.Description = _marketplace.GetTemplate().Replace("<!-- INSERT FULL DESCRIPTION -->", listingDto.FullDescription);
-            }
-
             if (listingDto.ScheduleTimeSpecified)
             {
                 ebayDto.ScheduleTimeSpecified = true;
@@ -485,7 +518,7 @@ namespace BerkeleyEntities.Ebay
                 ebayDto.BuyItNowPrice = new AmountType() { currencyID = CurrencyCodeType.USD, Value = Convert.ToDouble(listingDto.BinPrice) };
             }
 
-            
+
             if (!listingDto.IsVariation)
             {
                 ListingItemDto listingItemDto = listingDto.Items.First();
@@ -507,7 +540,7 @@ namespace BerkeleyEntities.Ebay
                     ebayDto.ConditionIDSpecified = true;
                     ebayDto.ConditionID = mapper.GetConditionID();
                     ebayDto.PrimaryCategory = new CategoryType() { CategoryID = mapper.CategoryID };
-                    
+
                     ebayDto.ItemSpecifics = new NameValueListTypeCollection(itemSpecifics);
 
                     if (listingDto.UrlsIds.Count() > 0)
@@ -516,7 +549,7 @@ namespace BerkeleyEntities.Ebay
                         ebayDto.PictureDetails = new PictureDetailsType() { PictureURL = new StringCollection(urls.ToArray()) };
                     }
                 }
-                
+
 
                 if (includeTemplate && listingDto.Format.Equals(EbayMarketplace.FORMAT_FIXEDPRICE))
                 {
@@ -562,11 +595,11 @@ namespace BerkeleyEntities.Ebay
                         if (allUrls.Any(p => p.LocalName.Contains("_")))
                         {
                             ebayDto.Variations.Pictures = matrixMapper.GetVariationPictures(allUrls.Where(p => p.LocalName.Contains("_")));
-                        } 
+                        }
                     }
                 }
 
-                
+
 
                 foreach (ListingItemDto listingItemDto in listingDto.Items)
                 {
@@ -591,6 +624,70 @@ namespace BerkeleyEntities.Ebay
             }
 
             return ebayDto;
+        }
+
+        private ItemType GetTemplate(string name)
+        {
+            string path = _marketplace.RootDir + @"\" + _marketplace.Code + @"\" + name + ".xml";
+
+            XmlSerializer serializer = new XmlSerializer(typeof(ItemType));
+
+            
+
+            return serializer.Deserialize(new FileStream(path, FileMode.Open)) as ItemType;
+
+
+            //ItemType template = null;
+
+            
+            //if (_cachedTemplates.ContainsKey(name))
+            //{
+            //    template = _cachedTemplates[name];
+            //}
+            //else
+            //{
+            //    string path = _marketplace.RootDir + @"\" + _marketplace.Code + @"\" + name + ".xml";
+
+            //    XmlSerializer serializer = new XmlSerializer(typeof(ItemType));
+
+            //    template = serializer.Deserialize(new FileStream(path, FileMode.Open)) as ItemType;
+
+            //    _cachedTemplates.Add(name, template);
+            //}
+
+            //using (Stream stream = new MemoryStream())
+            //{
+            //    IFormatter formatter = new BinaryFormatter();
+
+            //    formatter.Serialize(stream, template);
+
+            //    stream.Seek(0, SeekOrigin.Begin);
+
+            //    return formatter.Deserialize(stream) as ItemType;
+            //}
+            
+        }
+
+        private string GetDesign(string name)
+        {
+            string design = null;
+
+            if (_cachedDesigns.ContainsKey(name))
+            {
+                design = _cachedDesigns[name];
+            }
+            else
+            {
+                string path = _marketplace.RootDir + @"\" + _marketplace.Code + @"\" + name + ".html";
+
+                StreamReader reader = new StreamReader(File.OpenRead(path));
+
+                design = reader.ReadToEnd();
+
+                _cachedDesigns.Add(name, design);
+            }
+
+            return design;
         }
 
         private IEnumerable<int> GetEPSUrls(IEnumerable<PictureInfo> pics)
@@ -768,6 +865,10 @@ namespace BerkeleyEntities.Ebay
         public DateTime StartTime { get; set; }
 
         public DateTime EndTime { get; set; }
+
+        public string Template { get; set; }
+
+        public string Design { get; set; }
     }
 
     public class ListingItemDto
@@ -822,6 +923,8 @@ namespace BerkeleyEntities.Ebay
 
             ProcessListingData(ExecuteGetSellerList(request));
 
+            LogChanges();
+
             _dataContext.SaveChanges();
         }
 
@@ -839,20 +942,7 @@ namespace BerkeleyEntities.Ebay
 
             ProcessListingData(ExecuteGetSellerList(request));
 
-
-            //var activeListings = _marketplace.Listings.Where(p => p.Status.Equals(EbayMarketplace.STATUS_ACTIVE) && p.EntityState.Equals(EntityState.Unchanged));
-
-            //var listingDtos = new ItemTypeCollection();
-
-            //foreach (var listing in activeListings)
-            //{
-            //    listingDtos.Add(SyncListing(listing.Code));
-            //}
-
-            //if (listingDtos.Count > 0)
-            //{
-            //    ProcessListingData(listingDtos);
-            //}
+            LogChanges();
 
             _dataContext.SaveChanges();
         }
@@ -882,6 +972,8 @@ namespace BerkeleyEntities.Ebay
             GetSellerEventsResponseType response = call.ExecuteRequest(request) as GetSellerEventsResponseType;
 
             ProcessListingData(response.ItemArray);
+
+            LogChanges();
 
             _dataContext.SaveChanges();
 
@@ -1000,11 +1092,18 @@ namespace BerkeleyEntities.Ebay
 
             listingItem.Price = listingDto.StartPrice != null ? decimal.Parse(listingDto.StartPrice.Value.ToString()) : listingItem.Price;
 
-            listingItem.Quantity =
+            if (listing.Status.Equals(EbayMarketplace.STATUS_COMPLETED))
+            {
+                listingItem.Quantity = 0;
+            }
+            else
+            {
+                listingItem.Quantity =
                 listingDto.QuantitySpecified &&
                 listingDto.SellingStatus != null &&
                 listingDto.SellingStatus.QuantitySoldSpecified ?
                     listingDto.Quantity - listingDto.SellingStatus.QuantitySold : listingItem.Quantity;
+            }          
         }
 
         private void MapListingItem(EbayListing listing, VariationsType variationDtos)
@@ -1027,11 +1126,21 @@ namespace BerkeleyEntities.Ebay
 
                 listingItem.Price = variationDto.StartPrice != null ? Convert.ToDecimal(variationDto.StartPrice.Value) : listingItem.Price;
 
-                listingItem.Quantity =
+
+                if (listing.Status.Equals(EbayMarketplace.STATUS_COMPLETED))
+                {
+                    listingItem.Quantity = 0;
+                }
+                else
+                {
+                    listingItem.Quantity =
                     variationDto.QuantitySpecified &&
                     variationDto.SellingStatus != null &&
                     variationDto.SellingStatus.QuantitySoldSpecified ?
                         variationDto.Quantity - variationDto.SellingStatus.QuantitySold : listingItem.Quantity;
+                }   
+
+                
             }
         }
 
@@ -1047,6 +1156,55 @@ namespace BerkeleyEntities.Ebay
             }
 
             return listingItem;
+        }
+
+        private void LogChanges()
+        {
+            var entries = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added | EntityState.Modified | EntityState.Deleted);
+
+            foreach (var entry in entries.Where(p => p.Entity is EbayListingItem))
+            {
+                EbayListingItem listingItem = entry.Entity as EbayListingItem;
+
+                switch (entry.State)
+                {
+                    case EntityState.Added:
+
+                        Bsi_ListingChangesLog logEntryAdded = new Bsi_ListingChangesLog();
+                        logEntryAdded.Date = DateTime.Now;
+                        logEntryAdded.Item = listingItem.Item;
+                        logEntryAdded.ListingCode = listingItem.Listing.Code;
+                        logEntryAdded.Marketplace = listingItem.Listing.Marketplace.Code;
+                        logEntryAdded.ListingType = listingItem.Listing.Format;
+                        logEntryAdded.Source = "Synchronization Service";
+                        logEntryAdded.Change = listingItem.Quantity;
+                        break;
+
+                    case EntityState.Modified:
+
+                        int originalQty = int.Parse(entry.OriginalValues["Quantity"].ToString());
+                        int currentyQty = int.Parse(entry.CurrentValues["Quantity"].ToString());
+
+                        int change = currentyQty - originalQty;
+
+                        if (change != 0)
+                        {
+                            Bsi_ListingChangesLog logEntryModified = new Bsi_ListingChangesLog();
+                            logEntryModified.Date = DateTime.Now;
+                            logEntryModified.Item = listingItem.Item;
+                            logEntryModified.ListingCode = listingItem.Listing.Code;
+                            logEntryModified.Marketplace = listingItem.Listing.Marketplace.Code;
+                            logEntryModified.ListingType = listingItem.Listing.Format;
+                            logEntryModified.Source = "Synchronization Service";
+                            logEntryModified.Change = change;
+                        }
+
+                        break;
+
+                    default: break;
+
+                }
+            }
         }
 
     }

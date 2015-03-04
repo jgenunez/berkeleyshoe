@@ -21,6 +21,8 @@ namespace BerkeleyEntities.Ebay.Mappers
 
             nameValueList.Add(BuildItemSpecific("Brand", new string[1] { this.ToTitleCase(_item.SubDescription1) }));
 
+            nameValueList.Add(BuildItemSpecific("Size Type", new string[1] { "Regular" }));
+
             if (!string.IsNullOrWhiteSpace(_item.GTIN))
             {
                 nameValueList.Add(BuildItemSpecific("UPC", new string[1] { _item.GTIN }));

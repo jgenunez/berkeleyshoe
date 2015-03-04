@@ -103,10 +103,16 @@ namespace WorkbookPublisher
                 {
                     entry.ASIN = listingItem.ASIN;
 
-                    if (listingItem.Quantity == entry.Q && decimal.Compare(listingItem.Price, entry.P) == 0 && entry.GetUpdateFlags().Count == 0)
+                    if (entry.Q == -1)
+                    {
+                        entry.Q = listingItem.Quantity;
+                        entry.P = listingItem.Price;
+
+                        entry.Status = StatusCode.Completed;
+                    }
+                    else if (listingItem.Quantity == entry.Q && decimal.Compare(listingItem.Price, entry.P) == 0 && entry.GetUpdateFlags().Count == 0)
                     {
                         entry.Status = StatusCode.Completed;
-
                     }
                     else
                     {

@@ -125,9 +125,9 @@ namespace WorkbookPublisher
                 entry.QSpecified = true;
                 entry.PSpecified = true;
 
-                if (_dataContext.EbayListings.Any(p => p.Sku.Equals(item.ClassName) && p.Status.Equals(EbayMarketplace.STATUS_ACTIVE)))
+                if (_dataContext.EbayListings.Any(p => p.Sku.Equals(item.ClassName) && p.Status.Equals(EbayMarketplace.STATUS_ACTIVE) && p.Marketplace.Code.Equals(_marketplaceCode)))
                 {
-                    EbayListing listing = _dataContext.EbayListings.Single(p => p.Sku.Equals(item.ClassName) && p.Status.Equals(EbayMarketplace.STATUS_ACTIVE));
+                    EbayListing listing = _dataContext.EbayListings.Single(p => p.Sku.Equals(item.ClassName) && p.Status.Equals(EbayMarketplace.STATUS_ACTIVE) && p.Marketplace.Code.Equals(_marketplaceCode));
 
                     entry.Code = listing.Code;
                 }
@@ -170,10 +170,31 @@ namespace WorkbookPublisher
                     entry.Message = "auction max qty is 1";
                     entry.Status = StatusCode.Error;
                 }
+            }
 
-                if (item.AuctionWithBidQty >= item.QtyAvailable && entry.Q != 0)
+            if (string.IsNullOrWhiteSpace(entry.Code))
+            {
+                if (entry.StartDateSpecified && entry.StartDate < DateTime.UtcNow)
                 {
-                    entry.Message = "out of stock";
+                    entry.Message = "cannot schedule in the past";
+                    entry.Status = StatusCode.Error;
+                }
+
+                if (string.IsNullOrWhiteSpace(entry.FullDescription))
+                {
+                    entry.Message = "full description required";
+                    entry.Status = StatusCode.Error;
+                }
+
+                if (entry.Q < 1)
+                {
+                    entry.Message = "quantity must be greater than zero";
+                    entry.Status = StatusCode.Error;
+                }
+
+                if (string.IsNullOrWhiteSpace(entry.Title))
+                {
+                    entry.Message = "title required";
                     entry.Status = StatusCode.Error;
                 }
             }
@@ -193,11 +214,7 @@ namespace WorkbookPublisher
                 entry.Message = "title max characters is 80";
                 entry.Status = StatusCode.Error;
             }
-            if (entry.StartDateSpecified && entry.StartDate < DateTime.UtcNow)
-            {
-                entry.Message = "cannot schedule in the past";
-                entry.Status = StatusCode.Error;
-            }
+            
         }
     }
 }

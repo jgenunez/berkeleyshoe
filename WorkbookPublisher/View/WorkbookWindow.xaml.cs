@@ -22,6 +22,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
 using eBay.Service.Core.Soap;
+using BerkeleyEntities.Ebay;
 
 namespace WorkbookPublisher
 {
@@ -41,17 +42,42 @@ namespace WorkbookPublisher
 
         private void TestTemplateEditor()
         {
-            Window window = new Window();
+            //using (berkeleyEntities dataContext = new berkeleyEntities())
+            //{
+            //    dataContext.MaterializeAttributes = true;
+
+            //    EbayMarketplace marketplace = dataContext.EbayMarketplaces.Single(p => p.ID == 1);
+
+            //    Publisher publisher = new Publisher(dataContext, marketplace, "testing");
+
+            //    ListingDto listing = new ListingDto();
+
+            //    ListingItemDto listingItem = new ListingItemDto();
+            //    listingItem.Sku = "10061-10-M";
+
+            //    listing.Items.Add(listingItem);
+
+            //    listing.Sku = "10061-10-M";
+
+            //    ItemType ebayDto = publisher.AddListing(listing);
+
+            //    System.Xml.Serialization.XmlSerializer serializer = new System.Xml.Serialization.XmlSerializer(typeof(ItemType));
+            //    ebayDto = serializer.Deserialize(new FileStream(@"C:\Users\JUAN\Desktop\testing.xml", FileMode.Open)) as ItemType;
+            //    serializer.Serialize(new FileStream(@"C:\Users\JUAN\Desktop\testing.xml", FileMode.Create), ebayDto);
+            //}
+
+
+            //Window window = new Window();
             
-            PostingTemplateEditor editor = new PostingTemplateEditor();
-            editor.DataContext = new TemplateViewModel(new ItemType() { PaymentMethods = new BuyerPaymentMethodCodeTypeCollection() });
+            //PostingTemplateEditor editor = new PostingTemplateEditor();
+            //editor.DataContext = new TemplateViewModel(new ItemType() { PaymentMethods = new BuyerPaymentMethodCodeTypeCollection() });
 
-            StackPanel sp = new StackPanel();
-            sp.Children.Add(editor);
+            //StackPanel sp = new StackPanel();
+            //sp.Children.Add(editor);
 
-            window.Content = sp;
+            //window.Content = sp;
 
-            window.ShowDialog();
+            //window.ShowDialog();
         }
 
         private void TestBonanza()
@@ -142,7 +168,13 @@ namespace WorkbookPublisher
                 MessageBox.Show("Invalid columns");
             }
 
+
+
+            MessageBox.Show("main sheet updated");
+
             btnUpdate.IsEnabled = true;
+
+            
         }
 
         private async void btnPrint_Click(object sender, RoutedEventArgs e)
@@ -482,6 +514,8 @@ namespace WorkbookPublisher
         {
             using (berkeleyEntities dataContext = new berkeleyEntities())
             {
+                BerkeleyEntities.Amazon.AmazonServices amznServices = new BerkeleyEntities.Amazon.AmazonServices();
+
                 foreach (MainEntry entry in entries)
                 {
                     Item item = dataContext.Items.Single(p => p.ItemLookupCode.Equals(entry.Sku));
@@ -492,7 +526,7 @@ namespace WorkbookPublisher
 
                 var entriesWithUPC = entries.Where(p => !string.IsNullOrEmpty(p.UPC));
 
-                var results = marketplace.GetCatalogData(entriesWithUPC.Select(p => p.UPC));
+                var results = amznServices.GetMatchingProductForId(marketplace.ID, entriesWithUPC.Select(p => p.UPC));
 
                 foreach (var result in results)
                 {
@@ -530,6 +564,31 @@ namespace WorkbookPublisher
                                 entry.AmznTitle = node.InnerText;
                             }
                         }
+                    }
+                }
+
+                foreach (MainEntry entry in entries)
+                {
+                    Item item = dataContext.Items.Single(p => p.ItemLookupCode.Equals(entry.Sku));
+
+                    AmznListingItem listingItem = item.AmznListingItems.FirstOrDefault();
+
+                    if (listingItem != null)
+                    {
+                        entry.Asin = listingItem.ASIN;
+                    }
+                }
+
+                var competitivePriceResults = amznServices.GetLowestOfferListingsForAsin(marketplace.ID, entries.Where(p => !string.IsNullOrWhiteSpace(p.Asin)).Select(p => p.Asin));
+
+                foreach (var result in competitivePriceResults)
+                {
+                    MainEntry entry = entries.First(p => p.Asin.Equals(result.ASIN));
+
+                    if (result.IsSetProduct() && result.Product.IsSetLowestOfferListings() && result.Product.LowestOfferListings.IsSetLowestOfferListing())
+                    {
+                        var competitivePrice = result.Product.LowestOfferListings.LowestOfferListing.First();
+                        entry.AmznPrice = competitivePrice.Price.LandedPrice.Amount;
                     }
                 }
             }

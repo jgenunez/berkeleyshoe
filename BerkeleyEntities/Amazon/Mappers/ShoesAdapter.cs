@@ -15,7 +15,7 @@ namespace AmazonServices
  
         }
 
-        public override Product GetProductDto(string condition, string title)
+        public override Product GetProductDto(string title)
         {
             ShoesVariationData variationData = new ShoesVariationData();
             variationData.ParentageSpecified = true;
@@ -42,14 +42,19 @@ namespace AmazonServices
             shoes.ClassificationData = classificationData;
             shoes.VariationData = variationData;
 
-            Product product = base.GetProductDto(condition, title);
-            product.DescriptionData.ItemType = GetItemType();
-            product.ProductData = new ProductProductData() { Item = shoes };
+            Product product = base.GetProductDto(title);
+
+
+            if (!_item.HasAsin())
+            {
+                product.DescriptionData.ItemType = GetItemType();
+                product.ProductData = new ProductProductData() { Item = shoes };
+            }
 
             return product;
         }
 
-        public override Product GetParentProductDto(string condition, string title)
+        public override Product GetParentProductDto(string title)
         {
             ShoesVariationData variationData = new ShoesVariationData();
             variationData.ParentageSpecified = true;
@@ -78,7 +83,7 @@ namespace AmazonServices
             parentShoes.VariationData = variationData;
 
 
-            Product parentProduct = base.GetParentProductDto(condition, title);
+            Product parentProduct = base.GetParentProductDto(title);
 
             parentProduct.ProductData = new ProductProductData() { Item = parentShoes };
 
@@ -215,7 +220,7 @@ namespace AmazonServices
                 return "slippers";
             }
 
-            else { return string.Empty; }
+            else { return " "; }
         }
         
         private string GetSize()

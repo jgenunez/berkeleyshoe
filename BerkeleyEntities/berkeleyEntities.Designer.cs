@@ -64,6 +64,7 @@ using System.Xml.Serialization;
 [assembly: EdmRelationshipAttribute("BerkeleyEntities", "BonanzaListingItemItem", "BonanzaListingItem", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BerkeleyEntities.BonanzaListingItem), "Item", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(BerkeleyEntities.Item), true)]
 [assembly: EdmRelationshipAttribute("BerkeleyEntities", "BonanzaListingBonanzaListingItem", "BonanzaListing", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(BerkeleyEntities.BonanzaListing), "BonanzaListingItem", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BerkeleyEntities.BonanzaListingItem), true)]
 [assembly: EdmRelationshipAttribute("BerkeleyEntities", "BonanzaMarketplaceBonanzaListing", "BonanzaMarketplace", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(BerkeleyEntities.BonanzaMarketplace), "BonanzaListing", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BerkeleyEntities.BonanzaListing), true)]
+[assembly: EdmRelationshipAttribute("BerkeleyEntities", "Bsi_ListingChangesLogItem", "Bsi_ListingChangesLog", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BerkeleyEntities.Bsi_ListingChangesLog), "Item", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(BerkeleyEntities.Item), true)]
 
 #endregion
 
@@ -770,6 +771,22 @@ namespace BerkeleyEntities
             }
         }
         private ObjectSet<BonanzaMarketplace> _BonanzaMarketplaces;
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        public ObjectSet<Bsi_ListingChangesLog> Bsi_ListingChangesLog
+        {
+            get
+            {
+                if ((_Bsi_ListingChangesLog == null))
+                {
+                    _Bsi_ListingChangesLog = base.CreateObjectSet<Bsi_ListingChangesLog>("Bsi_ListingChangesLog");
+                }
+                return _Bsi_ListingChangesLog;
+            }
+        }
+        private ObjectSet<Bsi_ListingChangesLog> _Bsi_ListingChangesLog;
 
         #endregion
 
@@ -1102,6 +1119,14 @@ namespace BerkeleyEntities
         {
             base.AddObject("BonanzaMarketplaces", bonanzaMarketplace);
         }
+    
+        /// <summary>
+        /// Deprecated Method for adding a new object to the Bsi_ListingChangesLog EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// </summary>
+        public void AddToBsi_ListingChangesLog(Bsi_ListingChangesLog bsi_ListingChangesLog)
+        {
+            base.AddObject("Bsi_ListingChangesLog", bsi_ListingChangesLog);
+        }
 
         #endregion
 
@@ -1303,13 +1328,12 @@ namespace BerkeleyEntities
         /// <param name="price">Initial value of the Price property.</param>
         /// <param name="title">Initial value of the Title property.</param>
         /// <param name="openDate">Initial value of the OpenDate property.</param>
-        /// <param name="condition">Initial value of the Condition property.</param>
         /// <param name="aSIN">Initial value of the ASIN property.</param>
         /// <param name="isActive">Initial value of the IsActive property.</param>
         /// <param name="lastSyncTime">Initial value of the LastSyncTime property.</param>
         /// <param name="marketplaceID">Initial value of the MarketplaceID property.</param>
         /// <param name="sku">Initial value of the Sku property.</param>
-        public static AmznListingItem CreateAmznListingItem(global::System.Int32 id, global::System.Int32 quantity, global::System.Decimal price, global::System.String title, global::System.DateTime openDate, global::System.String condition, global::System.String aSIN, global::System.Boolean isActive, global::System.DateTime lastSyncTime, global::System.Int32 marketplaceID, global::System.String sku)
+        public static AmznListingItem CreateAmznListingItem(global::System.Int32 id, global::System.Int32 quantity, global::System.Decimal price, global::System.String title, global::System.DateTime openDate, global::System.String aSIN, global::System.Boolean isActive, global::System.DateTime lastSyncTime, global::System.Int32 marketplaceID, global::System.String sku)
         {
             AmznListingItem amznListingItem = new AmznListingItem();
             amznListingItem.ID = id;
@@ -1317,7 +1341,6 @@ namespace BerkeleyEntities
             amznListingItem.Price = price;
             amznListingItem.Title = title;
             amznListingItem.OpenDate = openDate;
-            amznListingItem.Condition = condition;
             amznListingItem.ASIN = aSIN;
             amznListingItem.IsActive = isActive;
             amznListingItem.LastSyncTime = lastSyncTime;
@@ -1476,30 +1499,6 @@ namespace BerkeleyEntities
         private global::System.DateTime _OpenDate;
         partial void OnOpenDateChanging(global::System.DateTime value);
         partial void OnOpenDateChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.String Condition
-        {
-            get
-            {
-                return _Condition;
-            }
-            set
-            {
-                OnConditionChanging(value);
-                ReportPropertyChanging("Condition");
-                _Condition = StructuralObject.SetValidValue(value, false, "Condition");
-                ReportPropertyChanged("Condition");
-                OnConditionChanged();
-            }
-        }
-        private global::System.String _Condition;
-        partial void OnConditionChanging(global::System.String value);
-        partial void OnConditionChanged();
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -3835,6 +3834,286 @@ namespace BerkeleyEntities
                 if ((value != null))
                 {
                     ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<BonanzaListing>("BerkeleyEntities.BonanzaMarketplaceBonanzaListing", "BonanzaListing", value);
+                }
+            }
+        }
+
+        #endregion
+
+    }
+    
+    /// <summary>
+    /// No Metadata Documentation available.
+    /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="BerkeleyEntities", Name="Bsi_ListingChangesLog")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
+    public partial class Bsi_ListingChangesLog : EntityObject
+    {
+        #region Factory Method
+    
+        /// <summary>
+        /// Create a new Bsi_ListingChangesLog object.
+        /// </summary>
+        /// <param name="id">Initial value of the ID property.</param>
+        /// <param name="itemID">Initial value of the ItemID property.</param>
+        /// <param name="source">Initial value of the Source property.</param>
+        /// <param name="marketplace">Initial value of the Marketplace property.</param>
+        /// <param name="listingCode">Initial value of the ListingCode property.</param>
+        /// <param name="listingType">Initial value of the ListingType property.</param>
+        /// <param name="date">Initial value of the Date property.</param>
+        /// <param name="change">Initial value of the Change property.</param>
+        public static Bsi_ListingChangesLog CreateBsi_ListingChangesLog(global::System.Int32 id, global::System.Int32 itemID, global::System.String source, global::System.String marketplace, global::System.String listingCode, global::System.String listingType, global::System.DateTime date, global::System.Int32 change)
+        {
+            Bsi_ListingChangesLog bsi_ListingChangesLog = new Bsi_ListingChangesLog();
+            bsi_ListingChangesLog.ID = id;
+            bsi_ListingChangesLog.ItemID = itemID;
+            bsi_ListingChangesLog.Source = source;
+            bsi_ListingChangesLog.Marketplace = marketplace;
+            bsi_ListingChangesLog.ListingCode = listingCode;
+            bsi_ListingChangesLog.ListingType = listingType;
+            bsi_ListingChangesLog.Date = date;
+            bsi_ListingChangesLog.Change = change;
+            return bsi_ListingChangesLog;
+        }
+
+        #endregion
+
+        #region Simple Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 ID
+        {
+            get
+            {
+                return _ID;
+            }
+            set
+            {
+                if (_ID != value)
+                {
+                    OnIDChanging(value);
+                    ReportPropertyChanging("ID");
+                    _ID = StructuralObject.SetValidValue(value, "ID");
+                    ReportPropertyChanged("ID");
+                    OnIDChanged();
+                }
+            }
+        }
+        private global::System.Int32 _ID;
+        partial void OnIDChanging(global::System.Int32 value);
+        partial void OnIDChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 ItemID
+        {
+            get
+            {
+                return _ItemID;
+            }
+            set
+            {
+                OnItemIDChanging(value);
+                ReportPropertyChanging("ItemID");
+                _ItemID = StructuralObject.SetValidValue(value, "ItemID");
+                ReportPropertyChanged("ItemID");
+                OnItemIDChanged();
+            }
+        }
+        private global::System.Int32 _ItemID;
+        partial void OnItemIDChanging(global::System.Int32 value);
+        partial void OnItemIDChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String Source
+        {
+            get
+            {
+                return _Source;
+            }
+            set
+            {
+                OnSourceChanging(value);
+                ReportPropertyChanging("Source");
+                _Source = StructuralObject.SetValidValue(value, false, "Source");
+                ReportPropertyChanged("Source");
+                OnSourceChanged();
+            }
+        }
+        private global::System.String _Source;
+        partial void OnSourceChanging(global::System.String value);
+        partial void OnSourceChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String Marketplace
+        {
+            get
+            {
+                return _Marketplace;
+            }
+            set
+            {
+                OnMarketplaceChanging(value);
+                ReportPropertyChanging("Marketplace");
+                _Marketplace = StructuralObject.SetValidValue(value, false, "Marketplace");
+                ReportPropertyChanged("Marketplace");
+                OnMarketplaceChanged();
+            }
+        }
+        private global::System.String _Marketplace;
+        partial void OnMarketplaceChanging(global::System.String value);
+        partial void OnMarketplaceChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String ListingCode
+        {
+            get
+            {
+                return _ListingCode;
+            }
+            set
+            {
+                OnListingCodeChanging(value);
+                ReportPropertyChanging("ListingCode");
+                _ListingCode = StructuralObject.SetValidValue(value, false, "ListingCode");
+                ReportPropertyChanged("ListingCode");
+                OnListingCodeChanged();
+            }
+        }
+        private global::System.String _ListingCode;
+        partial void OnListingCodeChanging(global::System.String value);
+        partial void OnListingCodeChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String ListingType
+        {
+            get
+            {
+                return _ListingType;
+            }
+            set
+            {
+                OnListingTypeChanging(value);
+                ReportPropertyChanging("ListingType");
+                _ListingType = StructuralObject.SetValidValue(value, false, "ListingType");
+                ReportPropertyChanged("ListingType");
+                OnListingTypeChanged();
+            }
+        }
+        private global::System.String _ListingType;
+        partial void OnListingTypeChanging(global::System.String value);
+        partial void OnListingTypeChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.DateTime Date
+        {
+            get
+            {
+                return _Date;
+            }
+            set
+            {
+                OnDateChanging(value);
+                ReportPropertyChanging("Date");
+                _Date = StructuralObject.SetValidValue(value, "Date");
+                ReportPropertyChanged("Date");
+                OnDateChanged();
+            }
+        }
+        private global::System.DateTime _Date;
+        partial void OnDateChanging(global::System.DateTime value);
+        partial void OnDateChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 Change
+        {
+            get
+            {
+                return _Change;
+            }
+            set
+            {
+                OnChangeChanging(value);
+                ReportPropertyChanging("Change");
+                _Change = StructuralObject.SetValidValue(value, "Change");
+                ReportPropertyChanged("Change");
+                OnChangeChanged();
+            }
+        }
+        private global::System.Int32 _Change;
+        partial void OnChangeChanging(global::System.Int32 value);
+        partial void OnChangeChanged();
+
+        #endregion
+
+        #region Navigation Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("BerkeleyEntities", "Bsi_ListingChangesLogItem", "Item")]
+        public Item Item
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Item>("BerkeleyEntities.Bsi_ListingChangesLogItem", "Item").Value;
+            }
+            set
+            {
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Item>("BerkeleyEntities.Bsi_ListingChangesLogItem", "Item").Value = value;
+            }
+        }
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [DataMemberAttribute()]
+        public EntityReference<Item> ItemReference
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Item>("BerkeleyEntities.Bsi_ListingChangesLogItem", "Item");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<Item>("BerkeleyEntities.Bsi_ListingChangesLogItem", "Item", value);
                 }
             }
         }
@@ -14711,6 +14990,28 @@ namespace BerkeleyEntities
                 if ((value != null))
                 {
                     ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<BonanzaListingItem>("BerkeleyEntities.BonanzaListingItemItem", "BonanzaListingItem", value);
+                }
+            }
+        }
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("BerkeleyEntities", "Bsi_ListingChangesLogItem", "Bsi_ListingChangesLog")]
+        public EntityCollection<Bsi_ListingChangesLog> ListingChangesLog
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<Bsi_ListingChangesLog>("BerkeleyEntities.Bsi_ListingChangesLogItem", "Bsi_ListingChangesLog");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<Bsi_ListingChangesLog>("BerkeleyEntities.Bsi_ListingChangesLogItem", "Bsi_ListingChangesLog", value);
                 }
             }
         }

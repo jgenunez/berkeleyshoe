@@ -22,33 +22,13 @@ namespace AmazonServices
             get { return _item.ItemLookupCode; }
         }
 
-        public virtual Product GetProductDto(string condition, string title)
+        public virtual Product GetProductDto(string title)
         {
-            ConditionInfo conditionInfo = new ConditionInfo();
-            conditionInfo.ConditionType = ConditionType.New;
+            Product product = new Product();
 
-            StandardProductID sid = new StandardProductID();
-
-            if (_item.GTINType.Equals("UPC"))
-            {
-                sid.Type = StandardProductIDType.UPC;
-            }
-            else
-            {
-                sid.Type = StandardProductIDType.EAN;
-            }
-            
-            sid.Value = _item.GTIN;
+            product.SKU = _item.ItemLookupCode;
 
             ProductDescriptionData descriptiondata = new ProductDescriptionData();
-            descriptiondata.Brand = ToTitleCase(_item.SubDescription1);
-
-            if (_item.Price > _item.Cost)
-            {
-                descriptiondata.MSRP = new CurrencyAmount() { currency = BaseCurrencyCode.USD, Value = _item.Price };
-            }
-
-            //descriptiondata.Description = this.FullDescription;
 
             if (string.IsNullOrWhiteSpace(title))
             {
@@ -59,23 +39,57 @@ namespace AmazonServices
                 descriptiondata.Title = title;
             }
 
-            
-            Product product = new Product();
-            product.SKU = _item.ItemLookupCode;
-            product.StandardProductID = sid;
-            product.ItemPackageQuantity = "1";
-            product.NumberOfItems = "1";
-            product.Condition = conditionInfo;
-            product.DescriptionData = descriptiondata;
+            StandardProductID sid = new StandardProductID();
 
-           
-            //product.ReleaseDateSpecified = true;
-            //product.ReleaseDate = post.startDate;
+            if (_item.HasAsin())
+            {
+                string asin = _item.AmznListingItems.First(p => !p.ASIN.Equals("UNKNOWN")).ASIN;
+
+                sid.Type = StandardProductIDType.ASIN;
+                sid.Value = asin;
+
+                product.DescriptionData = descriptiondata;
+            }
+            else
+            {
+                ConditionInfo conditionInfo = new ConditionInfo();
+
+                conditionInfo.ConditionType = ConditionType.New;
+
+                if (_item.GTINType.Equals("UPC"))
+                {
+                    sid.Type = StandardProductIDType.UPC;
+                }
+                else
+                {
+                    sid.Type = StandardProductIDType.EAN;
+                }
+
+                sid.Value = _item.GTIN;
+
+                
+
+                descriptiondata.Brand = ToTitleCase(_item.SubDescription1);
+
+                if (_item.Price > _item.Cost)
+                {
+                    descriptiondata.MSRP = new CurrencyAmount() { currency = BaseCurrencyCode.USD, Value = _item.Price };
+                }
+
+                
+
+                product.ItemPackageQuantity = "1";
+                product.NumberOfItems = "1";
+                product.Condition = conditionInfo;
+                product.DescriptionData = descriptiondata;
+            }
+
+            product.StandardProductID = sid;
             
             return product;
         }
 
-        public virtual Product GetParentProductDto(string condition, string title)
+        public virtual Product GetParentProductDto(string title)
         {
             ConditionInfo conditionInfo = new ConditionInfo();
             conditionInfo.ConditionType = ConditionType.New;

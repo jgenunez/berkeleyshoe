@@ -128,10 +128,25 @@ namespace WorkbookPublisher
 
         private void Validate(Item item, BonanzaEntry entry)
         {
-            if (entry.Q == 0 && string.IsNullOrWhiteSpace(entry.Command))
+            if (string.IsNullOrWhiteSpace(entry.Code))
             {
-                entry.Message = "qty must be greater than 0";
-                entry.Status = StatusCode.Error;
+                if (string.IsNullOrWhiteSpace(entry.FullDescription))
+                {
+                    entry.Message = "full description required";
+                    entry.Status = StatusCode.Error;
+                }
+
+                if (entry.Q < 1)
+                {
+                    entry.Message = "quantity must be greater than zero";
+                    entry.Status = StatusCode.Error;
+                }
+
+                if (string.IsNullOrWhiteSpace(entry.Title))
+                {
+                    entry.Message = "title required";
+                    entry.Status = StatusCode.Error;
+                }
             }
 
             if (entry.Q > item.QtyAvailable)

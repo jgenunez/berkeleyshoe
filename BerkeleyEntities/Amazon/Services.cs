@@ -2,15 +2,18 @@
 using MarketplaceWebService;
 using MarketplaceWebService.Model;
 using MarketplaceWebServiceOrders.Model;
+using MarketplaceWebServiceProducts.Model;
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace BerkeleyEntities.Amazon
@@ -18,6 +21,301 @@ namespace BerkeleyEntities.Amazon
     public class AmazonServices
     {
         public event PublishingResultHandler Result;
+
+        public List<GetCompetitivePricingForASINResult> GetCompetitivePricingForAsin(int marketplaceID, IEnumerable<string> asins)
+        {
+            AmznMarketplace marketplace = null;
+
+            using (berkeleyEntities dataContext = new berkeleyEntities())
+            {
+                marketplace = dataContext.AmznMarketplaces.Single(p => p.ID == marketplaceID);
+            }
+
+            int max = 20;
+
+            int quota = max;
+
+            System.Timers.Timer timer = new System.Timers.Timer(1000);
+
+            timer.Elapsed += (sender, e) =>
+            {
+                if (quota < 20)
+                {
+                    if ((quota + 5) > max)
+                    {
+                        quota = max;
+                    }
+                    else
+                    {
+                        quota += 5;
+                    }
+                }
+            };
+
+            timer.Start();
+
+            List<GetCompetitivePricingForASINResult> results = new List<GetCompetitivePricingForASINResult>();
+
+            Queue<string> pending = new Queue<string>(asins);
+
+            while (pending.Count > 0)
+            {
+                List<string> current = new List<string>();
+
+                for (int i = 0; i < 20; i++)
+                {
+                    if (pending.Count > 0)
+                    {
+                        string asin = pending.Dequeue();
+
+                        if (!current.Contains(asin))
+                        {
+                            current.Add(asin);
+                        }
+                    }
+                }
+
+                if (current.Count > 0)
+                {
+                    GetCompetitivePricingForASINRequest request = new GetCompetitivePricingForASINRequest();
+                    request.SellerId = marketplace.MerchantId;
+                    request.MarketplaceId = marketplace.MarketplaceId;
+                    request.ASINList = new ASINListType();
+                    request.ASINList.ASIN = current;
+
+                    while (quota < current.Count)
+                    {
+                        Thread.Sleep(1000);
+                    }
+
+                    GetCompetitivePricingForASINResponse response = marketplace.GetMWSProductsClient().GetCompetitivePricingForASIN(request);
+
+                    quota = quota - current.Count;
+
+                    if (response.IsSetGetCompetitivePricingForASINResult())
+                    {
+                        foreach (var result in response.GetCompetitivePricingForASINResult)
+                        {
+                            results.Add(result);
+                        }
+                    }
+                }
+            }
+
+            return results;
+        }
+
+        public List<GetLowestOfferListingsForASINResult> GetLowestOfferListingsForAsin(int marketplaceID, IEnumerable<string> asins)
+        {
+            AmznMarketplace marketplace = null;
+
+            using (berkeleyEntities dataContext = new berkeleyEntities())
+            {
+                marketplace = dataContext.AmznMarketplaces.Single(p => p.ID == marketplaceID);
+            }
+
+            int max = 20;
+
+            int quota = max;
+
+            System.Timers.Timer timer = new System.Timers.Timer(1000);
+
+            timer.Elapsed += (sender, e) =>
+            {
+                if (quota < 20)
+                {
+                    if ((quota + 5) > max)
+                    {
+                        quota = max;
+                    }
+                    else
+                    {
+                        quota += 5;
+                    }
+                }
+            };
+
+            timer.Start();
+
+            List<GetLowestOfferListingsForASINResult> results = new List<GetLowestOfferListingsForASINResult>();
+
+            Queue<string> pending = new Queue<string>(asins);
+
+            while (pending.Count > 0)
+            {
+                List<string> current = new List<string>();
+
+                for (int i = 0; i < 20; i++)
+                {
+                    if (pending.Count > 0)
+                    {
+                        string asin = pending.Dequeue();
+
+                        if (!current.Contains(asin))
+                        {
+                            current.Add(asin);
+                        }
+                    }
+                }
+
+                if (current.Count > 0)
+                {
+                    GetLowestOfferListingsForASINRequest request = new GetLowestOfferListingsForASINRequest();
+                    request.ExcludeMe = true;
+                    request.SellerId = marketplace.MerchantId;
+                    request.MarketplaceId = marketplace.MarketplaceId;
+                    request.ASINList = new ASINListType();
+                    request.ASINList.ASIN = current;
+
+                    while (quota < current.Count)
+                    {
+                        Thread.Sleep(1000);
+                    }
+
+                    GetLowestOfferListingsForASINResponse response = marketplace.GetMWSProductsClient().GetLowestOfferListingsForASIN(request);
+
+                    quota = quota - current.Count;
+
+                    if (response.IsSetGetLowestOfferListingsForASINResult())
+                    {
+                        foreach (var result in response.GetLowestOfferListingsForASINResult)
+                        {
+                            results.Add(result);
+                        }
+                    }
+                }
+            }
+
+            return results;
+        }   
+
+        public List<GetMatchingProductForIdResult> GetMatchingProductForId(int marketplaceID, IEnumerable<string> upcs)
+        {
+            AmznMarketplace marketplace = null;
+
+            using (berkeleyEntities dataContext = new berkeleyEntities())
+            {
+                marketplace = dataContext.AmznMarketplaces.Single(p => p.ID == marketplaceID);
+            }
+
+            int max = 19;
+
+            int quota = max;
+
+            System.Timers.Timer timer = new System.Timers.Timer(1000);
+
+            timer.Elapsed += (sender, e) =>
+            {
+                if (quota < 20)
+                {
+                    if ((quota + 5) > max)
+                    {
+                        quota = max;
+                    }
+                    else
+                    {
+                        quota += 5;
+                    }
+                }
+            };
+
+            timer.Start();
+
+            List<GetMatchingProductForIdResult> results = new List<GetMatchingProductForIdResult>();
+
+            Queue<string> pending = new Queue<string>(upcs);
+
+            while (pending.Count > 0)
+            {
+                List<string> current = new List<string>();
+
+                for (int i = 0; i < 5; i++)
+                {
+                    if (pending.Count > 0)
+                    {
+                        string upc = pending.Dequeue();
+
+                        if (!current.Contains(upc))
+                        {
+                            current.Add(upc);
+                        }
+                    }
+                }
+
+                if (current.Count > 0)
+                {
+                    GetMatchingProductForIdRequest request = new GetMatchingProductForIdRequest();
+                    request.SellerId = marketplace.MerchantId;
+                    request.MarketplaceId = marketplace.MarketplaceId;
+                    request.IdList = new IdListType();
+                    request.IdList.Id = current;
+                    request.IdType = "UPC";
+
+                    while (quota < current.Count)
+                    {
+                        Thread.Sleep(1000);
+                    }
+
+                    GetMatchingProductForIdResponse response = marketplace.GetMWSProductsClient().GetMatchingProductForId(request);
+
+                    quota = quota - current.Count;
+
+                    if (response.IsSetGetMatchingProductForIdResult())
+                    {
+                        foreach (GetMatchingProductForIdResult result in response.GetMatchingProductForIdResult)
+                        {
+                            results.Add(result);
+                        }
+                    }
+                }
+            }
+
+            LinkWithAsinCatalog(marketplaceID, results);
+
+            return results;
+        }
+
+        private void LinkWithAsinCatalog(int marketplaceID, List<GetMatchingProductForIdResult> catalogData)
+        {
+            using (berkeleyEntities dataContext = new berkeleyEntities())
+            {
+                AmznMarketplace marketplace = dataContext.AmznMarketplaces.Single(p => p.ID == marketplaceID);
+
+                foreach (var result in catalogData)
+                {
+                    Item item = dataContext.Items.Single(p => p.Aliases.Any(s => s.Alias1.Equals(result.Id)));
+
+                    if (result.IsSetProducts() && result.Products.IsSetProduct())
+                    {
+                        MarketplaceWebServiceProducts.Model.Product product = result.Products.Product.First();
+
+                        if (product.IsSetIdentifiers() && product.Identifiers.IsSetMarketplaceASIN() && product.Identifiers.MarketplaceASIN.IsSetASIN())
+                        {
+                            if (item.AmznListingItems.Any(p => p.MarketplaceID == marketplaceID))
+                            {
+                                AmznListingItem listingItem = item.AmznListingItems.Single(p => p.MarketplaceID == marketplaceID);
+
+                                listingItem.ASIN = product.Identifiers.MarketplaceASIN.ASIN;
+                            }
+                            else
+                            {
+                                AmznListingItem listingItem = new AmznListingItem();
+                                listingItem.ASIN = product.Identifiers.MarketplaceASIN.ASIN;
+                                listingItem.Item = item;
+                                listingItem.IsActive = false;
+                                listingItem.Sku = item.ItemLookupCode;
+                                listingItem.Title = string.Empty;
+                                listingItem.Marketplace = marketplace;
+                                listingItem.OpenDate = DateTime.UtcNow;
+                                listingItem.LastSyncTime = DateTime.UtcNow;
+                            }
+                        }
+                    }
+                }
+
+                dataContext.SaveChanges();
+            }
+        }
 
         public void SynchronizeListings(int marketplaceID)
         {
@@ -82,10 +380,10 @@ namespace BerkeleyEntities.Amazon
                 }
             }
 
-            Publish(marketplaceID, listingItemDtos);
+            Publish(marketplaceID, listingItemDtos, "Overpublished Service");
         }
 
-        public void Publish(int marketplaceID, IEnumerable<ListingItemDto> listingItems)
+        public void Publish(int marketplaceID, IEnumerable<ListingItemDto> listingItems, string source)
         {
             using (berkeleyEntities dataContext = new berkeleyEntities())
             {
@@ -93,7 +391,24 @@ namespace BerkeleyEntities.Amazon
 
                 AmznMarketplace marketplace = dataContext.AmznMarketplaces.Single(p => p.ID == marketplaceID);
 
-                Publisher publisher = new Publisher(dataContext, marketplace);
+                List<string> needASIN = new List<string>();
+
+                foreach (var listingItemDto in listingItems.Where(p => p.IncludeProductData))
+                {
+                    Item item = dataContext.Items.Single(p => p.ItemLookupCode.Equals(listingItemDto.Sku));
+
+                    if (!item.AmznListingItems.Any(p => p.MarketplaceID == marketplace.ID && !p.ASIN.Equals("UNKNOWN")))
+                    {
+                        needASIN.Add(item.GTIN);
+                    }
+                }
+
+                if (needASIN.Count > 0)
+                {
+                    GetMatchingProductForId(marketplaceID, needASIN.Distinct());
+                }
+
+                Publisher publisher = new Publisher(dataContext, marketplace, source);
 
                 publisher.Result += (e) => { if (this.Result != null) { this.Result(e); } };
 
@@ -120,6 +435,7 @@ namespace BerkeleyEntities.Amazon
         private ProductMapperFactory _productMapperFactory = new ProductMapperFactory();
         private berkeleyEntities _dataContext;
         private AmznMarketplace _marketplace;
+        private string _source;
 
         private Dictionary<ListingItemDto, List<AmazonEnvelopeMessage>> _pending = new Dictionary<ListingItemDto,List<AmazonEnvelopeMessage>>();
 
@@ -128,8 +444,11 @@ namespace BerkeleyEntities.Amazon
         private Dictionary<string, AmazonEnvelope> _envelopes = new Dictionary<string, AmazonEnvelope>();
 
 
-        public Publisher(berkeleyEntities dataContext, AmznMarketplace marketplace)
+
+
+        public Publisher(berkeleyEntities dataContext, AmznMarketplace marketplace, string source)
         {
+            _source = source;
             _dataContext = dataContext;
             _marketplace = marketplace;
         }
@@ -141,26 +460,39 @@ namespace BerkeleyEntities.Amazon
 
             foreach (var listingItem in listingItems)
             {
-                _pending.Add(listingItem, new List<AmazonEnvelopeMessage>());
+                try
+                {
+                    _pending.Add(listingItem, new List<AmazonEnvelopeMessage>());
 
-                Item item = _dataContext.Items.Single(p => p.ItemLookupCode.Equals(listingItem.Sku));
+                    Item item = _dataContext.Items.Single(p => p.ItemLookupCode.Equals(listingItem.Sku));
 
-                if (item.ItemClass == null)
-                {
-                    listingItem.ClassName = string.Empty;
-                }
-                else
-                {
-                    listingItem.ClassName = item.ItemClass.ItemLookupCode;
-                }
+                    if (item.ItemClass == null)
+                    {
+                        listingItem.ClassName = string.Empty;
+                    }
+                    else
+                    {
+                        listingItem.ClassName = item.ItemClass.ItemLookupCode;
+                    }
 
-                if (listingItem.IncludeProductData)
-                {
-                    productFeed.Add(listingItem);
+                    if (listingItem.IncludeProductData)
+                    {
+                        productFeed.Add(listingItem);
+                    }
+                    else
+                    {
+                        noProductFeed.Add(listingItem);
+                    }
                 }
-                else
+                catch (InvalidOperationException e)
                 {
-                    noProductFeed.Add(listingItem);
+                    
+                    PublishingResult result = new PublishingResult();
+                    result.Data = listingItem;
+                    result.HasError = true;
+                    result.Message = e.Message;
+
+                    Result(new List<PublishingResult>() { result });
                 }
             }
 
@@ -427,17 +759,18 @@ namespace BerkeleyEntities.Amazon
                         {
                             listingItem = new AmznListingItem();
                             listingItem.Item = dataContext.Items.Single(p => p.ItemLookupCode.Equals(product.SKU));
-                            listingItem.Sku = product.SKU;
                             listingItem.Marketplace = marketplace;
-                            listingItem.OpenDate = DateTime.UtcNow;
-                            listingItem.LastSyncTime = DateTime.UtcNow;
                             listingItem.ASIN = "UNKNOWN";
                             listingItem.Quantity = 0;
                             listingItem.Price = 0;
-                            listingItem.Condition = product.Condition.ConditionType.ToString();
-                            listingItem.Title = product.DescriptionData.Title;
                         }
 
+                        listingItem.Sku = product.SKU;
+
+                       
+                        listingItem.Title = product.DescriptionData.Title;
+                        listingItem.OpenDate = DateTime.UtcNow;
+                        listingItem.LastSyncTime = DateTime.UtcNow;
                         listingItem.IsActive = true;
                     }
                 }
@@ -475,8 +808,11 @@ namespace BerkeleyEntities.Amazon
                     AmznListingItem listingItem = dataContext.AmznListingItems
                         .Single(p => p.Item.ItemLookupCode.Equals(inventoryData.SKU) && p.MarketplaceID == _marketplace.ID && p.IsActive);
 
+
                     listingItem.Quantity = Convert.ToInt32(inventoryData.Item);
                 }
+
+                LogChanges(dataContext);
 
                 dataContext.SaveChanges();
             }
@@ -496,7 +832,7 @@ namespace BerkeleyEntities.Amazon
                 if (listingItem.ProductData == null)
                 {
                     ProductData productDataMapper = _productMapperFactory.GetProductData(_dataContext.Items.Single(p => p.ItemLookupCode.Equals(listingItem.Sku)));
-                    listingItem.ProductData = productDataMapper.GetProductDto(listingItem.Condition, listingItem.Title);
+                    listingItem.ProductData = productDataMapper.GetProductDto(listingItem.Title);
                 }
 
                 var msg = BuildMessage(listingItem.ProductData, currentMsg);
@@ -517,7 +853,7 @@ namespace BerkeleyEntities.Amazon
 
                     ProductData productDataMapper = _productMapperFactory.GetProductData(_dataContext.Items.Single(p => p.ItemLookupCode.Equals(first.Sku)));
 
-                    Product product = productDataMapper.GetParentProductDto(first.Condition, first.Title);
+                    Product product = productDataMapper.GetParentProductDto(first.Title);
 
                     if (product.DescriptionData != null)
                     {
@@ -540,7 +876,7 @@ namespace BerkeleyEntities.Amazon
                     {
                         ProductData productDataMapper = _productMapperFactory.GetProductData(_dataContext.Items.Single(p => p.ItemLookupCode.Equals(listingItem.Sku)));
 
-                        listingItem.ProductData = productDataMapper.GetProductDto(listingItem.Condition, listingItem.Title);
+                        listingItem.ProductData = productDataMapper.GetProductDto(listingItem.Title);
                     }
 
                     var msg = BuildMessage(listingItem.ProductData, currentMsg);
@@ -712,6 +1048,55 @@ namespace BerkeleyEntities.Amazon
             MemoryStream mem = new MemoryStream(bytes);
             XmlSerializer ser = new XmlSerializer(typeToDeserialize);
             return ser.Deserialize(mem);
+        }
+
+        private void LogChanges(berkeleyEntities dataContext)
+        {
+            var entries = dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added | EntityState.Modified | EntityState.Deleted);
+
+            foreach (var entry in entries.Where(p => p.Entity is AmznListingItem))
+            {
+                AmznListingItem listingItem = entry.Entity as AmznListingItem;
+
+                switch (entry.State)
+                {
+                    case EntityState.Added:
+
+                        Bsi_ListingChangesLog logEntryAdded = new Bsi_ListingChangesLog();
+                        logEntryAdded.Date = DateTime.Now;
+                        logEntryAdded.Item = listingItem.Item;
+                        logEntryAdded.ListingCode = listingItem.ASIN;
+                        logEntryAdded.Marketplace = listingItem.Marketplace.Code;
+                        logEntryAdded.ListingType = EbayMarketplace.FORMAT_FIXEDPRICE;
+                        logEntryAdded.Source = _source;
+                        logEntryAdded.Change = listingItem.Quantity;
+                        break;
+
+                    case EntityState.Modified:
+
+                        int originalQty = int.Parse(entry.OriginalValues["Quantity"].ToString());
+                        int currentyQty = int.Parse(entry.CurrentValues["Quantity"].ToString());
+
+                        int change = currentyQty - originalQty;
+
+                        if (change != 0)
+                        {
+                            Bsi_ListingChangesLog logEntryModified = new Bsi_ListingChangesLog();
+                            logEntryModified.Date = DateTime.Now;
+                            logEntryModified.Item = listingItem.Item;
+                            logEntryModified.ListingCode = listingItem.ASIN;
+                            logEntryModified.Marketplace = listingItem.Marketplace.Code;
+                            logEntryModified.ListingType = EbayMarketplace.FORMAT_FIXEDPRICE;
+                            logEntryModified.Source = _source;
+                            logEntryModified.Change = change;
+                        }
+
+                        break;
+
+                    default: break;
+
+                }
+            }
         }
 
     }
@@ -903,6 +1288,8 @@ namespace BerkeleyEntities.Amazon
 
             _marketplace.ListingSyncTime = _currentSyncTime;
 
+            LogChanges();
+
             _dataContext.SaveChanges();
         }
 
@@ -946,9 +1333,57 @@ namespace BerkeleyEntities.Amazon
             listingItem.ASIN = asin;
             listingItem.Title = title;
             listingItem.OpenDate = TimeZoneInfo.ConvertTimeToUtc(DateTime.Parse(openDate), TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time"));
-            listingItem.Condition = condition;
             listingItem.LastSyncTime = _currentSyncTime;
             listingItem.IsActive = true;
+        }
+
+        private void LogChanges()
+        {
+            var entries = _dataContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added | EntityState.Modified | EntityState.Deleted);
+
+            foreach (var entry in entries.Where(p => p.Entity is AmznListingItem))
+            {
+                AmznListingItem listingItem = entry.Entity as AmznListingItem;
+
+                switch (entry.State)
+                {
+                    case EntityState.Added:
+
+                        Bsi_ListingChangesLog logEntryAdded = new Bsi_ListingChangesLog();
+                        logEntryAdded.Date = DateTime.Now;
+                        logEntryAdded.Item = listingItem.Item;
+                        logEntryAdded.ListingCode = listingItem.ASIN;
+                        logEntryAdded.Marketplace = listingItem.Marketplace.Code;
+                        logEntryAdded.ListingType = EbayMarketplace.FORMAT_FIXEDPRICE;
+                        logEntryAdded.Source = "Synchronization Service";
+                        logEntryAdded.Change = listingItem.Quantity;
+                        break;
+
+                    case EntityState.Modified:
+
+                        int originalQty = int.Parse(entry.OriginalValues["Quantity"].ToString());
+                        int currentyQty = int.Parse(entry.CurrentValues["Quantity"].ToString());
+
+                        int change = currentyQty - originalQty;
+
+                        if (change != 0)
+                        {
+                            Bsi_ListingChangesLog logEntryModified = new Bsi_ListingChangesLog();
+                            logEntryModified.Date = DateTime.Now;
+                            logEntryModified.Item = listingItem.Item;
+                            logEntryModified.ListingCode = listingItem.ASIN;
+                            logEntryModified.Marketplace = listingItem.Marketplace.Code;
+                            logEntryModified.ListingType = EbayMarketplace.FORMAT_FIXEDPRICE;
+                            logEntryModified.Source = "Synchronization Service";
+                            logEntryModified.Change = change;
+                        }
+
+                        break;
+
+                    default: break;
+
+                }
+            }
         }
     }
 

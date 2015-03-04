@@ -93,6 +93,7 @@ namespace WorkbookPublisher.ViewModel
 
                 var existingListingItem = _dataContext.AmznListingItems.SingleOrDefault(p => p.IsActive && p.Item != null && p.Item.ItemLookupCode.Equals(entry.Sku) && p.MarketplaceID == _marketplace.ID);
 
+
                 listingItem.IncludeProductData = existingListingItem == null || entry.GetUpdateFlags().Any(p => p.Equals("PRODUCTDATA"));
 
                 listingItem.Qty = entry.Q;
@@ -115,7 +116,7 @@ namespace WorkbookPublisher.ViewModel
 
             services.Result += Publisher_Result;
 
-            await Task.Run(() => services.Publish(_marketplace.ID, listingItems));
+            await Task.Run(() => services.Publish(_marketplace.ID, listingItems, "Publisher"));
 
             while (_pendingResubmission.Count > 0)
             {
@@ -133,7 +134,7 @@ namespace WorkbookPublisher.ViewModel
                         entry.Status = StatusCode.Processing;
                     }
 
-                    await Task.Run(() => services.Publish(_marketplace.ID, results.Select(p => p.Data)));
+                    await Task.Run(() => services.Publish(_marketplace.ID, results.Select(p => p.Data), "Publisher"));
                 }
             }
 

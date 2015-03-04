@@ -35,7 +35,8 @@ namespace BerkeleyEntities
 
             foreach (var group in skus.GroupBy(p => p.Split(new Char[1] {'-'})[0]))
             {
-                var targetPaths = GetFileNamesByBrandDir(brandRoot).Where(p => p.ToUpper().Trim().Contains(group.Key + ".") || p.ToUpper().Trim().Contains(group.Key + "-"));
+                var targetPaths = GetFileNamesByBrandDir(brandRoot)
+                    .Where(p => p.ToUpper().Trim().Contains(group.Key + ".") || p.ToUpper().Trim().Contains(group.Key + "-") || p.ToUpper().Trim().Contains(group.Key + "_"));
 
                 foreach(string path in targetPaths)
                 {
@@ -51,7 +52,9 @@ namespace BerkeleyEntities
                     }
                     else
                     {
-                        if (group.Any(p => Regex.IsMatch(p, picName.Replace("_", "-.*-?"))))
+                        string target = Regex.Replace(picName, "-[0-9]", "").Replace("_","-");
+
+                        if (group.Any(p => p.Contains(target)))
                         {
                             PictureInfo picInfo = new PictureInfo();
                             picInfo.Path = path;
