@@ -27,7 +27,7 @@ namespace WorkbookPublisher
             foreach (Cell cell in headerRow.OfType<Cell>())
             {
                 string header = GetCellValue(cell).ToUpper().Trim();
-                string columnRef = ParseColRefs(cell.CellReference.Value);
+                string columnRef = ParseColName(cell.CellReference.Value);
 
                 _colRefsToHeaders.Add(columnRef, header);
                 _colHeadersToRefs.Add(header, columnRef);
@@ -50,42 +50,62 @@ namespace WorkbookPublisher
             }
         }
 
-        public object MapRow(Row source)
+        public BaseEntry MapRow(Row source)
         {
-            object target = Activator.CreateInstance(_type);
+            BaseEntry target = Activator.CreateInstance(_type) as BaseEntry;
+
+            target.RowIndex = source.RowIndex.Value;
 
             foreach (Cell cell in source.OfType<Cell>())
             {
-                string colRef = this.ParseColRefs(cell.CellReference);
+                string colRef = this.ParseColName(cell.CellReference);
                 string cellValue = this.GetCellValue(cell);
 
                 if (_colRefsToProp.ContainsKey(colRef) && !string.IsNullOrWhiteSpace(cellValue))
                 {
                     PropertyInfo prop = _colRefsToProp[colRef];
 
-                    switch (prop.PropertyType.Name)
+                    string propertyType = prop.PropertyType.IsGenericType && prop.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) ? 
+                        prop.PropertyType.GetGenericArguments()[0].Name : prop.PropertyType.Name;
+
+                    if (prop.Name.Equals("Message") || prop.Name.Equals("Status"))
                     {
-                        case "String":
-                            prop.SetValue(target, cellValue, null); break;
-                        case "Int32":
-                            prop.SetValue(target, Convert.ToInt32(cellValue), null); break;
-                        case "Decimal":
-                            prop.SetValue(target, Math.Round(Convert.ToDecimal(cellValue),2), null); break;
-                        case "DateTime":
-                            prop.SetValue(target, DateTime.FromOADate(Convert.ToDouble(cellValue)).ToUniversalTime(), null); break;
-                        case "StatusCode": break;
-                        default:
-                            prop.SetValue(target, cellValue, null); break;
+                        continue;
+                    }
+
+                    try
+                    {
+                        switch (propertyType)
+                        {
+                            case "String":
+                                prop.SetValue(target, cellValue, null); break;
+                            case "Int32":
+                                prop.SetValue(target, Convert.ToInt32(cellValue), null); break;
+                            case "Decimal":
+                                prop.SetValue(target, Math.Round(Convert.ToDecimal(cellValue), 2), null); break;
+                            case "DateTime":
+                                prop.SetValue(target, DateTime.FromOADate(Convert.ToDouble(cellValue)).ToUniversalTime(), null); break;
+                            default:
+                                prop.SetValue(target, cellValue, null); break;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        var props = _type.GetProperties();
+
+                        var msgProp = props.SingleOrDefault(p => p.Name.Equals("Message"));
+                        var statusProp = props.SingleOrDefault(p => p.Name.Equals("Status"));
+
+                        string msg = string.Format("{0} column does not have a valid format", prop.Name);
+
+                        if (msgProp != null)
+                            msgProp.SetValue(target, msg, null);
+
+                        if(statusProp != null)
+                            statusProp.SetValue(target, StatusCode.Error, null);
+
                     }
                 }
-            }
-
-            var targetProps = _type.GetProperties();
-
-            if (targetProps.Any(p => p.Name.Equals("RowIndex")))
-            {
-                PropertyInfo prop = targetProps.Single(p => p.Name.Equals("RowIndex"));
-                prop.SetValue(target, Convert.ToUInt32(source.RowIndex.Value));
             }
 
             return target;
@@ -133,12 +153,20 @@ namespace WorkbookPublisher
             return GetCellValue(GetCell(row, _colHeadersToRefs[column])); ;
         }
 
-        private Cell GetCell(Row row, string colRef)
+        private Cell GetCell(Row row, string column)
         {
-            string cellRef = colRef + row.RowIndex.Value.ToString();
+            string cellRef = column + row.RowIndex.Value.ToString();
 
-            // If there is not a cell with the specified column name, insert one.
-            if (row.Elements<Cell>().Where(c => c.CellReference.Value == cellRef).Count() > 0)
+
+            if (row.Elements<Cell>().Count() == 0)
+            {
+                Cell newCell = new Cell() { CellReference = cellRef, StyleIndex = 0 };
+
+                row.Append(newCell);
+
+                return newCell;
+            }
+            else if (row.Elements<Cell>().Where(c => c.CellReference.Value == cellRef).Count() > 0)
             {
                 return row.Elements<Cell>().Where(c => c.CellReference.Value == cellRef).First();
             }
@@ -149,9 +177,9 @@ namespace WorkbookPublisher
 
                 foreach (Cell cell in row.Elements<Cell>())
                 {
+                    string columnRef= ParseColName(cell.CellReference.Value);
 
-
-                    if (string.Compare(cell.CellReference.Value, cellRef, true) > 0 && cell.CellReference.Value.Count() == cellRef.Count())
+                    if (string.Compare(columnRef, column, StringComparison.OrdinalIgnoreCase) > 0 && column.Count() == columnRef.Count())
                     {
                         refCell = cell;
 
@@ -167,7 +195,7 @@ namespace WorkbookPublisher
             }
         }
 
-        private string GetCellValue(Cell cell)
+        public string GetCellValue(Cell cell)
         {
             if (cell != null && cell.CellValue != null)
             {
@@ -203,7 +231,7 @@ namespace WorkbookPublisher
             return i;
         }
 
-        private string ParseColRefs(string cellRef)
+        private string ParseColName(string cellRef)
         {
             // Create a regular expression to match the column name portion of the cell name.
             Regex regex = new Regex("[A-Za-z]+");

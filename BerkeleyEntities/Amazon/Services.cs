@@ -372,7 +372,6 @@ namespace BerkeleyEntities.Amazon
                         {
                             ListingItemDto listingItemDto = new ListingItemDto();
                             listingItemDto.Sku = listingItem.Item.ItemLookupCode;
-                            listingItemDto.QtySpecified = true;
                             listingItemDto.Qty = listingItem.Item.QtyAvailable;
                             listingItemDtos.Add(listingItemDto);
                         }
@@ -501,8 +500,8 @@ namespace BerkeleyEntities.Amazon
                 SubmitProductFeed(productFeed);
             }
 
-            var qtyModified = noProductFeed.Where(p => p.QtySpecified == true);
-            var priceModified = noProductFeed.Where(p => p.PriceSpecified == true);
+            var qtyModified = noProductFeed.Where(p => p.Qty.HasValue);
+            var priceModified = noProductFeed.Where(p => p.Price.HasValue || p.SaleData != null);
 
             if (qtyModified.Count() > 0)
             {
@@ -982,14 +981,18 @@ namespace BerkeleyEntities.Amazon
 
             foreach (ListingItemDto listingItem in listingItems)
             {
-                OverrideCurrencyAmount oca = new OverrideCurrencyAmount();
-                oca.currency = BaseCurrencyCodeWithDefault.USD;
-                oca.Value = Math.Round(listingItem.Price, 4);
-
                 Price priceData = new Price();
                 priceData.SKU = listingItem.Sku;
-                priceData.StandardPrice = oca;
 
+                if (listingItem.Price.HasValue)
+                {
+                    OverrideCurrencyAmount oca = new OverrideCurrencyAmount();
+                    oca.currency = BaseCurrencyCodeWithDefault.USD;
+                    oca.Value = Math.Round(listingItem.Price.Value, 4);
+
+                    priceData.StandardPrice = oca;
+                }
+                
                 if (listingItem.SaleData != null)
                 {
                     priceData.Sale = new PriceSale();
@@ -1109,13 +1112,9 @@ namespace BerkeleyEntities.Amazon
 
         public string Sku {get; set;}
 
-        public int Qty { get; set; }
+        public int? Qty { get; set; }
 
-        public bool QtySpecified { get; set; }
-
-        public decimal Price { get; set; }
-
-        public bool PriceSpecified { get; set; }
+        public decimal? Price { get; set; }
 
         public SaleData SaleData { get; set; }
 

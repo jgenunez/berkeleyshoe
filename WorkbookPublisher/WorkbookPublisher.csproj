@@ -112,10 +112,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\PostingTemplateEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="View\RepublishDataWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -137,15 +133,11 @@
     <Compile Include="ViewModel\EbayPublisherViewModel.cs" />
     <Compile Include="ExcelWorkbook.cs" />
     <Compile Include="ViewModel\PublisherViewModel.cs" />
-    <Compile Include="ViewModel\TemplateViewModel.cs" />
     <Compile Include="View\AmznShoesForm.xaml.cs">
       <DependentUpon>AmznShoesForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\EndListingOptions.xaml.cs">
       <DependentUpon>EndListingOptions.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\PostingTemplateEditor.xaml.cs">
-      <DependentUpon>PostingTemplateEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\RepublishDataWindow.xaml.cs">
       <DependentUpon>RepublishDataWindow.xaml</DependentUpon>

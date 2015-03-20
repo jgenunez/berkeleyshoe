@@ -26,7 +26,7 @@ namespace WorkbookPublisher.ViewModel
         {
             _readEntriesCommand = new ReadCommand(_workbook, marketplaceCode, typeof(AmznEntry));
             _publishCommand = new AmznPublishCommand(marketplaceCode);
-            _updateCommand = new UpdateCommand(_workbook, marketplaceCode);
+            _updateCommand = new UpdateCommand(_workbook, marketplaceCode, typeof(AmznEntry));
 
             _readEntriesCommand.ReadCompleted += _publishCommand.ReadCompletedHandler;
             _readEntriesCommand.ReadCompleted += _updateCommand.ReadCompletedHandler;
@@ -54,8 +54,6 @@ namespace WorkbookPublisher.ViewModel
             foreach (var result in results)
             {
                 AmznEntry entry = _processingEntries.Single(p => p.Sku.Equals(result.Data.Sku));
-
-                entry.ClearMessages();
 
                 if (result.HasError)
                 {
@@ -93,18 +91,14 @@ namespace WorkbookPublisher.ViewModel
 
                 var existingListingItem = _dataContext.AmznListingItems.SingleOrDefault(p => p.IsActive && p.Item != null && p.Item.ItemLookupCode.Equals(entry.Sku) && p.MarketplaceID == _marketplace.ID);
 
-
                 listingItem.IncludeProductData = existingListingItem == null || entry.GetUpdateFlags().Any(p => p.Equals("PRODUCTDATA"));
 
                 listingItem.Qty = entry.Q;
-                listingItem.QtySpecified = existingListingItem == null || existingListingItem.Quantity != entry.Q;
-
                 listingItem.Price = entry.P;
-                listingItem.PriceSpecified = existingListingItem == null || decimal.Compare(existingListingItem.Price, entry.P) != 0 || entry.GetUpdateFlags().Any(p => p.Equals("SALE"));
 
-                if (entry.SalePriceSpecified)
+                if (entry.SalePrice.HasValue && entry.SaleStart.HasValue && entry.SaleEnd.HasValue)
                 {
-                    listingItem.SaleData = new SaleData() { SalePrice = entry.SalePrice, StartDate = entry.SaleStart, EndDate = entry.SaleEnd };
+                    listingItem.SaleData = new SaleData() { SalePrice = entry.SalePrice.Value, StartDate = entry.SaleStart.Value, EndDate = entry.SaleEnd.Value };
                 }
 
                 listingItems.Add(listingItem);

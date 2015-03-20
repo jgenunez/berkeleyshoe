@@ -15,7 +15,7 @@ namespace WorkbookPublisher.ViewModel
         {
             _readEntriesCommand = new ReadCommand(_workbook, _marketplaceCode, typeof(BonanzaEntry));
             _publishCommand = new BonanzaPublishCommand(_marketplaceCode);
-            _updateCommand = new UpdateCommand(_workbook, _marketplaceCode);
+            _updateCommand = new UpdateCommand(_workbook, _marketplaceCode, typeof(BonanzaEntry));
 
             _readEntriesCommand.ReadCompleted += _publishCommand.ReadCompletedHandler;
             _readEntriesCommand.ReadCompleted += _updateCommand.ReadCompletedHandler;
@@ -77,9 +77,6 @@ namespace WorkbookPublisher.ViewModel
 
                     foreach (var entry in entries)
                     {
-
-                        entry.Message = string.Format("{0}|{1}|{2}", entry.Format, entry.Q, Math.Round(entry.P, 2));
-
                         entry.Status = StatusCode.Completed;
                     }
                 }
@@ -103,10 +100,6 @@ namespace WorkbookPublisher.ViewModel
 
                     foreach (var entry in entries)
                     {
-                        entry.ClearMessages();
-
-                        entry.Message = string.Format("{0}|{1}|{2}", entry.Format, entry.Q, Math.Round(entry.P, 2));
-
                         entry.Command = string.Empty;
 
                         entry.Status = StatusCode.Completed;
@@ -143,9 +136,7 @@ namespace WorkbookPublisher.ViewModel
                     ListingItemDto listingItemDto = new ListingItemDto();
                     listingItemDto.Sku = entry.Sku;
                     listingItemDto.Qty = entry.Q;
-                    listingItemDto.QtySpecified = listingItem == null || listingItem.Quantity != entry.Q ;
                     listingItemDto.Price = entry.P;
-                    listingItemDto.PriceSpecified = listingItem == null || decimal.Compare(entry.P, listingItem.Price) != 0;
 
                     listingItemDto.Title = entry.Title;
 
@@ -162,9 +153,7 @@ namespace WorkbookPublisher.ViewModel
                     {
                         ListingItemDto listingItemDto = new ListingItemDto();
                         listingItemDto.Qty = listingItem.Quantity;
-                        listingItemDto.QtySpecified = true;
                         listingItemDto.Price = listingItem.Price;
-                        listingItemDto.PriceSpecified = true;
                         listingItemDto.Title = listingItem.Title;
 
                         listingDto.Items.Add(listingItemDto);
@@ -216,9 +205,7 @@ namespace WorkbookPublisher.ViewModel
 
                     listingItem.Sku = entry.Sku;
                     listingItem.Qty = entry.Q;
-                    listingItem.QtySpecified = true;
                     listingItem.Price = entry.P;
-                    listingItem.PriceSpecified = true;
                     listingItem.Title = entry.Title;
 
                     listingDto.Items.Add(listingItem);

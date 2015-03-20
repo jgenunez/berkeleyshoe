@@ -80,6 +80,20 @@ namespace WorkbookPublisher
             //window.ShowDialog();
         }
 
+        private void HowManyOfEachSize()
+        {
+            using (berkeleyEntities dataContext = new berkeleyEntities())
+            {
+                dataContext.MaterializeAttributes = true;
+
+                var nikes = dataContext.Items.Where(p => p.SubDescription1.Equals("NIKE") && p.Category.Name.Equals("CLEATS") && p.Quantity > 0).ToList();
+
+                var target = nikes.Where(p => decimal.Parse(p.Dimensions[DimensionName.USMenSize].Value) >= 8 && decimal.Parse(p.Dimensions[DimensionName.USMenSize].Value) <= 12);
+
+                int count = (int)target.Sum(p => p.Quantity);
+            }
+        }
+
         private void TestBonanza()
         {
             //BerkeleyEntities.Bonanza.BonanzaServices services = new BerkeleyEntities.Bonanza.BonanzaServices();
@@ -89,7 +103,7 @@ namespace WorkbookPublisher
             //using (berkeleyEntities dataContext = new berkeleyEntities())
             //{
             //    var marketplace = dataContext.BonanzaMarketplaces.Single(p => p.ID == 1);
-            //    marketplace.Token = "OVuUeDliFG";
+            //    marketplace.Token = "O2lsYmLnMP";
             //    dataContext.SaveChanges();
             //}
         }
@@ -346,7 +360,7 @@ namespace WorkbookPublisher
 
                         foreach (var attribute in item.Dimensions)
                         {
-                            description = description.Replace(attribute.Value.Value, "");
+                            description = description.Replace(" " + attribute.Value.Value + " ", "");
                             dims += attribute.Value.Value + " ";
                         }
 
@@ -583,7 +597,7 @@ namespace WorkbookPublisher
 
                 foreach (var result in competitivePriceResults)
                 {
-                    MainEntry entry = entries.First(p => p.Asin.Equals(result.ASIN));
+                    MainEntry entry = entries.Where(p => p.Asin != null).First(p => p.Asin.Equals(result.ASIN));
 
                     if (result.IsSetProduct() && result.Product.IsSetLowestOfferListings() && result.Product.LowestOfferListings.IsSetLowestOfferListing())
                     {

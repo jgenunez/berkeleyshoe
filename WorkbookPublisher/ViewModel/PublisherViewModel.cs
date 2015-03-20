@@ -167,11 +167,13 @@ namespace WorkbookPublisher.ViewModel
         private string _marketplaceCode;
         private bool _canExecute = false;
         private ExcelWorkbook _workbook;
+        private Type _entryType;
 
-        public UpdateCommand(ExcelWorkbook workbook, string marketplaceCode)
+        public UpdateCommand(ExcelWorkbook workbook, string marketplaceCode, Type entryType)
         {
             _workbook = workbook;
             _marketplaceCode = marketplaceCode;
+            _entryType = entryType;
         }
 
         public event EventHandler FixCompleted;
@@ -195,7 +197,7 @@ namespace WorkbookPublisher.ViewModel
             {
                 var entries = ((ICollectionView)parameter).SourceCollection.OfType<ListingEntry>();
 
-                _workbook.UpdateSheet(entries.Cast<BaseEntry>().ToList(), typeof(ListingEntry), _marketplaceCode);
+                _workbook.UpdateSheet(entries.Cast<BaseEntry>().ToList(), _entryType, _marketplaceCode);
 
                 var sourceEntries = ((ICollectionView)parameter).SourceCollection as ObservableCollection<ListingEntry>;
 
@@ -328,7 +330,6 @@ namespace WorkbookPublisher.ViewModel
 
                     foreach (var entry in result)
                     {
-                        entry.ClearMessages();
                         entriesView.Add(entry);
                     }
 

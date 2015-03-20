@@ -9,7 +9,6 @@ namespace WorkbookPublisher
 {
     public class EbayEntryUpdater
     {
-        private uint _lastRowIndex;
         private string _marketplaceCode;
         private List<EbayEntry> _entries;
         private List<EbayEntry> _addedEntries = new List<EbayEntry>();
@@ -19,7 +18,6 @@ namespace WorkbookPublisher
         {
             _marketplaceCode = marketplaceCode;
             _entries = entries.ToList();
-            _lastRowIndex = entries.Max(p => p.RowIndex);
         }
 
         public List<EbayEntry> Update()
@@ -77,88 +75,80 @@ namespace WorkbookPublisher
             {
                 string format = listingItem.Listing.Format.Equals(EbayMarketplace.FORMAT_STOREFIXEDPRICE) ? EbayMarketplace.FORMAT_FIXEDPRICE : listingItem.Listing.Format;
 
-                EbayEntry entry = entries.FirstOrDefault(p => p.GetFormat() != null && p.GetFormat().Equals(format));
+                EbayEntry entry = entries.FirstOrDefault(p => p.IsValid() && p.GetFormat().Equals(format));
 
                 if (entry != null)
                 {
                     entry.Code = listingItem.Listing.Code;
 
-                    if (entry.Q == listingItem.Quantity && decimal.Compare(entry.P, listingItem.Price) == 0 && entry.GetUpdateFlags().Count == 0)
+                    entry.SetFormat(listingItem.Listing.Format, listingItem.Listing.Duration, (bool)listingItem.Listing.IsVariation);
+
+                    if (entry.Q.Value == listingItem.Quantity && decimal.Compare(entry.P.Value, listingItem.Price) == 0 && entry.GetUpdateFlags().Count == 0)
                     {
                         entry.Status = StatusCode.Completed;
                     }
                     else
                     {
                         entry.Message = string.Format("({0}|{1}|{2})", listingItem.FormatCode, listingItem.Quantity, Math.Round(listingItem.Price, 2));
-
-                        entry.PSpecified = true;
-                        entry.QSpecified = true;
                     }
 
                     entries.Remove(entry);
                 }
                 else
                 {
-                    entry = entries.FirstOrDefault(p => p.GetFormat() == null);
+                    entry = entries.FirstOrDefault(p => p.IsValid() == false);
 
                     if (entry != null)
                     {
-                        entry.SetFormat(listingItem.Listing.Format, listingItem.Listing.Duration);
-                        entry.P = listingItem.Price;
-                        entry.Q = listingItem.Quantity;
-                        entry.Title = listingItem.Title;
-                        entry.FullDescription = listingItem.Listing.FullDescription;
                         entry.Message = "modified by program";
-                        entry.Status = StatusCode.Completed;
-
                         entries.Remove(entry);
                     }
                     else
                     {
-                        CreateNewEntry(listingItem);
+                        entry = new EbayEntry();
+                        entry.Brand = item.SubDescription1;
+                        entry.ClassName = item.ClassName;
+                        entry.Sku = item.ItemLookupCode;
+                        entry.Message = "added by program";
+
+                        entry.ParentRowIndex = group.First().RowIndex;
+
+                        _addedEntries.Add(entry);
                     }
+
+                    
+                    entry.Code = listingItem.Listing.Code;
+                    entry.SetFormat(listingItem.Listing.Format, listingItem.Listing.Duration, (bool)listingItem.Listing.IsVariation);
+                    entry.P = listingItem.Price;
+                    entry.Q = listingItem.Quantity;
+                    entry.Title = listingItem.Listing.Title;
+                    entry.FullDescription = listingItem.Listing.FullDescription;               
+                    entry.Status = StatusCode.Completed;
                 }
             }
 
             foreach (var entry in entries)
             {
-                entry.QSpecified = true;
-                entry.PSpecified = true;
+                EbayListing listing = _dataContext.EbayListings.SingleOrDefault(p => p.Sku.Equals(item.ClassName) && p.Status.Equals(EbayMarketplace.STATUS_ACTIVE) && p.Marketplace.Code.Equals(_marketplaceCode));
 
-                if (_dataContext.EbayListings.Any(p => p.Sku.Equals(item.ClassName) && p.Status.Equals(EbayMarketplace.STATUS_ACTIVE) && p.Marketplace.Code.Equals(_marketplaceCode)))
+                if (listing != null)
                 {
-                    EbayListing listing = _dataContext.EbayListings.Single(p => p.Sku.Equals(item.ClassName) && p.Status.Equals(EbayMarketplace.STATUS_ACTIVE) && p.Marketplace.Code.Equals(_marketplaceCode));
-
-                    entry.Code = listing.Code;
+                    if (!entry.IsValid())
+                    {
+                        entry.Code = listing.Code;
+                        entry.Title = listing.Title;
+                        entry.FullDescription = listing.FullDescription;
+                        entry.SetFormat(listing.Format, listing.Duration, (bool)listing.IsVariation);
+                        entry.Message = "modified by program";
+                    }
+                    else if (entry.GetFormat().Equals(EbayMarketplace.FORMAT_FIXEDPRICE))
+                    {
+                        entry.Code = listing.Code;
+                        entry.SetFormat(listing.Format, listing.Duration, (bool)listing.IsVariation);
+                        entry.Message = "modified by program";
+                    } 
                 }
             }
-        }
-
-        private void CreateNewEntry(EbayListingItem listingItem)
-        {
-            Item item = listingItem.Item;
-
-            EbayEntry entry = new EbayEntry();
-
-            entry.Sku = item.ItemLookupCode;
-            entry.Code = listingItem.Listing.Code;
-            entry.Brand = item.SubDescription1;
-            entry.ClassName = item.ClassName;
-
-            entry.SetFormat(listingItem.Listing.Format, listingItem.Listing.Duration);
-
-            entry.P = listingItem.Price;
-            entry.Q = listingItem.Quantity;
-            entry.Title = listingItem.Title;
-            entry.FullDescription = listingItem.Listing.FullDescription;
-            entry.Message = "added by program";
-            entry.Status = StatusCode.Completed;
-
-            entry.RowIndex = _lastRowIndex + 1;
-
-            _lastRowIndex = entry.RowIndex;
-
-            _addedEntries.Add(entry);
         }
 
         private void Validate(Item item, EbayEntry entry)
@@ -174,7 +164,7 @@ namespace WorkbookPublisher
 
             if (string.IsNullOrWhiteSpace(entry.Code))
             {
-                if (entry.StartDateSpecified && entry.StartDate < DateTime.UtcNow)
+                if (entry.StartDate != null && entry.StartDate < DateTime.UtcNow)
                 {
                     entry.Message = "cannot schedule in the past";
                     entry.Status = StatusCode.Error;

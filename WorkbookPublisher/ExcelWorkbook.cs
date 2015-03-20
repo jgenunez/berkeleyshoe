@@ -32,73 +32,6 @@ namespace WorkbookPublisher
 
         public string Path { get; set; }
 
-        //public void CreateErrorSheet(string code, List<ListingEntry> entries)
-        //{
-        //    using (SpreadsheetDocument document = SpreadsheetDocument.Open(this.Path, true))
-        //    {
-        //        SharedStringTablePart stringTablePart = document.WorkbookPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault();
-
-        //        string parentName = code.Replace("(errors)", "");
-
-        //        var sheets = document.WorkbookPart.Workbook.Sheets.Elements<Sheet>();
-
-        //        Sheet parentSheet = sheets.Single(p => p.Name.Value.Equals(parentName));
-        //        WorksheetPart parentWorksheetPart = document.WorkbookPart.GetPartById(parentSheet.Id) as WorksheetPart;
-        //        Row header = parentWorksheetPart.Worksheet.Descendants<Row>().Single(p => p.RowIndex.Value == 1).CloneNode(true) as Row;
-
-        //        var worksheet = new Worksheet();
-        //        var sheetData = worksheet.AppendChild<SheetData>(new SheetData());
-
-                
-
-        //        sheetData.AppendChild<Row>(header);
-
-        //        var entryType = entries.First().GetType();
-
-        //        RowMapper mapper = new RowMapper(entryType, header, stringTablePart.SharedStringTable);
-
-        //        uint newRowCount = 2;
-
-        //        foreach (Row row in parentWorksheetPart.Worksheet.Descendants<Row>().Where(p => p.RowIndex.Value != 1))
-        //        {
-        //            string sku = mapper.GetValue(row, COLUMN_SKU);
-        //            string format = mapper.GetValue(row, COLUMN_FORMAT); ;
-
-        //            ListingEntry entry = entries.SingleOrDefault(p => p.Code.Equals(sku + format));
-
-        //            if (entry != null)
-        //            {
-        //                Row newRow = row.CloneNode(true) as Row;
-        //                newRow.RowIndex.Value = newRowCount;
-
-        //                foreach (var cell in newRow.Elements<Cell>())                       
-        //                {
-        //                    cell.CellReference.Value = cell.CellReference.Value.Replace(row.RowIndex.Value.ToString(), newRow.RowIndex.Value.ToString());
-        //                }
-
-        //                mapper.UpdateRow(entry, newRow);
-        //                sheetData.AppendChild<Row>(newRow);
-        //                newRowCount++;
-        //            }
-        //        }
-
-        //        Sheet targetSheet = sheets.SingleOrDefault(p => p.Name.Value.Equals(code));
-
-        //        if (targetSheet == null)
-        //        {
-        //            WorksheetPart worksheetPart = CreateWorksheet(document.WorkbookPart, code);
-        //            worksheetPart.Worksheet = worksheet;
-        //        }
-        //        else
-        //        {
-        //            WorksheetPart worksheetPart = document.WorkbookPart.GetPartById(targetSheet.Id) as WorksheetPart;
-        //            worksheetPart.Worksheet = worksheet;
-        //        }
-
-        //        document.Close();
-        //    }
-        //}
-
         public void UpdateSheet(List<BaseEntry> entries, Type entryType, string sheetName)
         {
             using (SpreadsheetDocument document = SpreadsheetDocument.Open(this.Path, true))
@@ -107,11 +40,18 @@ namespace WorkbookPublisher
 
                 var sheets = document.WorkbookPart.Workbook.Sheets.Elements<Sheet>();
 
-                Sheet mainSheet = sheets.SingleOrDefault(p => p.Name.Value.ToUpper().Equals(sheetName));
+                Sheet targetSheet = sheets.SingleOrDefault(p => p.Name.Value.ToUpper().Equals(sheetName));
 
-                if (mainSheet != null)
+                if (targetSheet != null)
                 {
-                    WorksheetPart mainWorksheetPart = document.WorkbookPart.GetPartById(mainSheet.Id) as WorksheetPart;
+                    WorksheetPart mainWorksheetPart = document.WorkbookPart.GetPartById(targetSheet.Id) as WorksheetPart;
+
+                    //if (mainWorksheetPart.TableDefinitionParts.Count() > 0)
+                    //{
+                    //    mainWorksheetPart.TableDefinitionParts
+                    //}
+
+                    //var test = mainWorksheetPart.TableDefinitionParts;
 
                     Worksheet worksheet = mainWorksheetPart.Worksheet;
 
@@ -120,20 +60,49 @@ namespace WorkbookPublisher
                     RowMapper mapper = new RowMapper(entryType, headerRow, stringTablePart.SharedStringTable);
 
                     var sheetData = worksheet.GetFirstChild<SheetData>();
+
+                    //var emptyRows = sheetData.Elements<Row>()
+                    //    .Where(p => 
+                    //        p.Descendants<Cell>().Count() == 0 || 
+                    //        p.Descendants<Cell>().All(s => string.IsNullOrWhiteSpace(mapper.GetCellValue(s)))
+                    //        ).ToList();
+
+                    //emptyRows.ForEach(p => sheetData.RemoveChild<Row>(p));
+
                     var rows = sheetData.Elements<Row>();
 
-                    foreach (var entry in entries)
+                    uint lastRowIndex = rows.Max(p => p.RowIndex.Value);
+
+                    foreach (var entry in entries.OrderBy(p => p.RowIndex))
                     {
-                        Row row = rows.SingleOrDefault(p => p.RowIndex.Value == entry.RowIndex);
-
-                        if (row == null)
+                        if (entry.RowIndex != 0)
                         {
-                            Row parentRow = rows.Single(p => p.RowIndex.Value == entry.ParentRowIndex).Clone() as Row;
-                            row = new Row() { RowIndex = new UInt32Value(entry.RowIndex) };
-                            sheetData.AppendChild<Row>(row);
+                            Row row = rows.SingleOrDefault(p => p.RowIndex.Value == entry.RowIndex);
+                            
+                            mapper.UpdateRow(entry, row);
                         }
+                        else
+                        {
+                            lastRowIndex++;
 
-                        mapper.UpdateRow(entry, row);
+                            Row row = rows.Single(p => p.RowIndex.Value == entry.ParentRowIndex).CloneNode(true) as Row;
+
+                            row.RowIndex = new UInt32Value(lastRowIndex);
+
+                            foreach (Cell cell in row.Elements<Cell>())
+                            {
+                                cell.CellReference.InnerText = cell.CellReference.InnerText.Replace(entry.ParentRowIndex.ToString(), lastRowIndex.ToString());
+
+                                if (cell.CellFormula != null)
+                                {
+                                    cell.CellFormula = null;
+                                }
+                            }
+
+                            sheetData.AppendChild<Row>(row);
+
+                            mapper.UpdateRow(entry, row);
+                        }
                     }
 
                 }
@@ -141,40 +110,6 @@ namespace WorkbookPublisher
                 document.Close();
             }
         }
-
-        //public void UpdateMainSheet(List<MainEntry> entries)
-        //{
-        //    using (SpreadsheetDocument document = SpreadsheetDocument.Open(this.Path, true))
-        //    {
-        //        SharedStringTablePart stringTablePart = document.WorkbookPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault();
-
-        //        var sheets = document.WorkbookPart.Workbook.Sheets.Elements<Sheet>();
-
-        //        Sheet mainSheet = sheets.SingleOrDefault(p => p.Name.Value.ToUpper().Equals("MAIN"));
-
-        //        if (mainSheet != null)
-        //        {
-        //            WorksheetPart mainWorksheetPart = document.WorkbookPart.GetPartById(mainSheet.Id) as WorksheetPart;
-
-        //            Worksheet worksheet = mainWorksheetPart.Worksheet;
-
-        //            Row headerRow = worksheet.Descendants<Row>().Single(p => p.RowIndex.Value == 1);
-
-        //            RowMapper mapper = new RowMapper(typeof(MainEntry), headerRow, stringTablePart.SharedStringTable);
-
-        //            var rows = worksheet.GetFirstChild<SheetData>().Elements<Row>();
-
-        //            foreach (MainEntry entry in entries)
-        //            {
-        //                Row row = rows.Single(p => p.RowIndex.Value == entry.RowIndex);
-
-        //                mapper.UpdateRow(entry, row);
-        //            }
-
-        //        }
-        //        document.Close();
-        //    }
-        //}
 
         public List<object> ReadSheet(Type entryType, string sheetName)
         {
@@ -194,18 +129,18 @@ namespace WorkbookPublisher
 
                     RowMapper mapper = new RowMapper(entryType, headerRow, stringTablePart.SharedStringTable);
 
+                    var targetProps = entryType.GetProperties();
+
                     foreach (Row row in worksheetPart.Worksheet.Descendants<Row>().Where(p => p.RowIndex.Value != 1))
                     {
                         object entry = mapper.MapRow(row);
 
-                        entries.Add(entry);                    
+                        entries.Add(entry);      
                     }
                 }
 
                 document.Close();
             }
-
-            
 
             return entries;
         }
@@ -292,7 +227,7 @@ namespace WorkbookPublisher
 
     }
 
-    public class TitleMapRule
+    public class TitleMapRule : BaseEntry
     {
         public string Department { get; set; }
 
@@ -379,12 +314,10 @@ namespace WorkbookPublisher
         public string ClassName { get; set; }
         public string Sku { get; set; }
 
-        public int Q { get; set; }
-        public bool QSpecified { get; set; }
-
-        public decimal P { get; set; }
-        public bool PSpecified { get; set; }
-
+        public int? Q { get; set; }
+        
+        public decimal? P { get; set; }
+        
         public string Title { get; set; }
 
         public string Command { get; set; }
@@ -405,17 +338,15 @@ namespace WorkbookPublisher
             return flags;
         }
 
-        public StatusCode Status
+        public bool IsValid()
         {
-            get { return _status; }
-            set
+            if (string.IsNullOrWhiteSpace(this.Sku) || this.Q == null || this.P == null || string.IsNullOrWhiteSpace(this.Format))
             {
-                _status = value;
-
-                if (PropertyChanged != null)
-                {
-                    this.PropertyChanged(this, new PropertyChangedEventArgs("Status"));
-                }
+                return false;
+            }
+            else
+            {
+                return true;
             }
         }
 
@@ -433,20 +364,26 @@ namespace WorkbookPublisher
             }
         }
 
-        public void ClearMessages()
+        public StatusCode Status
         {
-            _messages.Clear();
-
-            if (this.PropertyChanged != null)
+            get { return _status; }
+            set
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs("Message"));
+                _status = value;
+
+                if (PropertyChanged != null)
+                {
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("Status"));
+                }
             }
         }
+
+        
     }
 
     public class EbayEntry : ListingEntry
     {
-        private DateTime _startDate;
+        
 
         public EbayEntry()
         {
@@ -457,17 +394,11 @@ namespace WorkbookPublisher
 
         public string Template { get; set; }
 
-        public decimal BIN { get; set; }
+        public decimal? BIN { get; set; }
 
         public string FullDescription { get; set; }
 
-        public DateTime StartDate
-        {
-            get { return _startDate; }
-            set { StartDateSpecified = true; _startDate = value; }
-        }
-
-        public bool StartDateSpecified { get; set; }
+        public DateTime? StartDate { get; set; }
 
         public bool IsAuction()
         {
@@ -485,8 +416,10 @@ namespace WorkbookPublisher
         {
             switch (this.Format)
             {
-                case "GTC": return this.Format;
+                case "I-GTC" :
+                case "GTC": return "GTC";
 
+                case "I-BIN" :
                 case "BIN": return "Days_30";
 
                 case "A7": return "Days_7";
@@ -505,6 +438,8 @@ namespace WorkbookPublisher
         {
             switch (this.Format)
             {
+                case "I-BIN":
+                case "I-GTC":
                 case "BIN":
                 case "GTC":
                     return EbayMarketplace.FORMAT_FIXEDPRICE;
@@ -518,7 +453,19 @@ namespace WorkbookPublisher
             }
         }
 
-        public void SetFormat(string format, string duration)
+        public bool IsVariation()
+        {
+            if (this.Format.Contains("I-") || this.Format.Contains("A"))
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        public void SetFormat(string format, string duration, bool isVariation)
         {
             if (format.Equals(EbayMarketplace.FORMAT_AUCTION))
             {
@@ -534,37 +481,51 @@ namespace WorkbookPublisher
             {
                 switch (duration)
                 {
-                    case "Days_30": this.Format = "BIN"; break;
-                    case "GTC": this.Format = "GTC"; break;
+                    case "Days_30":
+
+                        if (isVariation)
+                        {
+                            this.Format = "BIN"; 
+                        }
+                        else
+                        {
+                            this.Format = "I-BIN";
+                        }
+
+                        break;
+
+                    case "GTC":
+
+                        if (isVariation)
+                        {
+                            this.Format = "GTC";
+                        }
+                        else
+                        {
+                            this.Format = "I-GTC";
+                        }
+
+                        break;
                 }
             }
         }
-
 
         public string Design { get; set; }
     }
 
     public class AmznEntry : ListingEntry
     {
-        private decimal _salePrice;
-
         public string ASIN { get; set; }
 
-        public decimal SalePrice
-        {
-            get { return _salePrice; }
-            set 
-            {
-                this.SalePriceSpecified = true;
-                _salePrice = value;
-            }
-        }
+        public decimal? SalePrice { get; set; }
 
-        public bool SalePriceSpecified { get; set; }
+        //public bool PSpecified { get; set; }
 
-        public DateTime SaleStart { get; set; }
+        //public bool QSpecified { get; set; }
 
-        public DateTime SaleEnd { get; set; }
+        public DateTime? SaleStart { get; set; }
+
+        public DateTime? SaleEnd { get; set; }
     }
 
     public class BonanzaEntry : ListingEntry

@@ -9,7 +9,6 @@ namespace WorkbookPublisher
 {
     public class AmznEntryUpdater
     {
-        private uint _lastRowIndex;
         private string _marketplaceCode;
         private List<AmznEntry> _entries;
         private List<AmznEntry> _addedEntries = new List<AmznEntry>();
@@ -19,7 +18,6 @@ namespace WorkbookPublisher
         {
             _marketplaceCode = marketplaceCode;
             _entries = entries.ToList();
-            _lastRowIndex = entries.Max(p => p.RowIndex);
         }
 
         public List<AmznEntry> Update()
@@ -70,6 +68,12 @@ namespace WorkbookPublisher
                 }
             }
 
+            if (string.IsNullOrWhiteSpace(entry.Format))
+            {
+                entry.Message = "invalid format";
+                entry.Status = StatusCode.Error;
+            }
+
             if (entry.Q > item.QtyAvailable)
             {
                 entry.Message = "out of stock";
@@ -97,20 +101,13 @@ namespace WorkbookPublisher
 
             foreach (var listingItem in active)
             {
-                var entry = entries.FirstOrDefault();
+                var entry = entries.FirstOrDefault(p => p.IsValid() && p.Format.Equals("GTC"));
 
                 if (entry != null)
                 {
                     entry.ASIN = listingItem.ASIN;
 
-                    if (entry.Q == -1)
-                    {
-                        entry.Q = listingItem.Quantity;
-                        entry.P = listingItem.Price;
-
-                        entry.Status = StatusCode.Completed;
-                    }
-                    else if (listingItem.Quantity == entry.Q && decimal.Compare(listingItem.Price, entry.P) == 0 && entry.GetUpdateFlags().Count == 0)
+                    if (listingItem.Quantity == entry.Q.Value && decimal.Compare(listingItem.Price, entry.P.Value) == 0 && entry.GetUpdateFlags().Count == 0)
                     {
                         entry.Status = StatusCode.Completed;
                     }
@@ -118,39 +115,48 @@ namespace WorkbookPublisher
                     {
                         entry.Message = string.Format("({0}|{1})", listingItem.Quantity, Math.Round(listingItem.Price, 2));
 
-                        entry.QSpecified = listingItem.Quantity != entry.Q;
-                        entry.PSpecified = decimal.Compare(listingItem.Price, entry.P) != 0;
+                        if (listingItem.Quantity == entry.Q.Value)
+                        {
+                            entry.Q = null;
+                        }
+
+                        if(decimal.Compare(listingItem.Price, entry.P.Value) == 0)
+                        {
+                            entry.P = null;
+                        }
                     }
 
                     entries.Remove(entry);
                 }
                 else
                 {
-                    entry = new AmznEntry();
-                    entry.Sku = item.ItemLookupCode;
-                    entry.Brand = item.SubDescription1;
-                    entry.ClassName = item.ClassName;
-                    entry.ASIN = listingItem.ASIN;
+                    entry = entries.FirstOrDefault(p => !p.IsValid());
 
+                    if (entry != null)
+                    {
+                        entry.Message = "modified by program";
+                        entries.Remove(entry);
+                    }
+                    else
+                    {
+                        entry = new AmznEntry();
+                        entry.Brand = item.SubDescription1;
+                        entry.ClassName = item.ClassName;
+                        entry.Sku = item.ItemLookupCode;
+                        entry.Message = "added by program";
+
+                        entry.ParentRowIndex = group.First().RowIndex;
+
+                        _addedEntries.Add(entry);
+                    }
+
+                    entry.Format = "GTC";
+                    entry.ASIN = listingItem.ASIN;
                     entry.P = listingItem.Price;
                     entry.Q = listingItem.Quantity;
-                    entry.Title = listingItem.Title;
-                    entry.Message = "added by program";
+                    entry.Title = listingItem.Title;               
                     entry.Status = StatusCode.Completed;
-
-                    entry.ParentRowIndex = group.First().RowIndex;
-                    entry.RowIndex = _lastRowIndex + 1;
-
-                    _lastRowIndex = entry.RowIndex;
-                    _addedEntries.Add(entry);
                 }
-
-            }
-
-            foreach (var entry in entries)
-            {
-                entry.QSpecified = true;
-                entry.PSpecified = true;
             }
         }
     }

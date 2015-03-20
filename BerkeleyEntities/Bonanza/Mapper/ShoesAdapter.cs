@@ -2,107 +2,89 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using eBay.Service.Core.Soap;
-using BerkeleyEntities;
+using System.Threading.Tasks;
 
-namespace BerkeleyEntities.Ebay.Mappers
+namespace BerkeleyEntities.Bonanza.Mapper
 {
     public class ShoesAdapter : ProductMapper
     {
-
         public ShoesAdapter(Item item)
             : base(item)
         {
 
         }
 
-        public override List<NameValueListType> GetItemSpecifics()
+        public override List<NameValuePair> GetItemSpecifics()
         {
-            List<NameValueListType> nameValueList = new List<NameValueListType>();
-
-            nameValueList.Add(BuildItemSpecific("Brand", new string[1] { this.ToTitleCase(_item.SubDescription1) }));
-
-            if (!string.IsNullOrWhiteSpace(_item.GTIN))
-            {
-                nameValueList.Add(BuildItemSpecific("UPC", new string[1] { _item.GTIN }));
-            }
-
-            if (_item.Department.code.Equals("147285"))
-            {
-                string gender = string.Empty;
-
-                switch (_item.SubDescription3)
-                {
-                    case "BABY-BOYS":
-                        gender = "Boys"; break;
-                    case "BABY-GIRLS":
-                        gender = "Girls"; break;
-                    case "UNISEX-BABY":
-                        gender = "Unisex"; break;
-                }
-
-                nameValueList.Add(BuildItemSpecific("Gender", new string[1] { gender }));
-            }
-
-            if (_item.Category != null)
-            {
-                nameValueList.Add(BuildItemSpecific("Style", new string[1] { _item.Category.Name }));
-            }
-
-            if (!string.IsNullOrWhiteSpace(_item.SubDescription2))
-            {
-                nameValueList.Add(BuildItemSpecific("Color", new string[1] { this.ToTitleCase(_item.SubDescription2) }));
-            }
-
-            return nameValueList;
-        }
-
-        public override List<NameValueListType> GetVariationSpecifics()
-        {
-            List<NameValueListType> nameValueList = new List<NameValueListType>();
-
-            switch (_item.DimCount)
-            {
-                case 1 :
-                case 2 :
-                    nameValueList.Add(GetSizeItemSpecific());
-                    nameValueList.Add(BuildItemSpecific("Width", new string[1] { this.GetFormattedWidth() })); break;
-
-                case 3:
-                    nameValueList.Add(GetSizeItemSpecific());
-                    nameValueList.Add(BuildItemSpecific("Width", new string[1] { this.GetFormattedWidth() }));
-                    nameValueList.Add(BuildItemSpecific("Color", new string[1] { _item.Dimensions[DimensionName.Color].Value })); break;
-            }
-
-            return nameValueList;
-        }
-
-        public override int GetConditionID()
-        {
-            int conditionID = 1000;
+            List<NameValuePair> nameValueList = new List<NameValuePair>();
 
             if (_item.Notes != null)
             {
                 if (_item.Notes.Contains("PRE"))
                 {
-                    conditionID = 3000;
+                    nameValueList.Add(new NameValuePair() { Name = "Condition", Value = "Pre-owned" });
                 }
                 else if (_item.Notes.Contains("NWB"))
                 {
-                    conditionID = 1500;
+                    nameValueList.Add(new NameValuePair() { Name = "Condition", Value = "New without box" });
                 }
                 else if (_item.Notes.Contains("NWD"))
                 {
-                    conditionID = 1750;
-                } 
+                    nameValueList.Add(new NameValuePair() { Name = "Condition", Value = "New with defects" });
+                }
+                else
+                {
+                    nameValueList.Add(new NameValuePair() { Name = "Condition", Value = "New with box" });
+                }
+            }
+            else
+            {
+                nameValueList.Add(new NameValuePair() { Name = "Condition", Value = "New with box" });
             }
 
-            return conditionID;
+            nameValueList.Add(new NameValuePair() { Name = "Brand", Value = _item.SubDescription1 });
+
+            if (!string.IsNullOrWhiteSpace(_item.GTIN))
+            {
+                nameValueList.Add(new NameValuePair() { Name = "UPC", Value = _item.GTIN });
+            }
+
+            if (_item.Category != null)
+            {
+                nameValueList.Add(new NameValuePair() { Name = "Style", Value = _item.Category.Name });
+            }
+
+            if (!string.IsNullOrWhiteSpace(_item.SubDescription2))
+            {
+                nameValueList.Add(new NameValuePair() { Name = "Color", Value = this.ToTitleCase(_item.SubDescription2) });
+            }
+
+            return nameValueList;
         }
 
-        private NameValueListType GetSizeItemSpecific()
+        public override List<NameValuePair> GetVariationSpecifics()
         {
-            NameValueListType nv = new NameValueListType();
+            List<NameValuePair> nameValueList = new List<NameValuePair>();
+
+            switch (_item.DimCount)
+            {
+                case 1:
+                case 2:
+                    nameValueList.Add(GetSizeItemSpecific());
+                    nameValueList.Add(new NameValuePair() { Name = "Width", Value = GetFormattedWidth()}); break;
+
+                case 3:
+                    nameValueList.Add(GetSizeItemSpecific());
+                    nameValueList.Add(new NameValuePair() { Name = "Width", Value = GetFormattedWidth()});
+                    nameValueList.Add(new NameValuePair() { Name = "Color", Value = _item.Dimensions[DimensionName.Color].Value }); break;
+            }
+
+            return nameValueList;
+        }
+
+        private NameValuePair GetSizeItemSpecific()
+        {
+            NameValuePair nv = new NameValuePair();
 
             if (_item.Dimensions.ContainsKey(DimensionName.EUSize))
             {
@@ -134,24 +116,29 @@ namespace BerkeleyEntities.Ebay.Mappers
                     default: throw new NotImplementedException("could not recognize gender");
                 }
 
-                nv = BuildItemSpecific(label, new string[1] { _item.Dimensions[DimensionName.EUSize].Value });
+                nv.Name = label;
+                nv.Value = _item.Dimensions[DimensionName.EUSize].Value;
 
             }
             else if (_item.Dimensions.ContainsKey(DimensionName.USMenSize))
             {
-                nv = BuildItemSpecific("US Shoe Size (Men's)", new string[1] { _item.Dimensions[DimensionName.USMenSize].Value });
+                nv.Name = "US Shoe Size (Men's)";
+                nv.Value = _item.Dimensions[DimensionName.USMenSize].Value;
             }
             else if (_item.Dimensions.ContainsKey(DimensionName.USWomenSize))
             {
-                nv = BuildItemSpecific("US Shoe Size (Women's)", new string[1] { _item.Dimensions[DimensionName.USWomenSize].Value });
+                nv.Name = "US Shoe Size (Women's)";
+                nv.Value = _item.Dimensions[DimensionName.USWomenSize].Value;
             }
             else if (_item.Dimensions.ContainsKey(DimensionName.USYouthSize))
             {
-                nv = BuildItemSpecific("US Shoe Size (Youth)", new string[1] { _item.Dimensions[DimensionName.USYouthSize].Value });
+                nv.Name = "US Shoe Size (Youth)";
+                nv.Value = _item.Dimensions[DimensionName.USYouthSize].Value;
             }
             else if (_item.Dimensions.ContainsKey(DimensionName.USBabySize))
             {
-                nv = BuildItemSpecific("US Shoe Size (Baby & Toddler)", new string[1] { _item.Dimensions[DimensionName.USBabySize].Value });
+                nv.Name = "US Shoe Size (Baby & Toddler)";
+                nv.Value = _item.Dimensions[DimensionName.USBabySize].Value;
             }
 
             return nv;
@@ -242,7 +229,5 @@ namespace BerkeleyEntities.Ebay.Mappers
             }
         }
 
-
-        
     }
 }

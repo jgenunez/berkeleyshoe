@@ -24,7 +24,7 @@ namespace WorkbookPublisher.ViewModel
         {
             _readEntriesCommand = new ReadCommand(_workbook, _marketplaceCode, typeof(EbayEntry));
             _publishCommand = new EbayPublishCommand(_marketplaceCode);
-            _updateCommand = new UpdateCommand(_workbook, _marketplaceCode);
+            _updateCommand = new UpdateCommand(_workbook, _marketplaceCode, typeof(EbayEntry));
 
             _readEntriesCommand.ReadCompleted += _publishCommand.ReadCompletedHandler;
             _readEntriesCommand.ReadCompleted += _updateCommand.ReadCompletedHandler;
@@ -64,30 +64,38 @@ namespace WorkbookPublisher.ViewModel
 
                 var update = entries.Where(p => !string.IsNullOrWhiteSpace(p.Code)).GroupBy(p => p.Code);
 
-                foreach (var group in update)
+                foreach (var entryGroup in update)
                 {
-                    EbayListing listing = _marketplace.Listings.Single(p => p.Code.Equals(group.Key));
+                    EbayListing listing = _marketplace.Listings.Single(p => p.Code.Equals(entryGroup.Key));
 
-                    TryUpdateListing(listing, group);
+                    TryUpdateListing(listing, entryGroup);
                 }
 
-                var create = entries.Where(p => string.IsNullOrWhiteSpace(p.Code)).GroupBy(p => p.ClassName);
+                var pendingCreate = entries.Where(p => string.IsNullOrWhiteSpace(p.Code));
 
-                foreach (var group in create)
+                var individuals = pendingCreate.Where(p => !p.IsVariation());
+                var variations = pendingCreate.Where(p => p.IsVariation()).GroupBy(p => p.ClassName);
+
+                foreach (var entryGroup in variations)
                 {
-                    TryCreateListing(group);
+                    TryCreateListing(entryGroup, true);
+                }
+
+                foreach (var entry in individuals)
+                {
+                    TryCreateListing(new List<EbayEntry>() {entry}, false);
                 }
 
             }
         }
 
-        private void TryCreateListing(IEnumerable<EbayEntry> entries)
+        private void TryCreateListing(IEnumerable<EbayEntry> entries, bool isVariation)
         {
             try
             {
                 entries.ToList().ForEach(p => p.Status = StatusCode.Processing);
 
-                CreateListing(entries);
+                CreateListing(entries, isVariation);
 
                 foreach (var entry in entries)
                 {
@@ -135,7 +143,6 @@ namespace WorkbookPublisher.ViewModel
 
             listingDto.Code = listing.Code;
             listingDto.Format = entries.First(p => !string.IsNullOrWhiteSpace(p.Format)).GetFormat();
-            listingDto.MarketplaceID = _marketplace.ID;
             listingDto.Brand = entries.First(p => !string.IsNullOrWhiteSpace(p.Brand)).Brand;
             listingDto.IsVariation = (bool)listing.IsVariation;
 
@@ -154,57 +161,44 @@ namespace WorkbookPublisher.ViewModel
                 listingDto.FullDescription = entries.First(p => !string.IsNullOrWhiteSpace(p.FullDescription)).FullDescription;
             }
 
+            if (entries.Any(p => !string.IsNullOrWhiteSpace(p.Title)))
+            {
+                if ((bool)listing.IsVariation)
+                {
+                    listingDto.Title = GetParentTitle(entries.First(p => !string.IsNullOrWhiteSpace(p.Title)));
+                }
+                else
+                {
+                    listingDto.Title = entries.First(p => !string.IsNullOrWhiteSpace(p.Title)).Title;
+                } 
+            }
+
             foreach (EbayEntry entry in entries)
             {
-                EbayListingItem listingItem = listing.ListingItems.SingleOrDefault(p => p.Item.ItemLookupCode.Equals(entry.Sku));
-
                 ListingItemDto listingItemDto = new ListingItemDto();
                 listingItemDto.Sku = entry.Sku;
                 listingItemDto.Qty = entry.Q;
-                listingItemDto.QtySpecified = entry.QSpecified;
                 listingItemDto.Price = entry.P;
-                listingItemDto.PriceSpecified = entry.PSpecified;
-
-                if (entry.GetUpdateFlags().Any(p => p.Trim().ToUpper().Equals("TITLE")))
-                {
-                    listingItemDto.Title = entry.Title;
-                }
-
                 listingDto.Items.Add(listingItemDto);
             }
 
-            var activeSkus = listing.ListingItems.Where(p => p.Quantity != 0).Select(p => p.Item.ItemLookupCode);
+            var activeListingItems = listing.ListingItems.Where(p => p.Quantity != 0);
 
-            bool mustIncludeProductData = listingDto.Items.Any(p => !activeSkus.Any(s => s.Equals(p.Sku)));
-
-            foreach (EbayListingItem listingItem in listing.ListingItems.Where(p => p.Quantity != 0))
+            foreach (EbayListingItem listingItem in activeListingItems)
             {
                 if (!listingDto.Items.Any(p => p.Sku.Equals(listingItem.Sku)))
                 {
                     ListingItemDto listingItemDto = new ListingItemDto();
                     listingItemDto.Sku = listingItem.Sku;
                     listingItemDto.Qty = listingItem.Quantity;
-                    listingItemDto.QtySpecified = true;
                     listingItemDto.Price = listingItem.Price;
-                    listingItemDto.PriceSpecified = true;
-                    listingItemDto.Title = listingItem.Title;
-
                     listingDto.Items.Add(listingItemDto);
                 }
             }
 
-            if (entries.Any(p => p.GetUpdateFlags().Any(s => s.Trim().ToUpper().Equals("TITLE"))))
-            {
-                if ((bool)listing.IsVariation)
-                {
-                    EbayEntry entry = entries.First(p => !string.IsNullOrWhiteSpace(p.Title));
-                    listingDto.Title = GetParentTitle(entry);
-                }
-                else
-                {
-                    listingDto.Title = entries.First().Title;
-                }
-            }
+            var activeSkus = activeListingItems.Select(p => p.Item.ItemLookupCode);
+
+            bool mustIncludeProductData = listingDto.Items.Any(p => !activeSkus.Any(s => s.Equals(p.Sku)));
 
             bool includeTemplate = entries.Any(p => p.GetUpdateFlags().Any(s => s.Trim().ToUpper().Equals("TEMPLATE")));
 
@@ -216,21 +210,31 @@ namespace WorkbookPublisher.ViewModel
             }
             else
             {
-                _ebayServices.Revise(listingDto, includeProductData, includeTemplate, "Publisher");
+                _ebayServices.Revise(_marketplace.ID, listingDto, includeProductData, includeTemplate, "Publisher");
             }
 
             
         }
 
-        private void CreateListing(IEnumerable<EbayEntry> entries)
+        private void CreateListing(IEnumerable<EbayEntry> entries, bool isVariation)
         {
             ListingDto listingDto = new ListingDto();
 
-            listingDto.MarketplaceID = _marketplace.ID;
             listingDto.Brand = entries.First(p => !string.IsNullOrWhiteSpace(p.Brand)).Brand;
             listingDto.Duration = entries.First(p => !string.IsNullOrWhiteSpace(p.Format)).GetDuration();
             listingDto.Format = entries.First(p => !string.IsNullOrWhiteSpace(p.Format)).GetFormat();
             listingDto.FullDescription = entries.First(p => !string.IsNullOrWhiteSpace(p.FullDescription)).FullDescription;
+            listingDto.IsVariation = isVariation;
+            
+
+            if (isVariation)
+            {
+                listingDto.Title = GetParentTitle(entries.First(p => !string.IsNullOrWhiteSpace(p.Title)));
+            }
+            else
+            {
+                listingDto.Title = entries.First(p => !string.IsNullOrWhiteSpace(p.Title)).Title;
+            }
 
             if (entries.Any(p => !string.IsNullOrWhiteSpace(p.Template)))
             {
@@ -242,31 +246,24 @@ namespace WorkbookPublisher.ViewModel
                 listingDto.Design = entries.First(p => !string.IsNullOrWhiteSpace(p.Design)).Design;
             }
 
-            if (entries.Any(p => p.StartDateSpecified))
+            if (entries.Any(p => p.StartDate != null))
             {
-                listingDto.ScheduleTime = entries.First(p => p.StartDateSpecified).StartDate;
-                listingDto.ScheduleTimeSpecified = true;
+                listingDto.ScheduleTime = entries.First(p => p.StartDate != null).StartDate;
             }
 
-            if (entries.Count() > 1)
+
+
+            if (isVariation)
             {
                 listingDto.Sku = entries.First(p => !string.IsNullOrWhiteSpace(p.ClassName)).ClassName;
-
-                EbayEntry entry = entries.First(p => !string.IsNullOrWhiteSpace(p.Title));
-
-                listingDto.Title = GetParentTitle(entry); 
-                listingDto.IsVariation = true;
             }
             else
             {
                 listingDto.Sku = entries.First().Sku;
-                listingDto.Title = entries.First().Title;
-                listingDto.IsVariation = false;
 
-                if (entries.First().BIN != 0 && listingDto.Format.Equals(EbayMarketplace.FORMAT_AUCTION))
+                if (entries.First().BIN != null && listingDto.Format.Equals(EbayMarketplace.FORMAT_AUCTION))
                 {
                     listingDto.BinPrice = entries.First().BIN;
-                    listingDto.BinPriceSpecified = true;
                 }
             }
 
@@ -276,15 +273,11 @@ namespace WorkbookPublisher.ViewModel
 
                 listingItem.Sku = entry.Sku;
                 listingItem.Qty = entry.Q;
-                listingItem.QtySpecified = true;
                 listingItem.Price = entry.P;
-                listingItem.PriceSpecified = true;
-                listingItem.Title = entry.Title;
-
                 listingDto.Items.Add(listingItem);
             }
 
-            _ebayServices.Publish(listingDto, "Publisher");
+            _ebayServices.Publish(_marketplace.ID, listingDto, "Publisher");
         }
 
         private string GetParentTitle(EbayEntry entry)

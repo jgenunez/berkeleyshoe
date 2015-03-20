@@ -87,6 +87,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>berkeleyEntities.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Bonanza\Mapper\ProductMapper.cs" />
+    <Compile Include="Bonanza\Mapper\ProductMapperFactory.cs" />
+    <Compile Include="Bonanza\Mapper\ShoesAdapter.cs" />
     <Compile Include="Bonanza\Marketplace.cs" />
     <Compile Include="Bonanza\Services.cs" />
     <Compile Include="bsi_posts.cs" />

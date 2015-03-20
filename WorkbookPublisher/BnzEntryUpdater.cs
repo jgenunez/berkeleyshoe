@@ -11,7 +11,6 @@ namespace WorkbookPublisher
     {
 
         private string _marketplaceCode;
-        private uint _lastRowIndex;
         private List<BonanzaEntry> _entries;
         private List<BonanzaEntry> _addedEntries = new List<BonanzaEntry>();
         private berkeleyEntities _dataContext = new berkeleyEntities();
@@ -20,7 +19,6 @@ namespace WorkbookPublisher
         {
             _entries = entries.ToList();
             _marketplaceCode = marketplaceCode;
-            _lastRowIndex = entries.Max(p => p.RowIndex);
         }
 
         public List<BonanzaEntry> Update()
@@ -67,13 +65,13 @@ namespace WorkbookPublisher
 
             foreach (var listingItem in active)
             {
-                BonanzaEntry entry = existingEntries.FirstOrDefault();
+                BonanzaEntry entry = existingEntries.FirstOrDefault(p => p.IsValid());
 
                 if (entry != null)
                 {
                     entry.Code = listingItem.Listing.Code;
 
-                    if (entry.Q == listingItem.Quantity && decimal.Compare(entry.P, listingItem.Price) == 0 && entry.GetUpdateFlags().Count == 0)
+                    if (entry.Q.Value == listingItem.Quantity && decimal.Compare(entry.P.Value, listingItem.Price) == 0 && entry.GetUpdateFlags().Count == 0)
                     {
                         entry.Status = StatusCode.Completed;
                     }
@@ -86,44 +84,57 @@ namespace WorkbookPublisher
                 }
                 else
                 {
-                    CreateNewEntry(listingItem);
+                    entry = existingEntries.FirstOrDefault(p => !p.IsValid());
+
+                    if (entry != null)
+                    {
+                        entry.Message = "modified by program";
+                        existingEntries.Remove(entry);
+                    }
+                    else
+                    {
+                        entry = new BonanzaEntry();
+                        entry.Sku = item.ItemLookupCode;
+                        
+                        entry.Brand = item.SubDescription1;
+                        entry.ClassName = item.ClassName;
+                        entry.Message = "added by program";
+
+                        _addedEntries.Add(entry);
+                    }
+
+                    entry.Format = "GTC";
+                    entry.Code = listingItem.Listing.Code;
+                    entry.P = listingItem.Price;
+                    entry.Q = listingItem.Quantity;
+                    entry.Title = listingItem.Title;
+                    entry.FullDescription = listingItem.Listing.FullDescription;
+                    
+                    entry.Status = StatusCode.Completed;
                 }
             }
 
             foreach (var entry in existingEntries)
             {
-                if (_dataContext.BonanzaListings.Any(p => p.Sku.Equals(item.ClassName) && !p.Status.Equals(BonanzaMarketplace.STATUS_ENDED)))
-                {
-                    BonanzaListing listing = _dataContext.BonanzaListings.Single(p => p.Sku.Equals(item.ClassName) && !p.Status.Equals(BonanzaMarketplace.STATUS_ENDED));
+                BonanzaListing listing = _dataContext.BonanzaListings.SingleOrDefault(p => p.Sku.Equals(item.ClassName) && !p.Status.Equals(BonanzaMarketplace.STATUS_ENDED));
 
-                    entry.Code = listing.Code;
+                if (listing != null)
+                {
+                    if (!entry.IsValid())
+                    {
+                        entry.Code = listing.Code;
+                        entry.Title = listing.Title;
+                        entry.FullDescription = listing.FullDescription;
+                        entry.Format = "GTC";
+                        entry.Message = "modified by program";
+                    }
+                    else if (entry.Format.Equals("GTC"))
+                    {
+                        entry.Code = listing.Code;
+                        entry.Message = "modified by program";
+                    }
                 }
             }
-        }
-
-        private void CreateNewEntry(BonanzaListingItem listingItem)
-        {
-            Item item = listingItem.Item;
-
-            BonanzaEntry entry = new BonanzaEntry();
-
-            entry.Sku = item.ItemLookupCode;
-            entry.Code = listingItem.Listing.Code;
-            entry.Brand = item.SubDescription1;
-            entry.ClassName = item.ClassName;
-
-            entry.P = listingItem.Price;
-            entry.Q = listingItem.Quantity;
-            entry.Title = listingItem.Title;
-            entry.FullDescription = listingItem.Listing.FullDescription;
-            entry.Message = "added by program";
-            entry.Status = StatusCode.Completed;
-
-            entry.RowIndex = _lastRowIndex + 1;
-
-            _lastRowIndex = entry.RowIndex;
-
-            _addedEntries.Add(entry);
         }
 
         private void Validate(Item item, BonanzaEntry entry)
