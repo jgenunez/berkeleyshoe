@@ -497,7 +497,7 @@ namespace BerkeleyEntities.Ebay
 
                 ebayDto.LookupAttributeArray = null;
 
-                ebayDto.Description = GetDesign(designName).Replace("<!-- INSERT FULL DESCRIPTION -->", listingDto.FullDescription); ;
+                ebayDto.Description = GetDesign(designName).Replace("<!-- INSERT FULL DESCRIPTION -->", listingDto.FullDescription);
             }
             else
             {
@@ -526,6 +526,8 @@ namespace BerkeleyEntities.Ebay
                 ebayDto.BuyItNowPrice = new AmountType() { currencyID = CurrencyCodeType.USD, Value = Convert.ToDouble(listingDto.BinPrice) };
             }
 
+            
+
 
             if (!listingDto.IsVariation)
             {
@@ -547,6 +549,12 @@ namespace BerkeleyEntities.Ebay
 
                     ebayDto.ConditionIDSpecified = true;
                     ebayDto.ConditionID = mapper.GetConditionID();
+
+                    if (!string.IsNullOrWhiteSpace(mapper.GetConditionDescription()))
+                    {
+                        ebayDto.ConditionDescription = mapper.GetConditionDescription();
+                    }
+
                     ebayDto.PrimaryCategory = new CategoryType() { CategoryID = mapper.CategoryID };
 
                     ebayDto.ItemSpecifics = new NameValueListTypeCollection(itemSpecifics);
@@ -581,10 +589,10 @@ namespace BerkeleyEntities.Ebay
 
                     ebayDto.ConditionID = matrixMapper.GetConditionID();
 
-                    //if (ebayDto.ConditionID == 3000)
-                    //{
-                    //    ebayDto.ConditionDescription = "A brand-new, unused, and unworn item. Cosmetic imperfections range from natural color variations to scuffs, cuts or nicks, hanging threads or missing buttons that occasionally occur during the manufacturing or delivery process.";
-                    //}
+                    if (!string.IsNullOrWhiteSpace(matrixMapper.GetConditionDescription()))
+                    {
+                        ebayDto.ConditionDescription = matrixMapper.GetConditionDescription();
+                    }
 
                     ebayDto.PrimaryCategory = new CategoryType() { CategoryID = matrixMapper.CategoryID };
                     ebayDto.ItemSpecifics = new NameValueListTypeCollection(matrixMapper.GetItemSpecifics().ToArray());

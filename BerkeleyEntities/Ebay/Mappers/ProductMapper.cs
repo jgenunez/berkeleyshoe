@@ -33,6 +33,11 @@ namespace BerkeleyEntities.Ebay.Mappers
 
         public abstract int GetConditionID();
 
+        public string GetConditionDescription()
+        {
+            return _item.ExtendedDescription;
+        }
+
         public List<KeyValuePair<DimensionName,BerkeleyEntities.Attribute>> GetAttributes()
         {
             return _item.Dimensions.ToList();

@@ -26,6 +26,11 @@ namespace BerkeleyEntities.Ebay.Mappers
             return _products.First().GetConditionID();
         }
 
+        public string GetConditionDescription()
+        {
+            return _products.First().GetConditionDescription();
+        }
+
         public List<NameValueListType> GetItemSpecifics()
         {
             var specs = _products.SelectMany(p => p.GetItemSpecifics()).GroupBy(p => p.Name).Select(p => p.First());

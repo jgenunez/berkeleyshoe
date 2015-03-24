@@ -20,10 +20,7 @@ namespace AmazonS3BackupService
 {
     class Program
     {
-        private const string LASTBACKUP_FILE = "LastBackup.xml";
-        private const string BUCKET_NAME = "berkeleybackup";
-        private const string LOCAL_PICTURE_ROOT = @"P:\products";
-        private const string BUCKET_PICTURE_ROOT = "picture-backups";
+        private const string BACKUP_JOB_FILE = "BackupJobs.xml";
 
         private static IAmazonS3 _s3Client;
 
@@ -33,46 +30,65 @@ namespace AmazonS3BackupService
         {
             _s3Client = AWSClientFactory.CreateAmazonS3Client();
 
-            DateTime lastBackup = GetLastBackupTime().AddMinutes(-5);
+            string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), BACKUP_JOB_FILE);
 
-            DirectoryInfo rootDir = new DirectoryInfo(LOCAL_PICTURE_ROOT);
+            XmlSerializer serializer = new XmlSerializer(typeof(List<BackupJob>));
 
-            var brandDirs = rootDir.GetDirectories().Where(p => p.LastWriteTime > lastBackup);
+            List<BackupJob> jobs = (List<BackupJob>)serializer.Deserialize(new FileStream(path, FileMode.Open));
 
-            foreach (var brandDir in brandDirs)
+            foreach (var job in jobs.Where(p => p.Active))
             {
-                var files = brandDir.GetFiles().Where(p => p.LastWriteTime > lastBackup);
+                ExecuteBackupJob(job);
+            }
+
+            serializer.Serialize(new FileStream(path, FileMode.Create), jobs);
+        }
+
+        public static void ExecuteBackupJob(BackupJob backupJob)
+        {
+            DateTime currentBackup = DateTime.Now;
+
+            DirectoryInfo localRoot = new DirectoryInfo(backupJob.LocalRoot);
+
+            var dirs = localRoot.GetDirectories("*", SearchOption.AllDirectories).Where(p => p.LastWriteTime >= backupJob.LastBackup);
+
+            foreach (var dir in dirs)
+            {
+                var files = dir.GetFiles(backupJob.SearchPattern).Where(p => p.LastWriteTime >= backupJob.LastBackup);
 
                 foreach (var file in files)
                 {
-                    PushToAmazons3(file);
+                    try
+                    {
+                        string key = file.FullName.Replace(backupJob.LocalRoot, backupJob.DetinationRoot).Replace("\\", "/");
+
+                        PushToAmazons3(backupJob.Bucket, key, file);
+
+                        _logger.Info(string.Format("{0} uploaded", file.Name));
+                    }
+                    catch (AmazonS3Exception ex)
+                    {
+                        _logger.Error(string.Format("{0} could not upload. Request ID: {1}  Error Code: {2}  Message: {3}", file.Name, ex.RequestId, ex.ErrorCode, ex.Message));
+                    }
                 }
             }
-        }
 
-        public static void PushToAmazons3(FileInfo file)
+            backupJob.LastBackup = currentBackup;
+        }   
+
+        public static void PushToAmazons3(string bucket, string key, FileInfo file)
         {
             PutObjectRequest request = new PutObjectRequest();
-            request.BucketName = BUCKET_NAME;
-            request.ContentType = "image/jpeg";
+            request.BucketName = bucket;
             request.FilePath = file.FullName;
-            request.Key = file.FullName.Replace(LOCAL_PICTURE_ROOT, BUCKET_PICTURE_ROOT).Replace("\\","/");
+            request.Key = key;
 
-            try
-            {
-                PutObjectResponse response = _s3Client.PutObject(request);
-
-                _logger.Info(string.Format("{0} uploaded successfully",file.Name));
-            }
-            catch (AmazonS3Exception ex)
-            {
-                _logger.Error(string.Format("Request ID: {0}  Error Code: {1}  Message: {2}", ex.RequestId, ex.ErrorCode, ex.Message));
-            }
+            PutObjectResponse response = _s3Client.PutObject(request);
         }
 
         public static void SaveLastBackupTime(DateTime lastBackup)
         {
-            string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), LASTBACKUP_FILE);
+            string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), BACKUP_JOB_FILE);
 
             XmlSerializer serializer = new XmlSerializer(typeof(DateTime));
 
@@ -81,7 +97,7 @@ namespace AmazonS3BackupService
 
         public static DateTime GetLastBackupTime()
         {
-            string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), LASTBACKUP_FILE);
+            string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), BACKUP_JOB_FILE);
 
             XmlSerializer serializer = new XmlSerializer(typeof(DateTime));
 
