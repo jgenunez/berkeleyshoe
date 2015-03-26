@@ -28,20 +28,27 @@ namespace AmazonS3BackupService
 
         public static void Main(string[] args)
         {
-            _s3Client = AWSClientFactory.CreateAmazonS3Client();
-
-            string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), BACKUP_JOB_FILE);
-
-            XmlSerializer serializer = new XmlSerializer(typeof(List<BackupJob>));
-
-            List<BackupJob> jobs = (List<BackupJob>)serializer.Deserialize(new FileStream(path, FileMode.Open));
-
-            foreach (var job in jobs.Where(p => p.Active))
+            try
             {
-                ExecuteBackupJob(job);
-            }
+                _s3Client = AWSClientFactory.CreateAmazonS3Client();
 
-            serializer.Serialize(new FileStream(path, FileMode.Create), jobs);
+                string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), BACKUP_JOB_FILE);
+
+                XmlSerializer serializer = new XmlSerializer(typeof(List<BackupJob>));
+
+                List<BackupJob> jobs = (List<BackupJob>)serializer.Deserialize(new FileStream(path, FileMode.Open));
+
+                foreach (var job in jobs.Where(p => p.Active))
+                {
+                    ExecuteBackupJob(job);
+                }
+
+                serializer.Serialize(new FileStream(path, FileMode.Create), jobs);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.Message + " " + ex.StackTrace);
+            }
         }
 
         public static void ExecuteBackupJob(BackupJob backupJob)
