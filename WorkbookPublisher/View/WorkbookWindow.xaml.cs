@@ -96,8 +96,10 @@ namespace WorkbookPublisher
 
         private void TestBonanza()
         {
-            //BerkeleyEntities.Bonanza.BonanzaServices services = new BerkeleyEntities.Bonanza.BonanzaServices();
+            BerkeleyEntities.Bonanza.BonanzaServices services = new BerkeleyEntities.Bonanza.BonanzaServices();
 
+
+            services.SynchronizeListing(1);
             //services.FetchToken(1);
 
             //using (berkeleyEntities dataContext = new berkeleyEntities())
@@ -371,10 +373,10 @@ namespace WorkbookPublisher
 
                         entry.Status = ebayHistory + " " + amznHistory;
 
-                        if (item.EbayListingItems.Where(w => w.Title != null).Count() > 0)
+                        if (item.EbayListingItems.Where(w => !w.Listing.IsVariation.Value).Count() > 0)
                         {
-                            EbayListingItem listingItem = item.EbayListingItems.Single(p => p.ID == item.EbayListingItems.Where(w => w.Title != null).Max(s => s.ID));
-                            entry.Title = listingItem.Title;
+                            EbayListingItem listingItem = item.EbayListingItems.Single(p => p.ID == item.EbayListingItems.Where(w => !w.Listing.IsVariation.Value).Max(s => s.ID));
+                            entry.Title = listingItem.Listing.Title;
                             entry.FullDescription = listingItem.Listing.FullDescription;
                         }
                         else if (dataContext.bsi_quantities.Any(p => p.itemLookupCode.Equals(entry.Sku)))

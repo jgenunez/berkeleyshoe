@@ -3333,16 +3333,14 @@ namespace BerkeleyEntities
         /// <param name="itemID">Initial value of the ItemID property.</param>
         /// <param name="listingID">Initial value of the ListingID property.</param>
         /// <param name="quantity">Initial value of the Quantity property.</param>
-        /// <param name="title">Initial value of the Title property.</param>
         /// <param name="price">Initial value of the Price property.</param>
-        public static BonanzaListingItem CreateBonanzaListingItem(global::System.Int32 id, global::System.Int32 itemID, global::System.Int32 listingID, global::System.Int32 quantity, global::System.String title, global::System.Decimal price)
+        public static BonanzaListingItem CreateBonanzaListingItem(global::System.Int32 id, global::System.Int32 itemID, global::System.Int32 listingID, global::System.Int32 quantity, global::System.Decimal price)
         {
             BonanzaListingItem bonanzaListingItem = new BonanzaListingItem();
             bonanzaListingItem.ID = id;
             bonanzaListingItem.ItemID = itemID;
             bonanzaListingItem.ListingID = listingID;
             bonanzaListingItem.Quantity = quantity;
-            bonanzaListingItem.Title = title;
             bonanzaListingItem.Price = price;
             return bonanzaListingItem;
         }
@@ -3449,30 +3447,6 @@ namespace BerkeleyEntities
         private global::System.Int32 _Quantity;
         partial void OnQuantityChanging(global::System.Int32 value);
         partial void OnQuantityChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.String Title
-        {
-            get
-            {
-                return _Title;
-            }
-            set
-            {
-                OnTitleChanging(value);
-                ReportPropertyChanging("Title");
-                _Title = StructuralObject.SetValidValue(value, false, "Title");
-                ReportPropertyChanged("Title");
-                OnTitleChanged();
-            }
-        }
-        private global::System.String _Title;
-        partial void OnTitleChanging(global::System.String value);
-        partial void OnTitleChanged();
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -9619,30 +9593,6 @@ namespace BerkeleyEntities
         private global::System.String _Sku;
         partial void OnSkuChanging(global::System.String value);
         partial void OnSkuChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
-        public global::System.String Title
-        {
-            get
-            {
-                return _Title;
-            }
-            set
-            {
-                OnTitleChanging(value);
-                ReportPropertyChanging("Title");
-                _Title = StructuralObject.SetValidValue(value, true, "Title");
-                ReportPropertyChanged("Title");
-                OnTitleChanged();
-            }
-        }
-        private global::System.String _Title;
-        partial void OnTitleChanging(global::System.String value);
-        partial void OnTitleChanged();
 
         #endregion
 

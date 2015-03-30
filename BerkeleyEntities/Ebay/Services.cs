@@ -430,7 +430,6 @@ namespace BerkeleyEntities.Ebay
                     listingItem.Sku = listingItemDto.Sku;
                     listingItem.Quantity = listingItemDto.Qty.Value;
                     listingItem.Price = listingItemDto.Price.Value;
-                    listingItem.Title = listingItemDto.Title;
                 }
 
                 LogChanges(dataContext);
@@ -466,8 +465,6 @@ namespace BerkeleyEntities.Ebay
                     {
                         listingItem.Quantity = listingItemDto.Qty.Value;
                     }   
-
-                    listingItem.Title = !string.IsNullOrEmpty(listingItemDto.Title) ? listingItemDto.Title : listingItem.Title;
 
                     if (listingItemDto.Price.HasValue)
                     {
@@ -879,8 +876,6 @@ namespace BerkeleyEntities.Ebay
         public int? Qty {get; set;}
 
         public decimal? Price {get; set;}
-
-        public string Title { get; set; }
     }
 
     public class ListingSynchronizer

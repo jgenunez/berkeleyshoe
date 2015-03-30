@@ -107,9 +107,8 @@ namespace WorkbookPublisher
                     entry.Code = listingItem.Listing.Code;
                     entry.P = listingItem.Price;
                     entry.Q = listingItem.Quantity;
-                    entry.Title = listingItem.Title;
                     entry.FullDescription = listingItem.Listing.FullDescription;
-                    
+                    entry.Title = listingItem.Listing.Title;
                     entry.Status = StatusCode.Completed;
                 }
             }

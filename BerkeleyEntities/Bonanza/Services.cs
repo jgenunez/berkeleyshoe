@@ -179,6 +179,24 @@ namespace BerkeleyEntities.Bonanza
         //}
 
 
+        public void SynchronizeListing(int marketplaceID)
+        {
+            using (berkeleyEntities dataContext = new berkeleyEntities())
+            {
+                BonanzaMarketplace marketplace = dataContext.BonanzaMarketplaces.Single(p => p.ID == marketplaceID);
+
+                ListingSynchronizer synchronizer = new ListingSynchronizer(marketplace, dataContext);
+
+                string[] status = new string[] { "for_sale", "ready_to_post", "missing_fields", "sold", "pending_pickup", "reserved" };
+
+                marketplace.ListingSyncTime = DateTime.UtcNow;
+
+                synchronizer.SyncByStatus(status);
+
+                dataContext.SaveChanges();
+            }
+        }
+
         public void FetchToken(int marketplaceID)
         {
             HttpWebRequest request = WebRequest.CreateHttp("https://api.bonanza.com/api_requests/secure_request");
@@ -291,9 +309,6 @@ namespace BerkeleyEntities.Bonanza
                 listingDto.PicUrls.Add(pic.Path.Replace("\\","/").Replace(LOCAL_PICTURE_ROOT,S3_PICTURE_URL_ROOT));
             }
 
-            string boundary = "MIME_boundary";
-            string CRLF = "\r\n";
-
             HttpWebRequest request = WebRequest.CreateHttp("https://api.bonanza.com/api_requests/secure_request");
 
             request.Headers.Add("X-BONANZLE-API-DEV-NAME", "vWhzo4w8l7sKDUT");
@@ -305,9 +320,15 @@ namespace BerkeleyEntities.Bonanza
 
             request.Method = "POST";
 
-            string jsonPayload = JsonConvert.SerializeObject(MapToBonanzaDto(listingDto, true, true));
+            dynamic addFixedPriceItemRequest = new ExpandoObject();
+            addFixedPriceItemRequest.requesterCredentials = new ExpandoObject();
+            addFixedPriceItemRequest.requesterCredentials.bonanzleAuthToken = _marketplace.Token;
+            addFixedPriceItemRequest.item = MapToBonanzaDto(listingDto, true, true);
 
-            byte[] contentBytes = Encoding.UTF8.GetBytes(jsonPayload);
+            dynamic jsonPayload = new ExpandoObject();
+            jsonPayload.addFixedPriceItemRequest = addFixedPriceItemRequest;
+
+            byte[] contentBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jsonPayload));
 
             request.ContentLength = contentBytes.Length;
 
@@ -354,127 +375,73 @@ namespace BerkeleyEntities.Bonanza
                     }
                 }
             }
-
-
-
-        }
-
-        //public void AddListing(ListingDto listingDto)
-        //{
-        //    Dictionary<string, object> postParameters = new Dictionary<string, object>();
-
-            
-        //    var pics = _picSetRepository.GetPictures(listingDto.Brand, listingDto.Items.Select(p => p.Sku).ToList());
-
-        //    if (pics.Count() == 0)
-        //    {
-        //        throw new InvalidOperationException("picture required");
-        //    }
-
-                
-        //    foreach(var pic in pics.Take(4).OrderBy(p => p.Name))
-        //    {
-        //        using(FileStream fs = new FileStream(pic.Path, FileMode.Open, FileAccess.Read))
-        //        {
-                    
-
-        //            byte[] data = new byte[fs.Length];
-        //            fs.Read(data, 0, data.Length);
-
-        //            var base64data = Convert.ToBase64String(data);
-
-        //            string fileName = Path.GetFileName(pic.Path);
-
-        //            listingDto.PictureFiles.Add(fileName);
-
-        //            postParameters.Add(pic.Name, new FileParameter(data, fileName, "image/jpeg"));
-        //        }
-        //    }
-
-           
-
-        //    try
-        //    {
-        //        string boundary = "--Mime_Boundary--";
-        //        string contentType = "multipart/form-data; boundary=" + boundary;
-        //        string CRLF = "\r\n";
-
-        //        string jsonPart = boundary + CRLF +
-        //            "Content-Disposition: form-data; name=addFixedPriceItemRequest" + CRLF +
-        //            "Content-Type: application/json; charset=\"UTF-8\"" + CRLF + CRLF +
-        //           ((string)JsonConvert.SerializeObject(MapToBonanzaDto(listingDto, true, true))) + CRLF;
-
-        //        byte[] jsonData = Encoding.UTF8.GetBytes(jsonPart);
-
-        //        byte[] imageData = GetMultipartFormData(postParameters, boundary);
-
-        //        using (FileStream stream = new FileStream(@"C:\Users\JUAN\Desktop\testing.txt", FileMode.OpenOrCreate))
-        //        {
-        //            stream.Write(jsonData.Concat(imageData).ToArray(), 0, jsonData.Concat(imageData).ToArray().Length);
-        //        }
-                
-        //        HttpWebResponse response = PostForm("https://api.bonanza.com/api_requests/secure_request", contentType, jsonData.Concat(imageData).ToArray());
-
-
-        //        string output = null;
-
-        //        using (StreamReader sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
-        //        {
-        //            output = sr.ReadToEnd();
-        //        }
-
-        //        dynamic result = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(output);
-
-        //        if (result.ack.Equals("Success"))
-        //        {
-        //            string itemID = result.addFixedPriceItemResponse.itemId;
-        //            string sellingState = result.addFixedPriceItemResponse.sellingState;
-
-        //            listingDto.Code = itemID;
-
-        //            Persist(listingDto, sellingState);    
-        //        }
-        //    }
-        //    catch (WebException e)
-        //    {
-                
-        //        using (WebResponse response = e.Response)
-        //        {
-        //            var httpResponse = (HttpWebResponse)response;
-
-        //            using (Stream data = response.GetResponseStream())
-        //            {
-        //                StreamReader sr = new StreamReader(data);
-        //                throw new Exception(sr.ReadToEnd());
-        //            }
-        //        }
-        //    }
-
-
-            
-        //}
-
-        private bool AcceptAllCertifications(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
-        {
-            return true;
         }
 
         public void ReviseListing(ListingDto listingDto, bool includeProductData, bool includeTemplate)
         {
-            var ebayDto = MapToBonanzaDto(listingDto, includeProductData, includeTemplate);
+            HttpWebRequest request = WebRequest.CreateHttp("https://api.bonanza.com/api_requests/secure_request");
 
-            //if (listingDto.IsVariation)
-            //{
-            //    ReviseFixedPriceItemCall call = new ReviseFixedPriceItemCall(_marketplace.GetApiContext());
-            //    ReviseFixedPriceItemResponseType response = call.ExecuteRequest(new ReviseFixedPriceItemRequestType() { Item = ebayDto }) as ReviseFixedPriceItemResponseType;
-            //}
-            //else
-            //{
-            //    ReviseItemCall call = new ReviseItemCall(_marketplace.GetApiContext());
-            //    ReviseItemResponseType response = call.ExecuteRequest(new ReviseItemRequestType() { Item = ebayDto}) as ReviseItemResponseType;
-            //}
+            request.Headers.Add("X-BONANZLE-API-DEV-NAME", "vWhzo4w8l7sKDUT");
+            request.Headers.Add("X-BONANZLE-API-CERT-NAME", "YOL7ZWkbcBJGKTI");
 
-            Update(listingDto);
+            request.ContentType = "application/json";
+
+            ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(AcceptAllCertifications);
+
+            request.Method = "POST";
+
+            dynamic reviseFixedPriceItemRequest = new ExpandoObject();
+            reviseFixedPriceItemRequest.requesterCredentials = new ExpandoObject();
+            reviseFixedPriceItemRequest.requesterCredentials.bonanzleAuthToken = _marketplace.Token;
+            reviseFixedPriceItemRequest.item = MapToBonanzaDto(listingDto, includeProductData, includeTemplate);
+
+            dynamic jsonPayload = new ExpandoObject();
+            jsonPayload.reviseFixedPriceItemRequest = reviseFixedPriceItemRequest;
+
+            byte[] contentBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jsonPayload));
+
+            request.ContentLength = contentBytes.Length;
+
+            using (Stream stream = request.GetRequestStream())
+            {
+                stream.Write(contentBytes, 0, contentBytes.Length);
+            }
+
+            try
+            {
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
+                string output = null;
+
+                using (StreamReader sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
+                {
+                    output = sr.ReadToEnd();
+                }
+
+                dynamic result = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(output);
+
+                string ack = result.ack;
+
+                if (ack.Equals("Success"))
+                {
+                    string sellingState = result.addFixedPriceItemResponse.sellingState;
+
+                    Update(listingDto);
+                }
+            }
+            catch (WebException e)
+            {
+                using (WebResponse response = e.Response)
+                {
+                    var httpResponse = (HttpWebResponse)response;
+
+                    using (Stream data = response.GetResponseStream())
+                    {
+                        StreamReader sr = new StreamReader(data);
+                        throw new Exception(sr.ReadToEnd());
+                    }
+                }
+            }
         }
 
         public void EndListing(string code)
@@ -525,7 +492,6 @@ namespace BerkeleyEntities.Bonanza
                     listingItem.Item = dataContext.Items.Single(p => p.ItemLookupCode.Equals(listingItemDto.Sku));
                     listingItem.Quantity = listingItemDto.Qty.Value;
                     listingItem.Price = listingItemDto.Price.Value;
-                    listingItem.Title = listingItemDto.Title;
                 }
 
                 dataContext.SaveChanges();
@@ -534,52 +500,52 @@ namespace BerkeleyEntities.Bonanza
 
         private void Update(ListingDto listingDto)
         {
-            //using (berkeleyEntities dataContext = new berkeleyEntities())
-            //{
-            //    EbayListing listing = dataContext.EbayListings.Single(p => p.MarketplaceID == _marketplace.ID && p.Code.Equals(listingDto.Code));
+            using (berkeleyEntities dataContext = new berkeleyEntities())
+            {
+                BonanzaListing listing = dataContext.BonanzaListings.Single(p => p.MarketplaceID == _marketplace.ID && p.Code.Equals(listingDto.Code));
 
-            //    listing.Title = !string.IsNullOrWhiteSpace(listingDto.Title) ? listingDto.Title : listing.Title;
+                if(!string.IsNullOrWhiteSpace(listingDto.FullDescription))
+                {
+                    listing.FullDescription = listingDto.FullDescription;
+                }
 
-            //    listing.BinPrice = listingDto.BinPriceSpecified ? listingDto.BinPrice : listing.BinPrice;
+                if(!string.IsNullOrWhiteSpace(listingDto.Title))
+                {
+                    listing.Title = listingDto.Title;
+                }
 
-            //    listing.FullDescription = !string.IsNullOrWhiteSpace(listingDto.FullDescription) ? listingDto.FullDescription : listing.FullDescription;
+                foreach (ListingItemDto listingItemDto in listingDto.Items)
+                {
+                    Item item = dataContext.Items.Single(p => p.ItemLookupCode.Equals(listingItemDto.Sku));
 
-            //    foreach (ListingItemDto listingItemDto in listingDto.Items)
-            //    {
-            //        Item item = dataContext.Items.Single(p => p.ItemLookupCode.Equals(listingItemDto.Sku));
+                    BonanzaListingItem listingItem = listing.ListingItems.SingleOrDefault(p => p.Item.ID == item.ID);
 
-            //        EbayListingItem listingItem = listing.ListingItems.SingleOrDefault(p => p.Item.ID == item.ID);
+                    if (listingItem == null)
+                    {
+                        listingItem = new BonanzaListingItem() { Item = item, Listing = listing };
+                    }
 
-            //        if (listingItem == null)
-            //        {
-            //            listingItem = new EbayListingItem() { Item = item, Listing = listing, Sku = listingItemDto.Sku };
-            //        }
+                    if (listingItemDto.Qty.HasValue)
+                    {
+                        listingItem.Quantity = listingItemDto.Qty.Value;
+                    }
 
-            //        listingItem.Quantity = listingItemDto.QtySpecified ? listingItemDto.Qty : listingItem.Quantity;
-            //        listingItem.Title = !string.IsNullOrEmpty(listingItemDto.Title) ? listingItemDto.Title : listingItem.Title;
-            //        listingItem.Price = listingItemDto.PriceSpecified ? listingItemDto.Price : listingItem.Price;
-            //    }
+                    if (listingItemDto.Price.HasValue)
+                    {
+                        listingItem.Price = listingItemDto.Price.Value;
+                    }
 
-            //    listing.LastSyncTime = DateTime.UtcNow;
+                }
 
-            //    dataContext.SaveChanges();
-            //}
+                listing.LastSyncTime = DateTime.UtcNow;
+
+                dataContext.SaveChanges();
+            }
         }
 
         private dynamic MapToBonanzaDto(ListingDto listingDto, bool includeProductData, bool includeTemplate)
         {
-            dynamic jsonPayload = new ExpandoObject(); 
-
-            dynamic addFixedPriceItemRequest = new ExpandoObject();
-
-            jsonPayload.addFixedPriceItemRequest = addFixedPriceItemRequest;
-
-            addFixedPriceItemRequest.requesterCredentials = new ExpandoObject();
-            addFixedPriceItemRequest.requesterCredentials.bonanzleAuthToken = _marketplace.Token;
-
             dynamic item = new ExpandoObject();
-
-            addFixedPriceItemRequest.item = item;
 
             if (!string.IsNullOrEmpty(listingDto.Code))
             {
@@ -598,9 +564,14 @@ namespace BerkeleyEntities.Bonanza
 
             if (includeTemplate)
             {
-                string designName = string.IsNullOrWhiteSpace(listingDto.Design) ? "default" : listingDto.Design;
+                if (!string.IsNullOrWhiteSpace(listingDto.FullDescription))
+                {
+                    item.description = listingDto.FullDescription;
+                }
 
-                item.description = GetDesign(designName).Replace("<!-- INSERT FULL DESCRIPTION -->", listingDto.FullDescription);
+                //string designName = string.IsNullOrWhiteSpace(listingDto.Design) ? "default" : listingDto.Design;
+
+                //item.description = GetDesign(designName).Replace("<!-- INSERT FULL DESCRIPTION -->", listingDto.FullDescription);
             }
 
             item.primaryCategory = new ExpandoObject();
@@ -697,7 +668,7 @@ namespace BerkeleyEntities.Bonanza
                 item.variations = variations.ToArray();
             }
 
-            return jsonPayload;
+            return item;
         }
 
         private string GetDesign(string name)
@@ -722,90 +693,11 @@ namespace BerkeleyEntities.Bonanza
             return design;
         }
 
-        //private HttpWebResponse PostForm(string postUrl, string contentType, byte[] formData)
-        //{
-        //    HttpWebRequest request = WebRequest.Create(postUrl) as HttpWebRequest;
+        private bool AcceptAllCertifications(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+        {
+            return true;
+        }
 
-        //    if (request == null)
-        //    {
-        //        throw new NullReferenceException("request is not a http request");
-        //    }
-
-        //    request.Headers.Add("X-BONANZLE-API-DEV-NAME", "vWhzo4w8l7sKDUT");
-        //    request.Headers.Add("X-BONANZLE-API-CERT-NAME", "YOL7ZWkbcBJGKTI");
-
-        //    // Set up the request properties.
-        //    request.Method = "POST";
-        //    request.ContentType = contentType;
-        //    request.ContentLength = formData.Length;
-
-        //    ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(AcceptAllCertifications);
-
-           
-
-        //    // You could add authentication here as well if needed:
-        //    // request.PreAuthenticate = true;
-        //    // request.AuthenticationLevel = System.Net.Security.AuthenticationLevel.MutualAuthRequested;
-        //    // request.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(System.Text.Encoding.Default.GetBytes("username" + ":" + "password")));
-
-        //    // Send the form data to the request.
-        //    using (Stream requestStream = request.GetRequestStream())
-        //    {
-        //        requestStream.Write(formData, 0, formData.Length);
-        //        requestStream.Close();
-        //    }
-
-        //    return request.GetResponse() as HttpWebResponse;
-        //}
-
-        //private byte[] GetMultipartFormData(Dictionary<string, object> postParameters, string boundary)
-        //{
-        //    Stream formDataStream = new System.IO.MemoryStream();
-
-        //    foreach (var param in postParameters)
-        //    {
-        //        if (param.Value is FileParameter)
-        //        {
-        //            FileParameter fileToUpload = (FileParameter)param.Value;
-
-        //            string header = string.Format("{0}\r\nContent-Disposition: form-data; name=\"{1}\"; filename=\"{2}\";\r\nContent-Type: {3};\r\nContent-Transfer-Encoding: base64\r\n\r\n",
-        //                 boundary,
-        //                 param.Key,
-        //                 fileToUpload.FileName ?? param.Key,
-        //                 fileToUpload.ContentType ?? "application/octet-stream");
-                    
-        //            formDataStream.Write(encoding.GetBytes(header), 0, encoding.GetByteCount(header));
-
-        //            // Write the file data directly to the Stream, rather than serializing it to a string.
-        //            formDataStream.Write(fileToUpload.File, 0, fileToUpload.File.Length);
-        //        }
-        //        else
-        //        {
-        //            string postData = string.Format("{0}\r\nContent-Disposition: form-data; name=\"{1}\"\r\n\r\n{2}",
-        //                boundary,
-        //                param.Key,
-        //                param.Value);
-
-        //            formDataStream.Write(encoding.GetBytes(postData), 0, encoding.GetByteCount(postData));
-        //        }
-
-        //        formDataStream.Write(encoding.GetBytes("\r\n"), 0, encoding.GetByteCount("\r\n"));
-        //    }
-
-        //    // Add the end of the request.  Start with a newline
-        //    string footer =  boundary + "\r\n";
-        //    formDataStream.Write(encoding.GetBytes(footer), 0, encoding.GetByteCount(footer));
-
-        //    // Dump the Stream into a byte[]
-        //    formDataStream.Position = 0;
-        //    byte[] formData = new byte[formDataStream.Length];
-        //    formDataStream.Read(formData, 0, formData.Length);
-        //    formDataStream.Close();
-
-            
-
-        //    return formData;
-        //}
     }
 
     public class FileParameter
@@ -861,164 +753,109 @@ namespace BerkeleyEntities.Bonanza
         public int? Qty {get; set;}
 
         public decimal? Price {get; set;}
-
-        public string Title { get; set; }
     }
 
     public class ListingSynchronizer
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
-        private EbayMarketplace _marketplace;
+        private BonanzaMarketplace _marketplace;
         private berkeleyEntities _dataContext;
 
-        public ListingSynchronizer(EbayMarketplace marketplace, berkeleyEntities dataContext)
+        public ListingSynchronizer(BonanzaMarketplace marketplace, berkeleyEntities dataContext)
         {
             _marketplace = marketplace;
             _dataContext = dataContext;
         }
 
-        public ItemType SyncListing(string itemId)
+
+        public void SyncByStatus(string[] status)
         {
-            GetItemRequestType request = new GetItemRequestType();
-            request.ItemID = itemId;
+            dynamic getBoothItemsRequest = new ExpandoObject();
+            getBoothItemsRequest.requesterCredentials = new ExpandoObject();
+            getBoothItemsRequest.requesterCredentials.bonanzleAuthToken = _marketplace.Token;
+            getBoothItemsRequest.boothId = _marketplace.Name;
+            getBoothItemsRequest.itemStatus = status;
 
-            SetOutputSelection(request);
-
-            GetItemCall call = new GetItemCall(_marketplace.GetApiContext());
-
-            GetItemResponseType response = call.ExecuteRequest(request) as GetItemResponseType;
-
-            return response.Item;
-        }
-
-        public void SyncByCreatedTime(DateTime from, DateTime to)
-        {
-            GetSellerListRequestType request = new GetSellerListRequestType();
-
-            request.StartTimeFromSpecified = true;
-            request.StartTimeToSpecified = true;
-            request.StartTimeFrom = from;
-            request.StartTimeTo = to;
-
-            ProcessListingData(ExecuteGetSellerList(request));
-
-            _dataContext.SaveChanges();
-        }
-
-        public void SyncActiveListings()
-        {
-            DateTime from = DateTime.UtcNow.AddDays(-5);
-            DateTime to = DateTime.UtcNow.AddDays(32);
-
-            GetSellerListRequestType request = new GetSellerListRequestType();
-
-            request.EndTimeFromSpecified = true;
-            request.EndTimeToSpecified = true;
-            request.EndTimeFrom = from;
-            request.EndTimeTo = to;
-
-            ProcessListingData(ExecuteGetSellerList(request));
+            dynamic jsonPayload = new ExpandoObject();
+            jsonPayload.getBoothItemsRequest = getBoothItemsRequest;
 
 
-            //var activeListings = _marketplace.Listings.Where(p => p.Status.Equals(EbayMarketplace.STATUS_ACTIVE) && p.EntityState.Equals(EntityState.Unchanged));
+            dynamic response = SendJsonRequest(jsonPayload);
 
-            //var listingDtos = new ItemTypeCollection();
+            string ack = response.ack;
 
-            //foreach (var listing in activeListings)
-            //{
-            //    listingDtos.Add(SyncListing(listing.Code));
-            //}
-
-            //if (listingDtos.Count > 0)
-            //{
-            //    ProcessListingData(listingDtos);
-            //}
-
-            _dataContext.SaveChanges();
-        }
-
-        public void SyncByModifiedTime(DateTime from, DateTime to)
-        {
-            GetSellerEventsRequestType request = new GetSellerEventsRequestType();
-            request.DetailLevel = new DetailLevelCodeTypeCollection();
-            request.DetailLevel.Add(DetailLevelCodeType.ReturnAll);
-
-            request.HideVariationsSpecified = true;
-            request.HideVariations = false;
-
-            request.IncludeVariationSpecificsSpecified = true;
-            request.IncludeVariationSpecifics = false;
-
-            request.ModTimeFromSpecified = true;
-            request.ModTimeToSpecified = true;
-            request.ModTimeFrom = from;
-            request.ModTimeTo = to;
-
-
-            GetSellerEventsCall call = new GetSellerEventsCall(_marketplace.GetApiContext());
-
-            call.ApiCallBase.Timeout = 120000;
-
-            GetSellerEventsResponseType response = call.ExecuteRequest(request) as GetSellerEventsResponseType;
-
-            ProcessListingData(response.ItemArray);
-
-            _dataContext.SaveChanges();
-
-        }
-
-        private ItemTypeCollection ExecuteGetSellerList(GetSellerListRequestType request)
-        {
-            SetOutputSelection(request);
-
-            request.Pagination = new PaginationType();
-            request.Pagination.EntriesPerPage = 100;
-            request.Pagination.PageNumber = 1;
-            request.IncludeVariations = true;
-            request.IncludeVariationsSpecified = true;
-
-            GetSellerListCall call = new GetSellerListCall(_marketplace.GetApiContext());
-
-            GetSellerListResponseType response = call.ExecuteRequest(request) as GetSellerListResponseType;
-
-            while (request.Pagination.PageNumber < response.PaginationResult.TotalNumberOfPages)
+            if (ack.Equals("Success"))
             {
-                request.Pagination.PageNumber++;
-                GetSellerListResponseType additionalResponse = call.ExecuteRequest(request) as GetSellerListResponseType;
-                response.ItemArray.AddRange(additionalResponse.ItemArray);
+                foreach (var item in response.getBoothItemsResponse.items)
+                {
+ 
+                }
             }
 
-            return response.ItemArray;
         }
 
-        private void SetOutputSelection(AbstractRequestType request)
+        private dynamic SendJsonRequest(dynamic jsonPayload)
         {
-            request.OutputSelector = new StringCollection();
-            request.DetailLevel = new DetailLevelCodeTypeCollection();
-            request.DetailLevel.Add(DetailLevelCodeType.ReturnAll);
+            HttpWebRequest request = WebRequest.CreateHttp("https://api.bonanza.com/api_requests/secure_request");
+
+            request.Headers.Add("X-BONANZLE-API-DEV-NAME", "vWhzo4w8l7sKDUT");
+            request.Headers.Add("X-BONANZLE-API-CERT-NAME", "YOL7ZWkbcBJGKTI");
+
+            request.ContentType = "application/json";
+
+            request.Method = "POST";
+
+            ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(AcceptAllCertifications);
+
+            byte[] contentBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jsonPayload));
+
+            request.ContentLength = contentBytes.Length;
+
+            using (Stream stream = request.GetRequestStream())
+            {
+                stream.Write(contentBytes, 0, contentBytes.Length);
+            }
+
+            try
+            {
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
+                string output = null;
+
+                using (StreamReader sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
+                {
+                    output = sr.ReadToEnd();
+                }
+
+                dynamic result = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(output);
 
 
-            request.OutputSelector.AddRange(new string[19] 
-            { 
-                "ItemArray.Item.ItemID", "ItemArray.Item.SellingStatus.QuantitySold", 
-                "ItemArray.Item.ListingDetails.EndTime", "ItemArray.Item.ListingDetails.StartTime", 
-                "ItemArray.Item.Title", "ItemArray.Item.Quantity" , "ItemArray.Item.ListingType",
-                "ItemArray.Item.SKU", "ItemArray.Item.ConditionDisplayName", "ItemArray.Item.ListingDuration",
-                "ItemArray.Item.BestOfferEnabled", "ItemArray.Item.Variations", "ItemArray.Item.Variations.Variation",
-                "ItemArray.Item.Variations.Variation", "ItemArray.Item.StartPrice", "Pagination.PageNumber", "PaginationResult.TotalNumberOfPages", 
-                "ItemArray.Item.ConditionID", "ItemArray.Item.SellingStatus.ListingStatus"
-            });
+                return result;
+            }
+            catch (WebException e)
+            {
+                using (WebResponse response = e.Response)
+                {
+                    var httpResponse = (HttpWebResponse)response;
+
+                    using (Stream data = response.GetResponseStream())
+                    {
+                        StreamReader sr = new StreamReader(data);
+                        throw new Exception(sr.ReadToEnd());
+                    }
+                }
+            }
         }
 
         private void ProcessListingData(ItemTypeCollection listingsDtos)
         {
             foreach (ItemType listingDto in listingsDtos)
             {
-                EbayListing listing = _marketplace.Listings.SingleOrDefault(p => p.Code.Equals(listingDto.ItemID));
+                BonanzaListing listing = _marketplace.Listings.SingleOrDefault(p => p.Code.Equals(listingDto.ItemID));
 
                 if (listing == null)
                 {
-                    listing = new EbayListing();
+                    listing = new BonanzaListing();
                 }
                 
                 try
@@ -1027,26 +864,16 @@ namespace BerkeleyEntities.Bonanza
                 }
                 catch (PropertyConstraintException e)
                 {
-                    Map(listing, SyncListing(listingDto.ItemID));
+                    //Map(listing, SyncListing(listingDto.ItemID));
                 }
             }
         }
 
-        private void Map(EbayListing listing, ItemType listingDto)
+        private void Map(BonanzaListing listing, dynamic listingDto)
         {
             listing.Code = listingDto.ItemID;
 
-            listing.Format = listingDto.ListingTypeSpecified ? listingDto.ListingType.ToString() : listing.Format;
-
             listing.Marketplace = _marketplace;
-
-            listing.Duration = listingDto.ListingDuration != null ? listingDto.ListingDuration : listing.Duration;
-
-            listing.EndTime = listingDto.ListingDetails != null && listingDto.ListingDetails.EndTimeSpecified ?
-                listingDto.ListingDetails.EndTime : listing.EndTime;
-
-            listing.StartTime = listingDto.ListingDetails != null && listingDto.ListingDetails.StartTimeSpecified ?
-                listingDto.ListingDetails.StartTime : listing.StartTime;
 
             listing.Title = listingDto.Title != null ? listingDto.Title : listing.Title;
 
@@ -1069,11 +896,11 @@ namespace BerkeleyEntities.Bonanza
             }
         }
 
-        private void MapListingItem(EbayListing listing, ItemType listingDto)
+        private void MapListingItem(BonanzaListing listing, ItemType listingDto)
         {
             string sku = listingDto.SKU != null ? listingDto.SKU.ToUpper().Trim() : listing.Sku;
 
-            EbayListingItem listingItem = GetListingItem(listing, sku);
+            BonanzaListingItem listingItem = GetListingItem(listing, sku);
 
             listingItem.Price = listingDto.StartPrice != null ? decimal.Parse(listingDto.StartPrice.Value.ToString()) : listingItem.Price;
 
@@ -1084,46 +911,53 @@ namespace BerkeleyEntities.Bonanza
                     listingDto.Quantity - listingDto.SellingStatus.QuantitySold : listingItem.Quantity;
         }
 
-        private void MapListingItem(EbayListing listing, VariationsType variationDtos)
+        private void MapListingItem(BonanzaListing listing, dynamic variationDtos)
         {
-            var currentSkus = variationDtos.Variation.ToArray().Select(p => p.SKU);
+            //var currentSkus = variationDtos.Variation.ToArray().Select(p => p.SKU);
 
-            foreach (var listingItem in listing.ListingItems)
-            {
-                if (!currentSkus.Any(p => p.Equals(listingItem.Sku)))
-                {
-                    listingItem.Quantity = 0;
-                }
-            }
+            //foreach (var listingItem in listing.ListingItems)
+            //{
+            //    if (!currentSkus.Any(p => p.Equals(listingItem.Sku)))
+            //    {
+            //        listingItem.Quantity = 0;
+            //    }
+            //}
 
-            foreach (VariationType variationDto in variationDtos.Variation)
-            {
-                string sku = variationDto.SKU.ToUpper().Trim();
+            //foreach (VariationType variationDto in variationDtos.Variation)
+            //{
+            //    string sku = variationDto.SKU.ToUpper().Trim();
 
-                EbayListingItem listingItem = GetListingItem(listing, sku);
+            //    EbayListingItem listingItem = GetListingItem(listing, sku);
 
-                listingItem.Price = variationDto.StartPrice != null ? Convert.ToDecimal(variationDto.StartPrice.Value) : listingItem.Price;
+            //    listingItem.Price = variationDto.StartPrice != null ? Convert.ToDecimal(variationDto.StartPrice.Value) : listingItem.Price;
 
-                listingItem.Quantity =
-                    variationDto.QuantitySpecified &&
-                    variationDto.SellingStatus != null &&
-                    variationDto.SellingStatus.QuantitySoldSpecified ?
-                        variationDto.Quantity - variationDto.SellingStatus.QuantitySold : listingItem.Quantity;
-            }
+            //    listingItem.Quantity =
+            //        variationDto.QuantitySpecified &&
+            //        variationDto.SellingStatus != null &&
+            //        variationDto.SellingStatus.QuantitySoldSpecified ?
+            //            variationDto.Quantity - variationDto.SellingStatus.QuantitySold : listingItem.Quantity;
+            //}
         }
 
-        private EbayListingItem GetListingItem(EbayListing listing, string sku)
+        private BonanzaListingItem GetListingItem(BonanzaListing listing, string sku)
         {
-            EbayListingItem listingItem = listing.ListingItems.SingleOrDefault(p => p.Sku.Equals(sku));
+            //BonanzaListingItem listingItem = listing.ListingItems.SingleOrDefault(p => p.Sku.Equals(sku));
 
-            if (listingItem == null)
-            {
-                Item item = _dataContext.Items.SingleOrDefault(p => p.ItemLookupCode.Equals(sku));
+            //if (listingItem == null)
+            //{
+            //    Item item = _dataContext.Items.SingleOrDefault(p => p.ItemLookupCode.Equals(sku));
 
-                listingItem = new EbayListingItem() { Item = item, Listing = listing, Sku = sku };
-            }
+            //    listingItem = new EbayListingItem() { Item = item, Listing = listing, Sku = sku };
+            //}
 
-            return listingItem;
+            //return listingItem;
+
+            return null;
+        }
+
+        private bool AcceptAllCertifications(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+        {
+            return true;
         }
 
     }
