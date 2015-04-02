@@ -41,6 +41,8 @@ namespace AmazonS3BackupService
                 foreach (var job in jobs.Where(p => p.Active))
                 {
                     ExecuteBackupJob(job);
+
+                    _logger.Info("finished uploading: " + job.LocalRoot);
                 }
 
                 serializer.Serialize(new FileStream(path, FileMode.Create), jobs);

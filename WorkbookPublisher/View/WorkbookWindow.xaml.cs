@@ -373,9 +373,9 @@ namespace WorkbookPublisher
 
                         entry.Status = ebayHistory + " " + amznHistory;
 
-                        if (item.EbayListingItems.Where(w => !w.Listing.IsVariation.Value).Count() > 0)
+                        if (item.EbayListingItems.Where(w => w.Listing.IsVariation.HasValue && !w.Listing.IsVariation.Value).Count() > 0)
                         {
-                            EbayListingItem listingItem = item.EbayListingItems.Single(p => p.ID == item.EbayListingItems.Where(w => !w.Listing.IsVariation.Value).Max(s => s.ID));
+                            EbayListingItem listingItem = item.EbayListingItems.Single(p => p.ID == item.EbayListingItems.Where(w => w.Listing.IsVariation.HasValue && !w.Listing.IsVariation.Value).Max(s => s.ID));
                             entry.Title = listingItem.Listing.Title;
                             entry.FullDescription = listingItem.Listing.FullDescription;
                         }

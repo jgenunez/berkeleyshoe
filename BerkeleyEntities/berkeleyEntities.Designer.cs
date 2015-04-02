@@ -787,6 +787,22 @@ namespace BerkeleyEntities
             }
         }
         private ObjectSet<Bsi_ListingChangesLog> _Bsi_ListingChangesLog;
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        public ObjectSet<Exchange> Exchanges
+        {
+            get
+            {
+                if ((_Exchanges == null))
+                {
+                    _Exchanges = base.CreateObjectSet<Exchange>("Exchanges");
+                }
+                return _Exchanges;
+            }
+        }
+        private ObjectSet<Exchange> _Exchanges;
 
         #endregion
 
@@ -1126,6 +1142,14 @@ namespace BerkeleyEntities
         public void AddToBsi_ListingChangesLog(Bsi_ListingChangesLog bsi_ListingChangesLog)
         {
             base.AddObject("Bsi_ListingChangesLog", bsi_ListingChangesLog);
+        }
+    
+        /// <summary>
+        /// Deprecated Method for adding a new object to the Exchanges EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// </summary>
+        public void AddToExchanges(Exchange exchange)
+        {
+            base.AddObject("Exchanges", exchange);
         }
 
         #endregion
@@ -11619,6 +11643,244 @@ namespace BerkeleyEntities
                 }
             }
         }
+
+        #endregion
+
+    }
+    
+    /// <summary>
+    /// No Metadata Documentation available.
+    /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="BerkeleyEntities", Name="Exchange")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
+    public partial class Exchange : EntityObject
+    {
+        #region Factory Method
+    
+        /// <summary>
+        /// Create a new Exchange object.
+        /// </summary>
+        /// <param name="id">Initial value of the ID property.</param>
+        /// <param name="dBTimeStamp">Initial value of the DBTimeStamp property.</param>
+        /// <param name="dateCreated">Initial value of the DateCreated property.</param>
+        /// <param name="lastUpdated">Initial value of the LastUpdated property.</param>
+        /// <param name="processorCode">Initial value of the ProcessorCode property.</param>
+        /// <param name="data">Initial value of the Data property.</param>
+        /// <param name="status">Initial value of the Status property.</param>
+        /// <param name="comment">Initial value of the Comment property.</param>
+        public static Exchange CreateExchange(global::System.Int32 id, global::System.Byte[] dBTimeStamp, global::System.DateTime dateCreated, global::System.DateTime lastUpdated, global::System.String processorCode, global::System.String data, global::System.Int32 status, global::System.String comment)
+        {
+            Exchange exchange = new Exchange();
+            exchange.ID = id;
+            exchange.DBTimeStamp = dBTimeStamp;
+            exchange.DateCreated = dateCreated;
+            exchange.LastUpdated = lastUpdated;
+            exchange.ProcessorCode = processorCode;
+            exchange.Data = data;
+            exchange.Status = status;
+            exchange.Comment = comment;
+            return exchange;
+        }
+
+        #endregion
+
+        #region Simple Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 ID
+        {
+            get
+            {
+                return _ID;
+            }
+            set
+            {
+                if (_ID != value)
+                {
+                    OnIDChanging(value);
+                    ReportPropertyChanging("ID");
+                    _ID = StructuralObject.SetValidValue(value, "ID");
+                    ReportPropertyChanged("ID");
+                    OnIDChanged();
+                }
+            }
+        }
+        private global::System.Int32 _ID;
+        partial void OnIDChanging(global::System.Int32 value);
+        partial void OnIDChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Byte[] DBTimeStamp
+        {
+            get
+            {
+                return StructuralObject.GetValidValue(_DBTimeStamp);
+            }
+            set
+            {
+                OnDBTimeStampChanging(value);
+                ReportPropertyChanging("DBTimeStamp");
+                _DBTimeStamp = StructuralObject.SetValidValue(value, true, "DBTimeStamp");
+                ReportPropertyChanged("DBTimeStamp");
+                OnDBTimeStampChanged();
+            }
+        }
+        private global::System.Byte[] _DBTimeStamp;
+        partial void OnDBTimeStampChanging(global::System.Byte[] value);
+        partial void OnDBTimeStampChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.DateTime DateCreated
+        {
+            get
+            {
+                return _DateCreated;
+            }
+            set
+            {
+                OnDateCreatedChanging(value);
+                ReportPropertyChanging("DateCreated");
+                _DateCreated = StructuralObject.SetValidValue(value, "DateCreated");
+                ReportPropertyChanged("DateCreated");
+                OnDateCreatedChanged();
+            }
+        }
+        private global::System.DateTime _DateCreated;
+        partial void OnDateCreatedChanging(global::System.DateTime value);
+        partial void OnDateCreatedChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.DateTime LastUpdated
+        {
+            get
+            {
+                return _LastUpdated;
+            }
+            set
+            {
+                OnLastUpdatedChanging(value);
+                ReportPropertyChanging("LastUpdated");
+                _LastUpdated = StructuralObject.SetValidValue(value, "LastUpdated");
+                ReportPropertyChanged("LastUpdated");
+                OnLastUpdatedChanged();
+            }
+        }
+        private global::System.DateTime _LastUpdated;
+        partial void OnLastUpdatedChanging(global::System.DateTime value);
+        partial void OnLastUpdatedChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String ProcessorCode
+        {
+            get
+            {
+                return _ProcessorCode;
+            }
+            set
+            {
+                OnProcessorCodeChanging(value);
+                ReportPropertyChanging("ProcessorCode");
+                _ProcessorCode = StructuralObject.SetValidValue(value, false, "ProcessorCode");
+                ReportPropertyChanged("ProcessorCode");
+                OnProcessorCodeChanged();
+            }
+        }
+        private global::System.String _ProcessorCode;
+        partial void OnProcessorCodeChanging(global::System.String value);
+        partial void OnProcessorCodeChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String Data
+        {
+            get
+            {
+                return _Data;
+            }
+            set
+            {
+                OnDataChanging(value);
+                ReportPropertyChanging("Data");
+                _Data = StructuralObject.SetValidValue(value, false, "Data");
+                ReportPropertyChanged("Data");
+                OnDataChanged();
+            }
+        }
+        private global::System.String _Data;
+        partial void OnDataChanging(global::System.String value);
+        partial void OnDataChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 Status
+        {
+            get
+            {
+                return _Status;
+            }
+            set
+            {
+                OnStatusChanging(value);
+                ReportPropertyChanging("Status");
+                _Status = StructuralObject.SetValidValue(value, "Status");
+                ReportPropertyChanged("Status");
+                OnStatusChanged();
+            }
+        }
+        private global::System.Int32 _Status;
+        partial void OnStatusChanging(global::System.Int32 value);
+        partial void OnStatusChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String Comment
+        {
+            get
+            {
+                return _Comment;
+            }
+            set
+            {
+                OnCommentChanging(value);
+                ReportPropertyChanging("Comment");
+                _Comment = StructuralObject.SetValidValue(value, false, "Comment");
+                ReportPropertyChanged("Comment");
+                OnCommentChanged();
+            }
+        }
+        private global::System.String _Comment;
+        partial void OnCommentChanging(global::System.String value);
+        partial void OnCommentChanged();
 
         #endregion
 

@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarketplaceManager", "Marke
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmazonS3BackupService", "AmazonS3BackupService\AmazonS3BackupService.csproj", "{2ECCA326-DA2E-4B3E-8152-459FF716B7FC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing", "Testing\Testing.csproj", "{91D65BF0-82DD-4D79-9795-4597659957BF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -180,6 +182,18 @@ Global
 		{2ECCA326-DA2E-4B3E-8152-459FF716B7FC}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{2ECCA326-DA2E-4B3E-8152-459FF716B7FC}.Release|Win32.ActiveCfg = Release|Any CPU
 		{2ECCA326-DA2E-4B3E-8152-459FF716B7FC}.Release|x86.ActiveCfg = Release|Any CPU
+		{91D65BF0-82DD-4D79-9795-4597659957BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91D65BF0-82DD-4D79-9795-4597659957BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91D65BF0-82DD-4D79-9795-4597659957BF}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{91D65BF0-82DD-4D79-9795-4597659957BF}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{91D65BF0-82DD-4D79-9795-4597659957BF}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{91D65BF0-82DD-4D79-9795-4597659957BF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{91D65BF0-82DD-4D79-9795-4597659957BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91D65BF0-82DD-4D79-9795-4597659957BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91D65BF0-82DD-4D79-9795-4597659957BF}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{91D65BF0-82DD-4D79-9795-4597659957BF}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{91D65BF0-82DD-4D79-9795-4597659957BF}.Release|Win32.ActiveCfg = Release|Any CPU
+		{91D65BF0-82DD-4D79-9795-4597659957BF}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

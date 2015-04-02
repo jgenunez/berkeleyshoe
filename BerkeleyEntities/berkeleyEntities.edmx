@@ -455,6 +455,19 @@
           <Property Name="PictureUrlID" Type="int" Nullable="false" />
           <Property Name="CreatedTime" Type="datetime" Nullable="false" />
         </EntityType>
+        <EntityType Name="Exchange">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DBTimeStamp" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="DateCreated" Type="datetime" Nullable="false" />
+          <Property Name="LastUpdated" Type="datetime" Nullable="false" />
+          <Property Name="ProcessorCode" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Data" Type="ntext" Nullable="false" />
+          <Property Name="Status" Type="int" Nullable="false" />
+          <Property Name="Comment" Type="nvarchar" MaxLength="255" Nullable="false" />
+        </EntityType>
         <EntityType Name="InventoryEntry">
           <Key>
             <PropertyRef Name="ID" />
@@ -964,6 +977,7 @@
           <EntitySet Name="EbayOrderItem" EntityType="Self.EbayOrderItem" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EbayPictureServiceUrl" EntityType="Self.EbayPictureServiceUrl" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EbayPictureUrlRelation" EntityType="Self.EbayPictureUrlRelation" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Exchange" EntityType="Self.Exchange" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="InventoryEntry" EntityType="Self.InventoryEntry" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="InventoryTransferLog" EntityType="Self.InventoryTransferLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Item" EntityType="Self.Item" Schema="dbo" store:Type="Tables" />
@@ -1216,6 +1230,7 @@
             <End Role="Bsi_ListingChangesLog" EntitySet="Bsi_ListingChangesLog" />
             <End Role="Item" EntitySet="Items" />
           </AssociationSet>
+          <EntitySet Name="Exchanges" EntityType="BerkeleyEntities.Exchange" />
           </EntityContainer>
         <EntityType Name="Alias">
           <Key>
@@ -2784,6 +2799,19 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Exchange">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DBTimeStamp" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="DateCreated" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="LastUpdated" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ProcessorCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Data" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Int32" Nullable="false" />
+          <Property Name="Comment" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -3698,6 +3726,20 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Exchanges">
+            <EntityTypeMapping TypeName="BerkeleyEntities.Exchange">
+              <MappingFragment StoreEntitySet="Exchange">
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Data" ColumnName="Data" />
+                <ScalarProperty Name="ProcessorCode" ColumnName="ProcessorCode" />
+                <ScalarProperty Name="LastUpdated" ColumnName="LastUpdated" />
+                <ScalarProperty Name="DateCreated" ColumnName="DateCreated" />
+                <ScalarProperty Name="DBTimeStamp" ColumnName="DBTimeStamp" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
@@ -3996,6 +4038,7 @@
         <AssociationConnector Association="BerkeleyEntities.BonanzaMarketplaceBonanzaListing" />
         <EntityTypeShape EntityType="BerkeleyEntities.Bsi_ListingChangesLog" Width="1.5" PointX="5.375" PointY="6.25" IsExpanded="false" />
         <AssociationConnector Association="BerkeleyEntities.Bsi_ListingChangesLogItem" />
+        <EntityTypeShape EntityType="BerkeleyEntities.Exchange" Width="1.5" PointX="10" PointY="9.5" />
         </Diagram>
     </Diagrams>
   </Designer>
