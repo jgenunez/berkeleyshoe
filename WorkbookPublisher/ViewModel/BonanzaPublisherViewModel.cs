@@ -120,9 +120,19 @@ namespace WorkbookPublisher.ViewModel
                 ListingDto listingDto = new ListingDto();
 
                 listingDto.Code = listing.Code;
-                listingDto.MarketplaceID = _marketplace.ID;
                 listingDto.Brand = entries.First(p => !string.IsNullOrWhiteSpace(p.Brand)).Brand;
                 listingDto.IsVariation = (bool)listing.IsVariation;
+
+                if ((bool)listing.IsVariation)
+                {
+                    listingDto.IsVariation = true;
+                    listingDto.Sku = entries.First(p => !string.IsNullOrWhiteSpace(p.ClassName)).ClassName;
+                }
+                else
+                {
+                    listingDto.IsVariation = false;
+                    listingDto.Sku = listingDto.Sku = entries.First().Sku;
+                }
 
                 if (entries.Any(p => !string.IsNullOrWhiteSpace(p.FullDescription)))
                 {
@@ -167,7 +177,7 @@ namespace WorkbookPublisher.ViewModel
                 }
                 else
                 {
-                    _services.Revise(listingDto, includeProductData, includeTemplate);
+                    _services.Revise(_marketplace.ID, listingDto, includeProductData, includeTemplate);
                 }
 
 
@@ -177,7 +187,6 @@ namespace WorkbookPublisher.ViewModel
             {
                 ListingDto listingDto = new ListingDto();
 
-                listingDto.MarketplaceID = _marketplace.ID;
                 listingDto.Brand = entries.First(p => !string.IsNullOrWhiteSpace(p.Brand)).Brand;
                 listingDto.FullDescription = entries.First(p => !string.IsNullOrWhiteSpace(p.FullDescription)).FullDescription;
 
@@ -207,7 +216,7 @@ namespace WorkbookPublisher.ViewModel
                     listingDto.Items.Add(listingItem);
                 }
 
-                _services.Publish(listingDto);
+                _services.Publish(_marketplace.ID, listingDto);
             }
 
             private string GetParentTitle(BonanzaEntry entry)

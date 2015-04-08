@@ -22,10 +22,7 @@ namespace BerkeleyEntities.Bonanza.Mapper
             }
         }
 
-        public string CategoryID
-        {
-            get { return _item.Department.code; }
-        }
+        public abstract string GetCategory();
 
         public abstract List<NameValuePair> GetItemSpecifics();
 

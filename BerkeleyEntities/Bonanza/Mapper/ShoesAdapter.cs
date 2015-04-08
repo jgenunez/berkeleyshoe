@@ -14,6 +14,12 @@ namespace BerkeleyEntities.Bonanza.Mapper
 
         }
 
+        public override string GetCategory()
+        {
+            //switch()
+            return null;
+        }
+
         public override List<NameValuePair> GetItemSpecifics()
         {
             List<NameValuePair> nameValueList = new List<NameValuePair>();
@@ -229,5 +235,7 @@ namespace BerkeleyEntities.Bonanza.Mapper
             }
         }
 
+
+        
     }
 }
