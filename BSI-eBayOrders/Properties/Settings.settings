@@ -1,0 +1,19 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="BSI_eBayOrders.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="berkeleyConnectionString" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=192.168.1.22;Initial Catalog=berkeley;Persist Security Info=True;User ID=developer;Password=zaoreo112233&lt;/ConnectionString&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=192.168.1.22;Initial Catalog=berkeley;Persist Security Info=True;User ID=developer;Password=zaoreo112233</Value>
+    </Setting>
+    <Setting Name="UserAccountApiToken" Type="System.String" Scope="User">
+      <Value Profile="(Default)">AgAAAA**AQAAAA**aAAAAA**CWDnTg**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wDmYehAZeEpQqdj6x9nY+seQ**XVYBAA**AAMAAA**3UP5fYaUEZnVm5ZwIKhfgrd6WlQaLqGz0OMteL6wmx8NC8yeWZ+mjiEGPLF1EmMv3x5vER+4BNc+r7575cEzacBqUQf97x8JkCZnYf0YV6ykxpVYppX+AwjqfdDA3jMvwrag6g8d5p+F8MxW/48iMJ9SgccbU05FngzWC1uOwWxRivSJeMaIcLPhLXrbaWbpEKfbXb2qHRBcUZ5za4XJdFEZaVnaUMidy7qlgLIxuEhkvvrn8NfJcklaE9vgAEK7CEGX4W86nxTKa+HFykcICTocrDBvVfUse6sGWgJpteUkaOEGWYgR680bP9ozC6EZaqpl9eLYAYqfGGu0+4VY1q1PYjt/DVdwl5uA5PzppkHq0rhFMRMeAmgNeS2wLN5Vr/J3OVl1UNKQALyD2gYFhBZVio8Ftg/InYu8Ms4l+CtpM7SIYY5p6FARMvCiOCYnbj0iOsdJuflCdnvvVzD8XiKrUQIlVkbLgTX5iFJpPKwLfigu9ZphUiUbQk0MmzwzCg2K2GF8E2d8s6ZXjEgBsaUipI3TCfQ9gJrDxEyixpUuNfyoUfrUW32djrTs/Ia7W+rlVegj1v/4otRPTWtLHoLIvDCANUdjwDyrFzXJA+9P72R/N4sMlsNm8PvDTQ4dxheoEPGt4td4nF+YXwGw9Ft5tWMT38Rpara0LbiMWN2cAZfPtgtyND2cXsp2NCnG6pVv0qrbMH4gpE2P/KECD/zSLM7uUWhDlY53R/9PoD3l2By76gsSbgYt8IqLf5ns</Value>
+    </Setting>
+    <Setting Name="ApiServerUrl" Type="System.String" Scope="User">
+      <Value Profile="(Default)">https://api.ebay.com/wsapi</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

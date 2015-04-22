@@ -130,5 +130,13 @@ namespace OperationsDashboard
             }
         }
 
+        private void GetPublishedCounts(WorkDay workDay)
+        {
+            DateTime lowLimit = workDay.Date;
+            DateTime highLimit = workDay.Date.AddDays(1);
+
+            
+        }
+
     }
 }

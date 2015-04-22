@@ -94,20 +94,36 @@ namespace AmazonServices
         {
             switch (_item.SubDescription2)
             {
+                case "BEIGE":
                 case "BEIGES": return "beige";
+                case "BLACK":
                 case "BLACKS": return "black";
+                case "BLUE":
                 case "BLUES": return "beige";
+                case "BROWN":
                 case "BROWNS": return "brown";
+                case "GRAY":
+                case "GREY":
+                case "GREYS":
                 case "GRAYS": return "grey";
+                case "GREEN":
                 case "GREENS": return "green";
+                case "IVORY":
                 case "IVORIES": return "off-white";
+                case "METALLIC":
                 case "METALLICS": return "metallic";
                 case "MULTI-COLOR": return "multicoloured";
+                case "ORANGE":
                 case "ORANGES": return "orange";
+                case "PINK":
                 case "PINKS": return "pink";
+                case "PURBLE":
                 case "PURPLES": return "purple";
+                case "RED":
                 case "REDS": return "red";
+                case "YELLOW":
                 case "YELLOWS": return "yellow";
+                case "WHITE":
                 case "WHITES": return "white";
                 default: return string.Empty;
             }

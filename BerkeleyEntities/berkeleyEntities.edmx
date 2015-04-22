@@ -4036,9 +4036,9 @@
         <AssociationConnector Association="BerkeleyEntities.BonanzaListingItemItem" />
         <AssociationConnector Association="BerkeleyEntities.BonanzaListingBonanzaListingItem" />
         <AssociationConnector Association="BerkeleyEntities.BonanzaMarketplaceBonanzaListing" />
-        <EntityTypeShape EntityType="BerkeleyEntities.Bsi_ListingChangesLog" Width="1.5" PointX="5.375" PointY="6.25" IsExpanded="false" />
+        <EntityTypeShape EntityType="BerkeleyEntities.Bsi_ListingChangesLog" Width="2.25" PointX="5.125" PointY="7" IsExpanded="false" />
         <AssociationConnector Association="BerkeleyEntities.Bsi_ListingChangesLogItem" />
-        <EntityTypeShape EntityType="BerkeleyEntities.Exchange" Width="1.5" PointX="10" PointY="9.5" />
+        <EntityTypeShape EntityType="BerkeleyEntities.Exchange" Width="1.5" PointX="10.75" PointY="9.375" IsExpanded="false" />
         </Diagram>
     </Diagrams>
   </Designer>

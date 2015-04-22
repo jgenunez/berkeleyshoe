@@ -27,7 +27,6 @@ namespace InventoryApp
         public MainForm()
         {
             InitializeComponent();
-
         }
 
         private void btnScan_Click(object sender, EventArgs e)
