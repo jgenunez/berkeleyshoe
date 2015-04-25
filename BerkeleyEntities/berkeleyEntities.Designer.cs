@@ -803,6 +803,38 @@ namespace BerkeleyEntities
             }
         }
         private ObjectSet<Exchange> _Exchanges;
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        public ObjectSet<bsi_orders> bsi_orders
+        {
+            get
+            {
+                if ((_bsi_orders == null))
+                {
+                    _bsi_orders = base.CreateObjectSet<bsi_orders>("bsi_orders");
+                }
+                return _bsi_orders;
+            }
+        }
+        private ObjectSet<bsi_orders> _bsi_orders;
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        public ObjectSet<bsi_orders_details> bsi_orders_details
+        {
+            get
+            {
+                if ((_bsi_orders_details == null))
+                {
+                    _bsi_orders_details = base.CreateObjectSet<bsi_orders_details>("bsi_orders_details");
+                }
+                return _bsi_orders_details;
+            }
+        }
+        private ObjectSet<bsi_orders_details> _bsi_orders_details;
 
         #endregion
 
@@ -1150,6 +1182,22 @@ namespace BerkeleyEntities
         public void AddToExchanges(Exchange exchange)
         {
             base.AddObject("Exchanges", exchange);
+        }
+    
+        /// <summary>
+        /// Deprecated Method for adding a new object to the bsi_orders EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// </summary>
+        public void AddTobsi_orders(bsi_orders bsi_orders)
+        {
+            base.AddObject("bsi_orders", bsi_orders);
+        }
+    
+        /// <summary>
+        /// Deprecated Method for adding a new object to the bsi_orders_details EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// </summary>
+        public void AddTobsi_orders_details(bsi_orders_details bsi_orders_details)
+        {
+            base.AddObject("bsi_orders_details", bsi_orders_details);
         }
 
         #endregion
@@ -2611,6 +2659,30 @@ namespace BerkeleyEntities
         private global::System.Int32 _MarketplaceID;
         partial void OnMarketplaceIDChanging(global::System.Int32 value);
         partial void OnMarketplaceIDChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.DateTime> PrintTime
+        {
+            get
+            {
+                return _PrintTime;
+            }
+            set
+            {
+                OnPrintTimeChanging(value);
+                ReportPropertyChanging("PrintTime");
+                _PrintTime = StructuralObject.SetValidValue(value, "PrintTime");
+                ReportPropertyChanged("PrintTime");
+                OnPrintTimeChanged();
+            }
+        }
+        private Nullable<global::System.DateTime> _PrintTime;
+        partial void OnPrintTimeChanging(Nullable<global::System.DateTime> value);
+        partial void OnPrintTimeChanged();
 
         #endregion
 
@@ -4369,6 +4441,370 @@ namespace BerkeleyEntities
                 }
             }
         }
+
+        #endregion
+
+    }
+    
+    /// <summary>
+    /// No Metadata Documentation available.
+    /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="BerkeleyEntities", Name="bsi_orders")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
+    public partial class bsi_orders : EntityObject
+    {
+        #region Factory Method
+    
+        /// <summary>
+        /// Create a new bsi_orders object.
+        /// </summary>
+        /// <param name="id">Initial value of the id property.</param>
+        /// <param name="marketplaceId">Initial value of the marketplaceId property.</param>
+        /// <param name="orderId">Initial value of the orderId property.</param>
+        /// <param name="printDate">Initial value of the printDate property.</param>
+        public static bsi_orders Createbsi_orders(global::System.Int32 id, global::System.Int32 marketplaceId, global::System.String orderId, global::System.DateTime printDate)
+        {
+            bsi_orders bsi_orders = new bsi_orders();
+            bsi_orders.id = id;
+            bsi_orders.marketplaceId = marketplaceId;
+            bsi_orders.orderId = orderId;
+            bsi_orders.printDate = printDate;
+            return bsi_orders;
+        }
+
+        #endregion
+
+        #region Simple Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 id
+        {
+            get
+            {
+                return _id;
+            }
+            set
+            {
+                if (_id != value)
+                {
+                    OnidChanging(value);
+                    ReportPropertyChanging("id");
+                    _id = StructuralObject.SetValidValue(value, "id");
+                    ReportPropertyChanged("id");
+                    OnidChanged();
+                }
+            }
+        }
+        private global::System.Int32 _id;
+        partial void OnidChanging(global::System.Int32 value);
+        partial void OnidChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 marketplaceId
+        {
+            get
+            {
+                return _marketplaceId;
+            }
+            set
+            {
+                OnmarketplaceIdChanging(value);
+                ReportPropertyChanging("marketplaceId");
+                _marketplaceId = StructuralObject.SetValidValue(value, "marketplaceId");
+                ReportPropertyChanged("marketplaceId");
+                OnmarketplaceIdChanged();
+            }
+        }
+        private global::System.Int32 _marketplaceId;
+        partial void OnmarketplaceIdChanging(global::System.Int32 value);
+        partial void OnmarketplaceIdChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String orderId
+        {
+            get
+            {
+                return _orderId;
+            }
+            set
+            {
+                OnorderIdChanging(value);
+                ReportPropertyChanging("orderId");
+                _orderId = StructuralObject.SetValidValue(value, false, "orderId");
+                ReportPropertyChanged("orderId");
+                OnorderIdChanged();
+            }
+        }
+        private global::System.String _orderId;
+        partial void OnorderIdChanging(global::System.String value);
+        partial void OnorderIdChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.DateTime printDate
+        {
+            get
+            {
+                return _printDate;
+            }
+            set
+            {
+                OnprintDateChanging(value);
+                ReportPropertyChanging("printDate");
+                _printDate = StructuralObject.SetValidValue(value, "printDate");
+                ReportPropertyChanged("printDate");
+                OnprintDateChanged();
+            }
+        }
+        private global::System.DateTime _printDate;
+        partial void OnprintDateChanging(global::System.DateTime value);
+        partial void OnprintDateChanged();
+
+        #endregion
+
+    }
+    
+    /// <summary>
+    /// No Metadata Documentation available.
+    /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="BerkeleyEntities", Name="bsi_orders_details")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
+    public partial class bsi_orders_details : EntityObject
+    {
+        #region Factory Method
+    
+        /// <summary>
+        /// Create a new bsi_orders_details object.
+        /// </summary>
+        /// <param name="id">Initial value of the id property.</param>
+        /// <param name="marketplace">Initial value of the marketplace property.</param>
+        /// <param name="orderInOurTables">Initial value of the OrderInOurTables property.</param>
+        /// <param name="itemLookupCode">Initial value of the itemLookupCode property.</param>
+        public static bsi_orders_details Createbsi_orders_details(global::System.Int32 id, global::System.Int32 marketplace, global::System.Int32 orderInOurTables, global::System.String itemLookupCode)
+        {
+            bsi_orders_details bsi_orders_details = new bsi_orders_details();
+            bsi_orders_details.id = id;
+            bsi_orders_details.marketplace = marketplace;
+            bsi_orders_details.OrderInOurTables = orderInOurTables;
+            bsi_orders_details.itemLookupCode = itemLookupCode;
+            return bsi_orders_details;
+        }
+
+        #endregion
+
+        #region Simple Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 id
+        {
+            get
+            {
+                return _id;
+            }
+            set
+            {
+                if (_id != value)
+                {
+                    OnidChanging(value);
+                    ReportPropertyChanging("id");
+                    _id = StructuralObject.SetValidValue(value, "id");
+                    ReportPropertyChanged("id");
+                    OnidChanged();
+                }
+            }
+        }
+        private global::System.Int32 _id;
+        partial void OnidChanging(global::System.Int32 value);
+        partial void OnidChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 marketplace
+        {
+            get
+            {
+                return _marketplace;
+            }
+            set
+            {
+                OnmarketplaceChanging(value);
+                ReportPropertyChanging("marketplace");
+                _marketplace = StructuralObject.SetValidValue(value, "marketplace");
+                ReportPropertyChanged("marketplace");
+                OnmarketplaceChanged();
+            }
+        }
+        private global::System.Int32 _marketplace;
+        partial void OnmarketplaceChanging(global::System.Int32 value);
+        partial void OnmarketplaceChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String marketplaceId
+        {
+            get
+            {
+                return _marketplaceId;
+            }
+            set
+            {
+                OnmarketplaceIdChanging(value);
+                ReportPropertyChanging("marketplaceId");
+                _marketplaceId = StructuralObject.SetValidValue(value, true, "marketplaceId");
+                ReportPropertyChanged("marketplaceId");
+                OnmarketplaceIdChanged();
+            }
+        }
+        private global::System.String _marketplaceId;
+        partial void OnmarketplaceIdChanging(global::System.String value);
+        partial void OnmarketplaceIdChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 OrderInOurTables
+        {
+            get
+            {
+                return _OrderInOurTables;
+            }
+            set
+            {
+                OnOrderInOurTablesChanging(value);
+                ReportPropertyChanging("OrderInOurTables");
+                _OrderInOurTables = StructuralObject.SetValidValue(value, "OrderInOurTables");
+                ReportPropertyChanged("OrderInOurTables");
+                OnOrderInOurTablesChanged();
+            }
+        }
+        private global::System.Int32 _OrderInOurTables;
+        partial void OnOrderInOurTablesChanging(global::System.Int32 value);
+        partial void OnOrderInOurTablesChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String itemLookupCode
+        {
+            get
+            {
+                return _itemLookupCode;
+            }
+            set
+            {
+                OnitemLookupCodeChanging(value);
+                ReportPropertyChanging("itemLookupCode");
+                _itemLookupCode = StructuralObject.SetValidValue(value, false, "itemLookupCode");
+                ReportPropertyChanged("itemLookupCode");
+                OnitemLookupCodeChanged();
+            }
+        }
+        private global::System.String _itemLookupCode;
+        partial void OnitemLookupCodeChanging(global::System.String value);
+        partial void OnitemLookupCodeChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String price
+        {
+            get
+            {
+                return _price;
+            }
+            set
+            {
+                OnpriceChanging(value);
+                ReportPropertyChanging("price");
+                _price = StructuralObject.SetValidValue(value, true, "price");
+                ReportPropertyChanged("price");
+                OnpriceChanged();
+            }
+        }
+        private global::System.String _price;
+        partial void OnpriceChanging(global::System.String value);
+        partial void OnpriceChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String quantity
+        {
+            get
+            {
+                return _quantity;
+            }
+            set
+            {
+                OnquantityChanging(value);
+                ReportPropertyChanging("quantity");
+                _quantity = StructuralObject.SetValidValue(value, true, "quantity");
+                ReportPropertyChanged("quantity");
+                OnquantityChanged();
+            }
+        }
+        private global::System.String _quantity;
+        partial void OnquantityChanging(global::System.String value);
+        partial void OnquantityChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String discount
+        {
+            get
+            {
+                return _discount;
+            }
+            set
+            {
+                OndiscountChanging(value);
+                ReportPropertyChanging("discount");
+                _discount = StructuralObject.SetValidValue(value, true, "discount");
+                ReportPropertyChanged("discount");
+                OndiscountChanged();
+            }
+        }
+        private global::System.String _discount;
+        partial void OndiscountChanging(global::System.String value);
+        partial void OndiscountChanged();
 
         #endregion
 
@@ -10873,6 +11309,30 @@ namespace BerkeleyEntities
         private global::System.String _CityName;
         partial void OnCityNameChanging(global::System.String value);
         partial void OnCityNameChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.DateTime> PrintTime
+        {
+            get
+            {
+                return _PrintTime;
+            }
+            set
+            {
+                OnPrintTimeChanging(value);
+                ReportPropertyChanging("PrintTime");
+                _PrintTime = StructuralObject.SetValidValue(value, "PrintTime");
+                ReportPropertyChanged("PrintTime");
+                OnPrintTimeChanged();
+            }
+        }
+        private Nullable<global::System.DateTime> _PrintTime;
+        partial void OnPrintTimeChanging(Nullable<global::System.DateTime> value);
+        partial void OnPrintTimeChanged();
 
         #endregion
 
@@ -11163,6 +11623,54 @@ namespace BerkeleyEntities
         private global::System.Decimal _TransactionPrice;
         partial void OnTransactionPriceChanging(global::System.Decimal value);
         partial void OnTransactionPriceChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String ConditionDisplayName
+        {
+            get
+            {
+                return _ConditionDisplayName;
+            }
+            set
+            {
+                OnConditionDisplayNameChanging(value);
+                ReportPropertyChanging("ConditionDisplayName");
+                _ConditionDisplayName = StructuralObject.SetValidValue(value, true, "ConditionDisplayName");
+                ReportPropertyChanged("ConditionDisplayName");
+                OnConditionDisplayNameChanged();
+            }
+        }
+        private global::System.String _ConditionDisplayName;
+        partial void OnConditionDisplayNameChanging(global::System.String value);
+        partial void OnConditionDisplayNameChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String ConditionDescription
+        {
+            get
+            {
+                return _ConditionDescription;
+            }
+            set
+            {
+                OnConditionDescriptionChanging(value);
+                ReportPropertyChanging("ConditionDescription");
+                _ConditionDescription = StructuralObject.SetValidValue(value, true, "ConditionDescription");
+                ReportPropertyChanged("ConditionDescription");
+                OnConditionDescriptionChanged();
+            }
+        }
+        private global::System.String _ConditionDescription;
+        partial void OnConditionDescriptionChanging(global::System.String value);
+        partial void OnConditionDescriptionChanged();
 
         #endregion
 

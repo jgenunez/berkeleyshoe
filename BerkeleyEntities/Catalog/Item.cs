@@ -63,6 +63,37 @@ namespace BerkeleyEntities
             }
         }
 
+        public string GetConditionCode()
+        {
+            string conditionCode = string.Empty;
+
+            if (this.Notes != null)
+            {
+                if (this.Notes.Contains("PRE"))
+                {
+                    conditionCode = "PRE";
+                }
+                else if (this.Notes.Contains("NWB"))
+                {
+                    conditionCode = "NWB";
+                }
+                else if (this.Notes.Contains("NWD"))
+                {
+                    conditionCode = "NWD";
+                }
+                else
+                {
+                    conditionCode = "NEW";
+                }
+            }
+            else
+            {
+                conditionCode = "NEW";
+            }
+
+            return conditionCode;
+        }
+
         public int QtyAvailable
         {
             get 

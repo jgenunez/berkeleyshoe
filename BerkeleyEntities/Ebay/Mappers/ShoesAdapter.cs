@@ -79,25 +79,14 @@ namespace BerkeleyEntities.Ebay.Mappers
 
         public override int GetConditionID()
         {
-            int conditionID = 1000;
-
-            if (_item.Notes != null)
+            switch (_item.GetConditionCode())
             {
-                if (_item.Notes.Contains("PRE"))
-                {
-                    conditionID = 3000;
-                }
-                else if (_item.Notes.Contains("NWB"))
-                {
-                    conditionID = 1500;
-                }
-                else if (_item.Notes.Contains("NWD"))
-                {
-                    conditionID = 1750;
-                } 
+                case "NEW": return 1000;
+                case "PRE": return 3000;
+                case "NWB": return 1500;
+                case "NWD": return 1750;
+                default: return 0;
             }
-
-            return conditionID;
         }
 
         private NameValueListType GetSizeItemSpecific()

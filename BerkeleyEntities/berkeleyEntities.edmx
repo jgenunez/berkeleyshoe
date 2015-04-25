@@ -69,6 +69,7 @@
           <Property Name="PostalCode" Type="nvarchar" MaxLength="50" />
           <Property Name="Phone" Type="nvarchar" MaxLength="50" />
           <Property Name="Total" Type="money" Nullable="false" />
+          <Property Name="PrintTime" Type="datetime" />
           <Property Name="LastSyncTime" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="AmznOrderItem">
@@ -147,6 +148,28 @@
           <Property Name="Location" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="User" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="UpdateDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="bsi_orders">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="marketplaceId" Type="int" Nullable="false" />
+          <Property Name="orderId" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="printDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="bsi_orders_details">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="marketplace" Type="int" Nullable="false" />
+          <Property Name="marketplaceId" Type="nvarchar" MaxLength="50" />
+          <Property Name="OrderInOurTables" Type="int" Nullable="false" />
+          <Property Name="itemLookupCode" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="price" Type="nvarchar" MaxLength="10" />
+          <Property Name="quantity" Type="nvarchar" MaxLength="10" />
+          <Property Name="discount" Type="nvarchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="bsi_posting">
           <Key>
@@ -421,6 +444,7 @@
           <Property Name="Phone" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="IsMultiLegShipping" Type="bit" Nullable="false" />
           <Property Name="LastSyncTime" Type="datetime" Nullable="false" />
+          <Property Name="PrintTime" Type="datetime" />
         </EntityType>
         <EntityType Name="EbayOrderItem">
           <Key>
@@ -433,6 +457,8 @@
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="QuantityPurchased" Type="int" Nullable="false" />
           <Property Name="TransactionPrice" Type="money" Nullable="false" />
+          <Property Name="ConditionDisplayName" Type="nvarchar" MaxLength="50" />
+          <Property Name="ConditionDescription" Type="nvarchar" MaxLength="200" />
           <Property Name="UnpaidItemDisputeStatus" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="UnpaidItemDisputeType" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
@@ -961,6 +987,8 @@
           <EntitySet Name="BonanzaMarketplace" EntityType="Self.BonanzaMarketplace" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Bsi_ListingChangesLog" EntityType="Self.Bsi_ListingChangesLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Bsi_LocationLog" EntityType="Self.Bsi_LocationLog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="bsi_orders" EntityType="Self.bsi_orders" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="bsi_orders_details" EntityType="Self.bsi_orders_details" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="bsi_posting" EntityType="Self.bsi_posting" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="bsi_posts" EntityType="Self.bsi_posts" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="bsi_quantities" EntityType="Self.bsi_quantities" Schema="dbo" store:Type="Tables" />
@@ -1231,6 +1259,8 @@
             <End Role="Item" EntitySet="Items" />
           </AssociationSet>
           <EntitySet Name="Exchanges" EntityType="BerkeleyEntities.Exchange" />
+          <EntitySet Name="bsi_orders" EntityType="BerkeleyEntities.bsi_orders" />
+          <EntitySet Name="bsi_orders_details" EntityType="BerkeleyEntities.bsi_orders_details" />
           </EntityContainer>
         <EntityType Name="Alias">
           <Key>
@@ -2252,6 +2282,7 @@
           <NavigationProperty Name="OrderItems" Relationship="BerkeleyEntities.SyncAmznOrderSyncAmznOrderItem" FromRole="SyncAmznOrder" ToRole="SyncAmznOrderItem" />
           <Property Type="Decimal" Name="Total" Nullable="false" Precision="19" Scale="4" />
           <Property Type="Int32" Name="MarketplaceID" Nullable="false" />
+          <Property Name="PrintTime" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="AmznOrderItem">
           <Key>
@@ -2309,6 +2340,7 @@
           <Property Type="String" Name="BuyerID" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="CompanyName" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="CityName" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="PrintTime" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="EbayOrderItem">
           <Key>
@@ -2325,6 +2357,8 @@
           <NavigationProperty Name="ListingItem" Relationship="BerkeleyEntities.SyncEbayOrderItemSyncEbayListingItem" FromRole="SyncEbayOrderItem" ToRole="SyncEbayListingItem" />
           <Property Type="DateTime" Name="CreatedDate" Nullable="false" Precision="3" />
           <Property Type="Decimal" Name="TransactionPrice" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="ConditionDisplayName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ConditionDescription" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="EbayOrderItemEbayOrder">
           <End Type="BerkeleyEntities.EbayOrderItem" Role="EbayOrderItem" Multiplicity="*" />
@@ -2811,6 +2845,28 @@
           <Property Name="Data" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Int32" Nullable="false" />
           <Property Name="Comment" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="bsi_orders">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="marketplaceId" Type="Int32" Nullable="false" />
+          <Property Name="orderId" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="printDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="bsi_orders_details">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="marketplace" Type="Int32" Nullable="false" />
+          <Property Name="marketplaceId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="OrderInOurTables" Type="Int32" Nullable="false" />
+          <Property Name="itemLookupCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="price" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="quantity" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="discount" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -3449,6 +3505,7 @@
           <EntitySetMapping Name="AmznOrders">
             <EntityTypeMapping TypeName="IsTypeOf(BerkeleyEntities.AmznOrder)">
               <MappingFragment StoreEntitySet="AmznOrder">
+                <ScalarProperty Name="PrintTime" ColumnName="PrintTime" />
                 <ScalarProperty Name="LastSyncTime" ColumnName="LastSyncTime" />
                 <ScalarProperty Name="Total" ColumnName="Total" />
                 <ScalarProperty Name="Phone" ColumnName="Phone" />
@@ -3509,6 +3566,8 @@
           <EntitySetMapping Name="EbayOrderItems">
             <EntityTypeMapping TypeName="IsTypeOf(BerkeleyEntities.EbayOrderItem)">
               <MappingFragment StoreEntitySet="EbayOrderItem">
+                <ScalarProperty Name="ConditionDescription" ColumnName="ConditionDescription" />
+                <ScalarProperty Name="ConditionDisplayName" ColumnName="ConditionDisplayName" />
                 <ScalarProperty Name="UnpaidItemDisputeType" ColumnName="UnpaidItemDisputeType" />
                 <ScalarProperty Name="UnpaidItemDisputeStatus" ColumnName="UnpaidItemDisputeStatus" />
                 <ScalarProperty Name="TransactionPrice" ColumnName="TransactionPrice" />
@@ -3524,6 +3583,7 @@
           <EntitySetMapping Name="EbayOrders">
             <EntityTypeMapping TypeName="IsTypeOf(BerkeleyEntities.EbayOrder)">
               <MappingFragment StoreEntitySet="EbayOrder">
+                <ScalarProperty Name="PrintTime" ColumnName="PrintTime" />
                 <ScalarProperty Name="CityName" ColumnName="CityName" />
                 <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
                 <ScalarProperty Name="BuyerID" ColumnName="BuyerID" />
@@ -3737,6 +3797,30 @@
                 <ScalarProperty Name="DateCreated" ColumnName="DateCreated" />
                 <ScalarProperty Name="DBTimeStamp" ColumnName="DBTimeStamp" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="bsi_orders">
+            <EntityTypeMapping TypeName="BerkeleyEntities.bsi_orders">
+              <MappingFragment StoreEntitySet="bsi_orders">
+                <ScalarProperty Name="printDate" ColumnName="printDate" />
+                <ScalarProperty Name="orderId" ColumnName="orderId" />
+                <ScalarProperty Name="marketplaceId" ColumnName="marketplaceId" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="bsi_orders_details">
+            <EntityTypeMapping TypeName="BerkeleyEntities.bsi_orders_details">
+              <MappingFragment StoreEntitySet="bsi_orders_details">
+                <ScalarProperty Name="discount" ColumnName="discount" />
+                <ScalarProperty Name="quantity" ColumnName="quantity" />
+                <ScalarProperty Name="price" ColumnName="price" />
+                <ScalarProperty Name="itemLookupCode" ColumnName="itemLookupCode" />
+                <ScalarProperty Name="OrderInOurTables" ColumnName="OrderInOurTables" />
+                <ScalarProperty Name="marketplaceId" ColumnName="marketplaceId" />
+                <ScalarProperty Name="marketplace" ColumnName="marketplace" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -3954,9 +4038,9 @@
           <ConnectorPoint PointX="5.114583333333333" PointY="5.4656319999999816" />
           <ConnectorPoint PointX="6.25" PointY="5.4656319999999816" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="BerkeleyEntities.AmznOrder" Width="2.125" PointX="6" PointY="10.875" Height="0.4" IsExpanded="false" />
+        <EntityTypeShape EntityType="BerkeleyEntities.AmznOrder" Width="2.125" PointX="7.875" PointY="10.875" Height="0.4" IsExpanded="true" />
         <EntityTypeShape EntityType="BerkeleyEntities.AmznOrderItem" Width="2" PointX="7.625" PointY="9.625" Height="0.4" IsExpanded="false" />
-        <EntityTypeShape EntityType="BerkeleyEntities.EbayOrder" Width="1.625" PointX="3.375" PointY="11.125" Height="0.4" IsExpanded="false" />
+        <EntityTypeShape EntityType="BerkeleyEntities.EbayOrder" Width="1.625" PointX="3.375" PointY="11.125" Height="0.4" IsExpanded="true" />
         <EntityTypeShape EntityType="BerkeleyEntities.EbayOrderItem" Width="2" PointX="3.375" PointY="10" Height="0.4" IsExpanded="false" />
         <AssociationConnector Association="BerkeleyEntities.EbayOrderItemEbayOrder">
           <ConnectorPoint PointX="4.1875" PointY="10.4" />
@@ -4039,6 +4123,8 @@
         <EntityTypeShape EntityType="BerkeleyEntities.Bsi_ListingChangesLog" Width="2.25" PointX="5.125" PointY="7" IsExpanded="false" />
         <AssociationConnector Association="BerkeleyEntities.Bsi_ListingChangesLogItem" />
         <EntityTypeShape EntityType="BerkeleyEntities.Exchange" Width="1.5" PointX="10.75" PointY="9.375" IsExpanded="false" />
+        <EntityTypeShape EntityType="BerkeleyEntities.bsi_orders" Width="1.5" PointX="12.5" PointY="8.5" />
+        <EntityTypeShape EntityType="BerkeleyEntities.bsi_orders_details" Width="1.5" PointX="5.375" PointY="7.875" IsExpanded="false" />
         </Diagram>
     </Diagrams>
   </Designer>

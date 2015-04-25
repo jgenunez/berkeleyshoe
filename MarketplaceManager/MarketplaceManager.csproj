@@ -90,12 +90,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataGridViewProgressColumn.cs" />
-    <Compile Include="DepartmentForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="DepartmentForm.Designer.cs">
-      <DependentUpon>DepartmentForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="MarketplaceForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -103,8 +97,9 @@
       <DependentUpon>MarketplaceForm.cs</DependentUpon>
     </Compile>
     <Compile Include="MarketplaceViewRepository.cs" />
-    <Compile Include="MarketplaceView.cs" />
-    <Compile Include="OrderInvoiceGenerator.cs" />
+    <Compile Include="Order.cs" />
+    <Compile Include="PickJob.cs" />
+    <Compile Include="ProductViewRepository.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -113,7 +108,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="ReportGenerator.cs" />
-    <Compile Include="ReportProductView.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BerkeleyEntities\BerkeleyEntities.csproj">
@@ -122,9 +116,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="DepartmentForm.resx">
-      <DependentUpon>DepartmentForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="MarketplaceForm.resx">
       <DependentUpon>MarketplaceForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -163,9 +154,6 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="OrderInvoice.htm" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

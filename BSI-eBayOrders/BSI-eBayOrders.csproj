@@ -80,6 +80,7 @@
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -151,7 +152,12 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\BerkeleyEntities\BerkeleyEntities.csproj">
+      <Project>{eb9e166f-2060-4e0c-b9b3-72d93f9182a5}</Project>
+      <Name>BerkeleyEntities</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <Content Include="favicon.ico" />
   </ItemGroup>

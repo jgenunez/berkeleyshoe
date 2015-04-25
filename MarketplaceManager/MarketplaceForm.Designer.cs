@@ -41,18 +41,18 @@
             this.WaitingShipment = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.marketplaceViewBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.btnSyncOrders = new System.Windows.Forms.Button();
-            this.btnGenerate = new System.Windows.Forms.Button();
-            this.btnFixOverpublished = new System.Windows.Forms.Button();
             this.tbCheckItem = new System.Windows.Forms.TextBox();
             this.btnCheckItem = new System.Windows.Forms.Button();
             this.btnSummary = new System.Windows.Forms.Button();
+            this.btnPrintOrders = new System.Windows.Forms.Button();
+            this.btnGenerateReport = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMarketplaces)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.marketplaceViewBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // btnSyncListings
             // 
-            this.btnSyncListings.Location = new System.Drawing.Point(117, 334);
+            this.btnSyncListings.Location = new System.Drawing.Point(544, 334);
             this.btnSyncListings.Name = "btnSyncListings";
             this.btnSyncListings.Size = new System.Drawing.Size(99, 32);
             this.btnSyncListings.TabIndex = 1;
@@ -144,32 +144,13 @@
             // 
             // btnSyncOrders
             // 
-            this.btnSyncOrders.Location = new System.Drawing.Point(12, 334);
+            this.btnSyncOrders.Location = new System.Drawing.Point(439, 334);
             this.btnSyncOrders.Name = "btnSyncOrders";
             this.btnSyncOrders.Size = new System.Drawing.Size(99, 32);
             this.btnSyncOrders.TabIndex = 6;
             this.btnSyncOrders.Text = "Sync Orders";
             this.btnSyncOrders.UseVisualStyleBackColor = true;
             this.btnSyncOrders.Click += new System.EventHandler(this.btnSyncOrders_Click);
-            // 
-            // btnGenerate
-            // 
-            this.btnGenerate.Location = new System.Drawing.Point(414, 334);
-            this.btnGenerate.Name = "btnGenerate";
-            this.btnGenerate.Size = new System.Drawing.Size(106, 32);
-            this.btnGenerate.TabIndex = 7;
-            this.btnGenerate.Text = "Generate Report";
-            this.btnGenerate.UseVisualStyleBackColor = true;
-            this.btnGenerate.Click += new System.EventHandler(this.btnGenerate_Click);
-            // 
-            // btnFixOverpublished
-            // 
-            this.btnFixOverpublished.Location = new System.Drawing.Point(535, 334);
-            this.btnFixOverpublished.Name = "btnFixOverpublished";
-            this.btnFixOverpublished.Size = new System.Drawing.Size(108, 32);
-            this.btnFixOverpublished.TabIndex = 8;
-            this.btnFixOverpublished.Text = "Fix Overpublished";
-            this.btnFixOverpublished.UseVisualStyleBackColor = true;
             // 
             // tbCheckItem
             // 
@@ -198,16 +179,36 @@
             this.btnSummary.UseVisualStyleBackColor = true;
             this.btnSummary.Click += new System.EventHandler(this.btnSummary_Click);
             // 
+            // btnPrintOrders
+            // 
+            this.btnPrintOrders.Location = new System.Drawing.Point(12, 334);
+            this.btnPrintOrders.Name = "btnPrintOrders";
+            this.btnPrintOrders.Size = new System.Drawing.Size(99, 32);
+            this.btnPrintOrders.TabIndex = 13;
+            this.btnPrintOrders.Text = "Print Orders";
+            this.btnPrintOrders.UseVisualStyleBackColor = true;
+            this.btnPrintOrders.Click += new System.EventHandler(this.btnPrintOrders_Click);
+            // 
+            // btnGenerateReport
+            // 
+            this.btnGenerateReport.Location = new System.Drawing.Point(334, 334);
+            this.btnGenerateReport.Name = "btnGenerateReport";
+            this.btnGenerateReport.Size = new System.Drawing.Size(99, 32);
+            this.btnGenerateReport.TabIndex = 14;
+            this.btnGenerateReport.Text = "Generate Report";
+            this.btnGenerateReport.UseVisualStyleBackColor = true;
+            this.btnGenerateReport.Click += new System.EventHandler(this.btnGenerateReport_Click);
+            // 
             // MarketplaceForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(655, 404);
+            this.Controls.Add(this.btnGenerateReport);
+            this.Controls.Add(this.btnPrintOrders);
             this.Controls.Add(this.btnSummary);
             this.Controls.Add(this.btnCheckItem);
             this.Controls.Add(this.tbCheckItem);
-            this.Controls.Add(this.btnFixOverpublished);
-            this.Controls.Add(this.btnGenerate);
             this.Controls.Add(this.btnSyncOrders);
             this.Controls.Add(this.dgvMarketplaces);
             this.Controls.Add(this.btnSyncListings);
@@ -228,7 +229,6 @@
         private System.Windows.Forms.Button btnSyncOrders;
         private System.Windows.Forms.DataGridViewTextBoxColumn expiringSoonQtyDataGridViewTextBoxColumn;
         private System.Windows.Forms.BindingSource marketplaceViewBindingSource;
-        private System.Windows.Forms.Button btnGenerate;
         private System.Windows.Forms.DataGridViewTextBoxColumn iDDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn Host;
         private System.Windows.Forms.DataGridViewTextBoxColumn nameDataGridViewTextBoxColumn;
@@ -236,9 +236,10 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn listingsLastSyncDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn activeQtyDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn WaitingShipment;
-        private System.Windows.Forms.Button btnFixOverpublished;
         private System.Windows.Forms.TextBox tbCheckItem;
         private System.Windows.Forms.Button btnCheckItem;
         private System.Windows.Forms.Button btnSummary;
+        private System.Windows.Forms.Button btnPrintOrders;
+        private System.Windows.Forms.Button btnGenerateReport;
     }
 }

@@ -144,6 +144,7 @@ namespace MarketplaceManager
             view.ID = "E-" + marketplace.ID;
             view.DbID = marketplace.ID;
             view.Host = "Ebay";
+            view.Code = marketplace.Code;
             view.ListingsLastSync = marketplace.ListingSyncTime.HasValue ? marketplace.ListingSyncTime.Value.ToLocalTime() : marketplace.ListingSyncTime;
             view.OrdersLastSync = marketplace.OrdersSyncTime.HasValue ? marketplace.OrdersSyncTime.Value.ToLocalTime() : marketplace.OrdersSyncTime;
             view.Name = marketplace.Name;
@@ -157,6 +158,7 @@ namespace MarketplaceManager
             view.ID = "A-" + marketplace.ID;
             view.DbID = marketplace.ID;
             view.Host = "Amazon";
+            view.Code = marketplace.Code;
             view.ListingsLastSync = marketplace.ListingSyncTime.HasValue ? marketplace.ListingSyncTime.Value.ToLocalTime() : marketplace.ListingSyncTime;
             view.OrdersLastSync = marketplace.OrderSyncTime.HasValue ? marketplace.OrderSyncTime.Value.ToLocalTime() : marketplace.OrderSyncTime;
             view.Name = marketplace.Name;
@@ -178,5 +180,42 @@ namespace MarketplaceManager
 
             return _totalOH;
         }
+    }
+
+    public class MarketplaceView
+    {
+        public MarketplaceView()
+        {
+            this.WaitingPaymentQty = 0;
+            this.WaitingShipmentQty = 0;
+            this.WaitingPayment = new List<string>();
+            this.WaitingShipment = new List<string>();
+        }
+
+        public string ID { get; set; }
+
+        public int DbID { get; set; }
+
+        public string Host { get; set; }
+
+        public string Name { get; set; }
+
+        public string Code { get; set; }
+
+        public DateTime? OrdersLastSync { get; set; }
+
+        public DateTime? ListingsLastSync { get; set; }
+
+        public double ActiveListingQty { get; set; }
+
+        public int WaitingPaymentQty { get; set; }
+
+        public List<string> WaitingPayment { get; set; }
+
+        public int WaitingShipmentQty { get; set; }
+
+        public List<string> WaitingShipment { get; set; }
+
+        public int ActiveListing { get; set; }
     }
 }

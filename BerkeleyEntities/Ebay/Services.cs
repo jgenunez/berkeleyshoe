@@ -1337,6 +1337,7 @@ namespace BerkeleyEntities.Ebay
             order.CompanyName = orderDto.ShippingAddress.CompanyName;
             order.Street1 = orderDto.ShippingAddress.Street1;
             order.Street2 = orderDto.ShippingAddress.Street2;
+            
             order.CityName = orderDto.ShippingAddress.CityName;
             order.StateOrProvince = orderDto.ShippingAddress.StateOrProvince;
             order.PostalCode = orderDto.ShippingAddress.PostalCode;
@@ -1376,6 +1377,19 @@ namespace BerkeleyEntities.Ebay
                     orderItem = CreateOrderItem(order, orderItemDto);
                 }
 
+
+                if (orderItemDto.Item != null)
+                {
+                    if (!string.IsNullOrEmpty(orderItemDto.Item.ConditionDisplayName))
+                    {
+                        orderItem.ConditionDisplayName = orderItemDto.Item.ConditionDisplayName;
+                    }
+                    if (!string.IsNullOrEmpty(orderItemDto.Item.ConditionDescription))
+                    {
+                        orderItem.ConditionDescription = orderItemDto.Item.ConditionDescription;
+                    }
+                }
+                
                 orderItem.TransactionPrice = orderItemDto.TransactionPrice != null ? decimal.Parse(orderItemDto.TransactionPrice.Value.ToString()) : orderItem.TransactionPrice;
                 orderItem.QuantityPurchased = orderItemDto.QuantityPurchased;
                 orderItem.UnpaidItemDisputeStatus = orderItemDto.UnpaidItem != null ? orderItemDto.UnpaidItem.Status.ToString() : "N/A";

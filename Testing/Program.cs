@@ -87,8 +87,6 @@ namespace Testing
 
                 dataContext.Exchanges.AddObject(exchange);
 
-
-
                 dataContext.SaveChanges();
             }
         }

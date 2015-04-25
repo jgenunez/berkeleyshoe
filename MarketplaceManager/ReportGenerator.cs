@@ -15,10 +15,14 @@ namespace MarketplaceManager
     {
         private string _path;
         private SheetData _sheetData;
+        private IEnumerable<object> _entries;
+        private Type _entryType;
 
-        public ReportGenerator(string path)
+        public ReportGenerator(string path, IEnumerable<object> entries, Type entryType)
         {
             _path = path;
+            _entries = entries;
+            _entryType = entryType;
         }
 
         public void GenerateExcelReport()
@@ -66,11 +70,9 @@ namespace MarketplaceManager
 
         private SheetData GenerateSheetData()
         {
-            var products = GetProductData();
-
             SheetData sheetData = new SheetData();
 
-            var props = typeof(ReportProductView).GetProperties();
+            var props = _entryType.GetProperties();
 
             Row headerRow = new Row();
 
@@ -81,13 +83,13 @@ namespace MarketplaceManager
 
             sheetData.Append(headerRow);
 
-            foreach (ReportProductView product in products)
+            foreach (object entry in _entries)
             {
                 Row row = new Row();
 
                 foreach (PropertyInfo prop in props)
                 {
-                    object value = prop.GetValue(product, null);
+                    object value = prop.GetValue(entry, null);
 
                     switch (prop.PropertyType.Name)
                     {
@@ -109,77 +111,7 @@ namespace MarketplaceManager
 
             return sheetData;
         }
-
-        private List<ReportProductView> GetProductData()
-        {
-            List<ReportProductView> products = new List<ReportProductView>();
-
-            using (berkeleyEntities dataContext = new berkeleyEntities())
-            {
-                dataContext.CommandTimeout = 0;
-
-                //var items = dataContext.Items
-                //    .Include("AmznListingItems.OrderItems.Order")
-                //    .Include("EbayListingItems.OrderItems.Order")
-                //    .ToList().Where(p =>
-                //        (p.Quantity > 0 || p.OnActiveListing > 0 || p.OnPendingOrder > 0) &&
-                //        !p.Inactive &&
-                //        !p.DepartmentName.Equals("APPAREL") &&
-                //        !p.DepartmentName.Equals("ACCESSORIES") &&
-                //        !p.DepartmentName.Equals("MIXED ITEMS & LOTS"));
-
-                var items = dataContext.Items
-                    .Include("AmznListingItems.OrderItems.Order")
-                    .Include("EbayListingItems.OrderItems.Order")
-                    .ToList().Where(p =>
-                        (p.Quantity > 0 || p.OnActiveListing > 0 || p.OnPendingOrder > 0) && !p.Inactive && p.Department != null);
-
-                foreach (BerkeleyEntities.Item item in items)
-                {
-                    ReportProductView product = new ReportProductView(item.ItemLookupCode);
-                    product.Supplier = string.Join(" ", item.SupplierLists.Select(p => p.Supplier.SupplierName));
-                    product.Brand = item.SubDescription1;
-                    product.Cost = item.Cost;
-                    product.Department = item.DepartmentName;
-                    product.OnPO = item.OnPurchaseOrder;
-                    product.OnHand = (int)item.Quantity;
-                    product.OnHold = item.OnHold;
-                    product.OnPendingOrder = item.OnPendingOrder;
-
-                    product.Org = item.AmznListingItems.Where(p => p.MarketplaceID == 1 && p.IsActive).Sum(p => p.Quantity);
-
-                    product.StgAuc = item.EbayListingItems.Where(p => p.Listing.MarketplaceID == 1 && p.Listing.Status.Equals(EbayMarketplace.STATUS_ACTIVE) && p.Listing.Format.Equals(EbayMarketplace.FORMAT_AUCTION)).Sum(p => p.Quantity);
-                    product.Stg = item.EbayListingItems.Where(p => p.Listing.MarketplaceID == 1 && p.Listing.Status.Equals(EbayMarketplace.STATUS_ACTIVE) && p.Listing.Format.Equals(EbayMarketplace.FORMAT_FIXEDPRICE)).Sum(p => p.Quantity);
-
-                    product.OmsAuc = item.EbayListingItems.Where(p => p.Listing.MarketplaceID == 2 && p.Listing.Status.Equals(EbayMarketplace.STATUS_ACTIVE) && p.Listing.Format.Equals(EbayMarketplace.FORMAT_AUCTION)).Sum(p => p.Quantity);
-                    product.Oms = item.EbayListingItems.Where(p => p.Listing.MarketplaceID == 2 && p.Listing.Status.Equals(EbayMarketplace.STATUS_ACTIVE) && p.Listing.Format.Equals(EbayMarketplace.FORMAT_FIXEDPRICE)).Sum(p => p.Quantity);
-
-                    product.SavAuc = item.EbayListingItems.Where(p => p.Listing.MarketplaceID == 3 && p.Listing.Status.Equals(EbayMarketplace.STATUS_ACTIVE) && p.Listing.Format.Equals(EbayMarketplace.FORMAT_AUCTION)).Sum(p => p.Quantity);
-                    product.Sav = item.EbayListingItems.Where(p => p.Listing.MarketplaceID == 3 && p.Listing.Status.Equals(EbayMarketplace.STATUS_ACTIVE) && p.Listing.Format.Equals(EbayMarketplace.FORMAT_FIXEDPRICE)).Sum(p => p.Quantity);
-
-                    var ebayDuplicates = item.EbayListingItems
-                        .Where(p => p.Listing.Status.Equals(EbayMarketplace.STATUS_ACTIVE))
-                        .GroupBy(p => new { Marketplace = p.Listing.Marketplace, Format = p.Listing.Format })
-                        .Where(p => p.Count() > 1);
-
-                    if (ebayDuplicates.Count() > 0)
-                    {
-                        product.Duplicates = string.Join(" ", ebayDuplicates.Select(p => p.Count().ToString() + p.Key.Marketplace.Code));
-                    }
-                    else
-                    {
-                        product.Duplicates = string.Empty;
-                    }
- 
-                    product.EbaySold = item.EbayListingItems.SelectMany(p => p.OrderItems).Where(p => p.Order.MarkedAsShipped()).Sum(p => p.QuantityPurchased);
-
-                    product.AmznSold = item.AmznListingItems.SelectMany(p => p.OrderItems).Where(p => p.Order.Status.Equals("Shipped")).Sum(p => p.QuantityOrdered);
-
-                    products.Add(product);
-                }
-            }
-
-            return products;
-        }
     }
+
+    
 }

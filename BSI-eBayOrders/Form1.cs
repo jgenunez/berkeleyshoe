@@ -12,6 +12,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using BerkeleyEntities;
 
 using System.Net;
 using System.Net.Security;
@@ -866,54 +867,143 @@ namespace BSI_eBayOrders
             String loperationStatus = "";
 
             string POBoxPattern = @"(?i)\b(?:p(?:ost)?\.?\s*[o0](?:ffice)?\.?\s*b(?:[o0]x)?|b[o0]x)";
-            //[Step 1] Initialize eBay ApiContext object
-            ApiContext apiContext = GetApiContext();
 
-            //[Step 2] Create Call object and execute the Call
-            GetOrdersCall call = new GetOrdersCall(apiContext);
-
-            // x.CreateTimeFrom = DateTime.Now.AddDays(-2);
-            call.CreateTimeFrom = DateTime.Now.AddDays(-60);
-            call.CreateTimeTo = DateTime.Now.AddMinutes(-15);
-
-            call.DetailLevelList = new DetailLevelCodeTypeCollection();
-            call.DetailLevelList.Add(DetailLevelCodeType.ReturnAll);
-
-            PaginationType lpager = new PaginationType();
-            lpager.EntriesPerPage = 50;
-            mainOrderList = new List<eBayOrder>();
             List<Brand> lbrands = new List<Brand>();
+
             int lpage = 0;
+
             lgrandTotal = 0;
             lgrandShipping = 0;
-            this.txtStatus.Text = "-----------------> STARTING UP... \r\n";
-            this.txtStatus.Update();
-            this.lStopProcess = false;
 
-            do
+
+            using (berkeleyEntities dataContext = new berkeleyEntities())
             {
-                lpager.PageNumber = ++lpage;
-                call.Pagination = lpager;
-                OrderTypeCollection ebayOrders = call.GetOrders(call.CreateTimeFrom,
-                                                          call.CreateTimeTo,
-                                                          TradingRoleCodeType.Seller,
-                                                          OrderStatusCodeType.Completed);
+                
 
-                Application.DoEvents();
-                this.txtStatus.Text = "-----------------> Checking page " + call.PageNumber + "\r\n" + this.txtStatus.Text;
-                this.txtStatus.Update();
-                foreach (OrderType ebayOrder in ebayOrders)
+                foreach (eBayOrder orderDto in GetUnshippedOrders())
                 {
-                    // Skip shipped and payment-not-completed orders 
-                    if (!ebayOrder.ShippedTimeSpecified &&
-                         ebayOrder.CheckoutStatus.eBayPaymentStatus == PaymentStatusCodeType.NoPaymentFailure)
+                    bsi_orders order = dataContext.bsi_orders.SingleOrDefault(p => 
+                            p.marketplaceId == marketPlaces[gCurrentMarketplace].maskId && 
+                            p.orderId.Equals(orderDto.ShippingDetails.SellingManagerSalesRecordNumber));
+
+                    if (order == null)
                     {
-                        eBayOrder leo = extendAddress(ebayOrder);
-                        mainOrderList.Add(leo);
-                        Application.DoEvents();
-                    }; // if (!lorder.ShippedTimeSpecified)
-                }; // foreach
-            } while (call.HasMoreOrders && !this.lStopProcess);
+                        orderDto.repeated = false;
+
+                        order = new bsi_orders();
+                        order.marketplaceId = marketPlaces[gCurrentMarketplace].maskId;
+                        order.orderId = orderDto.ShippingDetails.SellingManagerSalesRecordNumber.ToString();
+                        order.printDate = DateTime.Now;
+
+                        dataContext.bsi_orders.AddObject(order);
+                        dataContext.SaveChanges();
+
+                        foreach (TransactionType orderItemDto in orderDto.TransactionArray)
+                        {
+                            Item item = null;
+                            
+                            if (orderItemDto.Variation != null && !String.IsNullOrEmpty(orderItemDto.Variation.SKU))
+                            {
+                                item = dataContext.Items.Single(p => p.ItemLookupCode.Equals(orderItemDto.Variation.SKU));
+                            }
+                            else
+                            {
+                                item = dataContext.Items.Single(p => p.ItemLookupCode.Equals(orderItemDto.Item.SKU));
+                            }
+
+                            bsi_orders_details orderItem = new bsi_orders_details();
+                            orderItem.marketplaceId = 
+
+                            if (!lrepeatedOrder) ltotalItems += orderItemDto.QuantityPurchased;
+                            lloc = "";
+
+                            lsku = (!string.IsNullOrEmpty(lskuX)) ? getNormalizedSKU(lskuX.Trim()) : "";
+                            lsku = (!string.IsNullOrEmpty(lskuX)) ? lskuX.Trim() : "";
+
+                            lc = new SqlCommand("SELECT * FROM Item where itemlookupcode='" + lsku + "'", lconn);
+                            lr = lc.ExecuteReader();
+                            if (lr.Read())
+                            {
+                                lloc = " [" + lr["binlocation"].ToString() + " | " + lr["notes"].ToString() + "]";
+                                orderItemDto.Item.ConditionDescription = lr["extendedDescription"].ToString();
+                            }; // if (lr.Read())
+                            lr.Close();
+                            lc.Cancel();
+
+                            if (lBSIorderID != null)
+                            {
+                                int lqty = orderItemDto.QuantityPurchased;
+                                double lprice = orderItemDto.TransactionPrice.Value;
+
+                                lc = new SqlCommand("INSERT INTO bsi_orders_details (marketplace,marketplaceid,OrderInOurTables," +
+                                                    "itemlookupcode,price,quantity,discount) " +
+                                                    "VALUES (" + marketPlaces[gCurrentMarketplace].maskId +
+                                                             ",'" + orderItemDto.Item.ItemID + "','" + lBSIorderID + "','" +
+                                                             lsku + "','" + lprice + "','" + lqty + "','0')", lconn);
+                                lc.ExecuteNonQuery();
+
+                                // Now substract the sold quantity from the post
+                                String lquantityId = null;
+                                String lqs = "SELECT thePost.id,thePost.marketplace,thePost.markerplaceItemID," +
+                                             "theQ.id AS QtyID, theQ.postId, theQ.itemLookupCode " +
+                                             "FROM bsi_posts AS thePost INNER JOIN " +
+                                             "bsi_quantities AS theQ ON thePost.id = theQ.postId " +
+                                             "WHERE (thePost.markerplaceItemID = '" + orderItemDto.Item.ItemID + "') AND " +
+                                             "(theQ.itemLookupCode = '" + lsku + "')";
+
+                                lc = new SqlCommand(lqs, lconn);
+                                lr = lc.ExecuteReader();
+                                if (lr.Read())
+                                {
+                                    lquantityId = lr["QtyID"].ToString();
+                                }
+                                else
+                                {
+                                    loperationStatus = "\r\nITEM: " + lsku + " IS NOT REGISTERED IN THE TABLE QUANTITIES\r\n" + loperationStatus;
+                                }
+                                lr.Close();
+
+                                // Deduct the quantity from bsi_quantities
+                                if (lquantityId != null)
+                                {
+                                    lqs = "UPDATE bsi_quantities SET quantity=quantity-" + lqty.ToString() +
+                                          " WHERE id=" + lquantityId;
+                                    lc = new SqlCommand(lqs, lconn);
+                                    lc.ExecuteNonQuery();
+                                }
+                            }
+
+                            orderItemDto.Item.SKU = lskuX + lloc;
+
+                            Brand lbrand4Search = lbrands.Find(delegate(Brand pb)
+                            {
+                                return (pb.brand.CompareTo(lbrand) == 0);
+                            });
+
+                            if (!lrepeatedOrder)
+                            {
+                                if (lbrand4Search != null)
+                                {
+                                    lbrand4Search.count += orderItemDto.QuantityPurchased;
+                                }
+                                else
+                                {
+                                    lbrand4Search = new Brand();
+                                    lbrand4Search.brand = lbrand;
+                                    lbrand4Search.count = orderItemDto.QuantityPurchased;
+                                    lbrands.Add(lbrand4Search);
+                                }
+                            }
+                        }; // foreach
+
+                    }
+                    else
+                    {
+                        orderDto.repeated = true;
+                        orderDto.originalDate = order.printDate;
+                    }
+                } 
+            }
 
             if (!this.lStopProcess)
             {
@@ -992,15 +1082,6 @@ namespace BSI_eBayOrders
 
                             if (!lrepeatedOrder) ltotalItems += lt.QuantityPurchased;
                             lloc = "";
-
-                            /*
-                            if (lskuX.IndexOf("-", StringComparison.OrdinalIgnoreCase) >= 0)
-                            {
-                                lsku = lskuX.Substring(0, lskuX.IndexOf("-", StringComparison.OrdinalIgnoreCase)).Trim();
-                            }
-                            else
-                                lsku = lskuX.Trim();
-                            */
 
                             lsku = (!string.IsNullOrEmpty(lskuX)) ? getNormalizedSKU(lskuX.Trim()) : "";
                             lsku = (!string.IsNullOrEmpty(lskuX)) ? lskuX.Trim() : "";
@@ -1374,6 +1455,41 @@ namespace BSI_eBayOrders
             MessageBox.Show("THE PROCESS ENDED WITH " + ltotalItems + " IN " + ltotalOrders + " ORDERS");
 
         } // getTheOrders
+
+        private List<eBayOrder> GetUnshippedOrders()
+        {
+            List<eBayOrder> unshippedOrders = new List<eBayOrder>();
+
+            ApiContext apiContext = GetApiContext();
+
+            GetOrdersCall call = new GetOrdersCall(apiContext);
+            call.CreateTimeFrom = DateTime.Now.AddDays(-60);
+            call.CreateTimeTo = DateTime.Now.AddMinutes(-15);
+            call.DetailLevelList = new DetailLevelCodeTypeCollection();
+            call.DetailLevelList.Add(DetailLevelCodeType.ReturnAll);
+
+            call.Pagination = new PaginationType() { EntriesPerPage = 50, EntriesPerPageSpecified = true };
+
+            int currentPage = 0;
+
+            do
+            {
+                call.Pagination.PageNumber = ++currentPage;
+
+                OrderTypeCollection ebayOrders = call.GetOrders(call.CreateTimeFrom, call.CreateTimeTo, TradingRoleCodeType.Seller, OrderStatusCodeType.Completed);
+
+                foreach (OrderType ebayOrder in ebayOrders)
+                {
+                    // Skip shipped and payment-not-completed orders 
+                    if (!ebayOrder.ShippedTimeSpecified && ebayOrder.CheckoutStatus.eBayPaymentStatus == PaymentStatusCodeType.NoPaymentFailure)
+                    {
+                        unshippedOrders.Add(extendAddress(ebayOrder));
+                    };
+                }; 
+            } while (call.HasMoreOrders);
+
+            return unshippedOrders;
+        }
 
         private string GetBrand(string sku, SqlConnection con)
         {
