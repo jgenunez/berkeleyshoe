@@ -52,6 +52,7 @@
             // 
             // btnSyncListings
             // 
+            this.btnSyncListings.Enabled = false;
             this.btnSyncListings.Location = new System.Drawing.Point(544, 334);
             this.btnSyncListings.Name = "btnSyncListings";
             this.btnSyncListings.Size = new System.Drawing.Size(99, 32);
@@ -144,6 +145,7 @@
             // 
             // btnSyncOrders
             // 
+            this.btnSyncOrders.Enabled = false;
             this.btnSyncOrders.Location = new System.Drawing.Point(439, 334);
             this.btnSyncOrders.Name = "btnSyncOrders";
             this.btnSyncOrders.Size = new System.Drawing.Size(99, 32);
@@ -191,6 +193,7 @@
             // 
             // btnGenerateReport
             // 
+            this.btnGenerateReport.Enabled = false;
             this.btnGenerateReport.Location = new System.Drawing.Point(334, 334);
             this.btnGenerateReport.Name = "btnGenerateReport";
             this.btnGenerateReport.Size = new System.Drawing.Size(99, 32);

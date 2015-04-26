@@ -48,31 +48,43 @@ namespace MarketplaceManager
 
                     using (berkeleyEntities dataContext = new berkeleyEntities())
                     {
-                        var unshippedOrders = dataContext.AmznOrders.Where(p => 
-                            p.MarketplaceID == view.DbID && p.Status.Equals("Unshipped") || p.Status.Equals("PartiallyShipped")).ToList();
+                        var unshippedOrders = dataContext.AmznOrders
+                            .Where(p => p.MarketplaceID == view.DbID && p.Status.Equals("Unshipped") || p.Status.Equals("PartiallyShipped")).ToList()
+                            .Where(p => p.OrderItems.All(s => s.ListingItem != null && s.ListingItem.Item != null)).ToList();
 
                         var printList = unshippedOrders.Where(p => !p.PrintTime.HasValue);
 
                         DateTime printTime = DateTime.Now;
 
-                        string pickJobID = view.Code + printTime.Year.ToString() + printTime.Month.ToString().PadLeft(2,'0') + printTime.Day.ToString().PadLeft(2,'0');
+                        string pickJobID = printTime.Year.ToString() + printTime.Month.ToString().PadLeft(2,'0') + printTime.Day.ToString().PadLeft(2,'0');
+
+                        int i = 1;
+
+                        while (File.Exists(pickJobID + "-" + i))
+                        {
+                            i++;
+                        }
+
+                        pickJobID = string.Format("{0}-{1}({2})", pickJobID, i, view.Code); 
 
                         var auditEntries = printList.SelectMany(p => p.OrderItems)
                             .Select(p => new { Sku = p.ListingItem.Sku, Qty = p.QuantityOrdered })
                             .GroupBy(p => p.Sku).Select(p => new OrderItemAudit() { Sku = p.Key, Qty = p.Sum(s => s.Qty) });
 
-                        GeneratePrintFile(view, unshippedOrders, fbd.SelectedPath);
+                        GeneratePrintFile(view, unshippedOrders, fbd.SelectedPath + "//" + pickJobID + ".html");
 
-                        ReportGenerator reportGenerator = new ReportGenerator(fbd.SelectedPath + "//" + view.Name.Replace(@"/", "") + ".xlsx", auditEntries, typeof(OrderItemAudit));
+                        ReportGenerator reportGenerator = new ReportGenerator(fbd.SelectedPath + "//" + pickJobID + ".xlsx", auditEntries, typeof(OrderItemAudit));
 
                         reportGenerator.GenerateExcelReport();
 
-                        ImportToRMS(view, printList.ToList());
+                        ImportToRMS(pickJobID, printList.ToList());
 
                         foreach (var order in printList)
                         {
                             order.PrintTime = printTime;
                         }
+
+                        dataContext.SaveChanges();
                     }
                 }
                 else if(view.Host.Equals("Ebay"))
@@ -83,28 +95,43 @@ namespace MarketplaceManager
 
                     using (berkeleyEntities dataContext = new berkeleyEntities())
                     {
-                        var unshippedOrders = dataContext.EbayOrders.Where(p => p.MarketplaceID == view.DbID).ToList().Where(p => p.IsWaitingForShipment()).ToList();
+                        var unshippedOrders = dataContext.EbayOrders.Where(p => p.MarketplaceID == view.DbID).ToList()
+                            .Where(p => p.IsWaitingForShipment()).ToList()
+                            .Where(p => p.OrderItems.All(s => s.ListingItem != null && s.ListingItem.Item != null)).ToList();
 
                         var printList = unshippedOrders.Where(p => !p.PrintTime.HasValue);
 
                         DateTime printTime = DateTime.Now;
 
+                        string pickJobID = printTime.Year.ToString() + printTime.Month.ToString().PadLeft(2, '0') + printTime.Day.ToString().PadLeft(2, '0');
+
+                        int i = 1;
+
+                        while (File.Exists(pickJobID + "-" + i))
+                        {
+                            i++;
+                        }
+
+                        pickJobID = string.Format("{0}-{1}({2})", pickJobID, i, view.Code); 
+
                         var auditEntries = printList.SelectMany(p => p.OrderItems)
                             .Select(p => new { Sku = p.ListingItem.Sku, Qty = p.QuantityPurchased })
                             .GroupBy(p => p.Sku).Select(p => new OrderItemAudit() { Sku = p.Key, Qty = p.Sum(s => s.Qty) });
 
-                        GeneratePrintFile(view, unshippedOrders, fbd.SelectedPath);
+                        GeneratePrintFile(view, unshippedOrders, fbd.SelectedPath + "//" + pickJobID + ".html");
 
-                        ReportGenerator reportGenerator = new ReportGenerator(fbd.SelectedPath + "//" + view.Name.Replace(@"/", "") + ".xlsx", auditEntries, typeof(OrderItemAudit));
+                        ReportGenerator reportGenerator = new ReportGenerator(fbd.SelectedPath + "//" + pickJobID + ".xlsx", auditEntries, typeof(OrderItemAudit));
 
                         reportGenerator.GenerateExcelReport();
 
-                        ImportToRMS(view, printList.ToList());
+                        ImportToRMS(pickJobID, printList.ToList());
 
                         foreach (var order in printList)
                         {
                             order.PrintTime = printTime;
                         }
+
+                        dataContext.SaveChanges();
                     }
                     
                 }
@@ -113,9 +140,9 @@ namespace MarketplaceManager
             }
         }
 
-        private void GeneratePrintFile(MarketplaceView view, List<AmznOrder> orders, string outputDir)
+        private void GeneratePrintFile(MarketplaceView view, List<AmznOrder> orders, string file)
         {
-            StreamWriter stream = File.CreateText(String.Format("{0}\\Amazon-{1}-Orders.htm", outputDir, view.Name.Replace(@"/", "")));
+            StreamWriter stream = File.CreateText(file);
 
             stream.AutoFlush = true;
 
@@ -130,7 +157,7 @@ namespace MarketplaceManager
 
             int index = 0;
 
-            foreach (AmznOrder order in orders)
+            foreach (AmznOrder order in orders.OrderBy(p => p.OrderItems.First().ListingItem.Item.BinLocation))
             {
                 index++;
 
@@ -287,9 +314,9 @@ namespace MarketplaceManager
             return shippingInfo;
         }
 
-        private void GeneratePrintFile(MarketplaceView view, List<EbayOrder> orders, string outputDir)
+        private void GeneratePrintFile(MarketplaceView view, List<EbayOrder> orders, string file)
         {
-            StreamWriter stream = File.CreateText(String.Format("{0}\\eBay-{1}-Orders.htm", outputDir, view.Name.Replace(@"/","")));
+            StreamWriter stream = File.CreateText(file);
 
             stream.AutoFlush = true; 
 
@@ -304,7 +331,7 @@ namespace MarketplaceManager
 
             int index = 0;
 
-            foreach (EbayOrder order in orders)
+            foreach (EbayOrder order in orders.OrderBy(p => p.OrderItems.First().ListingItem.Item.BinLocation))
             {
                 index++;
 
@@ -479,7 +506,7 @@ namespace MarketplaceManager
             return shippingInfo;
         }
 
-        private void ImportToRMS(MarketplaceView marketplace, List<EbayOrder> orders)
+        private void ImportToRMS(string pickJobID, List<EbayOrder> orders)
         {
             Order order = new Order();
             order.id = "1";
@@ -514,23 +541,20 @@ namespace MarketplaceManager
 
             int i = 0;
 
-            foreach (EbayOrder orderDto in orders)
+            foreach (EbayOrderItem orderItemDto in orders.SelectMany(p => p.OrderItems).OrderBy(p => p.ListingItem.Item.ItemLookupCode))
             {
-                foreach(EbayOrderItem orderItemDto in orderDto.OrderItems)
-                {
-                    i++;
+                i++;
                     
-                    OrderItem item = new OrderItem();
-                    //item.Id = ulong.Parse(i.ToString());
-                    item.num = Convert.ToByte(i);
-                    item.Code = orderItemDto.ListingItem.Item.ItemLookupCode;
-                    item.Description = orderItemDto.ListingItem.Item.Description;
-                    item.Quantity = Convert.ToByte(orderItemDto.QuantityPurchased);
-                    item.UnitPrice = orderItemDto.TransactionPrice;
-                    orderItems.Add(item);
-                }
-                
+                OrderItem item = new OrderItem();
+                //item.Id = ulong.Parse(i.ToString());
+                item.num = Convert.ToByte(i);
+                item.Code = orderItemDto.ListingItem.Item.ItemLookupCode;
+                item.Description = orderItemDto.ListingItem.Item.Description;
+                item.Quantity = Convert.ToByte(orderItemDto.QuantityPurchased);
+                item.UnitPrice = orderItemDto.TransactionPrice;
+                orderItems.Add(item);
             }
+
 
             order.Item = orderItems.ToArray();
             
@@ -563,7 +587,7 @@ namespace MarketplaceManager
             {
                 Exchange exchange = new Exchange();
                 exchange.Data = stringWriter.ToString();
-                exchange.Comment = marketplace.Name;
+                exchange.Comment = pickJobID;
                 exchange.DateCreated = DateTime.UtcNow;
                 exchange.ProcessorCode = "YahooStore";
                 exchange.Status = 0;
@@ -575,7 +599,7 @@ namespace MarketplaceManager
             }
         }
 
-        private void ImportToRMS(MarketplaceView marketplace, List<AmznOrder> orders)
+        private void ImportToRMS(string pickJobID, List<AmznOrder> orders)
         {
             Order order = new Order();
             order.id = "1";
@@ -610,22 +634,18 @@ namespace MarketplaceManager
 
             int i = 0;
 
-            foreach (AmznOrder orderDto in orders)
+            foreach (AmznOrderItem orderItemDto in orders.SelectMany(p => p.OrderItems).OrderBy(p => p.ListingItem.Item.ItemLookupCode))
             {
-                foreach (AmznOrderItem orderItemDto in orderDto.OrderItems)
-                {
-                    i++;
+                i++;
 
-                    OrderItem item = new OrderItem();
-                    //item.Id = ulong.Parse(i.ToString());
-                    item.num = Convert.ToByte(i);
-                    item.Code = orderItemDto.ListingItem.Item.ItemLookupCode;
-                    item.Description = orderItemDto.ListingItem.Item.Description;
-                    item.Quantity = Convert.ToByte(orderItemDto.QuantityOrdered);
-                    item.UnitPrice = orderItemDto.ItemPrice;
-                    orderItems.Add(item);
-                }
-
+                OrderItem item = new OrderItem();
+                //item.Id = ulong.Parse(i.ToString());
+                item.num = Convert.ToByte(i);
+                item.Code = orderItemDto.ListingItem.Item.ItemLookupCode;
+                item.Description = orderItemDto.ListingItem.Item.Description;
+                item.Quantity = Convert.ToByte(orderItemDto.QuantityOrdered);
+                item.UnitPrice = orderItemDto.ItemPrice;
+                orderItems.Add(item);
             }
 
             order.Item = orderItems.ToArray();
@@ -659,7 +679,7 @@ namespace MarketplaceManager
             {
                 Exchange exchange = new Exchange();
                 exchange.Data = stringWriter.ToString();
-                exchange.Comment = marketplace.Name;
+                exchange.Comment = pickJobID;
                 exchange.DateCreated = DateTime.UtcNow;
                 exchange.ProcessorCode = "YahooStore";
                 exchange.Status = 0;
