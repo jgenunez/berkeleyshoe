@@ -11,6 +11,8 @@ namespace MarketplaceManager
         public string Code { get; set; }
 
         public List<OrderItemAudit> Items { get; set; }
+
+        public string testing { get; set; }
     }
 
     public class OrderItemAudit
