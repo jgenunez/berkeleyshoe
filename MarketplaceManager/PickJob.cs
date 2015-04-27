@@ -15,8 +15,12 @@ namespace MarketplaceManager
 
     public class OrderItemAudit
     {
+        public string OrderID { get; set; }
+
         public string Sku { get; set; }
 
         public int Qty { get; set; }
+
+        public decimal Price { get; set; }
     }
 }

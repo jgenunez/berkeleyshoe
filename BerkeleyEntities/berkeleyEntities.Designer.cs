@@ -1691,6 +1691,30 @@ namespace BerkeleyEntities
         private global::System.String _Sku;
         partial void OnSkuChanging(global::System.String value);
         partial void OnSkuChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.Int32> DisplayQuantity
+        {
+            get
+            {
+                return _DisplayQuantity;
+            }
+            set
+            {
+                OnDisplayQuantityChanging(value);
+                ReportPropertyChanging("DisplayQuantity");
+                _DisplayQuantity = StructuralObject.SetValidValue(value, "DisplayQuantity");
+                ReportPropertyChanged("DisplayQuantity");
+                OnDisplayQuantityChanged();
+            }
+        }
+        private Nullable<global::System.Int32> _DisplayQuantity;
+        partial void OnDisplayQuantityChanging(Nullable<global::System.Int32> value);
+        partial void OnDisplayQuantityChanged();
 
         #endregion
 
@@ -10053,6 +10077,30 @@ namespace BerkeleyEntities
         private global::System.String _Sku;
         partial void OnSkuChanging(global::System.String value);
         partial void OnSkuChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.Int32> DisplayQuantity
+        {
+            get
+            {
+                return _DisplayQuantity;
+            }
+            set
+            {
+                OnDisplayQuantityChanging(value);
+                ReportPropertyChanging("DisplayQuantity");
+                _DisplayQuantity = StructuralObject.SetValidValue(value, "DisplayQuantity");
+                ReportPropertyChanged("DisplayQuantity");
+                OnDisplayQuantityChanged();
+            }
+        }
+        private Nullable<global::System.Int32> _DisplayQuantity;
+        partial void OnDisplayQuantityChanging(Nullable<global::System.Int32> value);
+        partial void OnDisplayQuantityChanged();
 
         #endregion
 

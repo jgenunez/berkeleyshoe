@@ -1128,7 +1128,7 @@ namespace BerkeleyEntities.Ebay
                     listingItem.Quantity =
                     variationDto.QuantitySpecified &&
                     variationDto.SellingStatus != null &&
-                    variationDto.SellingStatus.QuantitySoldSpecified ?
+                    variationDto.SellingStatus.QuantitySoldSpecified?
                         variationDto.Quantity - variationDto.SellingStatus.QuantitySold : listingItem.Quantity;
                 }   
 

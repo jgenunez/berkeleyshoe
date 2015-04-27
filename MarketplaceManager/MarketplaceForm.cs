@@ -60,16 +60,15 @@ namespace MarketplaceManager
 
                         int i = 1;
 
-                        while (File.Exists(pickJobID + "-" + i))
+                        while (File.Exists(fbd.SelectedPath + "//" + string.Format("{0}-{1}({2}).xlsx", pickJobID, i, view.Code)))
                         {
                             i++;
                         }
 
-                        pickJobID = string.Format("{0}-{1}({2})", pickJobID, i, view.Code); 
+                        pickJobID = string.Format("{0}-{1}({2})", pickJobID, i, view.Code);
 
                         var auditEntries = printList.SelectMany(p => p.OrderItems)
-                            .Select(p => new { Sku = p.ListingItem.Sku, Qty = p.QuantityOrdered })
-                            .GroupBy(p => p.Sku).Select(p => new OrderItemAudit() { Sku = p.Key, Qty = p.Sum(s => s.Qty) });
+                            .Select(p => new OrderItemAudit { Sku = p.ListingItem.Sku, Qty = p.QuantityOrdered, Price = p.ItemPrice, OrderID = p.Order.Code});
 
                         GeneratePrintFile(view, unshippedOrders, fbd.SelectedPath + "//" + pickJobID + ".html");
 
@@ -107,16 +106,15 @@ namespace MarketplaceManager
 
                         int i = 1;
 
-                        while (File.Exists(pickJobID + "-" + i))
+                        while (File.Exists(fbd.SelectedPath + "//" + string.Format("{0}-{1}({2}).xlsx", pickJobID, i, view.Code)))
                         {
                             i++;
                         }
 
-                        pickJobID = string.Format("{0}-{1}({2})", pickJobID, i, view.Code); 
+                        pickJobID = string.Format("{0}-{1}({2})", pickJobID, i, view.Code);
 
                         var auditEntries = printList.SelectMany(p => p.OrderItems)
-                            .Select(p => new { Sku = p.ListingItem.Sku, Qty = p.QuantityPurchased })
-                            .GroupBy(p => p.Sku).Select(p => new OrderItemAudit() { Sku = p.Key, Qty = p.Sum(s => s.Qty) });
+                            .Select(p => new OrderItemAudit { Sku = p.ListingItem.Sku, Qty = p.QuantityPurchased, Price = p.TransactionPrice, OrderID = p.Order.SalesRecordNumber });
 
                         GeneratePrintFile(view, unshippedOrders, fbd.SelectedPath + "//" + pickJobID + ".html");
 
@@ -303,7 +301,17 @@ namespace MarketplaceManager
                 }
                 else
                 {
-                    shippingInfo = string.Format("Zone: {0}", zone);
+                    switch (zone)
+                    {
+                        case "1":
+                        case "2":
+                        case "3":
+                        case "4":
+                            shippingInfo = "USPS"; break;
+                        default:
+                            shippingInfo = string.Format("Zone: {0}", zone); break;
+
+                    }
                 }
             }
             else
@@ -495,7 +503,18 @@ namespace MarketplaceManager
                 }
                 else
                 {
-                    shippingInfo = string.Format("Zone: {0}", zone);
+                    switch (zone)
+                    {
+                        case "1": 
+                        case "2":
+                        case "3":
+                        case "4":
+                            shippingInfo = "USPS"; break;
+                        default:
+                            shippingInfo = string.Format("Zone: {0}", zone); break;
+
+                    }
+                    
                 }
             }
             else
