@@ -69,13 +69,13 @@ namespace WorkbookPublisher
         {
             var active = item.EbayListingItems.Where(p => p.Listing.Marketplace.Code.Equals(_marketplaceCode) && p.Listing.Status.Equals(EbayMarketplace.STATUS_ACTIVE));
 
-            var entries = group.ToList();
+            var currentEntries = group.ToList();
 
             foreach (var listingItem in active)
             {
                 string format = listingItem.Listing.Format.Equals(EbayMarketplace.FORMAT_STOREFIXEDPRICE) ? EbayMarketplace.FORMAT_FIXEDPRICE : listingItem.Listing.Format;
 
-                EbayEntry entry = entries.FirstOrDefault(p => p.IsValid() && p.GetFormat().Equals(format));
+                EbayEntry entry = currentEntries.FirstOrDefault(p => p.IsValid() && p.GetFormat().Equals(format));
 
                 if (entry != null)
                 {
@@ -92,16 +92,16 @@ namespace WorkbookPublisher
                         entry.Message = string.Format("({0}|{1}|{2})", listingItem.FormatCode, listingItem.Quantity, Math.Round(listingItem.Price, 2));
                     }
 
-                    entries.Remove(entry);
+                    currentEntries.Remove(entry);
                 }
                 else
                 {
-                    entry = entries.FirstOrDefault(p => p.IsValid() == false);
+                    entry = currentEntries.FirstOrDefault(p => p.IsValid() == false);
 
                     if (entry != null)
                     {
                         entry.Message = "modified by program";
-                        entries.Remove(entry);
+                        currentEntries.Remove(entry);
                     }
                     else
                     {
@@ -116,18 +116,29 @@ namespace WorkbookPublisher
                         _addedEntries.Add(entry);
                     }
 
-                    
+
+                    if (listingItem.DisplayQuantity.HasValue && listingItem.AvailableQuantity.HasValue)
+                    {
+                        entry.DisplayQty = listingItem.DisplayQuantity;
+                        entry.Q = listingItem.AvailableQuantity;
+                    }
+                    else
+                    {
+                        entry.Q = listingItem.Quantity;
+                    }
+
                     entry.Code = listingItem.Listing.Code;
                     entry.SetFormat(listingItem.Listing.Format, listingItem.Listing.Duration, (bool)listingItem.Listing.IsVariation);
                     entry.P = listingItem.Price;
-                    entry.Q = listingItem.Quantity;
+                    
+                    
                     entry.Title = listingItem.Listing.Title;
                     entry.FullDescription = listingItem.Listing.FullDescription;               
                     entry.Status = StatusCode.Completed;
                 }
             }
 
-            foreach (var entry in entries)
+            foreach (var entry in currentEntries)
             {
                 EbayListing listing = _dataContext.EbayListings.SingleOrDefault(p => p.Sku.Equals(item.ClassName) && p.Status.Equals(EbayMarketplace.STATUS_ACTIVE) && p.Marketplace.Code.Equals(_marketplaceCode));
 

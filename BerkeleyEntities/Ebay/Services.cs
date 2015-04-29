@@ -428,7 +428,20 @@ namespace BerkeleyEntities.Ebay
                     listingItem.Listing = listing;
                     listingItem.Item = dataContext.Items.Single(p => p.ItemLookupCode.Equals(listingItemDto.Sku));
                     listingItem.Sku = listingItemDto.Sku;
+
+                    if (listingItemDto.DisplayQty.HasValue)
+                    {
+                        listingItem.DisplayQuantity = listingItemDto.DisplayQty;
+                        listingItem.AvailableQuantity = listingItemDto.Qty;
+                        listingItem.Quantity = listingItemDto.Qty.Value;
+                    }
+                    else
+                    {
+                        listingItem.Quantity = listingItemDto.Qty.Value;
+                    }
+
                     listingItem.Quantity = listingItemDto.Qty.Value;
+                    
                     listingItem.Price = listingItemDto.Price.Value;
                 }
 
@@ -459,6 +472,13 @@ namespace BerkeleyEntities.Ebay
                     if (listingItem == null)
                     {
                         listingItem = new EbayListingItem() { Item = item, Listing = listing, Sku = listingItemDto.Sku };
+                    }
+
+                    if (listingItemDto.DisplayQty.HasValue)
+                    {
+                        listingItem.DisplayQuantity = listingItemDto.DisplayQty;
+                        listingItem.AvailableQuantity = listingItemDto.Qty;
+                        listingItem.Quantity = listingItemDto.DisplayQty.Value;
                     }
 
                     if(listingItemDto.Qty.HasValue)
@@ -523,15 +543,20 @@ namespace BerkeleyEntities.Ebay
                 ebayDto.BuyItNowPrice = new AmountType() { currencyID = CurrencyCodeType.USD, Value = Convert.ToDouble(listingDto.BinPrice) };
             }
 
-            
-
-
             if (!listingDto.IsVariation)
             {
                 ListingItemDto listingItemDto = listingDto.Items.First();
 
                 ebayDto.QuantitySpecified = listingItemDto.Qty.HasValue;
-                ebayDto.Quantity = listingItemDto.Qty.Value;
+
+                if (listingItemDto.DisplayQty.HasValue)
+                {
+                    ebayDto.Quantity = listingItemDto.DisplayQty.Value;
+                }
+                else
+                {
+                    ebayDto.Quantity = listingItemDto.Qty.Value;
+                }
 
                 if (listingItemDto.Price.HasValue)
                 {
@@ -620,7 +645,15 @@ namespace BerkeleyEntities.Ebay
                     variationDto.SKU = listingItemDto.Sku;
 
                     variationDto.QuantitySpecified = listingItemDto.Qty.HasValue;
-                    variationDto.Quantity =  listingItemDto.Qty.Value ;
+
+                    if (listingItemDto.DisplayQty.HasValue)
+                    {
+                        variationDto.Quantity = listingItemDto.DisplayQty.Value;
+                    }
+                    else if(listingItemDto.Qty.HasValue)
+                    {
+                        variationDto.Quantity = listingItemDto.Qty.Value;
+                    }
 
                     if (listingItemDto.Price.HasValue)
                     {
@@ -876,6 +909,8 @@ namespace BerkeleyEntities.Ebay
         public int? Qty {get; set;}
 
         public decimal? Price {get; set;}
+
+        public int? DisplayQty { get; set; }
     }
 
     public class ListingSynchronizer
@@ -1090,11 +1125,19 @@ namespace BerkeleyEntities.Ebay
             }
             else
             {
+                int currentQty = listingDto.Quantity - listingDto.SellingStatus.QuantitySold;
+
+                int qtyChange = currentQty - listingItem.Quantity;
+
                 listingItem.Quantity =
                 listingDto.QuantitySpecified &&
                 listingDto.SellingStatus != null &&
-                listingDto.SellingStatus.QuantitySoldSpecified ?
-                    listingDto.Quantity - listingDto.SellingStatus.QuantitySold : listingItem.Quantity;
+                listingDto.SellingStatus.QuantitySoldSpecified ? currentQty : listingItem.Quantity;
+
+                if (listingItem.AvailableQuantity.HasValue)
+                {
+                    listingItem.AvailableQuantity = listingItem.AvailableQuantity.Value + qtyChange;
+                }
             }          
         }
 
@@ -1118,21 +1161,26 @@ namespace BerkeleyEntities.Ebay
 
                 listingItem.Price = variationDto.StartPrice != null ? Convert.ToDecimal(variationDto.StartPrice.Value) : listingItem.Price;
 
-
                 if (listing.Status.Equals(EbayMarketplace.STATUS_COMPLETED))
                 {
                     listingItem.Quantity = 0;
                 }
                 else
                 {
+                    int currentQty = variationDto.Quantity - variationDto.SellingStatus.QuantitySold;
+
+                    int qtyChange = currentQty - listingItem.Quantity;
+
                     listingItem.Quantity =
                     variationDto.QuantitySpecified &&
                     variationDto.SellingStatus != null &&
-                    variationDto.SellingStatus.QuantitySoldSpecified?
-                        variationDto.Quantity - variationDto.SellingStatus.QuantitySold : listingItem.Quantity;
-                }   
+                    variationDto.SellingStatus.QuantitySoldSpecified? currentQty : listingItem.Quantity;
 
-                
+                    if (listingItem.AvailableQuantity.HasValue)
+                    {
+                        listingItem.AvailableQuantity = listingItem.AvailableQuantity.Value + qtyChange;
+                    }
+                }   
             }
         }
 

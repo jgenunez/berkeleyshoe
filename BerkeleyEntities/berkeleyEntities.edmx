@@ -28,6 +28,7 @@
           <Property Name="OpenDate" Type="datetime" Nullable="false" />
           <Property Name="ASIN" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="AvailableQuantity" Type="int" />
           <Property Name="DisplayQuantity" Type="int" />
           <Property Name="LastSyncTime" Type="datetime" Nullable="false" />
         </EntityType>
@@ -393,6 +394,7 @@
           <Property Name="Sku" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Quantity" Type="int" Nullable="false" />
           <Property Name="Price" Type="money" Nullable="false" />
+          <Property Name="AvailableQuantity" Type="int" />
           <Property Name="DisplayQuantity" Type="int" />
         </EntityType>
         <EntityType Name="EbayMarketplace">
@@ -2413,6 +2415,7 @@
           <NavigationProperty Name="OrderItems" Relationship="BerkeleyEntities.SyncEbayOrderItemSyncEbayListingItem" FromRole="SyncEbayListingItem" ToRole="SyncEbayOrderItem" />
           <Property Name="Sku" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="DisplayQuantity" Type="Int32" />
+          <Property Name="AvailableQuantity" Type="Int32" />
         </EntityType>
         <Association Name="EbayListingItemItem">
           <End Type="BerkeleyEntities.EbayListingItem" Role="SyncEbayListingItem" Multiplicity="*" />
@@ -2493,6 +2496,7 @@
           <NavigationProperty Name="Marketplace" Relationship="BerkeleyEntities.AmznMarketplaceSyncAmznListingItem" FromRole="SyncAmznListingItem" ToRole="AmznMarketplace" />
           <Property Name="Sku" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="DisplayQuantity" Type="Int32" />
+          <Property Name="AvailableQuantity" Type="Int32" />
         </EntityType>
         <Association Name="AmznListingItemItem">
           <End Type="BerkeleyEntities.AmznListingItem" Role="SyncAmznListingItem" Multiplicity="*" />
@@ -3476,6 +3480,7 @@
           <EntitySetMapping Name="AmznListingItems">
             <EntityTypeMapping TypeName="IsTypeOf(BerkeleyEntities.AmznListingItem)">
               <MappingFragment StoreEntitySet="AmznListingItem">
+                <ScalarProperty Name="AvailableQuantity" ColumnName="AvailableQuantity" />
                 <ScalarProperty Name="DisplayQuantity" ColumnName="DisplayQuantity" />
                 <ScalarProperty Name="Sku" ColumnName="Sku" />
                 <ScalarProperty Name="LastSyncTime" ColumnName="LastSyncTime" />
@@ -3538,6 +3543,7 @@
           <EntitySetMapping Name="EbayListingItems">
             <EntityTypeMapping TypeName="IsTypeOf(BerkeleyEntities.EbayListingItem)">
               <MappingFragment StoreEntitySet="EbayListingItem">
+                <ScalarProperty Name="AvailableQuantity" ColumnName="AvailableQuantity" />
                 <ScalarProperty Name="DisplayQuantity" ColumnName="DisplayQuantity" />
                 <ScalarProperty Name="Sku" ColumnName="Sku" />
                 <ScalarProperty Name="Price" ColumnName="Price" />

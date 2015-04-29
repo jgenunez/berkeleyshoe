@@ -1715,6 +1715,30 @@ namespace BerkeleyEntities
         private Nullable<global::System.Int32> _DisplayQuantity;
         partial void OnDisplayQuantityChanging(Nullable<global::System.Int32> value);
         partial void OnDisplayQuantityChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.Int32> AvailableQuantity
+        {
+            get
+            {
+                return _AvailableQuantity;
+            }
+            set
+            {
+                OnAvailableQuantityChanging(value);
+                ReportPropertyChanging("AvailableQuantity");
+                _AvailableQuantity = StructuralObject.SetValidValue(value, "AvailableQuantity");
+                ReportPropertyChanged("AvailableQuantity");
+                OnAvailableQuantityChanged();
+            }
+        }
+        private Nullable<global::System.Int32> _AvailableQuantity;
+        partial void OnAvailableQuantityChanging(Nullable<global::System.Int32> value);
+        partial void OnAvailableQuantityChanged();
 
         #endregion
 
@@ -10101,6 +10125,30 @@ namespace BerkeleyEntities
         private Nullable<global::System.Int32> _DisplayQuantity;
         partial void OnDisplayQuantityChanging(Nullable<global::System.Int32> value);
         partial void OnDisplayQuantityChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.Int32> AvailableQuantity
+        {
+            get
+            {
+                return _AvailableQuantity;
+            }
+            set
+            {
+                OnAvailableQuantityChanging(value);
+                ReportPropertyChanging("AvailableQuantity");
+                _AvailableQuantity = StructuralObject.SetValidValue(value, "AvailableQuantity");
+                ReportPropertyChanged("AvailableQuantity");
+                OnAvailableQuantityChanged();
+            }
+        }
+        private Nullable<global::System.Int32> _AvailableQuantity;
+        partial void OnAvailableQuantityChanging(Nullable<global::System.Int32> value);
+        partial void OnAvailableQuantityChanged();
 
         #endregion
 

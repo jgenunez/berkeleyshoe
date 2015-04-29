@@ -317,6 +317,8 @@ namespace WorkbookPublisher
         public int? Q { get; set; }
         
         public decimal? P { get; set; }
+
+        public int? DisplayQty { get; set; }
         
         public string Title { get; set; }
 

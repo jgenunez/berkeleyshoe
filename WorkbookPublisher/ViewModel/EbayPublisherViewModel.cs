@@ -178,6 +178,7 @@ namespace WorkbookPublisher.ViewModel
                 ListingItemDto listingItemDto = new ListingItemDto();
                 listingItemDto.Sku = entry.Sku;
                 listingItemDto.Qty = entry.Q;
+                listingItemDto.DisplayQty = entry.DisplayQty;
                 listingItemDto.Price = entry.P;
                 listingDto.Items.Add(listingItemDto);
             }
@@ -191,6 +192,7 @@ namespace WorkbookPublisher.ViewModel
                     ListingItemDto listingItemDto = new ListingItemDto();
                     listingItemDto.Sku = listingItem.Sku;
                     listingItemDto.Qty = listingItem.Quantity;
+                    listingItemDto.DisplayQty = listingItem.DisplayQuantity;
                     listingItemDto.Price = listingItem.Price;
                     listingDto.Items.Add(listingItemDto);
                 }
@@ -273,6 +275,7 @@ namespace WorkbookPublisher.ViewModel
 
                 listingItem.Sku = entry.Sku;
                 listingItem.Qty = entry.Q;
+                listingItem.DisplayQty = entry.DisplayQty;
                 listingItem.Price = entry.P;
                 listingDto.Items.Add(listingItem);
             }
