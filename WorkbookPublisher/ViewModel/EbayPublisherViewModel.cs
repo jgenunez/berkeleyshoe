@@ -176,10 +176,24 @@ namespace WorkbookPublisher.ViewModel
             foreach (EbayEntry entry in entries)
             {
                 ListingItemDto listingItemDto = new ListingItemDto();
+
                 listingItemDto.Sku = entry.Sku;
-                listingItemDto.Qty = entry.Q;
-                listingItemDto.DisplayQty = entry.DisplayQty;
+
+                if (entry.DisplayQty.HasValue)
+                {
+                    listingItemDto.AvailableQty = entry.Q;
+                    listingItemDto.DisplayQty = entry.DisplayQty;
+                    listingItemDto.Qty = entry.DisplayQty;
+                }
+                else
+                {
+                    listingItemDto.AvailableQty = null;
+                    listingItemDto.DisplayQty = null;
+                    listingItemDto.Qty = entry.Q;
+                }
+
                 listingItemDto.Price = entry.P;
+
                 listingDto.Items.Add(listingItemDto);
             }
 
@@ -193,6 +207,7 @@ namespace WorkbookPublisher.ViewModel
                     listingItemDto.Sku = listingItem.Sku;
                     listingItemDto.Qty = listingItem.Quantity;
                     listingItemDto.DisplayQty = listingItem.DisplayQuantity;
+                    listingItemDto.AvailableQty = listingItem.AvailableQuantity;
                     listingItemDto.Price = listingItem.Price;
                     listingDto.Items.Add(listingItemDto);
                 }
@@ -272,11 +287,21 @@ namespace WorkbookPublisher.ViewModel
             foreach (EbayEntry entry in entries)
             {
                 ListingItemDto listingItem = new ListingItemDto();
-
                 listingItem.Sku = entry.Sku;
-                listingItem.Qty = entry.Q;
-                listingItem.DisplayQty = entry.DisplayQty;
+
+                if (entry.DisplayQty.HasValue)
+                {
+                    listingItem.AvailableQty = entry.Q;
+                    listingItem.Qty = entry.DisplayQty;
+                    listingItem.DisplayQty = entry.DisplayQty;
+                }
+                else
+                {
+                    listingItem.Qty = entry.Q;
+                }
+
                 listingItem.Price = entry.P;
+
                 listingDto.Items.Add(listingItem);
             }
 

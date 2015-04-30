@@ -83,9 +83,20 @@ namespace WorkbookPublisher
 
                     entry.SetFormat(listingItem.Listing.Format, listingItem.Listing.Duration, (bool)listingItem.Listing.IsVariation);
 
-                    if (entry.Q.Value == listingItem.Quantity && decimal.Compare(entry.P.Value, listingItem.Price) == 0 && entry.GetUpdateFlags().Count == 0)
+                    if (decimal.Compare(entry.P.Value, listingItem.Price) == 0 && entry.GetUpdateFlags().Count == 0)
                     {
-                        entry.Status = StatusCode.Completed;
+                        if (entry.DisplayQty.HasValue || listingItem.DisplayQuantity.HasValue)
+                        {
+                            if (entry.Q == listingItem.AvailableQuantity && entry.DisplayQty == listingItem.DisplayQuantity)
+                            {
+                                entry.Status = StatusCode.Completed;
+                            }
+                        }
+                        else if(entry.Q == listingItem.Quantity)
+                        {
+                            entry.Status = StatusCode.Completed;
+                        }
+                        
                     }
                     else
                     {
@@ -166,6 +177,12 @@ namespace WorkbookPublisher
         {
             if (entry.GetFormat().Equals(EbayMarketplace.FORMAT_AUCTION))
             {
+                if (entry.DisplayQty.HasValue)
+                {
+                    entry.Message = "cannot set display qty for auctions";
+                    entry.Status = StatusCode.Error;
+                }
+
                 if (entry.Q > 1)
                 {
                     entry.Message = "auction max qty is 1";

@@ -177,16 +177,20 @@ namespace BerkeleyEntities.Ebay.Mappers
         {
             switch (width)
             {
+                case "A" :
                 case "XN": return "Extra Narrow (A+)";
                 case "C" :
+                case "B" :
                 case "N": return "Narrow (C, B)";
                 case "D":
+                case "R" :
                 case "M": return "Medium (D, M)";
                 case "E":
                 case "W": return "Wide (E,W)";
                 case "2E" :
                 case "EE":
                 case "XW":
+                case "EW" :
                 case "WW": return "Extra Wide (EE+)";
                 case "EEE" :
                 case "3E": return "2X Extra Wide (EEE)";
@@ -194,6 +198,8 @@ namespace BerkeleyEntities.Ebay.Mappers
                 case "4E": return "3X Extra Wide (EEEE)";
                 case "EEEEE" :
                 case "5E": return "4X Extra Wide (EEEEE)";
+                case "EEEEEE" :
+                case "6E": return "5X Extra Wide (EEEEEE)";
 
                 default: throw new NotImplementedException("width not supported");
             }
@@ -214,8 +220,15 @@ namespace BerkeleyEntities.Ebay.Mappers
                 case "W":
                 case "C":
                 case "D": return "Wide (C, D, W)";
+                case "E":
                 case "XW":
                 case "WW": return "Extra Wide (E+)";
+                case "2E" :
+                case "EE": return "2X Extra Wide (EE)";
+                case "3E" :
+                case "EEE": return "3X Extra Wide (EEE)";
+                case "4E" :
+                case "EEEE": return "4X Extra Wide (EEEE)";
                 default: throw new NotImplementedException("width not supported");
             }
         }
