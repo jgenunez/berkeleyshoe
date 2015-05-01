@@ -37,162 +37,23 @@ namespace BerkeleyEntities.Ebay
 
         public void SynchronizeListings(int marketplaceID)
         {
-            using (berkeleyEntities dataContext = new berkeleyEntities())
-            {
-                EbayMarketplace marketplace = dataContext.EbayMarketplaces.Single(p => p.ID == marketplaceID);
+            ListingSynchronizer listingSync = new ListingSynchronizer(marketplaceID);
 
-                ListingSynchronizer synchronizer = new ListingSynchronizer(marketplace, dataContext);
-
-                DateTime syncTime = DateTime.UtcNow.AddMinutes(-3);
-
-                if (marketplace.ListingSyncTime.HasValue && marketplace.ListingSyncTime.Value > syncTime.AddDays(-2))
-                {
-                    DateTime from = marketplace.ListingSyncTime.Value.AddMinutes(-5);
-
-                    synchronizer.SyncByCreatedTime(from, syncTime);
-
-                    try
-                    {
-                        synchronizer.SyncByModifiedTime(from, syncTime);
-                    }
-                    catch (ApiException e)
-                    {
-                        if (e.Errors.ToArray().Any(p => p.ErrorCode.Equals("21917062")))
-                        {
-                            synchronizer.SyncActiveListings();
-                        }
-                    }
-                }
-                else
-                {
-                    synchronizer.SyncActiveListings();
-                }
-
-                marketplace.ListingSyncTime = syncTime;
-
-                dataContext.SaveChanges();
-            }
+            listingSync.Synchronize();
         }
 
         public void SynchronizeOrders(int marketplaceID)
         {
-            using (berkeleyEntities dataContext = new berkeleyEntities())
-            {
-                EbayMarketplace marketplace = dataContext.EbayMarketplaces.Single(p => p.ID == marketplaceID);
+            OrderSynchronizer orderSync = new OrderSynchronizer(marketplaceID);
 
-                OrderSynchronizer synchronizer = new OrderSynchronizer(marketplace, dataContext);
-
-                DateTime syncTime = DateTime.UtcNow.AddMinutes(-3);
-
-                DateTime from = marketplace.OrdersSyncTime.HasValue ? marketplace.OrdersSyncTime.Value.AddMinutes(-5) : DateTime.UtcNow.AddDays(-29);
-
-                synchronizer.SyncOrdersByModifiedTime(from, syncTime);
-
-                marketplace.OrdersSyncTime = syncTime;
-
-                dataContext.SaveChanges(); 
-            }
+            orderSync.Synchronize();
         }
 
         public void FixOverpublished(int marketplaceID)
         {
-            using (berkeleyEntities dataContext = new berkeleyEntities())
-            {
-                EbayMarketplace marketplace = dataContext.EbayMarketplaces.Single(p => p.ID == marketplaceID);
+            ListingQuantityManager quantityManager = new ListingQuantityManager(marketplaceID, this);
 
-                if (!marketplace.ListingSyncTime.HasValue || marketplace.ListingSyncTime.Value < DateTime.UtcNow.AddHours(-1))
-                {
-                    throw new InvalidOperationException(marketplace.Name + " listings must be synchronized in order to fix overpublished");
-                }
-
-                if (!marketplace.OrdersSyncTime.HasValue || marketplace.OrdersSyncTime.Value < DateTime.UtcNow.AddHours(-1))
-                {
-                    throw new InvalidOperationException(marketplace.Name + " orders must be synchronized in order to fix overpublished");
-                }
-
-                var listings = dataContext.EbayListings.Where(p => p.Status.Equals(EbayMarketplace.STATUS_ACTIVE) && p.MarketplaceID == marketplace.ID).ToList();
-
-                foreach (EbayListing listing in listings.Where(p => !p.ListingItems.Any(s => s.Item == null)))
-                {
-                    if(listing.Format.Equals(EbayMarketplace.FORMAT_AUCTION))
-                    {
-                        var listingItem = listing.ListingItems.First();
-
-                        if(listing.BidCount == 0 && listingItem.Item.QtyAvailable == 0)
-                        {
-                            try
-                            {
-                                End(marketplaceID, listing.Code, "Overpublished Service");
-                            }
-                            catch (Exception e)
-                            {
-                                _logger.Error(string.Format("Error updating {0} - {1} : {2}",marketplace.Code, listing.Code, e.Message));
-                            }
-                        }
-                    }
-                    else
-                    {
-                        var listingItems = listing.ListingItems.Where(p => p.Quantity != 0).ToList();
-
-                        foreach (var listingItem in listingItems)
-                        {
-                            if (listingItem.DisplayQuantity.HasValue && listingItem.AvailableQuantity.HasValue)
-                            {
-                                if (listingItem.DisplayQuantity.Value <= listingItem.AvailableQuantity.Value && 
-                                    listingItem.DisplayQuantity.Value <= listingItem.Item.QtyAvailable && 
-                                    listingItem.DisplayQuantity.Value != listingItem.Quantity)
-                                {
-                                    listingItem.Quantity = listingItem.DisplayQuantity.Value;
-                                }
-                            }
-
-                            if (listingItem.Quantity > listingItem.Item.QtyAvailable)
-                            {
-                                listingItem.Quantity = listingItem.Item.QtyAvailable;
-                            }
-                        }
-
-                        if (listingItems.Any(p => p.EntityState.Equals(EntityState.Modified)))
-                        {
-                            if (listingItems.All(p => p.Quantity == 0))
-                            {
-                                try
-                                {
-                                    End(marketplaceID, listing.Code, "Overpublished Service");
-                                }
-                                catch (Exception e)
-                                {
-                                    _logger.Error(string.Format("Error updating {0} - {1} : {2}", marketplace.Code, listing.Code, e.Message));
-                                }
-                            }
-                            else
-                            {
-                                ListingDto listingDto = new ListingDto();
-                                listingDto.Code = listing.Code;
-                                listingDto.IsVariation = (bool)listing.IsVariation;
-
-                                foreach (var listingItem in listingItems)
-                                {
-                                    listingDto.Items.Add( new ListingItemDto() { 
-                                            Sku = listingItem.Item.ItemLookupCode, 
-                                            Qty = listingItem.Quantity, 
-                                            DisplayQty = listingItem.DisplayQuantity, 
-                                            AvailableQty = listingItem.AvailableQuantity });
-                                }
-
-                                try
-                                {
-                                    Revise(marketplaceID, listingDto, false, false, "Overpublished Service");
-                                }
-                                catch (Exception e)
-                                {
-                                    _logger.Error(string.Format("Error updating {0} - {1} : {2}", marketplace.Code, listing.Code, e.Message));
-                                }
-                            }
-                        }
-                    }
-                }
-            }                                  
+            quantityManager.AdjustQuantities();
         }
 
         public void Publish(int marketplaceID, ListingDto listingDto,  string source)
@@ -903,19 +764,180 @@ namespace BerkeleyEntities.Ebay
         public int? AvailableQty { get; set; }
     }
 
+    public class ListingQuantityManager
+    {
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
+        private berkeleyEntities _dataContext = new berkeleyEntities();
+        private EbayMarketplace _marketplace;
+        private EbayServices _services;
+
+        public ListingQuantityManager(int marketplaceID, EbayServices services)
+        {
+            _services = services;
+            _marketplace = _dataContext.EbayMarketplaces.Single(p => p.ID == marketplaceID);
+        }
+
+        public void AdjustQuantities()
+        {
+            if (!_marketplace.ListingSyncTime.HasValue || _marketplace.ListingSyncTime.Value < DateTime.UtcNow.AddHours(-1))
+            {
+                throw new InvalidOperationException(_marketplace.Name + " listings must be synchronized in order to fix overpublished");
+            }
+
+            if (!_marketplace.OrdersSyncTime.HasValue || _marketplace.OrdersSyncTime.Value < DateTime.UtcNow.AddHours(-1))
+            {
+                throw new InvalidOperationException(_marketplace.Name + " orders must be synchronized in order to fix overpublished");
+            }
+
+            var listings = _dataContext.EbayListings.Where(p => p.Status.Equals(EbayMarketplace.STATUS_ACTIVE) && p.MarketplaceID == _marketplace.ID).ToList();
+
+            foreach (EbayListing listing in listings.Where(p => !p.ListingItems.Any(s => s.Item == null)))
+            {
+                try 
+	            {	        
+		            if(listing.Format.Equals(EbayMarketplace.FORMAT_AUCTION))
+                    {
+                        AdjustAuction(listing);
+                    }
+                    else
+                    {
+                        AdjustFixedPrice(listing);
+                    }
+	            }
+                catch (ApiException e)
+                {
+                    if (e.Errors.ToArray().Any(p => p.ErrorCode.Equals("17")))
+                    {
+                        HandleErrorCode17(listing.Code);
+                    }
+
+                    _logger.Error(string.Format("Error updating {0} - {1} : {2}", _marketplace.Code, listing.Code, e.Message));
+                }
+	            catch (Exception e)
+	            {
+		            _logger.Error(string.Format("Error updating {0} - {1} : {2}", _marketplace.Code, listing.Code, e.Message));
+	            }
+            }
+        }
+
+        private void AdjustAuction(EbayListing listing)
+        {
+            var listingItem = listing.ListingItems.First();
+
+            if(listing.BidCount == 0 && listingItem.Item.QtyAvailable == 0)
+            {             
+                _services.End(_marketplace.ID, listing.Code, "Overpublished Service");
+            }
+        }
+
+        private void AdjustFixedPrice(EbayListing listing)
+        {
+            var listingItems = listing.ListingItems.Where(p => p.Quantity != 0).ToList();
+
+            foreach (var listingItem in listingItems)
+            {
+                if (listingItem.DisplayQuantity.HasValue && listingItem.AvailableQuantity.HasValue)
+                {
+                    if (listingItem.DisplayQuantity.Value <= listingItem.AvailableQuantity.Value && 
+                        listingItem.DisplayQuantity.Value <= listingItem.Item.QtyAvailable && 
+                        listingItem.DisplayQuantity.Value != listingItem.Quantity)
+                    {
+                        listingItem.Quantity = listingItem.DisplayQuantity.Value;
+                    }
+                }
+
+                if (listingItem.Quantity > listingItem.Item.QtyAvailable)
+                {
+                    listingItem.Quantity = listingItem.Item.QtyAvailable;
+                }
+            }
+
+            if (listingItems.Any(p => p.EntityState.Equals(EntityState.Modified)))
+            {
+                if (listingItems.All(p => p.Quantity == 0))
+                {
+
+                    _services.End(_marketplace.ID, listing.Code, "Overpublished Service");
+                   
+                }
+                else
+                {
+                    ListingDto listingDto = new ListingDto();
+                    listingDto.Code = listing.Code;
+                    listingDto.IsVariation = (bool)listing.IsVariation;
+
+                    foreach (var listingItem in listingItems)
+                    {
+                        listingDto.Items.Add( new ListingItemDto() { 
+                                Sku = listingItem.Item.ItemLookupCode, 
+                                Qty = listingItem.Quantity, 
+                                DisplayQty = listingItem.DisplayQuantity, 
+                                AvailableQty = listingItem.AvailableQuantity });
+                    }
+
+                    _services.Revise(_marketplace.ID, listingDto, false, false, "Overpublished Service");
+                }
+            } 
+        }
+
+        private void HandleErrorCode17(string code)
+        {
+            using (berkeleyEntities dataContext = new berkeleyEntities())
+            {
+                EbayListing listing = dataContext.EbayListings.Single(p => p.Marketplace.ID == _marketplace.ID && p.Code.Equals(code));
+
+                listing.Status = EbayMarketplace.STATUS_DELETED;
+
+                dataContext.SaveChanges();
+            }
+        }
+    }
+
     public class ListingSynchronizer
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
+        private berkeleyEntities _dataContext = new berkeleyEntities();
         private EbayMarketplace _marketplace;
-        private berkeleyEntities _dataContext;
+        
 
-        public ListingSynchronizer(EbayMarketplace marketplace, berkeleyEntities dataContext)
+        public ListingSynchronizer(int marketplaceID)
         {
-            _marketplace = marketplace;
-            _dataContext = dataContext;
+            _marketplace = _dataContext.EbayMarketplaces.Single(p => p.ID == marketplaceID);
         }
 
-        public ItemType SyncListing(string itemId)
+        public void Synchronize()
+        {
+            DateTime syncTime = DateTime.UtcNow.AddMinutes(-3);
+
+            if (_marketplace.ListingSyncTime.HasValue && _marketplace.ListingSyncTime.Value > syncTime.AddDays(-2))
+            {
+                DateTime from = _marketplace.ListingSyncTime.Value.AddMinutes(-5);
+
+                SyncByCreatedTime(from, syncTime);
+
+                try
+                {
+                    SyncByModifiedTime(from, syncTime);
+                }
+                catch (ApiException e)
+                {
+                    if (e.Errors.ToArray().Any(p => p.ErrorCode.Equals("21917062")))
+                    {
+                        SyncActiveListings();
+                    }
+                }
+            }
+            else
+            {
+                SyncActiveListings();
+            }
+
+            _marketplace.ListingSyncTime = syncTime;
+
+            _dataContext.SaveChanges();
+        }
+
+        private ItemType SyncListing(string itemId)
         {
             GetItemRequestType request = new GetItemRequestType();
             request.ItemID = itemId;
@@ -929,7 +951,7 @@ namespace BerkeleyEntities.Ebay
             return response.Item;
         }
 
-        public void SyncByCreatedTime(DateTime from, DateTime to)
+        private void SyncByCreatedTime(DateTime from, DateTime to)
         {
             GetSellerListRequestType request = new GetSellerListRequestType();
 
@@ -945,7 +967,7 @@ namespace BerkeleyEntities.Ebay
             _dataContext.SaveChanges();
         }
 
-        public void SyncActiveListings()
+        private void SyncActiveListings()
         {
             DateTime from = DateTime.UtcNow.AddDays(-5);
             DateTime to = DateTime.UtcNow.AddDays(32);
@@ -964,7 +986,7 @@ namespace BerkeleyEntities.Ebay
             _dataContext.SaveChanges();
         }
 
-        public void SyncByModifiedTime(DateTime from, DateTime to)
+        private void SyncByModifiedTime(DateTime from, DateTime to)
         {
             GetSellerEventsRequestType request = new GetSellerEventsRequestType();
             request.DetailLevel = new DetailLevelCodeTypeCollection();
@@ -1056,6 +1078,8 @@ namespace BerkeleyEntities.Ebay
                 }
                 catch (PropertyConstraintException e)
                 {
+                    _logger.Error(string.Format("Error updating {0} - {1} : {2} | Listing will syncronize specifying the desire fields", _marketplace.Code, listing.Code, e.Message));
+
                     Map(listing, SyncListing(listingDto.ItemID));
                 }
             }
@@ -1242,16 +1266,29 @@ namespace BerkeleyEntities.Ebay
     public class OrderSynchronizer
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
+        private berkeleyEntities _dataContext = new berkeleyEntities();
         private EbayMarketplace _marketplace;
-        private berkeleyEntities _dataContext;
+        
 
-        public OrderSynchronizer(EbayMarketplace marketplace, berkeleyEntities dataContext)
+        public OrderSynchronizer(int marketplaceID)
         {
-            _marketplace = marketplace;
-            _dataContext = dataContext;
+            _marketplace = _dataContext.EbayMarketplaces.Single(p => p.ID == marketplaceID);
         }
 
-        public void SyncOrdersByModifiedTime(DateTime from, DateTime to)
+        public void Synchronize()
+        {
+            DateTime syncTime = DateTime.UtcNow.AddMinutes(-3);
+
+            DateTime from = _marketplace.OrdersSyncTime.HasValue ? _marketplace.OrdersSyncTime.Value.AddMinutes(-5) : DateTime.UtcNow.AddDays(-29);
+
+            SyncOrdersByModifiedTime(from, syncTime);
+
+            _marketplace.OrdersSyncTime = syncTime;
+
+            _dataContext.SaveChanges(); 
+        }
+
+        private void SyncOrdersByModifiedTime(DateTime from, DateTime to)
         {
             GetOrdersRequestType request = new GetOrdersRequestType();
             request.OrderStatus = OrderStatusCodeType.All;
@@ -1269,7 +1306,7 @@ namespace BerkeleyEntities.Ebay
             ProcessOrderData(ExecuteGetOrders(request));
         }
 
-        public void SyncOrdersByCreatedTime(DateTime from, DateTime to)
+        private void SyncOrdersByCreatedTime(DateTime from, DateTime to)
         {
             GetOrdersRequestType request = new GetOrdersRequestType();
             request.OrderStatus = OrderStatusCodeType.All;
@@ -1290,7 +1327,7 @@ namespace BerkeleyEntities.Ebay
 
         }
 
-        public void SyncOrders(StringCollection orderIds)
+        private void SyncOrders(StringCollection orderIds)
         {
             GetOrdersRequestType request = new GetOrdersRequestType();
             request.OrderStatus = OrderStatusCodeType.All;

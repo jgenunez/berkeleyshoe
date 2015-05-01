@@ -68,11 +68,11 @@ namespace MarketplaceManager
                         pickJobID = string.Format("{0}-{1}({2})", pickJobID, i, view.Code);
 
                         var auditEntries = printList.SelectMany(p => p.OrderItems)
-                            .Select(p => new OrderItemAudit { Sku = p.ListingItem.Sku, Qty = p.QuantityOrdered, Price = p.ItemPrice, OrderID = p.Order.Code});
+                            .Select(p => new PickItem { Sku = p.ListingItem.Sku, Qty = p.QuantityOrdered, Price = p.ItemPrice, OrderID = p.Order.Code});
 
                         GeneratePrintFile(view, unshippedOrders, fbd.SelectedPath + "//" + pickJobID + ".html");
 
-                        ReportGenerator reportGenerator = new ReportGenerator(fbd.SelectedPath + "//" + pickJobID + ".xlsx", auditEntries, typeof(OrderItemAudit));
+                        ReportGenerator reportGenerator = new ReportGenerator(fbd.SelectedPath + "//" + pickJobID + ".xlsx", auditEntries, typeof(PickItem));
 
                         reportGenerator.GenerateExcelReport();
 
@@ -114,11 +114,11 @@ namespace MarketplaceManager
                         pickJobID = string.Format("{0}-{1}({2})", pickJobID, i, view.Code);
 
                         var auditEntries = printList.SelectMany(p => p.OrderItems)
-                            .Select(p => new OrderItemAudit { Sku = p.ListingItem.Sku, Qty = p.QuantityPurchased, Price = p.TransactionPrice, OrderID = p.Order.SalesRecordNumber });
+                            .Select(p => new PickItem { Sku = p.ListingItem.Sku, Qty = p.QuantityPurchased, Price = p.TransactionPrice, OrderID = p.Order.SalesRecordNumber });
 
                         GeneratePrintFile(view, unshippedOrders, fbd.SelectedPath + "//" + pickJobID + ".html");
 
-                        ReportGenerator reportGenerator = new ReportGenerator(fbd.SelectedPath + "//" + pickJobID + ".xlsx", auditEntries, typeof(OrderItemAudit));
+                        ReportGenerator reportGenerator = new ReportGenerator(fbd.SelectedPath + "//" + pickJobID + ".xlsx", auditEntries, typeof(PickItem));
 
                         reportGenerator.GenerateExcelReport();
 
@@ -556,7 +556,7 @@ namespace MarketplaceManager
 
             order.AddressInfo = new OrderAddressInfo[] { address1, address2 };
 
-            List<OrderItem> orderItems = new List<OrderItem>();
+            List<PickItem> orderItems = new List<PickItem>();
 
             int i = 0;
 
@@ -564,7 +564,7 @@ namespace MarketplaceManager
             {
                 i++;
                     
-                OrderItem item = new OrderItem();
+                PickItem item = new PickItem();
                 //item.Id = ulong.Parse(i.ToString());
                 item.num = Convert.ToByte(i);
                 item.Code = orderItemDto.ListingItem.Item.ItemLookupCode;
@@ -649,7 +649,7 @@ namespace MarketplaceManager
 
             order.AddressInfo = new OrderAddressInfo[] { address1, address2 };
 
-            List<OrderItem> orderItems = new List<OrderItem>();
+            List<PickItem> orderItems = new List<PickItem>();
 
             int i = 0;
 
@@ -657,7 +657,7 @@ namespace MarketplaceManager
             {
                 i++;
 
-                OrderItem item = new OrderItem();
+                PickItem item = new PickItem();
                 //item.Id = ulong.Parse(i.ToString());
                 item.num = Convert.ToByte(i);
                 item.Code = orderItemDto.ListingItem.Item.ItemLookupCode;
