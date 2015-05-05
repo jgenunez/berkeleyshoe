@@ -76,14 +76,14 @@ namespace MarketplaceManager
 
                         reportGenerator.GenerateExcelReport();
 
-                        //ImportToRMS(pickJobID, printList.ToList());
+                        ImportToRMS(pickJobID, printList.ToList());
 
                         foreach (var order in printList)
                         {
                             order.PrintTime = printTime;
                         }
 
-                        //dataContext.SaveChanges();
+                        dataContext.SaveChanges();
                     }
                 }
                 else if (view.Host.Equals("Ebay"))
@@ -122,14 +122,14 @@ namespace MarketplaceManager
 
                         reportGenerator.GenerateExcelReport();
 
-                        //ImportToRMS(pickJobID, printList.ToList());
+                        ImportToRMS(pickJobID, printList.ToList());
 
                         foreach (var order in printList)
                         {
                             order.PrintTime = printTime;
                         }
 
-                        //dataContext.SaveChanges();
+                        dataContext.SaveChanges();
                     }
 
                 }
