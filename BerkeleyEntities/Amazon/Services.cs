@@ -319,34 +319,16 @@ namespace BerkeleyEntities.Amazon
 
         public void SynchronizeListings(int marketplaceID)
         {
-            using (berkeleyEntities dataContext = new berkeleyEntities())
-            {
-                AmznMarketplace marketplace = dataContext.AmznMarketplaces.Single(p => p.ID == marketplaceID);
+            ListingSynchronizer synchronizer = new ListingSynchronizer(marketplaceID);
 
-                ListingSynchronizer synchronizer = new ListingSynchronizer(dataContext, marketplace);
-
-                marketplace.ListingSyncTime = synchronizer.Synchronize();
-
-                dataContext.SaveChanges();
-            }
+            synchronizer.Synchronize();
         }
 
         public void SynchronizeOrders(int marketplaceID)
         {
-            using (berkeleyEntities dataContext = new berkeleyEntities())
-            {
-                AmznMarketplace marketplace = dataContext.AmznMarketplaces.Single(p => p.ID == marketplaceID);
+            OrderSynchronizer synchronizer = new OrderSynchronizer(marketplaceID);
 
-                OrderSynchronizer synchronizer = new OrderSynchronizer(dataContext, marketplace);
-
-                DateTime syncTime = DateTime.UtcNow.AddMinutes(-5);
-
-                synchronizer.Synchronize(syncTime);
-
-                marketplace.OrderSyncTime = syncTime;
-
-                dataContext.SaveChanges();
-            }
+            synchronizer.Synchronize();
         }
 
         public void FixOverpublished(int marketplaceID)
@@ -1144,17 +1126,16 @@ namespace BerkeleyEntities.Amazon
 
         const string REPORT_LISTINGS = "_GET_MERCHANT_LISTINGS_DATA_";
 
-        private berkeleyEntities _dataContext;
+        private berkeleyEntities _dataContext = new berkeleyEntities();
         private AmznMarketplace _marketplace;
         private DateTime _currentSyncTime;
 
-        public ListingSynchronizer(berkeleyEntities dataContext, AmznMarketplace marketplace)
+        public ListingSynchronizer(int marketplaceID)
         {
-            _marketplace = marketplace;
-            _dataContext = dataContext;
+            _marketplace = _dataContext.AmznMarketplaces.Single(p => p.ID == marketplaceID);
         }
 
-        public DateTime Synchronize()
+        public void Synchronize()
         {
             ReportRequestInfo requestInfo = CheckForExistingRequest(REPORT_LISTINGS);
 
@@ -1171,14 +1152,15 @@ namespace BerkeleyEntities.Amazon
                 requestInfo = Poll(requestInfo.ReportRequestId);
             }
 
-
             var lines = GetReport(requestInfo.GeneratedReportId);
 
             _currentSyncTime = requestInfo.SubmittedDate.ToUniversalTime();
 
             PersistListings(new Queue<string>(lines));
 
-            return _currentSyncTime;
+            _marketplace.ListingSyncTime = _currentSyncTime;
+
+            _dataContext.SaveChanges();
         }
 
         private ReportRequestInfo RequestReport(string reportType)
@@ -1459,7 +1441,7 @@ namespace BerkeleyEntities.Amazon
     public class OrderSynchronizer
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
-        private berkeleyEntities _dataContext;
+        private berkeleyEntities _dataContext = new berkeleyEntities();
         private AmznMarketplace _marketplace;
         private DateTime _currentSyncTime;
 
@@ -1470,14 +1452,15 @@ namespace BerkeleyEntities.Amazon
         private int _listOrdersQuota = 6;
         private int _getOrdersQuota = 6;
 
-        public OrderSynchronizer(berkeleyEntities dataContext, AmznMarketplace marketplace)
+        public OrderSynchronizer(int marketplaceID)
         {
-            _dataContext = dataContext;
-            _marketplace = marketplace;
+            _marketplace = _dataContext.AmznMarketplaces.Single(p => p.ID == marketplaceID);
         }
 
-        public void Synchronize(DateTime syncTime)
+        public void Synchronize()
         {
+            DateTime syncTime = DateTime.UtcNow.AddMinutes(-5);
+
             Initilialize();
 
             _currentSyncTime = syncTime;
@@ -1497,8 +1480,12 @@ namespace BerkeleyEntities.Amazon
                 SyncOrdersByModifiedTime(from, to);
             }
 
+            _marketplace.OrderSyncTime = syncTime;
+
             _timer2Sec.Enabled = false;
             _timer1Min.Enabled = false;
+
+            _dataContext.SaveChanges();
         }
 
         private void Initilialize()
@@ -1676,13 +1663,14 @@ namespace BerkeleyEntities.Amazon
                 order.Code = orderDto.AmazonOrderId;
                 order.MarketplaceID = _marketplace.ID;
             }
-
+          
             order.Status = orderDto.OrderStatus.ToString();
             order.LastUpdatedDate = orderDto.LastUpdateDate;
             order.BuyerName = orderDto.BuyerName != null ? orderDto.BuyerName : "";
             order.PaymentMethod = orderDto.PaymentMethod.ToString();
             order.PurchaseDate = orderDto.PurchaseDate;
             order.ShipServiceLevel = orderDto.ShipServiceLevel;
+            order.ShipmentServiceLevelCategory = orderDto.ShipmentServiceLevelCategory;
             order.Total = orderDto.IsSetOrderTotal() ? decimal.Parse(orderDto.OrderTotal.Amount) : 0;
             order.LastSyncTime = _currentSyncTime;
             order.AddressLine1 = orderDto.IsSetShippingAddress() ? orderDto.ShippingAddress.AddressLine1 : "";

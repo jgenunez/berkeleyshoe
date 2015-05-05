@@ -56,7 +56,7 @@ namespace MarketplaceManager
 
                         DateTime printTime = DateTime.Now;
 
-                        string pickJobID = printTime.Year.ToString() + printTime.Month.ToString().PadLeft(2,'0') + printTime.Day.ToString().PadLeft(2,'0');
+                        string pickJobID = printTime.Year.ToString() + printTime.Month.ToString().PadLeft(2, '0') + printTime.Day.ToString().PadLeft(2, '0');
 
                         int i = 1;
 
@@ -68,25 +68,25 @@ namespace MarketplaceManager
                         pickJobID = string.Format("{0}-{1}({2})", pickJobID, i, view.Code);
 
                         var auditEntries = printList.SelectMany(p => p.OrderItems)
-                            .Select(p => new PickItem { Sku = p.ListingItem.Sku, Qty = p.QuantityOrdered, Price = p.ItemPrice, OrderID = p.Order.Code});
+                            .Select(p => new OrderItemAudit{ Sku = p.ListingItem.Sku, Qty = p.QuantityOrdered, Price = p.ItemPrice, OrderID = p.Order.Code });
 
                         GeneratePrintFile(view, unshippedOrders, fbd.SelectedPath + "//" + pickJobID + ".html");
 
-                        ReportGenerator reportGenerator = new ReportGenerator(fbd.SelectedPath + "//" + pickJobID + ".xlsx", auditEntries, typeof(PickItem));
+                        ReportGenerator reportGenerator = new ReportGenerator(fbd.SelectedPath + "//" + pickJobID + ".xlsx", auditEntries, typeof(OrderItemAudit));
 
                         reportGenerator.GenerateExcelReport();
 
-                        ImportToRMS(pickJobID, printList.ToList());
+                        //ImportToRMS(pickJobID, printList.ToList());
 
                         foreach (var order in printList)
                         {
                             order.PrintTime = printTime;
                         }
 
-                        dataContext.SaveChanges();
+                        //dataContext.SaveChanges();
                     }
                 }
-                else if(view.Host.Equals("Ebay"))
+                else if (view.Host.Equals("Ebay"))
                 {
                     FolderBrowserDialog fbd = new FolderBrowserDialog();
 
@@ -114,24 +114,24 @@ namespace MarketplaceManager
                         pickJobID = string.Format("{0}-{1}({2})", pickJobID, i, view.Code);
 
                         var auditEntries = printList.SelectMany(p => p.OrderItems)
-                            .Select(p => new PickItem { Sku = p.ListingItem.Sku, Qty = p.QuantityPurchased, Price = p.TransactionPrice, OrderID = p.Order.SalesRecordNumber });
+                            .Select(p => new OrderItemAudit{ Sku = p.ListingItem.Sku, Qty = p.QuantityPurchased, Price = p.TransactionPrice, OrderID = p.Order.SalesRecordNumber });
 
                         GeneratePrintFile(view, unshippedOrders, fbd.SelectedPath + "//" + pickJobID + ".html");
 
-                        ReportGenerator reportGenerator = new ReportGenerator(fbd.SelectedPath + "//" + pickJobID + ".xlsx", auditEntries, typeof(PickItem));
+                        ReportGenerator reportGenerator = new ReportGenerator(fbd.SelectedPath + "//" + pickJobID + ".xlsx", auditEntries, typeof(OrderItemAudit));
 
                         reportGenerator.GenerateExcelReport();
 
-                        ImportToRMS(pickJobID, printList.ToList());
+                        //ImportToRMS(pickJobID, printList.ToList());
 
                         foreach (var order in printList)
                         {
                             order.PrintTime = printTime;
                         }
 
-                        dataContext.SaveChanges();
+                        //dataContext.SaveChanges();
                     }
-                    
+
                 }
 
                 MessageBox.Show(string.Format("{0} orders downloaded successfully", view.Name));
@@ -258,7 +258,7 @@ namespace MarketplaceManager
            
             stream.Write("<h1>eBay " + view.Name + " orders summary " + DateTime.Now.ToShortDateString() + "</h1><hr>" +
                         "<p>&nbsp;<b>TOTAL ORDERS       :" + printOrders.Count() + "</b></p>" +
-                        "<p>&nbsp;<b>TOTAL NEXT DAY     :" + printOrders.Where(p => p.ShipServiceLevel.Contains("Expedited")).Count() + "</b></p>" +
+                        "<p>&nbsp;<b>TOTAL NEXT DAY     :" + printOrders.Where(p => p.ShipmentServiceLevelCategory != null).Where(p => p.ShipmentServiceLevelCategory.Contains("Expedited") || p.ShipmentServiceLevelCategory.Contains("NextDay") || p.ShipmentServiceLevelCategory.Contains("SameDay")).Count() + "</b></p>" +
                         "<p>&nbsp;<b>TOTAL PO BOX       :" + poBoxOrders.Count() + "</b></p>" +
                         "<p>&nbsp;<b>TOTAL INTERNATIONAL:" + printOrders.Where(p => !p.CountryCode.Contains("US")).Count() + "</b></p>" +
                         "<p>&nbsp;<b>TOTAL ITEMS        :" + printOrders.Sum(p => p.OrderItems.Sum(s => s.QuantityOrdered)) + "</b></p>" +
@@ -291,7 +291,7 @@ namespace MarketplaceManager
 
                 string POBoxPattern = @"(?i)\b(?:p(?:ost)?\.?\s*[o0](?:ffice)?\.?\s*b(?:[o0]x)?|b[o0]x)";
 
-                if (order.ShipServiceLevel.Contains("Expedited"))
+                if (order.ShipmentServiceLevelCategory != null && (order.ShipmentServiceLevelCategory.Contains("Expedited") || order.ShipmentServiceLevelCategory.Contains("NextDay") || order.ShipmentServiceLevelCategory.Contains("SameDay")))
                 {
                     shippingInfo = "NEXT DAY | UPS";
                 }
@@ -316,7 +316,7 @@ namespace MarketplaceManager
             }
             else
             {
-
+                shippingInfo = "USPS";
             }
 
             return shippingInfo;
@@ -519,7 +519,7 @@ namespace MarketplaceManager
             }
             else
             {
- 
+                shippingInfo = "USPS";
             }
 
             return shippingInfo;
@@ -556,15 +556,15 @@ namespace MarketplaceManager
 
             order.AddressInfo = new OrderAddressInfo[] { address1, address2 };
 
-            List<PickItem> orderItems = new List<PickItem>();
+            List<OrderItem> orderItems = new List<OrderItem>();
 
             int i = 0;
 
             foreach (EbayOrderItem orderItemDto in orders.SelectMany(p => p.OrderItems).OrderBy(p => p.ListingItem.Item.ItemLookupCode))
             {
                 i++;
-                    
-                PickItem item = new PickItem();
+
+                OrderItem item = new OrderItem();
                 //item.Id = ulong.Parse(i.ToString());
                 item.num = Convert.ToByte(i);
                 item.Code = orderItemDto.ListingItem.Item.ItemLookupCode;
@@ -649,7 +649,7 @@ namespace MarketplaceManager
 
             order.AddressInfo = new OrderAddressInfo[] { address1, address2 };
 
-            List<PickItem> orderItems = new List<PickItem>();
+            List<OrderItem> orderItems = new List<OrderItem>();
 
             int i = 0;
 
@@ -657,7 +657,7 @@ namespace MarketplaceManager
             {
                 i++;
 
-                PickItem item = new PickItem();
+                OrderItem item = new OrderItem();
                 //item.Id = ulong.Parse(i.ToString());
                 item.num = Convert.ToByte(i);
                 item.Code = orderItemDto.ListingItem.Item.ItemLookupCode;
@@ -1233,5 +1233,15 @@ namespace MarketplaceManager
         }
     }
 
-    
+    public class OrderItemAudit
+    {
+
+        public string Sku { get; set; }
+
+        public int Qty { get; set; }
+
+        public decimal Price { get; set; }
+
+        public string OrderID { get; set; }
+    }
 }

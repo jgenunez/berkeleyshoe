@@ -60,6 +60,7 @@
           <Property Name="PaymentMethod" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="BuyerName" Type="nvarchar" MaxLength="50" />
           <Property Name="ShipServiceLevel" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ShipmentServiceLevelCategory" Type="nvarchar" MaxLength="50" />
           <Property Name="AddressLine1" Type="nvarchar" MaxLength="100" />
           <Property Name="AddressLine2" Type="nvarchar" MaxLength="100" />
           <Property Name="AddressLine3" Type="nvarchar" MaxLength="100" />
@@ -2287,6 +2288,7 @@
           <Property Type="Decimal" Name="Total" Nullable="false" Precision="19" Scale="4" />
           <Property Type="Int32" Name="MarketplaceID" Nullable="false" />
           <Property Name="PrintTime" Type="DateTime" Precision="3" />
+          <Property Name="ShipmentServiceLevelCategory" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="AmznOrderItem">
           <Key>
@@ -3515,6 +3517,7 @@
           <EntitySetMapping Name="AmznOrders">
             <EntityTypeMapping TypeName="IsTypeOf(BerkeleyEntities.AmznOrder)">
               <MappingFragment StoreEntitySet="AmznOrder">
+                <ScalarProperty Name="ShipmentServiceLevelCategory" ColumnName="ShipmentServiceLevelCategory" />
                 <ScalarProperty Name="PrintTime" ColumnName="PrintTime" />
                 <ScalarProperty Name="LastSyncTime" ColumnName="LastSyncTime" />
                 <ScalarProperty Name="Total" ColumnName="Total" />
@@ -4135,7 +4138,7 @@
         <EntityTypeShape EntityType="BerkeleyEntities.Bsi_ListingChangesLog" Width="2.25" PointX="5.125" PointY="7" IsExpanded="false" />
         <AssociationConnector Association="BerkeleyEntities.Bsi_ListingChangesLogItem" />
         <EntityTypeShape EntityType="BerkeleyEntities.Exchange" Width="1.5" PointX="10.75" PointY="9.375" IsExpanded="false" />
-        <EntityTypeShape EntityType="BerkeleyEntities.bsi_orders" Width="1.5" PointX="12.5" PointY="8.5" />
+        <EntityTypeShape EntityType="BerkeleyEntities.bsi_orders" Width="1.5" PointX="12.5" PointY="8.5" IsExpanded="false" />
         <EntityTypeShape EntityType="BerkeleyEntities.bsi_orders_details" Width="1.5" PointX="5.375" PointY="7.875" IsExpanded="false" />
         </Diagram>
     </Diagrams>

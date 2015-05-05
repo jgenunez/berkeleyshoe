@@ -2731,6 +2731,30 @@ namespace BerkeleyEntities
         private Nullable<global::System.DateTime> _PrintTime;
         partial void OnPrintTimeChanging(Nullable<global::System.DateTime> value);
         partial void OnPrintTimeChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String ShipmentServiceLevelCategory
+        {
+            get
+            {
+                return _ShipmentServiceLevelCategory;
+            }
+            set
+            {
+                OnShipmentServiceLevelCategoryChanging(value);
+                ReportPropertyChanging("ShipmentServiceLevelCategory");
+                _ShipmentServiceLevelCategory = StructuralObject.SetValidValue(value, true, "ShipmentServiceLevelCategory");
+                ReportPropertyChanged("ShipmentServiceLevelCategory");
+                OnShipmentServiceLevelCategoryChanged();
+            }
+        }
+        private global::System.String _ShipmentServiceLevelCategory;
+        partial void OnShipmentServiceLevelCategoryChanging(global::System.String value);
+        partial void OnShipmentServiceLevelCategoryChanged();
 
         #endregion
 

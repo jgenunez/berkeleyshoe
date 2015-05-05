@@ -22,7 +22,7 @@ namespace MarketplaceManager
 
         private OrderCreditCard creditCardField;
 
-        private PickItem[] itemField;
+        private OrderItem[] itemField;
 
         private OrderLine[] totalField;
 
@@ -100,7 +100,7 @@ namespace MarketplaceManager
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("Item")]
-        public PickItem[] Item
+        public OrderItem[] Item
         {
             get
             {
