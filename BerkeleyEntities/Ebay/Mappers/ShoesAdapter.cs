@@ -237,9 +237,17 @@ namespace BerkeleyEntities.Ebay.Mappers
         {
             switch (width)
             {
+                case "B":
+                case "C":
                 case "N": return "Narrow";
+                case "D":
                 case "M": return "Medium";
+                case "E" :
                 case "W": return "Wide";
+                case "EE" :
+                case "WW":
+                case "XW": return "Extra Wide";
+
                 default: throw new NotImplementedException("width not supported");
             }
         }

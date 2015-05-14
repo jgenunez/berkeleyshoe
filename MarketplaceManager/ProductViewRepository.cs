@@ -40,7 +40,7 @@ namespace MarketplaceManager
                     product.Brand = item.SubDescription1;
                     product.Cost = item.Cost;
                     product.Department = item.DepartmentName;
-                    product.OnPO = item.OnPurchaseOrder;
+                    //product.OnPO = item.OnPurchaseOrder;
                     product.OnHand = (int)item.Quantity;
                     product.OnHold = item.OnHold;
                     product.OnPendingOrder = item.OnPendingOrder;
@@ -96,8 +96,6 @@ namespace MarketplaceManager
         public string Department { get; set; }
 
         public decimal Cost { get; set; }
-
-        public int OnPO { get; set; }
 
         public int OnHand { get; set; }
 

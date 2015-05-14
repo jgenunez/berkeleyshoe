@@ -193,7 +193,6 @@
             // 
             // btnGenerateReport
             // 
-            this.btnGenerateReport.Enabled = false;
             this.btnGenerateReport.Location = new System.Drawing.Point(334, 334);
             this.btnGenerateReport.Name = "btnGenerateReport";
             this.btnGenerateReport.Size = new System.Drawing.Size(99, 32);

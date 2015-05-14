@@ -138,13 +138,13 @@ namespace BerkeleyEntities
             }
         }
 
-        public int OnPurchaseOrder 
-        {
-            get 
-            {
-                return (int)this.PurchaseOrderEntries.Where(p => p.PurchaseOrder.Status == 0).Sum(p => p.QuantityOrdered);
-            }
-        }
+        //public int OnPurchaseOrder 
+        //{
+        //    get 
+        //    {
+        //        return (int)this.PurchaseOrderEntries.Where(p => p.PurchaseOrder.Status == 0).Sum(p => p.QuantityOrdered);
+        //    }
+        //}
 
         public int OnPendingOrder
         {
