@@ -240,6 +240,7 @@ namespace BerkeleyEntities.Ebay.Mappers
                 case "B":
                 case "C":
                 case "N": return "Narrow";
+                case "Y" : 
                 case "D":
                 case "M": return "Medium";
                 case "E" :

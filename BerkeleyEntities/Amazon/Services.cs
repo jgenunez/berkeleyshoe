@@ -1684,6 +1684,11 @@ namespace BerkeleyEntities.Amazon
             order.PostalCode = orderDto.IsSetShippingAddress() ? orderDto.ShippingAddress.PostalCode : "";
             order.StateOrRegion = orderDto.IsSetShippingAddress() ? orderDto.ShippingAddress.StateOrRegion : "";
 
+            if (order.Code.Equals("108-3767246-4952227"))
+            {
+ 
+            }
+
             foreach (OrderItem orderItemDto in orderItemsDto)
             {
                 AmznOrderItem orderItem = order.OrderItems.SingleOrDefault(p => p.ListingItem.Item.ItemLookupCode.Equals(orderItemDto.SellerSKU));

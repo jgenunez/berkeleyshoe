@@ -46,13 +46,14 @@
             this.btnSummary = new System.Windows.Forms.Button();
             this.btnPrintOrders = new System.Windows.Forms.Button();
             this.btnGenerateReport = new System.Windows.Forms.Button();
+            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMarketplaces)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.marketplaceViewBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // btnSyncListings
             // 
-            this.btnSyncListings.Enabled = false;
             this.btnSyncListings.Location = new System.Drawing.Point(544, 334);
             this.btnSyncListings.Name = "btnSyncListings";
             this.btnSyncListings.Size = new System.Drawing.Size(99, 32);
@@ -86,7 +87,6 @@
             this.dgvMarketplaces.Location = new System.Drawing.Point(12, 50);
             this.dgvMarketplaces.MultiSelect = false;
             this.dgvMarketplaces.Name = "dgvMarketplaces";
-            this.dgvMarketplaces.ReadOnly = true;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.dgvMarketplaces.RowsDefaultCellStyle = dataGridViewCellStyle2;
             this.dgvMarketplaces.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
@@ -120,7 +120,6 @@
             this.ordersLastSyncDataGridViewTextBoxColumn.DataPropertyName = "OrdersLastSync";
             this.ordersLastSyncDataGridViewTextBoxColumn.HeaderText = "Orders Last Sync";
             this.ordersLastSyncDataGridViewTextBoxColumn.Name = "ordersLastSyncDataGridViewTextBoxColumn";
-            this.ordersLastSyncDataGridViewTextBoxColumn.ReadOnly = true;
             this.ordersLastSyncDataGridViewTextBoxColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             // 
             // listingsLastSyncDataGridViewTextBoxColumn
@@ -128,7 +127,6 @@
             this.listingsLastSyncDataGridViewTextBoxColumn.DataPropertyName = "ListingsLastSync";
             this.listingsLastSyncDataGridViewTextBoxColumn.HeaderText = "Listings Last Sync";
             this.listingsLastSyncDataGridViewTextBoxColumn.Name = "listingsLastSyncDataGridViewTextBoxColumn";
-            this.listingsLastSyncDataGridViewTextBoxColumn.ReadOnly = true;
             this.listingsLastSyncDataGridViewTextBoxColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             // 
             // WaitingShipment
@@ -145,7 +143,6 @@
             // 
             // btnSyncOrders
             // 
-            this.btnSyncOrders.Enabled = false;
             this.btnSyncOrders.Location = new System.Drawing.Point(439, 334);
             this.btnSyncOrders.Name = "btnSyncOrders";
             this.btnSyncOrders.Size = new System.Drawing.Size(99, 32);
@@ -201,6 +198,21 @@
             this.btnGenerateReport.UseVisualStyleBackColor = true;
             this.btnGenerateReport.Click += new System.EventHandler(this.btnGenerateReport_Click);
             // 
+            // dataGridViewTextBoxColumn1
+            // 
+            this.dataGridViewTextBoxColumn1.DataPropertyName = "Host";
+            this.dataGridViewTextBoxColumn1.HeaderText = "Host";
+            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+            this.dataGridViewTextBoxColumn1.ReadOnly = true;
+            // 
+            // dataGridViewTextBoxColumn2
+            // 
+            this.dataGridViewTextBoxColumn2.DataPropertyName = "WaitingShipment";
+            this.dataGridViewTextBoxColumn2.HeaderText = "Waiting Shipment";
+            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
+            this.dataGridViewTextBoxColumn2.ReadOnly = true;
+            this.dataGridViewTextBoxColumn2.Visible = false;
+            // 
             // MarketplaceForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -231,17 +243,19 @@
         private System.Windows.Forms.Button btnSyncOrders;
         private System.Windows.Forms.DataGridViewTextBoxColumn expiringSoonQtyDataGridViewTextBoxColumn;
         private System.Windows.Forms.BindingSource marketplaceViewBindingSource;
-        private System.Windows.Forms.DataGridViewTextBoxColumn iDDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Host;
-        private System.Windows.Forms.DataGridViewTextBoxColumn nameDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ordersLastSyncDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn listingsLastSyncDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn activeQtyDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn WaitingShipment;
         private System.Windows.Forms.TextBox tbCheckItem;
         private System.Windows.Forms.Button btnCheckItem;
         private System.Windows.Forms.Button btnSummary;
         private System.Windows.Forms.Button btnPrintOrders;
         private System.Windows.Forms.Button btnGenerateReport;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn iDDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Host;
+        private System.Windows.Forms.DataGridViewTextBoxColumn nameDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ordersLastSyncDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn listingsLastSyncDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn WaitingShipment;
     }
 }

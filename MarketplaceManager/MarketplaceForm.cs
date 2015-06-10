@@ -68,7 +68,8 @@ namespace MarketplaceManager
                         pickJobID = string.Format("{0}-{1}({2})", pickJobID, i, view.Code);
 
                         var auditEntries = printList.SelectMany(p => p.OrderItems)
-                            .Select(p => new OrderItemAudit{ Sku = p.ListingItem.Sku, Qty = p.QuantityOrdered, Price = p.ItemPrice, OrderID = p.Order.Code });
+                            .GroupBy(p => p.ListingItem.Item.ItemLookupCode)
+                            .Select(p => new OrderItemAudit { Sku = p.Key, Qty = p.Sum(s => s.QuantityOrdered - s.QuantityShipped) });
 
                         GeneratePrintFile(view, unshippedOrders, fbd.SelectedPath + "//" + pickJobID + ".html");
 
@@ -114,7 +115,8 @@ namespace MarketplaceManager
                         pickJobID = string.Format("{0}-{1}({2})", pickJobID, i, view.Code);
 
                         var auditEntries = printList.SelectMany(p => p.OrderItems)
-                            .Select(p => new OrderItemAudit{ Sku = p.ListingItem.Sku, Qty = p.QuantityPurchased, Price = p.TransactionPrice, OrderID = p.Order.SalesRecordNumber });
+                            .GroupBy(p => p.ListingItem.Item.ItemLookupCode)
+                            .Select(p => new OrderItemAudit { Sku = p.Key, Qty = p.Sum(s => s.QuantityPurchased) });
 
                         GeneratePrintFile(view, unshippedOrders, fbd.SelectedPath + "//" + pickJobID + ".html");
 
@@ -191,7 +193,18 @@ namespace MarketplaceManager
                     string conditionDescription = orderItem.ListingItem.Item != null ? orderItem.ListingItem.Item.ExtendedDescription : "";
 
                     decimal discountedPrice = orderItem.ItemPrice - orderItem.PromotionDiscount;
-                    decimal discountedPricePerItem = discountedPrice / orderItem.QuantityOrdered;
+
+                    decimal discountedPricePerItem;
+
+                    if (orderItem.QuantityOrdered == 0)
+                    {
+                        discountedPricePerItem = 0;
+                    }
+                    else
+                    {
+                        discountedPricePerItem = discountedPrice / orderItem.QuantityOrdered;
+                    }
+
                     decimal subTotal = discountedPricePerItem * orderItem.QuantityOrdered;
 
                     stream.Write("  <tr>" +
@@ -663,7 +676,16 @@ namespace MarketplaceManager
                 item.Code = orderItemDto.ListingItem.Item.ItemLookupCode;
                 item.Description = orderItemDto.ListingItem.Item.Description;
                 item.Quantity = Convert.ToByte(orderItemDto.QuantityOrdered);
-                item.UnitPrice = orderItemDto.ItemPrice;
+
+                if (orderItemDto.QuantityOrdered == 0)
+                {
+                    item.UnitPrice = 0;
+                }
+                else
+                {
+                    item.UnitPrice = orderItemDto.ItemPrice / orderItemDto.QuantityOrdered;
+                }
+
                 orderItems.Add(item);
             }
 
@@ -1235,13 +1257,8 @@ namespace MarketplaceManager
 
     public class OrderItemAudit
     {
-
         public string Sku { get; set; }
 
         public int Qty { get; set; }
-
-        public decimal Price { get; set; }
-
-        public string OrderID { get; set; }
     }
 }

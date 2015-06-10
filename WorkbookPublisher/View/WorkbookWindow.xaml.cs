@@ -371,7 +371,9 @@ namespace WorkbookPublisher
                         var ebayHistory = string.Join(" ", item.EbayListingItems.Where(p => p.Listing.Status.Equals(EbayMarketplace.STATUS_ACTIVE)).Select(p => p.ToString()));
                         var amznHistory = string.Join(" ", item.AmznListingItems.Where(p => p.IsActive).Select(p => p.ToString()));
 
-                        entry.Status = ebayHistory + " " + amznHistory;
+                        string status = ebayHistory + " " + amznHistory;
+
+                        entry.Status = string.IsNullOrWhiteSpace(status)? "No Active Listing" : status;
 
                         if (item.EbayListingItems.Where(w => w.Listing.IsVariation.HasValue && !w.Listing.IsVariation.Value).Count() > 0)
                         {

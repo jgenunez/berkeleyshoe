@@ -1,0 +1,282 @@
+::selection {
+	background: #009900; /* Safari */
+	color: #fff;
+}
+::-moz-selection {
+ background: #009900; /* Firefox */
+ color:#fff;
+}
+a:hover, a:focus{
+  color: #009900;
+}
+.st_topheader_data i {
+  color: #009900;
+}
+.st_color {
+  color: #009900;
+}
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+  color: #009900;
+}
+.navbar-default .navbar-nav > li > a.active {
+  color: #009900;
+}
+ul.nav.navbar-nav.stomer_menu li ul.sub-menu li a:hover {
+  color: #009900;
+}
+.st_menu_wraper ul.nav.navbar-nav.stomer_menu li.st_mega_menu ul.sub-menu li ul li a:hover, .st_menu_wraper ul.nav.navbar-nav.stomer_menu li.st_mega_menu ul.sub-menu li ul li a.active{
+  color: #009900;
+}
+.st_transprant_header .navbar-default .navbar-nav > li > a.active, ul.nav.navbar-nav.stomer_menu li ul.sub-menu li a.active {
+  color: #009900;
+}
+.st_bottom_header_wraper ul li .st_notification_text span {
+  color: #009900;
+}
+.st_bottom_header_wraper ul li .st_notification_text i {
+  color: #009900;
+}
+.st_menu_wraper.fixed_menu .navbar-default .navbar-nav > li > a.active {
+  color: #009900;
+}
+.st_menu_wraper.fixed_menu .navbar-default .navbar-nav > li > a:hover, .st_menu_wraper.fixed_menu .navbar-default .navbar-nav > li > a:focus {
+  color: #009900;
+}
+.st_main_heading:hover h5 {
+  color: #009900;
+}
+.st_sale_tag{
+  background-color: rgba(0, 153, 0, 0.75);
+}
+.st_shop_data h5 a:hover {
+  color: #009900;
+}
+.st_product_wraper:hover .st_shop_data h5 a:after {
+  border-color: #009900;
+}
+.st_read_more:hover{
+  background-color: #009900;
+  border-color: #009900;
+}
+.st_news_search input.st_news_submit{
+  background: #009900;
+}
+.st_news_search input.st_news_submit:hover {
+  background-color: rgba(0, 153, 0, 0.75);
+}
+.st_footer_data span i{
+  color: #009900;
+}
+.st_footer_tag ul li a:hover {
+  background-color: #009900;
+}
+.st_footer_data ul li .st_footer_product span{
+  color: #009900;
+}
+.st_footer_data ul li .st_footer_product h6:hover a {
+  color: #009900;
+}
+.st_bottom_log h5 i{
+  color: #009900;
+}
+.st_btmfooter_copyright a {
+  color: #009900!important;
+}
+.st_btmfooter_copyright p i{
+  color: #009900;
+}
+.st_gototop{
+  background: #009900;
+  border-bottom-color: #009900;
+}
+.breadcrumb > .active {
+  color: #009900;
+}
+.st_blog_head h4 a:hover {
+  color: #009900;
+}
+.st_blog_icon{
+background: #009900;
+}
+.st_blog_info span a, .st_blog_info a {
+  color: #009900;
+}
+.st_blog_info span a:hover, .st_blog_info a:hover {
+  color: #009900;
+}
+.btn-primary{
+  background-color: #009900;
+  border-color: #009900;
+}
+.st-blog-img-hover{
+  background-color: rgba(0, 153, 0, 0.8);
+}
+.st_sidebar_content ul li h6 a:hover {
+  color: #009900;
+}
+.st_sidebar_cat ul li:hover a {
+  color: #009900;
+}
+.st_filter ul.st_filter_title li a.active {
+  background-color: #009900;
+  border-color: #009900;
+}
+.st_filter ul.st_filter_title li:hover a{
+  border-color: #009900;
+  color: #009900;
+}
+ .st_filter ul.st_filter_title li:hover a.active {
+  background-color: #009900;
+  border-color: #009900;
+}
+.st_blog_masonry_content h4 a:hover {
+  color: #009900;
+}
+.pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus{
+  background-color: #009900;
+}
+.pagination > li > a:hover, .pagination > li > span:hover, .pagination > li > a:focus, .pagination > li > span:focus {
+  background-color: #009900;
+}
+.st_fullblog h4 a:hover {
+  color: #009900;
+}
+.st_blockquote_blue blockquote:hover, .st_blockquote_yellow blockquote:hover, .st_blockquote_cyan blockquote:hover, .st_blockquote_grey blockquote:hover {
+  border-color: #009900;
+}
+.st_img_icon{
+  background: #009900;
+  border-color: #FF8400;
+}
+.st_img_block:hover h5:after{
+  background: #009900;
+}
+ul.st_img_tag li a:hover {
+  color: #009900;
+}
+.st_img_post_data ul li img:hover {
+  border-color: #009900;
+}
+.st_img_post_data li span a:hover {
+  color: #009900;
+}
+.btn-info:hover, .btn-info:focus, .btn-info.focus, .btn-info:active, .btn-info.active, .open > .dropdown-toggle.btn-info{
+  background-color: #009900;
+  border-color: #009900;
+}
+.st_contact_info i{
+  color: #009900;
+}
+.carousel-control:hover .glyphicon-chevron-right, .carousel-control:hover .icon-next, .carousel-control:focus .glyphicon-chevron-right, .carousel-control:focus .icon-next, .carousel-control:hover .glyphicon-chevron-left, .carousel-control:hover .icon-prev, .carousel-control:focus .glyphicon-chevron-left, .carousel-control:focus .icon-prev {
+  background: #009900;
+}
+.st_bolg_heading h5 a:hover {
+  color: #009900;
+}
+.st_transprant_header .navbar-default .navbar-nav > li > a:hover, .st_transprant_header .navbar-default .navbar-nav > li > a:focus {
+  color: #009900;
+}
+.st_default_content:hover h5 {
+  color: #009900;
+}
+.st_default_para .st_def_para2{
+color: #009900;
+}
+.progress-bar-info {
+  background-color: #009900 !important;
+}
+.st_home_count i{
+  color: #009900;
+}
+.st_count_number_border{
+  background: #009900;
+}
+.st_default_contact:hover h5 {
+  color: #009900;
+}
+.st_default_btn:hover a {
+  color: #009900;
+  border-color: #009900;
+}
+.st_default_news_slider:hover h5 {
+  color: #009900;
+}
+.st_sidebar_content span.amount{
+  color: #009900;
+}
+.st_port_recentimage .st_port_overdefult {
+  background: rgba(0, 153, 0, 0.75);
+}
+h5.st_port_min_title :hover, .nav-tabs > li a:hover {
+  color: #009900;
+}
+.nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus{
+  color: #009900;
+}
+.nav-tabs > li.active {
+  border-color: #009900;
+  border-bottom-color: #009900;
+}
+.st_review_form form .form-group label span {
+  color: #009900;
+}
+.st_home_shop_featured:hover h5 {
+  color: #009900;
+}
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active, .ui-state-hover,
+.ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus {
+  background-color: #009900;
+}
+.st_shortcode_tab ul.nav-tabs > li.active, .st_shortcode_tab ul.nav-tabs > li:hover{
+  background: #009900;
+}
+h2.st_trigger.active, h2.st_trigger:hover {
+  background: #009900;
+}
+.bg-info {
+  background-color: #009900;
+}
+.st_count_icon i{
+color: #009900;
+}
+.st_count:hover .st_count_border{
+  background: #009900;
+}
+.st_box_icon{
+  background: #009900;
+  border-color: #009900;
+}
+.st_box_content:hover .st_count_border{
+  background: #009900;
+}
+.st_icon_design{
+  background-color: #009900;
+  border-color: #009900;
+}
+.ih-item.square.effect9 .info h3{
+  background: #009900;
+}
+.ih-item.square.effect9.colored .info h3 {
+  background: #009900;
+}
+.st_color1 {
+  color: #009900;
+}
+.st_port_skill i {
+  color: #009900;
+}
+.st_port_slider_controls .carousel-control .glyphicon-chevron-left, .carousel-control .icon-prev, .st_port_slider_controls .carousel-control .glyphicon-chevron-right, .carousel-control .icon-next{
+  background-color: #009900;
+}
+.pager li > a:hover, .pager li > a:focus{
+  color: #009900;
+}
+ul.pager i:hover {
+  color: #009900;
+}
+.navbar-toggle{
+  color: #009900;
+}
+ul.nav.navbar-nav.stomer_menu li ul.sub-menu li a:before{
+  background: #009900;
+}

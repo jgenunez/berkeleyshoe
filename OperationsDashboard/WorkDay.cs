@@ -34,6 +34,10 @@ namespace OperationsDashboard
         public double ItemPublished { get; set; }
 
         public double QtyPublished { get; set; }
+
+        public double ItemUnpublished { get; set; }
+
+        public double QtyUnpublished { get; set; }
     }
 
     

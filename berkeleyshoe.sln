@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmazonS3BackupService", "Am
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing", "Testing\Testing.csproj", "{91D65BF0-82DD-4D79-9795-4597659957BF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BerkeleyStoreWebsite", "WebApplication1\BerkeleyStoreWebsite.csproj", "{3179758D-7CD2-441F-9D67-596085C46A28}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -194,6 +196,18 @@ Global
 		{91D65BF0-82DD-4D79-9795-4597659957BF}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{91D65BF0-82DD-4D79-9795-4597659957BF}.Release|Win32.ActiveCfg = Release|Any CPU
 		{91D65BF0-82DD-4D79-9795-4597659957BF}.Release|x86.ActiveCfg = Release|Any CPU
+		{3179758D-7CD2-441F-9D67-596085C46A28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3179758D-7CD2-441F-9D67-596085C46A28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3179758D-7CD2-441F-9D67-596085C46A28}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{3179758D-7CD2-441F-9D67-596085C46A28}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{3179758D-7CD2-441F-9D67-596085C46A28}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{3179758D-7CD2-441F-9D67-596085C46A28}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3179758D-7CD2-441F-9D67-596085C46A28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3179758D-7CD2-441F-9D67-596085C46A28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3179758D-7CD2-441F-9D67-596085C46A28}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{3179758D-7CD2-441F-9D67-596085C46A28}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{3179758D-7CD2-441F-9D67-596085C46A28}.Release|Win32.ActiveCfg = Release|Any CPU
+		{3179758D-7CD2-441F-9D67-596085C46A28}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

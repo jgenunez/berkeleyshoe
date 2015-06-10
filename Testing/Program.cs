@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using BerkeleyEntities;
 using System.Xml.Serialization;
 using System.IO;
+using System.Net.NetworkInformation;
 
 namespace Testing
 {
@@ -14,10 +15,10 @@ namespace Testing
         static void Main(string[] args)
         {
 
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    CreateOrder(i.ToString());
-            //}
+            Ping ping = new Ping();
+
+            PingReply pingReply = ping.Send("192.168.1.22");
+         
         }
 
         static void CreateOrder(string id)
@@ -88,6 +89,14 @@ namespace Testing
                 dataContext.Exchanges.AddObject(exchange);
 
                 dataContext.SaveChanges();
+            }
+        }
+
+        static void TestOrder()
+        {
+            using (berkeleyEntities dataContext = new berkeleyEntities())
+            {
+ 
             }
         }
     }

@@ -48,6 +48,8 @@ namespace OperationsDashboard
 
                     GetReturnCounts(workDay);
 
+                    GetPublishedCounts(workDay);
+
                     workDays.Add(workDay);
                 } 
             }
@@ -135,7 +137,23 @@ namespace OperationsDashboard
             DateTime lowLimit = workDay.Date;
             DateTime highLimit = workDay.Date.AddDays(1);
 
-            
+            var listingChanges = _dataContext.Bsi_ListingChangesLog.Where(p => p.Source.Equals("Publisher") && p.Date >= lowLimit && p.Date <= highLimit);
+
+            var positiveChanges = listingChanges.Where(p => p.Change > 0).GroupBy(p => p.Item.ItemLookupCode);
+
+            if (positiveChanges.Count() > 0)
+            {
+                workDay.ItemPublished = positiveChanges.Count();
+                workDay.QtyPublished = positiveChanges.Sum(p => p.Sum(s => s.Change));
+            }
+
+            var negativeChanges = listingChanges.Where(p => p.Change < 0).GroupBy(p => p.Item.ItemLookupCode);
+
+            if (negativeChanges.Count() > 0)
+            {
+                workDay.ItemUnpublished = negativeChanges.Count();
+                workDay.QtyUnpublished = negativeChanges.Sum(p => p.Sum(s => s.Change)) * -1;
+            }
         }
 
     }
