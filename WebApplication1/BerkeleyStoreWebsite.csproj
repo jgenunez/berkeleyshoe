@@ -296,6 +296,43 @@
     <Content Include="Content\Images\Visa-Electron.png" />
     <Content Include="Content\Images\Visa.png" />
     <Content Include="Content\Images\wishlist.png" />
+    <Content Include="Content\Lookbook\FirstLookbook\AD 1.jpg" />
+    <Content Include="Content\Lookbook\FirstLookbook\AD 2.jpg" />
+    <Content Include="Content\Lookbook\FirstLookbook\lookbook.xml" />
+    <Content Include="Content\Lookbook\FirstLookbook\unnamedI.jpg" />
+    <Content Include="Content\Lookbook\FirstLookbook\web Edit 1.jpg" />
+    <Content Include="Content\Lookbook\FirstLookbook\web.clark.jpg" />
+    <Content Include="Content\Lookbook\ThirdLookbook - Copy %282%29\lookbook.xml" />
+    <Content Include="Content\Lookbook\ThirdLookbook - Copy %282%29\web.jpg" />
+    <Content Include="Content\Lookbook\ThirdLookbook - Copy %282%29\web1.jpg" />
+    <Content Include="Content\Lookbook\ThirdLookbook - Copy %282%29\web10.jpg" />
+    <Content Include="Content\Lookbook\ThirdLookbook - Copy %282%29\web11.jpg" />
+    <Content Include="Content\Lookbook\ThirdLookbook - Copy %282%29\web12.jpg" />
+    <Content Include="Content\Lookbook\ThirdLookbook - Copy %282%29\web2.jpg" />
+    <Content Include="Content\Lookbook\ThirdLookbook - Copy\lookbook.xml" />
+    <Content Include="Content\Lookbook\ThirdLookbook - Copy\web.jpg" />
+    <Content Include="Content\Lookbook\ThirdLookbook - Copy\web1.jpg" />
+    <Content Include="Content\Lookbook\ThirdLookbook - Copy\web10.jpg" />
+    <Content Include="Content\Lookbook\ThirdLookbook - Copy\web11.jpg" />
+    <Content Include="Content\Lookbook\ThirdLookbook - Copy\web12.jpg" />
+    <Content Include="Content\Lookbook\ThirdLookbook - Copy\web2.jpg" />
+    <Content Include="Content\Lookbook\ThirdLookbook\web.jpg" />
+    <Content Include="Content\Lookbook\ThirdLookbook\web1.jpg" />
+    <Content Include="Content\Lookbook\ThirdLookbook\web10.jpg" />
+    <Content Include="Content\Lookbook\ThirdLookbook\web11.jpg" />
+    <Content Include="Content\Lookbook\ThirdLookbook\web12.jpg" />
+    <Content Include="Content\Lookbook\ThirdLookbook\web2.jpg" />
+    <Content Include="Content\Lookbook\SecondLookbook\web3.jpg" />
+    <Content Include="Content\Lookbook\SecondLookbook\web4.jpg" />
+    <Content Include="Content\Lookbook\SecondLookbook\web5.jpg" />
+    <Content Include="Content\Lookbook\SecondLookbook\web6.jpg" />
+    <Content Include="Content\Lookbook\SecondLookbook\web7.jpg" />
+    <Content Include="Content\Lookbook\SecondLookbook\web8.jpg" />
+    <Content Include="Content\Lookbook\SecondLookbook\web9.jpg" />
+    <Content Include="Content\Lookbook\SecondLookbook\webphoto %283%29.jpg" />
+    <Content Include="Content\Lookbook\SecondLookbook\webphoto %284%29.jpg" />
+    <Content Include="Content\Lookbook\SecondLookbook\lookbook.xml" />
+    <Content Include="Content\Lookbook\ThirdLookbook\lookbook.xml" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\bootstrap.js" />
@@ -360,8 +397,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Content\Lookbook\FirstLookbook\" />
-    <Folder Include="Content\Lookbook\SecondLookbook\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

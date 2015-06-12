@@ -11,14 +11,21 @@ namespace WebApplication1.Models
 
         public string Title { get; set; }
 
-        public DateTime DateOfCompletion { get; set; }
+        public string CreatedDate { get; set; }
 
         public string Styling { get; set; }
 
         public string Photography {get; set;}
 
-        public string Url { get; set; }
-
         public string Description { get; set; }
+
+        public string MainImage { get; set; }
+
+        public List<string> Images { get; set; }
+
+        public string GetImageSource(string fileName)
+        {
+            return @"Content\Lookbook\" + this.ID + @"\" + fileName;
+        }
     }
 }
