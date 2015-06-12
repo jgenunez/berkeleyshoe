@@ -27,15 +27,5 @@ namespace WebApplication1.Controllers
 
             return View();
         }
-
-        public ActionResult Lifestyle()
-        {
-            return View();
-        }
-
-        public ActionResult Events()
-        {
-            return View();
-        }
     }
 }
