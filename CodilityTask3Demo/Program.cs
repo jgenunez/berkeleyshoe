@@ -12,12 +12,36 @@ namespace CodilityTask3Demo
         static void Main(string[] args)
         {
 
-            //Console.WriteLine("Test1 pass? {0}", Test1().ToString());
+            Console.WriteLine("Test1 pass? {0}", Test1().ToString());
             Console.WriteLine("Test2 pass? {0}", Test2().ToString());
             Console.WriteLine("Test3 pass? {0}", Test3().ToString());
             Console.WriteLine("Test4 pass? {0}", Test4().ToString());
+            Console.WriteLine("Test5 pass? {0}", Test5().ToString());
 
             Console.ReadLine();
+        }
+
+        public static int solution(int Y, string A, string B, string W)
+        {
+            DateTime startDate, endDate;
+
+            DateTime m1 = DateTime.ParseExact(A + Y, "MMMMyyyy", CultureInfo.CurrentCulture);
+            DateTime m2 = DateTime.ParseExact(B + Y, "MMMMyyyy", CultureInfo.CurrentCulture);
+
+            startDate = m1 < m2 ? m1 : m2;
+            endDate = m1 < m2 ? m2.AddDays(DateTime.DaysInMonth(m2.Year, m2.Month) - 1) : m1.AddDays(DateTime.DaysInMonth(m1.Year, m1.Month) - 1);
+
+            while (startDate.DayOfWeek != DayOfWeek.Monday)
+            {
+                startDate = startDate.AddDays(1);
+            }
+
+            while (endDate.DayOfWeek != DayOfWeek.Sunday)
+            {
+                endDate = endDate.AddDays(-1);
+            }
+
+            return (endDate.Subtract(startDate).Days + 1) / 7;
         }
 
         public static int solution2(int Y, string A, string B, string W) 
@@ -82,39 +106,6 @@ namespace CodilityTask3Demo
             return totalDays / 7;
         }
 
-        public static int solution(int Y, string A, string B, string W)
-        {
-            DateTime startDate, endDate;
-
-            DateTime m1 = DateTime.ParseExact(A + Y, "MMMMyyyy", CultureInfo.CurrentCulture);
-            DateTime m2 = DateTime.ParseExact(B + Y, "MMMMyyyy", CultureInfo.CurrentCulture);
-
-            if (m1 < m2)
-            {
-                startDate = m1;
-                endDate = m2.AddDays(DateTime.DaysInMonth(m2.Year, m2.Month)-1);
-            }
-            else
-            {
-                startDate = m2;
-                endDate = m1.AddDays(DateTime.DaysInMonth(m1.Year, m1.Month)-1);
-            }
-
-            if (startDate.DayOfWeek != DayOfWeek.Monday)
-            {
-
-                startDate = startDate.AddDays(DayOfWeek.Monday - startDate.DayOfWeek);
-            }
-
-            if (endDate.DayOfWeek != DayOfWeek.Sunday)
-            {
-                endDate = endDate.AddDays(((int)endDate.DayOfWeek) * -1);
-            }
-
-            var test = endDate.Subtract(startDate);
-
-            return (endDate.Subtract(startDate).Days) / 7;
-        }
         public static bool Test1()
         {
             return (7 == solution(2015, "January", "February", "Thursday"));
@@ -133,6 +124,11 @@ namespace CodilityTask3Demo
         public static bool Test4()
         {
             return (17 == solution(2015, "March", "June", "Thursday"));
+        }
+
+        public static bool Test5()
+        {
+            return (4 == solution(2015, "March", "March", "Thursday"));
         }
 
     }
