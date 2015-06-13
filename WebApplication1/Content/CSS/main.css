@@ -24642,6 +24642,7 @@ display: none;
 width: 100%;
 float: left;
 padding-bottom: 80px;
+margin-top: 50px;
 }
 .st_recentimage {
 margin: 0px;
@@ -26096,10 +26097,10 @@ opacity: 1;
 }
 .st_port_image {
 float: left;
-width: 100%;
+/*width: 100%;*/
 }
 .st_port_image img {
-width: 100%;
+/*width: 100%;*/
 }
 .st_port_recentdescription {
 width: 100%;
@@ -28031,7 +28032,7 @@ text-align: center;
 display: inline-block;
 }
 .st_port_image img {
-width: auto; 
+/*width: auto;*/ 
 }
 .st_portfolio_all {
 text-align: center;

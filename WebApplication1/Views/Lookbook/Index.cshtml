@@ -1,14 +1,16 @@
 ﻿@model IList<WebApplication1.Models.Lookbook>
 
 @{
+    ViewBag.Title = "Index2";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 
 <div class="st_bread">
     <div class="container">
         <div class="st_page_title">
             <h4>
-                portfolio 3 column gallery
+                PORTFOLIO FULL WIDTH
             </h4>
         </div>
         <ol class="breadcrumb">
@@ -20,106 +22,43 @@
                 </a>
             </li>
             <li class="active">
-                portfolio 3 column gallery
+                Portfolio Full Width
             </li>
         </ol>
     </div>
 </div>
-<div class="st_pagecontent st_graybg st_bottompadder_60">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 st_toppadder30 st_bottompadder_20">
-                <div class="st_filter">
-                    <ul class="st_filter_title">
-                        <li>
-                            <a href="#" class="filter-item active" data-filter="all">
-                                SHOW All
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="filter-item" data-filter="Audio">
-                                AUDIO
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="filter-item" data-filter="Photography">
-                                Photography
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="filter-item" data-filter="Videos">
-                                Videos
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="st_mix_grid" id="grid">
-                @foreach (var lookbook in Model)
-                {
-                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 st_show_overlay  Photography Videos mix mix_all">
-                        <div class="st_port_recentimage st_mbottom_20">
-                            <div class="st_port_overdefult">
-                                <div class="st-page-portfolio-categories-3cl">
-                                    @Html.ActionLink(lookbook.Title, "Details", "Lookbook", new { rel ="tag" })
+<!--st_portfolio_section_start-->
+<div class="st_full-w-portfolio st_toppadder20">
+    <div class="st_gallery_photo">
+        <div class="st_mix_grid" id="grid">
+            @foreach (var lookbook in Model)
+            {
+                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 Photography videos mix mix_all" style="width : 446px; height : 500px;">
+                    <div class="row">
+                        <div class="st_recentimage">
+                            <div class="st_overdefault">
+                                <div class="st_recentdescription">
+                                    <h3>
+                                        <a href="single-portfolio.html">
+                                            @lookbook.Title
+                                        </a>
+                                    </h3>
                                 </div>
                             </div>
-                            <div class="st_port_image">
+                            <div class="st_image">
                                 <a href=@Url.Action("Details", "Lookbook")>
-                                    <img src="@lookbook.GetImageSource(lookbook.MainImage)" alt="" class="img-responsive">
+                                    <img src="@lookbook.GetImageSource(lookbook.MainImage)" style="width : 446px; height : 500px;" title="@lookbook.Title" alt="" class="img-responsive">
                                 </a>
+                                <div class="st_blackoverlay"></div>
                             </div>
                         </div>
                     </div>
-                }
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 st_toppadder40 st_bottompadder_60">
-                <div class="st_pagination">
-                    <nav>
-                        <ul class="pagination">
-                            <li class="disabled">
-                                <a href="#">
-                                    <span aria-hidden="true">
-                                        Page 1 Of 2
-                                    </span>
-                                    <span class="sr-only">
-                                        Previous
-                                    </span>
-                                </a>
-                            </li>
-                            <li class="active">
-                                <a href="#">
-                                    1
-                                    <span class="sr-only">
-                                        (current)
-                                    </span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    2
-                                    <span class="sr-only">
-                                        (current)
-                                    </span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <span aria-hidden="true">
-                                        »
-                                    </span>
-                                    <span class="sr-only">
-                                        Next
-                                    </span>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
                 </div>
-            </div>
+            }
         </div>
+        <!--em_grid end-->
+
     </div>
 </div>
+
 
