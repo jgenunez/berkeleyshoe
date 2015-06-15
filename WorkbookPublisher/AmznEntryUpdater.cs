@@ -59,6 +59,17 @@ namespace WorkbookPublisher
 
         private void Validate(Item item, AmznEntry entry)
         {
+            //new listing validation
+            if (string.IsNullOrWhiteSpace(entry.ASIN))
+            {
+                if (!entry.Q.HasValue || !entry.P.HasValue)
+                {
+                    entry.Message = "price and quantity required";
+                    entry.Status = StatusCode.Error;
+                }
+            }
+
+
             if (item.Notes != null)
             {
                 if (item.Notes.Contains("PRE") || item.Notes.Contains("NWB") || item.Notes.Contains("NWD"))
@@ -66,6 +77,12 @@ namespace WorkbookPublisher
                     entry.Message = "only new products allowed";
                     entry.Status = StatusCode.Error;
                 }
+            }
+
+            if (entry.P < item.Cost)
+            {
+                entry.Message = "price must be greater than cost";
+                entry.Status = StatusCode.Error;
             }
 
             if (string.IsNullOrWhiteSpace(entry.Format))
@@ -105,6 +122,7 @@ namespace WorkbookPublisher
 
                 if (entry != null)
                 {
+                   
                     entry.ASIN = listingItem.ASIN;
 
                     if (listingItem.Quantity == entry.Q.Value && decimal.Compare(listingItem.Price, entry.P.Value) == 0 && entry.GetUpdateFlags().Count == 0)

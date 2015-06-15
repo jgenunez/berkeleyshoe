@@ -138,8 +138,15 @@ namespace WorkbookPublisher
 
         private void Validate(Item item, BonanzaEntry entry)
         {
+            //new listing validation
             if (string.IsNullOrWhiteSpace(entry.Code))
             {
+                if (!entry.Q.HasValue || !entry.P.HasValue)
+                {
+                    entry.Message = "price and quantity required";
+                    entry.Status = StatusCode.Error;
+                }
+
                 if (string.IsNullOrWhiteSpace(entry.FullDescription))
                 {
                     entry.Message = "full description required";
@@ -157,6 +164,12 @@ namespace WorkbookPublisher
                     entry.Message = "title required";
                     entry.Status = StatusCode.Error;
                 }
+            }
+
+            if (entry.P < item.Cost)
+            {
+                entry.Message = "price must be greater than cost";
+                entry.Status = StatusCode.Error;
             }
 
             if (entry.Q > item.QtyAvailable)
