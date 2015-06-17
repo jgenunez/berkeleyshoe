@@ -3,16 +3,15 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>@ViewBag.Title</title>
 
-    <link rel="stylesheet" type="text/css" href="Content/css/main.css" />
-    <link rel="stylesheet" id="theme-change" type="text/css" href="#">
-    <link rel="shortcut icon" type="image/x-icon" href="Content/Images/stormer-favicon.png" />
+    @Styles.Render("~/Content/css")
+    
 </head>
 <body>
     <!--preloader start-->
     <div id="preloader">
-        <div id="status"><img src="Content/Images/load.gif" id="preloader_image" alt="loader">
+        <div id="status"><img src="~/Content/Images/load.gif" id="preloader_image" alt="loader">
         </div>
     </div>
     <!--preloader end-->
@@ -153,10 +152,10 @@
               </button>
               <a class="navbar-brand" href="index.html">
                 <div class="st_logo">
-                  <img src="Content/Images/thestormer-logo.png" alt="stormer">
+                  <img src="~/Content/Images/thestormer-logo.png" alt="stormer">
                 </div>
                 <div class="st_white_logo">
-                  <img src="Content/Images/logo_white.png" alt="stormer">
+                  <img src="~/Content/Images/logo_white.png" alt="stormer">
                 </div>
               </a>
             </div>
@@ -197,7 +196,7 @@
                       </span>
                     </div>
                     <div class="st_cart_img">
-                      <img src="Content/Images/cartBox.png" alt="stormer_cart">
+                      <img src="~/Content/Images/cartBox.png" alt="stormer_cart">
                     </div>
                   </a>
                   <div class="st_cart_detail">
@@ -281,7 +280,7 @@
                             <div class="st_footer_content">
                                 <div class="st_footer_title">
                                     <a href="#">
-                                        <img src="Content/Images/footer_logo.png" alt="">
+                                        <img src="~/Content/Images/footer_logo.png" alt="">
                                     </a>
                                 </div>
                                 <div class="st_footer_data">
@@ -367,7 +366,7 @@
                                 </div>
                                 <div class="st_footer_data">
                                     <p>
-                                        The Stormer is a vintage Apparel store that focuses on user experience.
+                                        Our goal is to be the real outfitters of modern american style. And through this, we’ll enable our customers to live their street wear style. We believe that street wear is more than styling. It reflects how you live, how you choose to navigate your life, and how you show up. The Berkeley Store brings a fresh twist on apparel to men and women around the world. The Methuen, MA company outfits a whole new generation of explorers in the clothes that walk the line between easy and refined.
                                     </p>
                                     <span>
                                         <i class="fa fa-phone">
@@ -469,27 +468,27 @@
                         <ul>
                             <li>
                                 <a href="#">
-                                    <img src="Content/Images/American-Express.png" alt="">
+                                    <img src="~/Content/Images/American-Express.png" alt="">
                                 </a>
                             </li>
                             <li>
                                 <a href="#">
-                                    <img src="Content/Images/PayPal.png" alt="">
+                                    <img src="~/Content/Images/PayPal.png" alt="">
                                 </a>
                             </li>
                             <li>
                                 <a href="#">
-                                    <img src="Content/Images/Maestro.png" alt="">
+                                    <img src="~/Content/Images/Maestro.png" alt="">
                                 </a>
                             </li>
                             <li>
                                 <a href="#">
-                                    <img src="Content/Images/Visa.png" alt="">
+                                    <img src="~/Content/Images/Visa.png" alt="">
                                 </a>
                             </li>
                             <li>
                                 <a href="#">
-                                    <img src="Content/Images/Visa-Electron.png" alt="">
+                                    <img src="~/Content/Images/Visa-Electron.png" alt="">
                                 </a>
                             </li>
                         </ul>
@@ -509,7 +508,7 @@
         </div>
     </div>
 
-    <script src="Scripts/mainscript.js" type="text/javascript">
-    </script>
+    @Scripts.Render("~/bundles/stormer")
+
 </body>
 </html>

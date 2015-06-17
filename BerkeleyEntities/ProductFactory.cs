@@ -296,6 +296,7 @@ namespace BerkeleyEntities
                     case "UNISEX-BABY":
                         return DimensionName.USBabySize;
 
+                    case "UNISEX":
                     case "UNISEX-ADULT":
                     case "MENS":
                     case "MEN":

@@ -417,7 +417,6 @@
     <Content Include="Views\Account\ResetPassword.cshtml" />
     <Content Include="Views\Account\ResetPasswordConfirmation.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\Lookbook\Index3.cshtml" />
     <Content Include="Views\Lookbook\Details.cshtml" />
     <Content Include="Views\Lookbook\Index.cshtml" />
   </ItemGroup>

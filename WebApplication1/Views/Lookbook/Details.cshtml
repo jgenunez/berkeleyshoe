@@ -1,7 +1,7 @@
 ﻿@model WebApplication1.Models.Lookbook
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Lookbook";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -34,12 +34,17 @@
                     <div id="carousel-example-generic" class="carousel slide st_singleportfolio_slider" data-ride="carousel">
                         <!-- Wrapper for slides -->
                         <div class="carousel-inner" role="listbox">
+
                             <div class="item active">
-                                <img src="http://placehold.it/700x600" class="img-responsive" alt="#">
+                                <img src="@Model.GetImageSource(Model.MainImage)" class="img-responsive" alt="#">
                             </div>
-                            <div class="item">
-                                <img src="http://placehold.it/700x600" class="img-responsive" alt="...">
-                            </div>
+
+                            @foreach (var image in Model.Images.Where(p => !p.Equals(Model.MainImage)))
+                            {
+                                <div class="item">
+                                    <img src="@Model.GetImageSource(image)" class="img-responsive" alt="...">
+                                </div>
+                            }
                         </div>
                         <!-- Controls -->
                         <div class="st_port_slider_controls">

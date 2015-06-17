@@ -465,7 +465,7 @@ namespace BerkeleyEntities.Amazon
                         noProductFeed.Add(listingItem);
                     }
                 }
-                catch (InvalidOperationException e)
+                catch (Exception e)
                 {
                     
                     PublishingResult result = new PublishingResult();

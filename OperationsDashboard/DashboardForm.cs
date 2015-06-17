@@ -152,7 +152,7 @@ namespace OperationsDashboard
             if (negativeChanges.Count() > 0)
             {
                 workDay.ItemUnpublished = negativeChanges.Count();
-                workDay.QtyUnpublished = negativeChanges.Sum(p => p.Sum(s => s.Change)) * -1;
+                workDay.QtyUnpublished = negativeChanges.Sum(p => p.Sum(s => s.Change));
             }
         }
 

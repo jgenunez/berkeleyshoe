@@ -1,7 +1,7 @@
 ﻿@model IList<WebApplication1.Models.Lookbook>
 
 @{
-    ViewBag.Title = "Index2";
+    ViewBag.Title = "Lookbook";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -33,21 +33,19 @@
         <div class="st_mix_grid" id="grid">
             @foreach (var lookbook in Model)
             {
-                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 Photography videos mix mix_all" style="width : 446px; height : 500px;">
+                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 Photography videos mix mix_all" style="width : 25%; height : 300px;">
                     <div class="row">
                         <div class="st_recentimage">
                             <div class="st_overdefault">
                                 <div class="st_recentdescription">
                                     <h3>
-                                        <a href="single-portfolio.html">
-                                            @lookbook.Title
-                                        </a>
+                                        @Html.ActionLink(lookbook.Title, "Details", new { id = lookbook.ID})
                                     </h3>
                                 </div>
                             </div>
                             <div class="st_image">
                                 <a href=@Url.Action("Details", "Lookbook")>
-                                    <img src="@lookbook.GetImageSource(lookbook.MainImage)" style="width : 446px; height : 500px;" title="@lookbook.Title" alt="" class="img-responsive">
+                                    <img src="@lookbook.GetImageSource(lookbook.MainImage)" style="width : 100%; height : 300px;" title="@lookbook.Title" alt="" class="img-responsive">
                                 </a>
                                 <div class="st_blackoverlay"></div>
                             </div>

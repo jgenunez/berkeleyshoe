@@ -11,23 +11,21 @@ namespace WebApplication1.Controllers
 {
     public class LookbookController : Controller
     {
-       
+        private List<Lookbook> _lookbooks = new List<Lookbook>();
 
         // GET: Lookbook
         public ActionResult Index()
         {
-
             var lookbooks = this.ListLookbook();
 
             return View(lookbooks);
         }
 
-        public ActionResult Details()
+        public ActionResult Details(string id)
         {
-           
+            var lookbooks = this.ListLookbook();
 
-
-            return View();
+            return View(lookbooks.Single(p => p.ID.Equals(id)));
         }
 
         private List<Lookbook> ListLookbook()
@@ -46,7 +44,12 @@ namespace WebApplication1.Controllers
             {
                 if (System.IO.File.Exists(dir + @"\lookbook.xml"))
                 {
-                    Lookbook lookbook = serializer.Deserialize(new FileStream(dir + @"\lookbook.xml", FileMode.OpenOrCreate)) as Lookbook;
+                    Lookbook lookbook = null;
+
+                    using (FileStream stream = new FileStream(dir + @"\lookbook.xml", FileMode.OpenOrCreate))
+                    {
+                        lookbook = serializer.Deserialize(stream) as Lookbook;
+                    }
 
                     lookbook.ID = dir.Replace(baseDir, "").Replace(".xml", "");
 
