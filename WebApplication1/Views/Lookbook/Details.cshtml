@@ -9,7 +9,7 @@
     <div class="container">
         <div class="st_page_title">
             <h4>
-                SINGLE PORTFOLIO
+                @Model.Title
             </h4>
         </div>
         <ol class="breadcrumb">
@@ -34,15 +34,14 @@
                     <div id="carousel-example-generic" class="carousel slide st_singleportfolio_slider" data-ride="carousel">
                         <!-- Wrapper for slides -->
                         <div class="carousel-inner" role="listbox">
-
                             <div class="item active">
-                                <img src="@Model.GetImageSource(Model.MainImage)" class="img-responsive" alt="#">
+                                <img src="@Url.Content(Model.GetImageSource(Model.MainImage))" style=" width : 700px; height : 600px" class="img-responsive" alt="#">
                             </div>
 
                             @foreach (var image in Model.Images.Where(p => !p.Equals(Model.MainImage)))
                             {
                                 <div class="item">
-                                    <img src="@Model.GetImageSource(image)" class="img-responsive" alt="...">
+                                    <img src="@Url.Content(Model.GetImageSource(image))" style=" width : 700px; height : 600px" class="img-responsive" alt="...">
                                 </div>
                             }
                         </div>
@@ -83,7 +82,7 @@
                             </i>
                             Date of completion
                             <span class="st_author">
-                                Project completed on March 7th, 2015
+                                @Model.CreatedDate
                             </span>
                             <br>
                         </div>
@@ -164,105 +163,7 @@
         </div>
         <div class="st_port_content padder_bottom_50">
             <p>
-                You can&nbsp;
-                <strong>
-                    add various details
-                </strong>
-                &nbsp;about the project like the client, provider, date when the project was done and the
-                <strong>
-                    &nbsp;URL to the project
-                </strong>
-                . Images used in the Slideshow are in the&nbsp;
-                <strong>
-                    “Uploaded to this post”
-                </strong>
-                &nbsp;part. You can have&nbsp;
-                <strong>
-                    unlimited number
-                </strong>
-                &nbsp;of images in the Slideshow. Or you can only have one (with
-                <strong>
-                    &nbsp;Lightbox
-                </strong>
-                ).&nbsp;Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.
-            </p>
-            <div class="st_blockquote_blue">
-                <blockquote>
-                    <p>
-                        Donec sed tellus eget sapien fringilla nonummy.&nbsp;Suspendisse quam sem, consequat at, commodo vitae, feugiat in, nunc. Morbi imperdiet augue quis tellus. Lorem ipsum dolor sit amet. Quisque aliquam. Donec faucibus.&nbsp;Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-                    </p>
-                    <footer>
-                        John Doe,
-                        <cite title="Source Title">
-                            CEO PremiumCoding
-                        </cite>
-                    </footer>
-                </blockquote>
-            </div>
-            <div class="st_shortcode_wraper st_bottompadder_50 st_toppadder20 ">
-                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12  text-center">
-                    <div class="circle " id="circles-1">
-                    </div>
-                    <h5 class="st_blog_min_title  st_bottompadder_10 st_toppadder10 text-uppercase">
-                        illustration
-                    </h5>
-                    <p>
-                        Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hime.
-                    </p>
-                </div>
-                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12  text-center">
-                    <div class="circle" id="circles-2">
-                    </div>
-                    <h5 class="st_blog_min_title st_bottompadder_10 st_toppadder10 text-uppercase">
-                        SKETCHING
-                    </h5>
-                    <p>
-                        Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hime.
-                    </p>
-                </div>
-                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12  text-center">
-                    <div class="circle" id="circles-3">
-                    </div>
-                    <h5 class="st_blog_min_title st_bottompadder_10 st_toppadder10 text-uppercase">
-                        VIDEO COMMERCIALS
-                    </h5>
-                    <p>
-                        Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hime.
-                    </p>
-                </div>
-                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12  text-center">
-                    <div class="circle" id="circles-4">
-                    </div>
-                    <h5 class="st_blog_min_title st_bottompadder_10 st_toppadder10 text-uppercase">
-                        AUDIO TUNING
-                    </h5>
-                    <p>
-                        Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hime.
-                    </p>
-                </div>
-            </div>
-            <p>
-                You can&nbsp;
-                <strong>
-                    add various details
-                </strong>
-                &nbsp;about the project like the client, provider, date when the project was done and the
-                <strong>
-                    &nbsp;URL to the project
-                </strong>
-                . Images used in the Slideshow are in the&nbsp;
-                <strong>
-                    “Uploaded to this post”
-                </strong>
-                &nbsp;part. You can have&nbsp;
-                <strong>
-                    unlimited number
-                </strong>
-                &nbsp;of images in the Slideshow. Or you can only have one (with
-                <strong>
-                    &nbsp;Lightbox
-                </strong>
-                ).&nbsp;Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.
+                @Model.Description
             </p>
             <nav>
                 <ul class="pager st_toppadder20 st_bottompadder_20">
@@ -290,74 +191,7 @@
                     </li>
                 </ul>
             </nav>
-            <h5 class="st_post_title ">
-                <span>
-                    Related
-                </span>
-                <span class="st_color1 ">
-                    Projects
-                </span>
-            </h5>
-            <div class="st_single_post st_bottompadder_60">
-                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6 st_show_overlay st_related_project">
-                    <div class="row">
-                        <div class="st_port_recentimage">
-                            <div class="st_port_overdefult">
-                                <div class="st_port_recentdescription">
-                                    <a href="single-portfolio.html" title="Autumn in Park">
-                                        <h5>
-                                            Autumn in Park
-                                        </h5>
-                                    </a>
-                                </div>
-                                <div class="st-page-portfolio-categories">
-                                    <a href="category.html" rel="tag">
-                                        photography, Videos
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="st_port_image">
-                                <a href="#">
-                                    <img src="http://placehold.it/393x300" alt="" class="img-responsive">
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6 st_show_overlay st_related_project">
-                    <div class="row">
-                        <div class="st_port_recentimage">
-                            <div class="st_port_overdefult">
-                                <div class="st_port_recentdescription">
-                                    <a href="single-portfolio.html" title="Field and the Sea">
-                                        <h5>
-                                            Field and the Sea
-                                        </h5>
-                                    </a>
-                                </div>
-                                <div class="st-page-portfolio-categories">
-                                    <a href="category.html" rel="tag">
-                                        photography,Videos
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="st_port_image">
-                                <a href="#">
-                                    <img src="http://placehold.it/393x300" alt="" class="img-responsive">
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6 st_related_project">
-                    <div class="row">
-                        <div class="Flexible-container">
-                            <iframe class="embed-responsive-item" src="https://player.vimeo.com/video/41869140"></iframe>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
-</div>
+</div>hello th
 

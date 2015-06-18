@@ -1,17 +1,86 @@
 ﻿@{
     ViewBag.Title = "Contact";
 }
-<h2>@ViewBag.Title.</h2>
-<h3>@ViewBag.Message</h3>
 
-<address>
-    One Microsoft Way<br />
-    Redmond, WA 98052-6399<br />
-    <abbr title="Phone">P:</abbr>
-    425.555.0100
-</address>
 
-<address>
-    <strong>Support:</strong>   <a href="mailto:Support@example.com">Support@example.com</a><br />
-    <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
-</address>
+<!--st_mapdiv strat-->
+<div class="st_mapdiv">
+    <div id="bigth_googleMap" style="width:100%;height:400px;">
+    </div>
+</div>
+<!--st_mapdiv end-->
+<!--st_contactForm Start-->
+<div class="st_inner_page_container">
+    <div class="container">
+        <div class="st_contact_page">
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="st_contact_form">
+                        <div class="form-group">
+                            <label>
+                                Your Name (required)
+                            </label>
+                            <input type="text" id="uname" name="name" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                Your Email (required)
+                            </label>
+                            <input type="text" id="umail" name="email" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                Your Subject
+                            </label>
+                            <input type="text" id="subj" name="subject" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                Your Message
+                            </label>
+                            <textarea class="form-control tr_textarea" id="msg" rows="7"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <input type="button" name="btn" value="send" id="em_submit" class="btn btn-primary  btn-lg">
+                            <p id="err">
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                    <div class="st_contact_info pull-right">
+                        <ul>
+                            <li>
+                                <i class="fa fa-home">
+                                </i>
+                                Berkeley Shoe
+                                <br>
+                                <span class="st_left_spacer">
+                                    225 Broadway
+                                    <br>
+                                    Methuen, Massachusetts
+                                </span>
+                            </li>
+                            <li>
+                                <i class="fa fa-phone">
+                                </i>
+                                (978) 794 1966
+                            </li>
+                            <li>
+                                <i class="fa fa-mobile">
+                                </i>
+                                (978) 394 8899
+                            </li>
+                            <li>
+                                <i class="fa fa-envelope">
+                                </i>
+                                encalada.jonathan@gmail.com
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--st_contactForm end-->

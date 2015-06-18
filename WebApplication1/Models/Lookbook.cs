@@ -25,7 +25,7 @@ namespace WebApplication1.Models
 
         public string GetImageSource(string fileName)
         {
-            return @"Content\Lookbook\" + this.ID + @"\" + fileName;
+            return @"~\Content\Lookbook\" + this.ID + @"\" + fileName;
         }
     }
 }
