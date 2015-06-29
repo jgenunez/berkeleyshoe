@@ -53,8 +53,8 @@ namespace MarketplaceManager
                     product.OmsAuc = item.EbayListingItems.Where(p => p.Listing.MarketplaceID == 2 && p.Listing.Status.Equals(EbayMarketplace.STATUS_ACTIVE) && p.Listing.Format.Equals(EbayMarketplace.FORMAT_AUCTION)).Sum(p => p.Quantity);
                     product.Oms = item.EbayListingItems.Where(p => p.Listing.MarketplaceID == 2 && p.Listing.Status.Equals(EbayMarketplace.STATUS_ACTIVE) && p.Listing.Format.Equals(EbayMarketplace.FORMAT_FIXEDPRICE)).Sum(p => p.Quantity);
 
-                    product.SavAuc = item.EbayListingItems.Where(p => p.Listing.MarketplaceID == 3 && p.Listing.Status.Equals(EbayMarketplace.STATUS_ACTIVE) && p.Listing.Format.Equals(EbayMarketplace.FORMAT_AUCTION)).Sum(p => p.Quantity);
-                    product.Sav = item.EbayListingItems.Where(p => p.Listing.MarketplaceID == 3 && p.Listing.Status.Equals(EbayMarketplace.STATUS_ACTIVE) && p.Listing.Format.Equals(EbayMarketplace.FORMAT_FIXEDPRICE)).Sum(p => p.Quantity);
+                    product.LcsAuc = item.EbayListingItems.Where(p => p.Listing.MarketplaceID == 3 && p.Listing.Status.Equals(EbayMarketplace.STATUS_ACTIVE) && p.Listing.Format.Equals(EbayMarketplace.FORMAT_AUCTION)).Sum(p => p.Quantity);
+                    product.Lcs = item.EbayListingItems.Where(p => p.Listing.MarketplaceID == 3 && p.Listing.Status.Equals(EbayMarketplace.STATUS_ACTIVE) && p.Listing.Format.Equals(EbayMarketplace.FORMAT_FIXEDPRICE)).Sum(p => p.Quantity);
 
                     var ebayDuplicates = item.EbayListingItems
                         .Where(p => p.Listing.Status.Equals(EbayMarketplace.STATUS_ACTIVE))
@@ -113,9 +113,9 @@ namespace MarketplaceManager
 
         public int OmsAuc { get; set; }
 
-        public int Sav { get; set; }
+        public int Lcs { get; set; }
 
-        public int SavAuc { get; set; }
+        public int LcsAuc { get; set; }
 
         public string Duplicates { get; set; }
 
