@@ -683,7 +683,7 @@ namespace MarketplaceManager
                 }
                 else
                 {
-                    item.UnitPrice = orderItemDto.ItemPrice / orderItemDto.QuantityOrdered;
+                    item.UnitPrice = (orderItemDto.ItemPrice - orderItemDto.PromotionDiscount) / orderItemDto.QuantityOrdered;
                 }
 
                 orderItems.Add(item);
