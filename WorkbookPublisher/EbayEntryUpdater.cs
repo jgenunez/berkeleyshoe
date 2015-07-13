@@ -217,7 +217,7 @@ namespace WorkbookPublisher
                     entry.Status = StatusCode.Error;
                 }
 
-                if (string.IsNullOrWhiteSpace(entry.Title))
+                if (string.IsNullOrWhiteSpace(entry.Title) || entry.Title.Count() < 6)
                 {
                     entry.Message = "title required";
                     entry.Status = StatusCode.Error;

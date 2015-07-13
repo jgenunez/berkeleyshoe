@@ -129,6 +129,11 @@ namespace BerkeleyEntities.Ebay
                 throw new InvalidOperationException("picture required");
             }
 
+            if (listingDto.IsVariation && listingDto.Items.Count() < 2)
+            {
+                throw new InvalidOperationException("2 or more items required for variation listing");
+            }
+
             listingDto.UrlsIds = GetEPSUrls(pics);
 
             var ebayDto = MapToEbayDto(listingDto, true, true);
