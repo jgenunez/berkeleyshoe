@@ -279,6 +279,18 @@ namespace WorkbookPublisher
         public string Location { get; set; }
         public string Description { get; set; }
 
+        public int StgQ { get; set; }
+        public decimal StgP { get; set; }
+
+        public int OmsQ {get; set;}
+        public decimal OmsP {get; set;}
+
+        public int LcsQ {get; set;}
+        public decimal LcsP {get; set;}
+
+        public int OrgQ {get; set;}
+        public decimal OrgP {get; set;}
+
         public string Asin { get; set; }
     }
 
@@ -292,7 +304,10 @@ namespace WorkbookPublisher
         public string Gender { get; set; }
         public string UPC { get; set; }
 
-        public string Active { get; set; }
+        public string ORG { get; set; }
+        public string STG { get; set; }
+        public string LCS { get; set; }
+        public string OMS { get; set; }
     }
 
     public abstract class ListingEntry : BaseEntry, INotifyPropertyChanged

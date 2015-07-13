@@ -84,13 +84,22 @@ namespace WorkbookPublisher
         {
             using (berkeleyEntities dataContext = new berkeleyEntities())
             {
-                dataContext.MaterializeAttributes = true;
+                var desc = dataContext.EbayListings.Where(p => p.FullDescription == null);
 
-                var nikes = dataContext.Items.Where(p => p.SubDescription1.Equals("NIKE") && p.Category.Name.Equals("CLEATS") && p.Quantity > 0).ToList();
+                foreach (var listing in desc)
+                {
+                    listing.FullDescription = string.Empty;
+                }
 
-                var target = nikes.Where(p => decimal.Parse(p.Dimensions[DimensionName.USMenSize].Value) >= 8 && decimal.Parse(p.Dimensions[DimensionName.USMenSize].Value) <= 12);
+                dataContext.SaveChanges();
 
-                int count = (int)target.Sum(p => p.Quantity);
+                //dataContext.MaterializeAttributes = true;
+
+                //var nikes = dataContext.Items.Where(p => p.SubDescription1.Equals("NIKE") && p.Category.Name.Equals("CLEATS") && p.Quantity > 0).ToList();
+
+                //var target = nikes.Where(p => decimal.Parse(p.Dimensions[DimensionName.USMenSize].Value) >= 8 && decimal.Parse(p.Dimensions[DimensionName.USMenSize].Value) <= 12);
+
+                //int count = (int)target.Sum(p => p.Quantity);
             }
         }
 
@@ -368,12 +377,43 @@ namespace WorkbookPublisher
 
                         entry.TitleFormula = textInfo.ToTitleCase((entry.Brand + " " + titleMap.Map + " Size " + dims + description).ToLower());
 
-                        var ebayHistory = string.Join(" ", item.EbayListingItems.Where(p => p.Listing.Status.Equals(EbayMarketplace.STATUS_ACTIVE)).Select(p => p.ToString()));
-                        var amznHistory = string.Join(" ", item.AmznListingItems.Where(p => p.IsActive).Select(p => p.ToString()));
+                        var ebayActiveListingItems = item.EbayListingItems.Where(p => p.Listing.Status.Equals(EbayMarketplace.STATUS_ACTIVE));
 
-                        string status = ebayHistory + " " + amznHistory;
+                        foreach (var listingItem in ebayActiveListingItems)
+                        {
+                            switch (listingItem.Listing.Marketplace.Code)
+                            {
+                                case "STG": 
+                                    entry.StgQ = listingItem.Quantity;
+                                    entry.StgP = listingItem.Price; break;
+                                case "OMS": 
+                                    entry.OmsQ = listingItem.Quantity;
+                                    entry.OmsP = listingItem.Price; break;
+                                case "LCS":
+                                    entry.LcsQ = listingItem.Quantity;
+                                    entry.LcsP = listingItem.Price; break;
+                            }
+                        }
 
-                        entry.Status = string.IsNullOrWhiteSpace(status)? "No Active Listing" : status;
+                        var amznActiveListingItems = item.AmznListingItems.Where(p => p.IsActive);
+
+                        foreach (var listingItem in amznActiveListingItems)
+                        {
+                            switch (listingItem.Marketplace.Code)
+                            {
+                                case "ORG":
+                                    entry.OrgQ = listingItem.Quantity;
+                                    entry.OrgP = listingItem.Price; break;
+                            }
+                        }
+
+
+                        //var ebayHistory = string.Join(" ", item.EbayListingItems.Where(p => p.Listing.Status.Equals(EbayMarketplace.STATUS_ACTIVE)).Select(p => p.ToString()));
+                        //var amznHistory = string.Join(" ", item.AmznListingItems.Where(p => p.IsActive).Select(p => p.ToString()));
+
+                        //string status = ebayHistory + " " + amznHistory;
+
+                        //entry.Status = string.IsNullOrWhiteSpace(status)? "No Active Listing" : status;
 
                         if (item.EbayListingItems.Where(w => w.Listing.IsVariation.HasValue && !w.Listing.IsVariation.Value).Count() > 0)
                         {
@@ -421,26 +461,31 @@ namespace WorkbookPublisher
                         entry.ClassName = item.ClassName;
                         entry.Qty = item.QtyAvailable;
                         entry.Cost = item.Cost;
+                        entry.Gender = item.SubDescription3;
 
-                        StringBuilder sb = new StringBuilder();
+                        entry.UPC = item.Aliases.Any(p => !string.IsNullOrWhiteSpace(p.Alias1)) ? "YES" : "NO";
 
-                        var marketplaces = item.EbayListingItems.GroupBy(p => p.Listing.Marketplace);
+                        var ebayActiveListingItems = item.EbayListingItems.Where(p => p.Listing.Status.Equals(EbayMarketplace.STATUS_ACTIVE));
 
-                        foreach (var marketplace in marketplaces)
+                        foreach (var listingItem in ebayActiveListingItems)
                         {
-                            var actives = marketplace.Where(p => p.Listing.Status.Equals("Active"));
-
-                            foreach (var active in actives)
+                            switch (listingItem.Listing.Marketplace.Code)
                             {
-                                sb.AppendLine(active.ToString());
+                                case "STG": entry.STG = listingItem.Price.ToString("C"); break;
+                                case "OMS": entry.OMS = listingItem.Price.ToString("C"); break;
+                                case "LCS": entry.LCS = listingItem.Price.ToString("C"); break;
                             }
                         }
 
-                        entry.Active = sb.ToString();
+                        var amznActiveListingItems = item.AmznListingItems.Where(p => p.IsActive);
 
-                        //var ebayHistory = string.Join("<br>",item.EbayListingItems.Select(p => p.ToString()));
-                        //var amznHistory = string.Join("<br>", item.AmznListingItems.Select(p => p.ToString()));
-                        //entry.History = ebayHistory + "<br>" + amznHistory;
+                        foreach (var listingItem in amznActiveListingItems)
+                        {
+                            switch (listingItem.Marketplace.Code)
+                            {
+                                case "ORG": entry.ORG = listingItem.Price.ToString("C"); break;
+                            }
+                        }
 
                     }
                     catch (Exception e)
@@ -456,7 +501,7 @@ namespace WorkbookPublisher
         {
             StringBuilder table = new StringBuilder();
 
-            string style = @"<style> @media print{thead{display: table-header-group;}} img { height:100px; max-width:100px; width: expression(this.width > 500 ? 500: true);} td { text-align: center;} .input { padding: 50px; }  </style>";
+            string style = @"<style> @media print{ thead{display: table-header-group;} table { page-break-inside: avoid; position: relative; }  } td { text-align: center;} img { height:100px; max-width:100px; width: expression(this.width > 500 ? 500: true);} .input { width: 75px; height: 75px; }</style>";
 
             table.AppendFormat(@"<html><head>{0}</head><body><table border=""2"">", style);
 
@@ -464,7 +509,7 @@ namespace WorkbookPublisher
 
             var classGroups = entries.GroupBy(p => p.ClassName).OrderBy(p => p.Key);
 
-            table.Append("<thead><tr><th>Picture</th><th>Brand</th><th>Gender</th><th>Sku</th><th>Qty</th><th>Cost</th><th>UPC</th><th>Active</th><th>ORI</th><th>STG</th><th>OMS</th><th>LCS</th></tr></thead><tbody>");
+            table.Append("<thead><tr><th>Picture</th><th>Brand</th><th>Gender</th><th>Sku</th><th>Qty</th><th>Cost</th><th>UPC</th><th>ORG</th><th>OMS</th><th>STG</th><th>LCS</th></tr></thead><tbody>");
 
             foreach (var classGroup in classGroups)
             {
@@ -472,16 +517,20 @@ namespace WorkbookPublisher
 
                 var mainPic = pics.OrderBy(p => p.Name).FirstOrDefault();
 
-                bool hasImage = false;
-
                 string rowSpan = classGroup.Count().ToString();
+
+                bool needSharedCols = true;
+
+                table.Append(@"<div style=""page-break-inside: avoid; position: relative;"">");
 
                 foreach (PrintEntry entry in classGroup.OrderBy(p => p.Sku))
                 {
                     table.Append("<tr>");
 
-                    if (!hasImage)
+                    if (needSharedCols)
                     {
+                        needSharedCols = false;
+
                         if (mainPic != null)
                         {
                             table.AppendFormat(@"<td rowspan=""{1}""><img src=""{0}""></td>", mainPic.Path, rowSpan);
@@ -491,35 +540,29 @@ namespace WorkbookPublisher
                             table.AppendFormat(@"<td rowspan=""{1}""><img src=""{0}""></td>", string.Empty, rowSpan);
                         }
 
-                        
-                        table.AppendFormat(@"<td rowspan=""{1}"">{0}</td>", entry.Brand, rowSpan);
-                        table.AppendFormat(@"<td rowspan=""{1}"">{0}</td>", entry.Gender, rowSpan);
+                        var mainEntry = classGroup.First();
+
+                        table.AppendFormat(@"<td rowspan=""{1}"">{0}</td>", mainEntry.Brand, rowSpan);
+                        table.AppendFormat(@"<td rowspan=""{1}"">{0}</td>", mainEntry.Gender, rowSpan);
                     }
 
                     
-                    table.AppendFormat("<td>{0}</td>", entry.Sku);               
+
+                    table.AppendFormat("<td>{0}</td>", entry.Sku);
                     table.AppendFormat("<td>{0}</td>", entry.Qty);
                     table.AppendFormat("<td>{0:C}</td>", entry.Cost);
 
-                    
+                    table.AppendFormat("<td >{0}</td>", string.IsNullOrEmpty(entry.UPC) ? "No" : "Yes");
 
-                    table.AppendFormat("<td>{0}</td>", string.IsNullOrEmpty(entry.UPC) ? "No" : "Yes");
+                    table.AppendFormat(@"<td class=""input"">{0:C}</td>", entry.ORG != null ? entry.ORG : string.Empty);
+                    table.AppendFormat(@"<td class=""input"">{0:C}</td>", entry.OMS != null ? entry.OMS : string.Empty);
+                    table.AppendFormat(@"<td class=""input"">{0:C}</td>", entry.STG != null ? entry.STG : string.Empty);
+                    table.AppendFormat(@"<td class=""input"">{0:C}</td>", entry.LCS != null ? entry.LCS : string.Empty);
 
-                    table.AppendFormat(@"<td class=""history"">{0}</td>", entry.Active);
-
-
-                    if (!hasImage)
-                    {
-                        table.AppendFormat(@"<td class=""input"" rowspan=""{0}"">     </td>", rowSpan);
-                        table.AppendFormat(@"<td class=""input""  rowspan=""{0}"">     </td>", rowSpan);
-                        table.AppendFormat(@"<td class=""input""  rowspan=""{0}"">     </td>", rowSpan);
-                        table.AppendFormat(@"<td class=""input""  rowspan=""{0}"">     </td>", rowSpan);
-
-                        hasImage = true;
-                    }
- 
                     table.Append("</tr>");
                 }
+
+                table.Append("</div>");
 
             }
 
@@ -611,30 +654,6 @@ namespace WorkbookPublisher
                 }
             }
         }
-
-
-
-        
-
-        
-
-        
-
-        
-
-
-
-        
-
-
-        
-
-        
-
-        
-
-        
-
         
     }
 

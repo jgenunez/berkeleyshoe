@@ -1070,6 +1070,7 @@ namespace BerkeleyEntities.Ebay
                 if (listing == null)
                 {
                     listing = new EbayListing();
+                    listing.FullDescription = string.Empty;
                 }
                 
                 try

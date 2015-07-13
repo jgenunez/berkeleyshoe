@@ -10,7 +10,7 @@ namespace BerkeleyEntities
     {
         public override string ToString()
         {
-            return string.Format("({0}|{1})",this.Marketplace.Code, this.Quantity);
+            return string.Format("({0}|{1})", this.Quantity, this.Price);
         }
     }
 }

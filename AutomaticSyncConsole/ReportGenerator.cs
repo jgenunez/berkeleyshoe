@@ -278,7 +278,7 @@ namespace AutomaticSyncConsole
                     product.Brand = item.SubDescription1;
                     product.Cost = item.Cost;
                     product.Department = item.DepartmentName;
-                    product.OnPO = item.OnPurchaseOrder;
+                    //product.OnPO = item.OnPurchaseOrder;
                     product.OnHand = (int)item.Quantity;
                     product.OnHold = item.OnHold;
                     product.OnPendingOrder = item.OnPendingOrder;

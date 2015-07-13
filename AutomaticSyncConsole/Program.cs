@@ -21,6 +21,7 @@ namespace AutomaticSyncConsole
         {
             try
             {
+
                 if (args[0].Equals("1"))
                 {
                     SyncEbayAndAmznOrders();
