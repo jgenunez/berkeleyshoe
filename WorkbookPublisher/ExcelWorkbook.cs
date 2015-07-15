@@ -300,6 +300,7 @@ namespace WorkbookPublisher
         public string ClassName { get; set; }
         public string Sku { get; set; }
         public int Qty { get; set; }
+        public decimal MSRP { get; set; }
         public decimal Cost { get; set; }
         public string Gender { get; set; }
         public string UPC { get; set; }

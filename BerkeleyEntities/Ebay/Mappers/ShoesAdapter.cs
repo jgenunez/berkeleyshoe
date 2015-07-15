@@ -54,6 +54,46 @@ namespace BerkeleyEntities.Ebay.Mappers
                 nameValueList.Add(BuildItemSpecific("Color", new string[1] { this.ToTitleCase(_item.SubDescription2) }));
             }
 
+            if (!string.IsNullOrWhiteSpace(_item.Notes))
+            {
+                if (_item.Notes.Contains("LEATHER"))
+                {
+                    nameValueList.Add(BuildItemSpecific("Material", new string[1] { "Leather" }));
+                }
+                else if (_item.Notes.Contains("SUEDE"))
+                {
+                    nameValueList.Add(BuildItemSpecific("Material", new string[1] { "Suede" }));
+                }
+                else if (_item.Notes.Contains("CANVAS"))
+                {
+                    nameValueList.Add(BuildItemSpecific("Material", new string[1] { "Canvas" }));
+                }
+                else if (_item.Notes.Contains("NYLON"))
+                {
+                    nameValueList.Add(BuildItemSpecific("Material", new string[1] { "Nylon" }));
+                }
+                else if (_item.Notes.Contains("SYNTHETIC"))
+                {
+                    nameValueList.Add(BuildItemSpecific("Material", new string[1] { "Synthetic" }));
+                }
+                else if (_item.Notes.Contains("COTTON"))
+                {
+                    nameValueList.Add(BuildItemSpecific("Material", new string[1] { "Cotton" }));
+                }
+                else if (_item.Notes.Contains("DOWN"))
+                {
+                    nameValueList.Add(BuildItemSpecific("Material", new string[1] { "Down" }));
+                }
+                else if (_item.Notes.Contains("HEMP"))
+                {
+                    nameValueList.Add(BuildItemSpecific("Material", new string[1] { "Hemp" }));
+                }
+                else if (_item.Notes.Contains("VEGAN"))
+                {
+                    nameValueList.Add(BuildItemSpecific("Material", new string[1] { "Vegan" }));
+                }
+            }
+
             return nameValueList;
         }
 

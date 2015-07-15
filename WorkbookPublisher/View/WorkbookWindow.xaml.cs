@@ -84,12 +84,9 @@ namespace WorkbookPublisher
         {
             using (berkeleyEntities dataContext = new berkeleyEntities())
             {
-                var desc = dataContext.EbayListings.Where(p => p.FullDescription == null);
+                var items = dataContext.Items.Where(p => p.Quantity > 0);
 
-                foreach (var listing in desc)
-                {
-                    listing.FullDescription = string.Empty;
-                }
+               
 
                 dataContext.SaveChanges();
 
@@ -501,9 +498,9 @@ namespace WorkbookPublisher
         {
             StringBuilder table = new StringBuilder();
 
-            string style = @"<style> @media print{ thead{display: table-header-group;} table { page-break-inside: avoid; position: relative; }  } td { text-align: center;} img { height:100px; max-width:100px; width: expression(this.width > 500 ? 500: true);} .input { width: 75px; height: 75px; }</style>";
+            string style = @"<style>  td { text-align: center;} .input { width: 75px; height: 75px; } img { height:100px; max-width:100px; width: expression(this.width > 500 ? 500: true);} </style>";
 
-            table.AppendFormat(@"<html><head>{0}</head><body><table border=""2"">", style);
+            table.AppendFormat(@"<html><head>{0}</head><body><table border=""1"">", style);
 
             PictureSetRepository picRepository = new PictureSetRepository();
 
@@ -520,8 +517,6 @@ namespace WorkbookPublisher
                 string rowSpan = classGroup.Count().ToString();
 
                 bool needSharedCols = true;
-
-                table.Append(@"<div style=""page-break-inside: avoid; position: relative;"">");
 
                 foreach (PrintEntry entry in classGroup.OrderBy(p => p.Sku))
                 {
@@ -550,6 +545,7 @@ namespace WorkbookPublisher
 
                     table.AppendFormat("<td>{0}</td>", entry.Sku);
                     table.AppendFormat("<td>{0}</td>", entry.Qty);
+                    //table.AppendFormat("<td>{0:C}</td>", entry.MSRP);
                     table.AppendFormat("<td>{0:C}</td>", entry.Cost);
 
                     table.AppendFormat("<td >{0}</td>", string.IsNullOrEmpty(entry.UPC) ? "No" : "Yes");
@@ -561,8 +557,6 @@ namespace WorkbookPublisher
 
                     table.Append("</tr>");
                 }
-
-                table.Append("</div>");
 
             }
 

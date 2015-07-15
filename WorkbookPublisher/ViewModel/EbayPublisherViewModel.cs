@@ -123,7 +123,6 @@ namespace WorkbookPublisher.ViewModel
                 foreach (var entry in entries)
                 {
                     entry.Command = string.Empty;
-
                     entry.Status = StatusCode.Completed;
                 }
             }

@@ -815,6 +815,10 @@ namespace BerkeleyEntities.Ebay
                     {
                         HandleErrorCode17(listing.Code);
                     }
+                    else if (e.Errors.ToArray().Any(p => p.ErrorCode.Equals("291")))
+                    {
+                        HandleErrorCode291(listing.Code);
+                    }
 
                     _logger.Error(string.Format("Error updating {0} - {1} : {2}", _marketplace.Code, listing.Code, e.Message));
                 }
@@ -892,6 +896,18 @@ namespace BerkeleyEntities.Ebay
                 EbayListing listing = dataContext.EbayListings.Single(p => p.Marketplace.ID == _marketplace.ID && p.Code.Equals(code));
 
                 listing.Status = EbayMarketplace.STATUS_DELETED;
+
+                dataContext.SaveChanges();
+            }
+        }
+
+        private void HandleErrorCode291(string code)
+        {
+            using (berkeleyEntities dataContext = new berkeleyEntities())
+            {
+                EbayListing listing = dataContext.EbayListings.Single(p => p.Marketplace.ID == _marketplace.ID && p.Code.Equals(code));
+
+                listing.Status = EbayMarketplace.STATUS_COMPLETED;
 
                 dataContext.SaveChanges();
             }

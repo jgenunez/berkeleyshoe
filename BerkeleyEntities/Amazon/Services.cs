@@ -1631,8 +1631,6 @@ namespace BerkeleyEntities.Amazon
         {
             foreach (Order amznOrder in orders)
             {
-                
-
                 try
                 {
                     List<OrderItem> orderItems = ListOrderItems(amznOrder.AmazonOrderId);
