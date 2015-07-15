@@ -92,6 +92,10 @@ namespace BerkeleyEntities.Ebay.Mappers
                 {
                     nameValueList.Add(BuildItemSpecific("Material", new string[1] { "Vegan" }));
                 }
+                else if (_item.Notes.Contains("PATENT"))
+                {
+                    nameValueList.Add(BuildItemSpecific("Material", new string[1] { "Patent Leather" }));
+                }
             }
 
             return nameValueList;
