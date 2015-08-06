@@ -35,6 +35,11 @@ namespace WorkbookPublisher
         private ExcelWorkbook _workbook;
 
 
+        private PictureSetRepository _pictureSetRepository = new PictureSetRepository();
+        private TextInfo _textInfo;
+        private berkeleyEntities _dataContext;
+        private List<TitleMapRule> _titleMaps;
+
         public WorkbookWindow()
         {
             InitializeComponent();
@@ -80,42 +85,6 @@ namespace WorkbookPublisher
             //window.ShowDialog();
         }
 
-        private void HowManyOfEachSize()
-        {
-            using (berkeleyEntities dataContext = new berkeleyEntities())
-            {
-                var items = dataContext.Items.Where(p => p.Quantity > 0);
-
-               
-
-                dataContext.SaveChanges();
-
-                //dataContext.MaterializeAttributes = true;
-
-                //var nikes = dataContext.Items.Where(p => p.SubDescription1.Equals("NIKE") && p.Category.Name.Equals("CLEATS") && p.Quantity > 0).ToList();
-
-                //var target = nikes.Where(p => decimal.Parse(p.Dimensions[DimensionName.USMenSize].Value) >= 8 && decimal.Parse(p.Dimensions[DimensionName.USMenSize].Value) <= 12);
-
-                //int count = (int)target.Sum(p => p.Quantity);
-            }
-        }
-
-        private void TestBonanza()
-        {
-            BerkeleyEntities.Bonanza.BonanzaServices services = new BerkeleyEntities.Bonanza.BonanzaServices();
-
-
-            services.SynchronizeListing(1);
-            //services.FetchToken(1);
-
-            //using (berkeleyEntities dataContext = new berkeleyEntities())
-            //{
-            //    var marketplace = dataContext.BonanzaMarketplaces.Single(p => p.ID == 1);
-            //    marketplace.Token = "O2lsYmLnMP";
-            //    dataContext.SaveChanges();
-            //}
-        }
-
         private void lbCurrentWorkbook_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             Process.Start(lbCurrentWorkbook.Content as string);
@@ -157,7 +126,9 @@ namespace WorkbookPublisher
 
                     tcSheets.ItemsSource = composite;
                 }
-                
+
+                _textInfo = Thread.CurrentThread.CurrentCulture.TextInfo;
+                _titleMaps = _workbook.ReadTitleMapRules();
             }
         }
 
@@ -189,8 +160,6 @@ namespace WorkbookPublisher
             {
                 MessageBox.Show("Invalid columns");
             }
-
-
 
             MessageBox.Show("main sheet updated");
 
@@ -314,19 +283,15 @@ namespace WorkbookPublisher
 
         public void UpdateMainEntries(IEnumerable<MainEntry> entries)
         {
-            var titleMaps = _workbook.ReadTitleMapRules();
-            TextInfo textInfo = Thread.CurrentThread.CurrentCulture.TextInfo;
-            PictureSetRepository picRepository = new PictureSetRepository();
-
-            using (berkeleyEntities dataContext = new berkeleyEntities())
+            using (_dataContext = new berkeleyEntities())
             {
-                dataContext.MaterializeAttributes = true;
+                _dataContext.MaterializeAttributes = true;
 
                 foreach (MainEntry entry in entries)
                 {
                     try
                     {
-                        Item item = dataContext.Items.Include("EbayListingItems").Include("AmznListingItems").SingleOrDefault(p => p.ItemLookupCode.Equals(entry.Sku));
+                        Item item = _dataContext.Items.Include("EbayListingItems").Include("AmznListingItems").SingleOrDefault(p => p.ItemLookupCode.Equals(entry.Sku));
 
                         if (item == null)
                         {
@@ -334,101 +299,7 @@ namespace WorkbookPublisher
                             continue;
                         }
 
-                        entry.Brand = item.SubDescription1;
-                        entry.ClassName = item.ClassName;
-                        entry.Qty = item.QtyAvailable;
-                        entry.Cost = item.Cost;
-
-                        entry.Department = item.DepartmentName;
-                        entry.Category = item.CategoryName;
-                        entry.Gender = item.SubDescription3;
-                        entry.Color = item.SubDescription2;
-                        entry.Notes = item.Notes;
-                        entry.Price = item.Price;
-                        entry.Location = item.BinLocation;
-                        entry.Cost = item.Cost;
-                        entry.Qty = item.QtyAvailable;
-                        entry.Description = item.Description;
-                        entry.UPC = item.GTIN;
-
-                        var pics = picRepository.GetPictures(entry.Brand, new List<string>() { entry.Sku });
-
-                        entry.PictureCount = pics.Count;
-
-                        var titleMap = titleMaps.SingleOrDefault(p => p.Department.Equals(item.DepartmentName) && p.Category.Equals(item.CategoryName));
-
-                        if (titleMap == null)
-                        {
-                            titleMap = new TitleMapRule();
-                            titleMap.Map = "";
-                        }
-
-                        string description = item.Description;
-                        string dims = string.Empty;
-
-                        foreach (var attribute in item.Dimensions)
-                        {
-                            description = description.Replace(" " + attribute.Value.Value + " ", "");
-                            dims += attribute.Value.Value + " ";
-                        }
-
-                        entry.TitleFormula = textInfo.ToTitleCase((entry.Brand + " " + titleMap.Map + " Size " + dims + description).ToLower());
-
-                        var ebayActiveListingItems = item.EbayListingItems.Where(p => p.Listing.Status.Equals(EbayMarketplace.STATUS_ACTIVE));
-
-                        foreach (var listingItem in ebayActiveListingItems)
-                        {
-                            switch (listingItem.Listing.Marketplace.Code)
-                            {
-                                case "STG": 
-                                    entry.StgQ = listingItem.Quantity;
-                                    entry.StgP = listingItem.Price; break;
-                                case "OMS": 
-                                    entry.OmsQ = listingItem.Quantity;
-                                    entry.OmsP = listingItem.Price; break;
-                                case "LCS":
-                                    entry.LcsQ = listingItem.Quantity;
-                                    entry.LcsP = listingItem.Price; break;
-                            }
-                        }
-
-                        var amznActiveListingItems = item.AmznListingItems.Where(p => p.IsActive);
-
-                        foreach (var listingItem in amznActiveListingItems)
-                        {
-                            switch (listingItem.Marketplace.Code)
-                            {
-                                case "ORG":
-                                    entry.OrgQ = listingItem.Quantity;
-                                    entry.OrgP = listingItem.Price; break;
-                            }
-                        }
-
-
-                        //var ebayHistory = string.Join(" ", item.EbayListingItems.Where(p => p.Listing.Status.Equals(EbayMarketplace.STATUS_ACTIVE)).Select(p => p.ToString()));
-                        //var amznHistory = string.Join(" ", item.AmznListingItems.Where(p => p.IsActive).Select(p => p.ToString()));
-
-                        //string status = ebayHistory + " " + amznHistory;
-
-                        //entry.Status = string.IsNullOrWhiteSpace(status)? "No Active Listing" : status;
-
-                        if (item.EbayListingItems.Where(w => w.Listing.IsVariation.HasValue && !w.Listing.IsVariation.Value).Count() > 0)
-                        {
-                            EbayListingItem listingItem = item.EbayListingItems.Single(p => p.ID == item.EbayListingItems.Where(w => w.Listing.IsVariation.HasValue && !w.Listing.IsVariation.Value).Max(s => s.ID));
-                            entry.Title = listingItem.Listing.Title;
-                            entry.FullDescription = listingItem.Listing.FullDescription;
-                        }
-                        else if (dataContext.bsi_quantities.Any(p => p.itemLookupCode.Equals(entry.Sku)))
-                        {
-                            var postDetails = dataContext.bsi_quantities.Where(p => p.itemLookupCode.Equals(entry.Sku));
-
-                            int lastPostDetailID = postDetails.Max(p => p.id);
-
-                            bsi_quantities postDetail = postDetails.Single(p => p.id == lastPostDetailID);
-
-                            entry.Title = postDetail.title;
-                            entry.FullDescription = postDetail.bsi_posts.bsi_posting.fullDescription;
-                        }
+                        UpdateMainEntry(item, entry);
                     }
                     catch (Exception e)
                     {
@@ -436,6 +307,97 @@ namespace WorkbookPublisher
                     }
 
                 }
+            }
+        }
+
+        private void UpdateMainEntry(Item item, MainEntry entry)
+        {
+            entry.Brand = item.SubDescription1;
+            entry.ClassName = item.ClassName;
+            entry.Qty = item.QtyAvailable;
+            entry.Cost = item.Cost;
+
+            entry.Department = item.DepartmentName;
+            entry.Category = item.CategoryName;
+            entry.Gender = item.SubDescription3;
+            entry.Color = item.SubDescription2;
+            entry.Notes = item.Notes;
+            entry.Price = item.Price;
+            entry.Location = item.BinLocation;
+            entry.Cost = item.Cost;
+            entry.Qty = item.QtyAvailable;
+            entry.Description = item.Description;
+            entry.UPC = item.GTIN;
+
+            var pics = _pictureSetRepository.GetPictures(entry.Brand, new List<string>() { entry.Sku });
+
+            entry.PictureCount = pics.Count;
+
+            var titleMap = _titleMaps.SingleOrDefault(p => p.Department.Equals(item.DepartmentName) && p.Category.Equals(item.CategoryName));
+
+            if (titleMap == null)
+            {
+                titleMap = new TitleMapRule();
+                titleMap.Map = "";
+            }
+
+            string description = item.Description;
+            string dims = string.Empty;
+
+            foreach (var attribute in item.Dimensions)
+            {
+                description = description.Replace(" " + attribute.Value.Value + " ", "");
+                dims += attribute.Value.Value + " ";
+            }
+
+            entry.TitleFormula = _textInfo.ToTitleCase((entry.Brand + " " + titleMap.Map + " Size " + dims + description).ToLower());
+
+            var ebayActiveListingItems = item.EbayListingItems.Where(p => p.Listing.Status.Equals(EbayMarketplace.STATUS_ACTIVE));
+
+            foreach (var listingItem in ebayActiveListingItems)
+            {
+                switch (listingItem.Listing.Marketplace.Code)
+                {
+                    case "STG":
+                        entry.StgQ = listingItem.Quantity;
+                        entry.StgP = listingItem.Price; break;
+                    case "OMS":
+                        entry.OmsQ = listingItem.Quantity;
+                        entry.OmsP = listingItem.Price; break;
+                    case "LCS":
+                        entry.LcsQ = listingItem.Quantity;
+                        entry.LcsP = listingItem.Price; break;
+                }
+            }
+
+            var amznActiveListingItems = item.AmznListingItems.Where(p => p.IsActive);
+
+            foreach (var listingItem in amznActiveListingItems)
+            {
+                switch (listingItem.Marketplace.Code)
+                {
+                    case "ORG":
+                        entry.OrgQ = listingItem.Quantity;
+                        entry.OrgP = listingItem.Price; break;
+                }
+            }
+
+            if (item.EbayListingItems.Where(w => w.Listing.IsVariation.HasValue && !w.Listing.IsVariation.Value).Count() > 0)
+            {
+                EbayListingItem listingItem = item.EbayListingItems.Single(p => p.ID == item.EbayListingItems.Where(w => w.Listing.IsVariation.HasValue && !w.Listing.IsVariation.Value).Max(s => s.ID));
+                entry.Title = listingItem.Listing.Title;
+                entry.FullDescription = listingItem.Listing.FullDescription;
+            }
+            else if (_dataContext.bsi_quantities.Any(p => p.itemLookupCode.Equals(entry.Sku)))
+            {
+                var postDetails = _dataContext.bsi_quantities.Where(p => p.itemLookupCode.Equals(entry.Sku));
+
+                int lastPostDetailID = postDetails.Max(p => p.id);
+
+                bsi_quantities postDetail = postDetails.Single(p => p.id == lastPostDetailID);
+
+                entry.Title = postDetail.title;
+                entry.FullDescription = postDetail.bsi_posts.bsi_posting.fullDescription;
             }
         }
 
@@ -647,6 +609,90 @@ namespace WorkbookPublisher
                     }
                 }
             }
+        }
+
+        private async void btnImportUnpublishedShoes_Click(object sender, RoutedEventArgs e)
+        {
+            btnImportUnpublishedShoes.IsEnabled = false;
+
+            if (_workbook == null)
+            {
+                MessageBox.Show("no workbook selected !");
+                return;
+            }
+
+            try
+            {
+                var mainEntries = await Task.Run<List<MainEntry>>(() => GetUnpublishedShoes());
+
+                await Task.Run(() => GetUnpublishedShoes() );
+
+                await Task.Run(() => _workbook.UpdateSheet(mainEntries.Cast<BaseEntry>().ToList(), typeof(MainEntry), MAIN_SHEET));
+            }
+            catch (IOException x)
+            {
+                MessageBox.Show(x.Message);
+            }
+            catch (FormatException x)
+            {
+                MessageBox.Show("Invalid columns");
+            }
+
+            MessageBox.Show("main sheet updated");
+
+            btnImportUnpublishedShoes.IsEnabled = true;
+        }
+
+        private List<MainEntry> GetUnpublishedShoes()
+        {
+            List<MainEntry> entries = new List<MainEntry>();
+
+            using (_dataContext = new berkeleyEntities())
+            {
+                _dataContext.MaterializeAttributes = true;
+
+                var items = _dataContext.Items
+                    .Include("AmznListingItems")
+                    .Include("EbayListingItems").ToList()
+                    .Where(p => p.Quantity > 0 && !p.Inactive).ToList().Where(p =>
+                        (p.DepartmentName.Equals("GIRLS SHOES") ||
+                        p.DepartmentName.Equals("MENS ATHLETIC SHOES") ||
+                        p.DepartmentName.Equals("MENS BOOTS") ||
+                        p.DepartmentName.Equals("MENS CASUAL SHOES") ||
+                        p.DepartmentName.Equals("MENS DRESS SHOES") ||
+                        p.DepartmentName.Equals("MENS OCCUPATIONAL SHOES") ||
+                        p.DepartmentName.Equals("MENS SANDALS & FLIP FLOPS") ||
+                        p.DepartmentName.Equals("MENS SLIPPERS") ||
+                        p.DepartmentName.Equals("SHOES (BABY)") ||
+                        p.DepartmentName.Equals("SHOES (BOYS)") ||
+                        p.DepartmentName.Equals("SHOES (UNISEX ADULT)") ||
+                        p.DepartmentName.Equals("SHOES (UNISEX KIDS)") ||
+                        p.DepartmentName.Equals("WOMENS ATHLETIC SHOES") ||
+                        p.DepartmentName.Equals("WOMENS BOOTS") ||
+                        p.DepartmentName.Equals("WOMENS FLATS & OXFORDS") ||
+                        p.DepartmentName.Equals("WOMENS HEELS") ||
+                        p.DepartmentName.Equals("WOMENS OCCUPATIONAL SHOES") ||
+                        p.DepartmentName.Equals("WOMENS SANDALS & FLIP FLOPS") ||
+                        p.DepartmentName.Equals("WOMENS SLIPPERS")) && p.OnActiveListing == 0);
+
+                foreach (var item in items)
+                {
+                    MainEntry entry = new MainEntry() { Sku = item.ItemLookupCode };
+
+                    try
+                    {
+                        UpdateMainEntry(item, entry);
+                    }
+                    catch (Exception x)
+                    {
+                        entry.Message = x.Message;
+                    }
+
+                    entries.Add(entry);
+                }
+            }
+
+            return entries;
         }
         
     }

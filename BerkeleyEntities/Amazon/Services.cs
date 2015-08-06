@@ -1490,10 +1490,10 @@ namespace BerkeleyEntities.Amazon
 
         private void Initilialize()
         {
-            _timer2Sec = new System.Timers.Timer(2100);
+            _timer2Sec = new System.Timers.Timer(2500);
             _timer2Sec.Elapsed += new System.Timers.ElapsedEventHandler(RestoreEvent2Sec);
 
-            _timer1Min = new System.Timers.Timer(60100);
+            _timer1Min = new System.Timers.Timer(60500);
             _timer1Min.Elapsed += new System.Timers.ElapsedEventHandler(RestoreEvent1Min);
 
             _timer2Sec.Enabled = true;
@@ -1681,11 +1681,6 @@ namespace BerkeleyEntities.Amazon
             order.Phone = orderDto.IsSetShippingAddress() ? orderDto.ShippingAddress.Phone : "";
             order.PostalCode = orderDto.IsSetShippingAddress() ? orderDto.ShippingAddress.PostalCode : "";
             order.StateOrRegion = orderDto.IsSetShippingAddress() ? orderDto.ShippingAddress.StateOrRegion : "";
-
-            if (order.Code.Equals("108-3767246-4952227"))
-            {
- 
-            }
 
             foreach (OrderItem orderItemDto in orderItemsDto)
             {

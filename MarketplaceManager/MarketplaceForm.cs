@@ -31,8 +31,17 @@ namespace MarketplaceManager
        
         public MarketplaceForm()
         {
+
             InitializeComponent();
+            
+            //MenuItem syncMenuItem = new MenuItem();
+            //syncMenuItem.Text = "Sync";
+            //syncMenuItem.Click +=syncMenuItem_Click;
+            
+
+            //dgvMarketplaces.ContextMenu = new ContextMenu(new MenuItem[] { new MenuItem { click} })
         }
+
 
         private void btnPrintOrders_Click(object sender, EventArgs e)
         {

@@ -5,7 +5,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50"></RowDefinition>
-            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="75"></RowDefinition>
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
@@ -15,11 +15,19 @@
             <Button Name="btnSetWorkbook" Click="btnSetWorkbook_Click"  Margin="5" Padding="5" VerticalAlignment="Center">Set Workbook</Button>
             <Label Name="lbCurrentWorkbook" Margin="5" VerticalAlignment="Center" Content="{Binding Path}" MouseDoubleClick="lbCurrentWorkbook_MouseDoubleClick"/>
         </StackPanel>
-        <StackPanel Grid.Row="1" Orientation="Horizontal">
-            <Button Name="btnUpdate" Margin="5" Padding="5" VerticalAlignment="Center" Click="btnUpdate_Click">Update Main Sheet</Button>
-            <Button Name="btnPrint" Margin="5" Padding="5" VerticalAlignment="Center" Click="btnPrint_Click">Generate Report</Button>
-            <Button Name="btnImportAmznData" Margin="5" Padding="5" VerticalAlignment="Center" Click="btnImportAmznData_Click">Import Amzn Data</Button>
-        </StackPanel>      
+        <StackPanel Grid.Row="1" Orientation="Vertical">
+            <Label Padding="0"  Margin="5,0,0,0"> MAIN </Label>
+            <Border  Margin="5,0,5,5" BorderBrush="CadetBlue" BorderThickness="3" CornerRadius="2">
+                <StackPanel Orientation="Horizontal">
+                    <Button Name="btnUpdate" Margin="5" Padding="5" VerticalAlignment="Center" Click="btnUpdate_Click">Update</Button>
+                    <Button Name="btnPrint" Margin="5" Padding="5" VerticalAlignment="Center" Click="btnPrint_Click">Generate Picture Report</Button>
+                    <Button Name="btnImportAmznData" Margin="5" Padding="5" VerticalAlignment="Center" Click="btnImportAmznData_Click">Import Amzn Data</Button>
+                    <Button Name="btnImportUnpublishedShoes" Margin="5" Padding="5" VerticalAlignment="Center" Click="btnImportUnpublishedShoes_Click">Import Unpublished Shoes</Button>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+        
+        
         <TabControl Name="tcSheets" Margin="5"  Grid.Row="2" Grid.RowSpan="4" ItemsSource="{Binding Publishers}">
             <TabControl.ItemTemplate>
                 <DataTemplate>

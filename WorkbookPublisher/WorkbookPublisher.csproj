@@ -24,7 +24,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>54</ApplicationRevision>
+    <ApplicationRevision>55</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -68,9 +68,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\LIB\OpenXMLSDKv2\lib\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
-    <Reference Include="eBay.Service, Version=3.849.0.0, Culture=neutral, PublicKeyToken=1d9d786a5932eaf0, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\LIB\eBay .NET SDK v897 Release\eBay.Service.dll</HintPath>
+    <Reference Include="eBay.Service">
+      <HintPath>..\LIB\eBay .NET SDK v921 Release\eBay.Service.dll</HintPath>
     </Reference>
     <Reference Include="MarketplaceWebServiceProducts, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

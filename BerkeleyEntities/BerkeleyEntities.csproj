@@ -38,13 +38,13 @@
     <Reference Include="AWSSDK">
       <HintPath>..\LIB\AWS SDK\AWS SDK for .NET\bin\Net45\AWSSDK.dll</HintPath>
     </Reference>
-    <Reference Include="eBay.Service, Version=3.849.0.0, Culture=neutral, PublicKeyToken=1d9d786a5932eaf0, processorArchitecture=MSIL">
+    <Reference Include="eBay.Service, Version=3.897.0.0, Culture=neutral, PublicKeyToken=1d9d786a5932eaf0, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\LIB\eBay .NET SDK v897 Release\eBay.Service.dll</HintPath>
+      <HintPath>..\LIB\eBay .NET SDK v921 Release\eBay.Service.dll</HintPath>
     </Reference>
-    <Reference Include="eBay.Service.SDK.Attribute, Version=3.849.0.0, Culture=neutral, PublicKeyToken=1d9d786a5932eaf0, processorArchitecture=MSIL">
+    <Reference Include="eBay.Service.SDK.Attribute, Version=3.897.0.0, Culture=neutral, PublicKeyToken=1d9d786a5932eaf0, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\LIB\eBay .NET SDK v897 Release\eBay.Service.SDK.Attribute.dll</HintPath>
+      <HintPath>..\LIB\eBay .NET SDK v921 Release\eBay.Service.SDK.Attribute.dll</HintPath>
     </Reference>
     <Reference Include="MarketplaceWebService">
       <HintPath>..\LIB\MarketplaceWebService\bin\Debug\MarketplaceWebService.dll</HintPath>

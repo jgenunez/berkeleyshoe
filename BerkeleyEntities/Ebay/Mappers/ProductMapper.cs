@@ -27,6 +27,33 @@ namespace BerkeleyEntities.Ebay.Mappers
             get { return _item.Department.code;  }
         }
 
+
+        public ProductListingDetailsType GetProductListingDetails()
+        {
+            ProductListingDetailsType pld = null;
+
+            if (!string.IsNullOrWhiteSpace(_item.GTIN))
+            {
+                pld = new ProductListingDetailsType();
+                pld.UPC = _item.GTIN;
+            }
+
+            return pld;
+        }
+
+        public VariationProductListingDetailsType GetVariationProductListingDetails()
+        {
+            VariationProductListingDetailsType vpld = null;
+
+            if (!string.IsNullOrWhiteSpace(_item.GTIN))
+            {
+                vpld = new VariationProductListingDetailsType();
+                vpld.UPC = _item.GTIN;
+            }
+
+            return vpld;
+        }
+
         public abstract List<NameValueListType> GetItemSpecifics();
 
         public abstract List<NameValueListType> GetVariationSpecifics();

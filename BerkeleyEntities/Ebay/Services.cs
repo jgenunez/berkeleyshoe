@@ -426,6 +426,8 @@ namespace BerkeleyEntities.Ebay
                 {
                     ProductMapper mapper = _productMapperFactory.GetProductMapper(_dataContext.Items.Single(p => p.ItemLookupCode.Equals(listingItemDto.Sku)));
 
+                    ebayDto.ProductListingDetails = mapper.GetProductListingDetails();
+
                     var itemSpecifics = mapper.GetItemSpecifics().Concat(mapper.GetVariationSpecifics()).ToArray();
 
                     ebayDto.ConditionIDSpecified = true;
@@ -518,6 +520,8 @@ namespace BerkeleyEntities.Ebay
                     {
                         ProductMapper productData = _productMapperFactory.GetProductMapper(_dataContext.Items.Single(p => p.ItemLookupCode.Equals(listingItemDto.Sku)));
                         variationDto.VariationSpecifics = new NameValueListTypeCollection(productData.GetVariationSpecifics().ToArray());
+
+                        variationDto.VariationProductListingDetails = productData.GetVariationProductListingDetails();
                     }
 
                     ebayDto.Variations.Variation.Add(variationDto);
